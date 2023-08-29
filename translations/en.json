@@ -1,0 +1,16 @@
+{
+  "age": "Age",
+  "completed": "Completed",
+  "inProgress": "In progress",
+  "laboratory": "Laboratory",
+  "loading": "Loading",
+  "names": "Names",
+  "orderedFrom": "Ordered from",
+  "referredTests": "Referred tests",
+  "results": "Results",
+  "testsOrdered": "Tests ordered",
+  "transferred": "Transferred",
+  "visitId": "Visit ID",
+  "waitingTime": "Waiting time",
+  "worklist": "Worklist"
+}

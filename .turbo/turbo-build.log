@@ -1,0 +1,30 @@
+assets by path *.js 467 KiB
+  assets by chunk 426 KiB (id hint: vendors)
+    asset 130.js 407 KiB [emitted] [minimized] [big] (id hint: vendors) 2 related assets
+    asset 263.js 19.5 KiB [emitted] [minimized] (id hint: vendors) 1 related asset
+  + 12 assets
+assets by path *.json 7.81 KiB
+  asset esm-laboratory-app.js.buildmanifest.json 7.52 KiB [emitted]
+  asset routes.json 298 bytes [emitted] [from: src/routes.json] [copied]
+runtime modules 37.4 KiB 28 modules
+orphan modules 45.1 KiB [orphan] 27 modules
+built modules 1.13 MiB (javascript) 126 bytes (share-init) 126 bytes (consume-shared) [built]
+  javascript modules 1.12 MiB 32 modules
+  optional modules 9.54 KiB [optional]
+    ./translations/am.json 1.21 KiB [optional] [built] [code generated]
+    + 5 modules
+  provide-module modules 126 bytes
+    provide shared module (default) @openmrs/esm-framework@5.1.1-pre.977 = ../../nod...(truncated) 42 bytes [built] [code generated]
+    provide shared module (default) react-i18next@11.18.6 = ../../node_modules/react...(truncated) 42 bytes [built] [code generated]
+    provide shared module (default) react@18.2.0 = ../../node_modules/react/index.js 42 bytes [built] [code generated]
+  consume-shared-module modules 126 bytes
+    consume shared module (default) @openmrs/esm-framework@* (singleton) (fallback: ...(truncated) 42 bytes [built] [code generated]
+    consume shared module (default) react@^18 (singleton) (fallback: ../../node_modu...(truncated) 42 bytes [built] [code generated]
+    consume shared module (default) react-i18next@^11 (singleton) (fallback: ../../n...(truncated) 42 bytes [built] [code generated]
+
+WARNING in asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
+This can impact web performance.
+Assets: 
+  130.js (407 KiB)
+
+webpack 5.88.2 compiled with 1 warning in 48267 ms
