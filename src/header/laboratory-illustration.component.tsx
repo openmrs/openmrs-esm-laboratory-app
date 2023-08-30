@@ -1,6 +1,6 @@
-import React from 'react';
-import { Microscope } from '@carbon/react/icons';
-import styles from './laboratory-header.scss';
+import React from "react";
+import { Microscope } from "@carbon/react/icons";
+import styles from "./laboratory-header.scss";
 
 const LaboratoryIllustration: React.FC = () => {
   return (

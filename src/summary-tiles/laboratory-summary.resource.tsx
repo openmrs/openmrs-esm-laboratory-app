@@ -1,6 +1,6 @@
-import useSWR from 'swr';
-import useSWRImmutable from 'swr/immutable';
-import { FetchResponse, openmrsFetch } from '@openmrs/esm-framework';
+import useSWR from "swr";
+import useSWRImmutable from "swr/immutable";
+import { FetchResponse, openmrsFetch } from "@openmrs/esm-framework";
 
 export function useMetrics() {
   const metrics = {
@@ -9,7 +9,10 @@ export function useMetrics() {
     transferred: 1,
     completed: 6,
   };
-  const { data, error } = useSWR<{ data: { results: {} } }, Error>(`/ws/rest/v1/queue?`, openmrsFetch);
+  const { data, error } = useSWR<{ data: { results: {} } }, Error>(
+    `/ws/rest/v1/queue?`,
+    openmrsFetch
+  );
 
   return {
     metrics: metrics,
@@ -19,11 +22,13 @@ export function useMetrics() {
 }
 
 export function useServices() {
-  const serviceConceptSetUuid = '330c0ec6-0ac7-4b86-9c70-29d76f0ae20a';
+  const serviceConceptSetUuid = "330c0ec6-0ac7-4b86-9c70-29d76f0ae20a";
   const apiUrl = `/ws/rest/v1/concept/${serviceConceptSetUuid}`;
   const { data } = useSWRImmutable<FetchResponse>(apiUrl, openmrsFetch);
 
   return {
-    services: data ? data?.data?.setMembers?.map((setMember) => setMember?.display) : [],
+    services: data
+      ? data?.data?.setMembers?.map((setMember) => setMember?.display)
+      : [],
   };
 }

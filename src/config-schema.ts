@@ -1,14 +1,19 @@
-import { Type } from '@openmrs/esm-framework';
+import { Type } from "@openmrs/esm-framework";
 
 export const configSchema = {
-  casualGreeting: {
-    _type: Type.Boolean,
-    _default: false,
-    _description: 'Whether to use a casual greeting (or a formal one).',
+  laboratoryQueueConcept: {
+    _type: Type.String,
+    _default: "1836ac8a-a855-4c7e-b2ba-a290233c67b7",
+    _description: "Concept uuid for the laboratory queue.",
+  },
+  laboratoryLocationTag: {
+    _type: Type.String,
+    _default: "Laboratory",
+    _description: "Location tag for laboratory locations.",
   },
 };
 
 export type Config = {
-  casualGreeting: boolean;
-  whoToGreet: Array<string>;
+  laboratoryQueueConcept: string;
+  laboratoryLocationTag: string;
 };

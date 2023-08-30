@@ -1,9 +1,9 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { DataTableSkeleton } from '@carbon/react';
-import { useMetrics } from './laboratory-summary.resource';
-import SummaryTile from './summary-tile.component';
-import styles from './laboratory-summary-tiles.scss';
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { DataTableSkeleton } from "@carbon/react";
+import { useMetrics } from "./laboratory-summary.resource";
+import SummaryTile from "./summary-tile.component";
+import styles from "./laboratory-summary-tiles.scss";
 
 const LaboratorySummaryTiles: React.FC = () => {
   const { t } = useTranslation();
@@ -17,24 +17,24 @@ const LaboratorySummaryTiles: React.FC = () => {
     <>
       <div className={styles.cardContainer}>
         <SummaryTile
-          label={t('orders', 'Orders')}
+          label={t("orders", "Orders")}
           value={metrics.orders}
-          headerLabel={t('testsOrdered', 'Tests ordered')}
+          headerLabel={t("testsOrdered", "Tests ordered")}
         />
         <SummaryTile
-          label={t('inProgress', 'In progress')}
+          label={t("inProgress", "In progress")}
           value={metrics.in_progress}
-          headerLabel={t('worklist', 'Worklist')}
+          headerLabel={t("worklist", "Worklist")}
         />
         <SummaryTile
-          label={t('transferred', 'Transferred')}
+          label={t("transferred", "Transferred")}
           value={metrics.transferred}
-          headerLabel={t('referredTests', 'Referred tests')}
+          headerLabel={t("referredTests", "Referred tests")}
         />
         <SummaryTile
-          label={t('completed', 'Completed')}
+          label={t("completed", "Completed")}
           value={metrics.completed}
-          headerLabel={t('results', 'Results')}
+          headerLabel={t("results", "Results")}
         />
       </div>
     </>

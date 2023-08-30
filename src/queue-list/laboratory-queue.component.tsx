@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Tab, Tabs, TabList, TabPanels, Search } from '@carbon/react';
-import { useTranslation } from 'react-i18next';
-import styles from './laboratory-queue.scss';
-import RadiologyPatientList from './laboratory-patient-list.component';
+import React, { useEffect, useState } from "react";
+import { Tab, Tabs, TabList, TabPanels, Search } from "@carbon/react";
+import { useTranslation } from "react-i18next";
+import styles from "./laboratory-queue.scss";
+import RadiologyPatientList from "./laboratory-patient-list.component";
 
 enum TabTypes {
   STARRED,
@@ -14,30 +14,30 @@ enum TabTypes {
 const LaboratoryQueueList: React.FC = () => {
   const { t } = useTranslation();
   const [selectedTab, setSelectedTab] = useState(TabTypes.STARRED);
-  const [searchTermUserInput, setSearchTermUserInput] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [location, setLocation] = useState('');
+  const [searchTermUserInput, setSearchTermUserInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [location, setLocation] = useState("");
 
   const tabs = [
     {
-      key: 'testedOrders',
-      header: t('testedOrders', 'Tests ordered'),
-      status: 'ACTIVE',
+      key: "testedOrders",
+      header: t("testedOrders", "Tests ordered"),
+      status: "ACTIVE",
     },
     {
-      key: 'worklist',
-      header: t('worklist', 'Worklist'),
-      status: '',
+      key: "worklist",
+      header: t("worklist", "Worklist"),
+      status: "",
     },
     {
-      key: 'referredTests',
-      header: t('referredTests', 'Referred tests'),
-      status: '',
+      key: "referredTests",
+      header: t("referredTests", "Referred tests"),
+      status: "",
     },
     {
-      key: 'completedTests',
-      header: t('completedTests', 'Completed tests'),
-      status: '',
+      key: "completedTests",
+      header: t("completedTests", "Completed tests"),
+      status: "",
     },
   ];
 
@@ -58,10 +58,19 @@ const LaboratoryQueueList: React.FC = () => {
           tabContentClassName={styles.hiddenTabsContent}
           onSelectionChange={setSelectedTab}
         >
-          <TabList aria-label={t('tabList', 'Tab List')} contained className={styles.tabsContainer}>
+          <TabList
+            aria-label={t("tabList", "Tab List")}
+            contained
+            className={styles.tabsContainer}
+          >
             {tabs.map((tab, index) => {
               return (
-                <Tab title={t(tab.key)} key={index} id={'tab-' + index} className={styles.tab}>
+                <Tab
+                  title={t(tab.key)}
+                  key={index}
+                  id={"tab-" + index}
+                  className={styles.tab}
+                >
                   {t(tab.header)}
                 </Tab>
               );
@@ -69,10 +78,16 @@ const LaboratoryQueueList: React.FC = () => {
           </TabList>
           <div className={styles.searchContainer}>
             <Search
-              closeButtonLabelText={t('clearSearchInput', 'Clear search input')}
+              closeButtonLabelText={t("clearSearchInput", "Clear search input")}
               defaultValue={searchTermUserInput}
-              placeholder={t('searchByPatientIdOrName', 'Search by patient ID or name')}
-              labelText={t('searchByPatientIdOrName', 'Search by patient ID or name')}
+              placeholder={t(
+                "searchByPatientIdOrName",
+                "Search by patient ID or name"
+              )}
+              labelText={t(
+                "searchByPatientIdOrName",
+                "Search by patient ID or name"
+              )}
               onChange={(e) => {
                 e.preventDefault();
                 setSearchTermUserInput(e.target.value);
@@ -83,7 +98,13 @@ const LaboratoryQueueList: React.FC = () => {
           </div>
           <TabPanels>
             {tabs.map((tab, index) => {
-              return <RadiologyPatientList location={location} searchTerm={searchTerm} status={tab.status} />;
+              return (
+                <RadiologyPatientList
+                  location={location}
+                  searchTerm={searchTerm}
+                  status={tab.status}
+                />
+              );
             })}
           </TabPanels>
         </Tabs>

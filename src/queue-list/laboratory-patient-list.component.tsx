@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   DataTable,
   DataTableSkeleton,
@@ -13,10 +13,10 @@ import {
   TableHeader,
   TableRow,
   TabPanel,
-} from '@carbon/react';
-import { useTranslation } from 'react-i18next';
-import { formatDatetime, parseDate } from '@openmrs/esm-framework';
-import styles from './laboratory-queue.scss';
+} from "@carbon/react";
+import { useTranslation } from "react-i18next";
+import { formatDatetime, parseDate } from "@openmrs/esm-framework";
+import styles from "./laboratory-queue.scss";
 
 interface LaboratoryPatientListProps {
   searchTerm: string;
@@ -24,7 +24,11 @@ interface LaboratoryPatientListProps {
   status: string;
 }
 
-const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = ({ searchTerm, location, status }) => {
+const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = ({
+  searchTerm,
+  location,
+  status,
+}) => {
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -33,12 +37,12 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = ({ searchTer
   const totalOrders = 0;
 
   let columns = [
-    { header: t('visitId', 'Visit ID'), key: 'visitId' },
-    { header: t('names', 'Names'), key: 'names' },
-    { header: t('age', 'Age'), key: 'age' },
-    { header: t('orderedFrom', 'Ordered from'), key: 'orderedFrom' },
-    { header: t('waitingTime', 'Waiting time'), key: 'waitingTime' },
-    { header: t('testsOrdered', 'Tests ordered'), key: 'testsOrdered' },
+    { header: t("visitId", "Visit ID"), key: "visitId" },
+    { header: t("names", "Names"), key: "names" },
+    { header: t("age", "Age"), key: "age" },
+    { header: t("orderedFrom", "Ordered from"), key: "orderedFrom" },
+    { header: t("waitingTime", "Waiting time"), key: "waitingTime" },
+    { header: t("testsOrdered", "Tests ordered"), key: "testsOrdered" },
   ];
 
   useEffect(() => {
@@ -54,14 +58,22 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = ({ searchTer
         {laboratoryQueue && (
           <>
             <DataTable rows={laboratoryQueue} headers={columns} isSortable>
-              {({ rows, headers, getHeaderProps, getRowProps, getTableProps }) => (
+              {({
+                rows,
+                headers,
+                getHeaderProps,
+                getRowProps,
+                getTableProps,
+              }) => (
                 <TableContainer>
                   <Table {...getTableProps()} useZebraStyles>
                     <TableHead>
                       <TableRow>
                         <TableExpandHeader />
                         {headers.map((header) => (
-                          <TableHeader {...getHeaderProps({ header })}>{header.header}</TableHeader>
+                          <TableHeader {...getHeaderProps({ header })}>
+                            {header.header}
+                          </TableHeader>
                         ))}
                       </TableRow>
                     </TableHead>
@@ -71,11 +83,11 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = ({ searchTer
                           <TableExpandRow {...getRowProps({ row })}>
                             {row.cells.map((cell) => (
                               <TableCell key={cell.id}>
-                                {cell.id.endsWith('created')
+                                {cell.id.endsWith("created")
                                   ? formatDatetime(parseDate(cell.value))
-                                  : cell.id.endsWith('patient')
+                                  : cell.id.endsWith("patient")
                                   ? cell.value.name
-                                  : cell.id.endsWith('status')
+                                  : cell.id.endsWith("status")
                                   ? t(cell.value)
                                   : cell.value}
                               </TableCell>
@@ -88,7 +100,7 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = ({ searchTer
                 </TableContainer>
               )}
             </DataTable>
-            <div style={{ width: '100%' }}>
+            <div style={{ width: "100%" }}>
               <Pagination
                 page={page}
                 pageSize={pageSize}
