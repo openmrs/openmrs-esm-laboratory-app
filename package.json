@@ -57,8 +57,10 @@
     "rxjs": "6.x"
   },
   "devDependencies": {
+    "@ohri/openmrs-esm-ohri-commons-lib": "next",
     "@openmrs/esm-extensions": "next",
     "@openmrs/esm-framework": "next",
+    "@openmrs/esm-patient-common-lib": "next",
     "@openmrs/esm-react-utils": "next",
     "@openmrs/esm-styleguide": "next",
     "@swc/cli": "^0.1.62",
