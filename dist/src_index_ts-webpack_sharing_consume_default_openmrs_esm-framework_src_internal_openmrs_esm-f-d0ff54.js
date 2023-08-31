@@ -1,4 +1,4 @@
-(globalThis["webpackChunk_ugandaemr_esm_laboratory_app"] = globalThis["webpackChunk_ugandaemr_esm_laboratory_app"] || []).push([["src_index_ts-webpack_sharing_consume_default_openmrs_esm-framework_src_internal_openmrs_esm-f-d0ff54"],{
+(globalThis["webpackChunk_ugandaemr_openmrs_esm_laboratory_app"] = globalThis["webpackChunk_ugandaemr_openmrs_esm_laboratory_app"] || []).push([["src_index_ts-webpack_sharing_consume_default_openmrs_esm-framework_src_internal_openmrs_esm-f-d0ff54"],{
 
 /***/ "./src/components/create-dashboard-link.component.tsx":
 /*!************************************************************!*\
@@ -63,10 +63,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _openmrs_esm_framework__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_openmrs_esm_framework__WEBPACK_IMPORTED_MODULE_0__);
 
 var configSchema = {
-    casualGreeting: {
-        _type: _openmrs_esm_framework__WEBPACK_IMPORTED_MODULE_0__.Type.Boolean,
-        _default: false,
-        _description: "Whether to use a casual greeting (or a formal one)."
+    laboratoryQueueConcept: {
+        _type: _openmrs_esm_framework__WEBPACK_IMPORTED_MODULE_0__.Type.String,
+        _default: "1836ac8a-a855-4c7e-b2ba-a290233c67b7",
+        _description: "Concept uuid for the laboratory queue."
+    },
+    laboratoryLocationTag: {
+        _type: _openmrs_esm_framework__WEBPACK_IMPORTED_MODULE_0__.Type.String,
+        _default: "Laboratory",
+        _description: "Location tag for laboratory locations."
     }
 };
 
@@ -94,7 +99,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _openmrs_esm_framework__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_openmrs_esm_framework__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _config_schema__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./config-schema */ "./src/config-schema.ts");
 /* harmony import */ var _components_create_dashboard_link_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/create-dashboard-link.component */ "./src/components/create-dashboard-link.component.tsx");
-/* harmony import */ var _openmrs_esm_patient_common_lib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @openmrs/esm-patient-common-lib */ "../../node_modules/@openmrs/esm-patient-common-lib/src/index.ts");
+/* harmony import */ var _openmrs_esm_patient_common_lib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @openmrs/esm-patient-common-lib */ "./node_modules/@openmrs/esm-patient-common-lib/src/index.ts");
 
 
 

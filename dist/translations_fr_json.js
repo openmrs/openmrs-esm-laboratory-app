@@ -1,5 +1,5 @@
 "use strict";
-(globalThis["webpackChunk_ugandaemr_esm_laboratory_app"] = globalThis["webpackChunk_ugandaemr_esm_laboratory_app"] || []).push([["translations_fr_json"],{
+(globalThis["webpackChunk_ugandaemr_openmrs_esm_laboratory_app"] = globalThis["webpackChunk_ugandaemr_openmrs_esm_laboratory_app"] || []).push([["translations_fr_json"],{
 
 /***/ "./translations/fr.json":
 /*!******************************!*\
