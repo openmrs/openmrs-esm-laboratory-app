@@ -7,7 +7,7 @@
   "main": "src/index.ts",
   "source": true,
   "scripts": {
-    "start": "openmrs develop --backend https://ugandaemr-backend.mets.or.ug",
+    "start": "openmrs develop --backend http://167.71.32.250:8080",
     "serve": "webpack serve --mode=development",
     "build": "webpack --mode production",
     "analyze": "webpack --mode=production --env analyze=true",
@@ -111,6 +111,9 @@
     "typescript": "^4.9.5",
     "webpack": "^5.88.1",
     "webpack-cli": "^5.1.3"
+  },
+  "resolutions": {
+    "@carbon/react": "1.14.0"
   },
   "packageManager": "yarn@3.6.3"
 }

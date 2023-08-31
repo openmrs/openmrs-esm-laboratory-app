@@ -1406,6 +1406,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@carbon/feature-flags@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@carbon/feature-flags@npm:0.9.0"
+  checksum: a0891698cf10c9698e9782c68d928a45b969cd260e3b9459163efa2cec7a848dc89561872e3fb889954fad111fb7f186718cd68577f20ad20c948f30160f474b
+  languageName: node
+  linkType: hard
+
 "@carbon/grid@npm:^11.19.0":
   version: 11.19.0
   resolution: "@carbon/grid@npm:11.19.0"
@@ -1422,7 +1429,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@carbon/icons-react@npm:^11.25.0":
+"@carbon/icons-react@npm:^11.9.0":
   version: 11.25.0
   resolution: "@carbon/icons-react@npm:11.25.0"
   dependencies:
@@ -1435,7 +1442,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@carbon/layout@npm:^11.19.0":
+"@carbon/layout@npm:^11.19.0, @carbon/layout@npm:^11.7.0":
   version: 11.19.0
   resolution: "@carbon/layout@npm:11.19.0"
   checksum: 9786a9d13fc81132c33a05019fae1d6ed786739a285e276f76857d30bba7b5a58cb093c700fb7c8b697d7a199459c398f842d6a42351d02c3d67e7961fadd901
@@ -1449,15 +1456,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@carbon/react@npm:^1.12.0, @carbon/react@npm:^1.13.0, @carbon/react@npm:^1.14.0, @carbon/react@npm:^1.36.0":
-  version: 1.36.0
-  resolution: "@carbon/react@npm:1.36.0"
+"@carbon/react@npm:1.14.0":
+  version: 1.14.0
+  resolution: "@carbon/react@npm:1.14.0"
   dependencies:
     "@babel/runtime": ^7.18.3
-    "@carbon/feature-flags": ^0.16.0
-    "@carbon/icons-react": ^11.25.0
-    "@carbon/layout": ^11.19.0
-    "@carbon/styles": ^1.36.0
+    "@carbon/feature-flags": ^0.9.0
+    "@carbon/icons-react": ^11.9.0
+    "@carbon/layout": ^11.7.0
+    "@carbon/styles": ^1.14.0
     "@carbon/telemetry": 0.1.0
     classnames: 2.3.2
     copy-to-clipboard: ^3.3.1
@@ -1470,19 +1477,19 @@ __metadata:
     lodash.omit: ^4.5.0
     lodash.throttle: ^4.1.1
     prop-types: ^15.7.2
-    react-is: ^18.2.0
+    react-is: ^17.0.2
     use-resize-observer: ^6.0.0
     wicg-inert: ^3.1.1
     window-or-global: ^1.0.1
   peerDependencies:
-    react: ^16.8.6 || ^17.0.1 || ^18.2.0
-    react-dom: ^16.8.6 || ^17.0.1 || ^18.2.0
+    react: ^16.8.6 || ^17.0.1
+    react-dom: ^16.8.6 || ^17.0.1
     sass: ^1.33.0
-  checksum: 6be40b125af21ee4e0568496a6c87d0c5237d91d46c3e0f1a15a0b181673e43fdcaf57cf4a17dede074ed80d2ed8f2258d94bdd4983fdd4fa3d8b92a79882f2a
+  checksum: 6a19a7bddc300a744d405fd050deb4d448b5f235ba01e5fc1088a3bdedb69b2724ac7902f66fc2b68ce15a68fec3384dc50fcd9eee05cf2cfca45f249ce5a7aa
   languageName: node
   linkType: hard
 
-"@carbon/styles@npm:^1.36.0":
+"@carbon/styles@npm:^1.14.0, @carbon/styles@npm:^1.36.0":
   version: 1.36.0
   resolution: "@carbon/styles@npm:1.36.0"
   dependencies:
@@ -17799,14 +17806,14 @@ openmrs@next:
   languageName: node
   linkType: hard
 
-"react-is@npm:^17.0.0, react-is@npm:^17.0.1":
+"react-is@npm:^17.0.0, react-is@npm:^17.0.1, react-is@npm:^17.0.2":
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
   checksum: 9d6d111d8990dc98bc5402c1266a808b0459b5d54830bbea24c12d908b536df7883f268a7868cfaedde3dd9d4e0d574db456f84d2e6df9c4526f99bb4b5344d8
   languageName: node
   linkType: hard
 
-"react-is@npm:^17.0.1 || ^18.0.0, react-is@npm:^18.0.0, react-is@npm:^18.2.0":
+"react-is@npm:^17.0.1 || ^18.0.0, react-is@npm:^18.0.0":
   version: 18.2.0
   resolution: "react-is@npm:18.2.0"
   checksum: e72d0ba81b5922759e4aff17e0252bd29988f9642ed817f56b25a3e217e13eea8a7f2322af99a06edb779da12d5d636e9fda473d620df9a3da0df2a74141d53e
