@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Tab, Tabs, TabList, TabPanels, Search } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import styles from "./laboratory-queue.scss";
-import RadiologyPatientList from "./laboratory-patient-list.component";
+import LaboratoryPatientList from "./laboratory-patient-list.component";
 
 enum TabTypes {
   STARRED,
@@ -99,7 +99,7 @@ const LaboratoryQueueList: React.FC = () => {
           <TabPanels>
             {tabs.map((tab, index) => {
               return (
-                <RadiologyPatientList
+                <LaboratoryPatientList
                   location={location}
                   searchTerm={searchTerm}
                   status={tab.status}
