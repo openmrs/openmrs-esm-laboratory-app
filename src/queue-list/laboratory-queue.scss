@@ -94,6 +94,40 @@ title {
   }
 }
 
+.tableContainer {
+  background-color: $ui-01;
+  margin: 0 spacing.$spacing-05;
+  padding: 0;
+
+  a {
+    text-decoration: none;
+  }
+
+  th {
+    color: $text-02;
+  }
+
+  :global(.cds--data-table) {
+    background-color: $ui-03;
+  }
+
+  .toolbarContent {
+    height: spacing.$spacing-07;
+    margin-bottom: spacing.$spacing-02;
+  }
+}
+
+.activePatientsTable tr:last-of-type {
+  td {
+    border-bottom: none;
+  }
+}
+.headerBtnContainer {
+  background-color: $ui-background;
+  padding: spacing.$spacing-05;
+  text-align: right;
+}
+
 .searchContainer {
   display: flex;
   align-items: center;
@@ -130,4 +164,8 @@ title {
   max-width: 16rem;
   background-color: $ui-02;
   border-bottom-color: $ui-03;
+}
+
+.container {
+  background-color: $ui-01;
 }
