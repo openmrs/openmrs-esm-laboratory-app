@@ -1,7 +1,7 @@
 import React from "react";
 import { LaboratoryHeader } from "./header/laboratory-header.component";
 import LaboratorySummaryTiles from "./summary-tiles/laboratory-summary-tiles.component";
-import LaboratoryQueueList from "./queue-list/laboratory-queue.component";
+import LaboratoryQueueList from "./queue-list/laboratory-tabs.component";
 
 const Laboratory: React.FC = () => {
   return (
