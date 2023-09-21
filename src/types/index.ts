@@ -33,32 +33,6 @@ export interface Person {
   preferredAddress: OpenmrsResource;
   uuid: string;
 }
-export interface AppointmentsFetchResponse {
-  data: Array<Appointment>;
-}
-
-export interface Appointment {
-  appointmentKind: string;
-  appointmentNumber: string;
-  comments: string;
-  endDateTime: Date | number;
-  location: OpenmrsResource;
-  patient: {
-    uuid: string;
-    name: string;
-    identifier: string;
-    gender: string;
-    age: string;
-    phoneNumber: string;
-  };
-  provider: OpenmrsResource;
-  providers: Array<OpenmrsResource>;
-  // recurring: boolean;
-  service: AppointmentService;
-  startDateTime: number | any;
-  status: string;
-  uuid: string;
-}
 
 export interface ServiceTypes {
   duration: number;

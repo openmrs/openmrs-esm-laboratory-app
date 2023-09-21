@@ -1,7 +1,3 @@
-export interface PatientQueueResponse {
-  results: Array<PatientQueue>;
-}
-
 export interface PatientQueue {
   uuid: string;
   creator: {
