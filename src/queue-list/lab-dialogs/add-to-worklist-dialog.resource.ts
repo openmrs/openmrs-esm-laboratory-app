@@ -1,7 +1,6 @@
-import { FetchResponse, openmrsFetch, useConfig } from "@openmrs/esm-framework";
+import { openmrsFetch } from "@openmrs/esm-framework";
 import { useMemo } from "react";
 import useSWR from "swr";
-import useSWRImmutable from "swr/immutable";
 
 export interface QueueRoomsResponse {
   uuid: string;
@@ -98,22 +97,5 @@ export function useQueueRoomLocations(currentQueueLocation: string) {
     queueRoomLocations: queueRoomLocations ? queueRoomLocations : [],
     isLoading,
     error,
-  };
-}
-
-// get specimen types
-export function useSpecimenTypes() {
-  const config = useConfig();
-  const { laboratorySpecimenTypeConcept } = config;
-
-  const apiUrl = `/ws/rest/v1/concept/${laboratorySpecimenTypeConcept}`;
-  const { data, error, isLoading } = useSWRImmutable<FetchResponse>(
-    apiUrl,
-    openmrsFetch
-  );
-
-  return {
-    specimenTypes: data ? data?.data?.answers : [],
-    isLoading,
   };
 }

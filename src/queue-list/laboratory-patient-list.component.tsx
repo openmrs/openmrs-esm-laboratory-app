@@ -40,7 +40,6 @@ import {
 import LabTests from "./lab-tests/lab-tests.component";
 import AddToWorklist from "./lab-dialogs/add-to-worklist-dialog.component";
 import PickLabRequestActionMenu from "./pick-lab-request-menu.component";
-import { EmptyState } from "@openmrs/esm-patient-common-lib";
 
 // type FilterProps = {
 //   rowIds: Array<string>;
@@ -259,13 +258,6 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
       </div>
     );
   }
-
-  return (
-    <div>
-      <div className={styles.headerBtnContainer}></div>
-      <EmptyState displayText={"Tests Ordered"} headerTitle={"Tests Ordered"} />
-    </div>
-  );
 };
 
 export default LaboratoryPatientList;
