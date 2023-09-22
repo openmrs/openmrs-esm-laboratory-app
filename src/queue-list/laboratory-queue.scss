@@ -169,3 +169,22 @@ title {
 .container {
   background-color: $ui-01;
 }
+
+.expandedLabQueueVisitRow {
+  :global(.cds--tab-content) {
+    padding: 0.5rem 0;
+  }
+
+  td {
+    padding: 0.5rem;
+
+    > div {
+      max-height: max-content !important;
+      background-color: $ui-02;
+    }
+  }
+
+  th[colspan] td[colspan] > div:first-child {
+    padding: 0 1rem;
+  }
+}

@@ -19,6 +19,7 @@ import {
   TableToolbarSearch,
   Layer,
   Tag,
+  TableExpandedRow,
 } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import {
@@ -36,6 +37,9 @@ import {
   getTagColor,
   trimVisitNumber,
 } from "../utils/functions";
+import LabTests from "./lab-tests/lab-tests.component";
+import AddToWorklist from "./lab-dialogs/add-to-worklist-dialog.component";
+import PickLabRequestActionMenu from "./pick-lab-request-menu.component";
 
 // type FilterProps = {
 //   rowIds: Array<string>;
@@ -73,6 +77,7 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     { id: 2, header: t("age", "Age"), key: "age" },
     { id: 3, header: t("orderedFrom", "Ordered from"), key: "orderedFrom" },
     { id: 4, header: t("waitingTime", "Waiting time"), key: "waitingTime" },
+    { id: 5, header: t("actions", "Actions"), key: "actions" },
   ];
 
   const tableRows = useMemo(() => {
@@ -100,6 +105,14 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
               {formatWaitTime(entry.waitTime, t)}
             </span>
           </Tag>
+        ),
+      },
+      actions: {
+        content: (
+          <PickLabRequestActionMenu
+            queueEntry={entry}
+            closeModal={() => true}
+          />
         ),
       },
     }));
@@ -195,13 +208,28 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
                   {rows.map((row, index) => {
                     return (
                       <React.Fragment key={row.id}>
-                        <TableRow {...getRowProps({ row })}>
+                        <TableExpandRow {...getRowProps({ row })} key={row.id}>
                           {row.cells.map((cell) => (
                             <TableCell key={cell.id}>
                               {cell.value?.content ?? cell.value}
                             </TableCell>
                           ))}
-                        </TableRow>
+                        </TableExpandRow>
+                        {row.isExpanded ? (
+                          <TableExpandedRow
+                            className={styles.expandedLabQueueVisitRow}
+                            colSpan={headers.length + 2}
+                          >
+                            <>
+                              <LabTests />
+                            </>
+                          </TableExpandedRow>
+                        ) : (
+                          <TableExpandedRow
+                            className={styles.hiddenRow}
+                            colSpan={headers.length + 2}
+                          />
+                        )}
                       </React.Fragment>
                     );
                   })}

@@ -43,6 +43,10 @@
       "name": "laboratory-orders-summary",
       "slot": "laboratory-orders-dashboard-slot",
       "component": "laboratoryOrderComponent"
+    },
+    {
+      "name": "add-to-worklist-dialog",
+      "component": "addToWorklistDialog"
     }
   ]
 }
