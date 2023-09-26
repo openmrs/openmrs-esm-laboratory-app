@@ -32,3 +32,30 @@ export function useServices() {
       : [],
   };
 }
+
+// test ordered
+export function useOrderedTests() {
+  return {
+    count: 0,
+  };
+}
+// worklist
+export function useWorklistsStats() {
+  return {
+    count: 0,
+  };
+}
+
+// referred tests
+export function useReferredTestsStats() {
+  return {
+    count: 0,
+  };
+}
+
+// results
+export function useResultsStats() {
+  return {
+    count: 0,
+  };
+}

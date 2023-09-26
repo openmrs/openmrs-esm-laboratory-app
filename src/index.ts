@@ -54,6 +54,11 @@ export const laboratoryOrderComponent = getAsyncLifecycle(
   options
 );
 
+export const addToWorklistDialog = getAsyncLifecycle(
+  () => import("./queue-list/lab-dialogs/add-to-worklist-dialog.component"),
+  options
+);
+
 export function startupApp() {
   defineConfigSchema(moduleName, configSchema);
 }

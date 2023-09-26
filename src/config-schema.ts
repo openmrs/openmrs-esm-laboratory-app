@@ -11,9 +11,15 @@ export const configSchema = {
     _default: "Laboratory",
     _description: "Location tag for laboratory locations.",
   },
+  laboratorySpecimenTypeConcept: {
+    _type: Type.ConceptUuid,
+    _default: "159959AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    _description: "Concept UUID for laboratory specimen types",
+  },
 };
 
 export type Config = {
   laboratoryQueueConcept: string;
   laboratoryLocationTag: string;
+  laboratorySpecimenTypeConcept: string;
 };

@@ -1,8 +1,29 @@
-import { PatientQueue } from "../types/patient-queues";
+import { PatientQueue, UuidDisplay } from "../types/patient-queues";
 import dayjs from "dayjs";
 import useSWR from "swr";
 
 import { formatDate, openmrsFetch, parseDate } from "@openmrs/esm-framework";
+
+export interface MappedPatientQueueEntry {
+  id: string;
+  name: string;
+  patientAge: number;
+  patientSex: string;
+  patientDob: string;
+  patientUuid: string;
+  priority: string;
+  priorityComment: string;
+  status: string;
+  waitTime: string;
+  locationFrom?: string;
+  locationToName?: string;
+  visitNumber: string;
+  identifiers: Array<UuidDisplay>;
+  dateCreated: string;
+  creatorUuid: string;
+  creatorUsername: string;
+  creatorDisplay: string;
+}
 
 export function usePatientQueuesList(
   currentQueueRoomLocationUuid: string,
