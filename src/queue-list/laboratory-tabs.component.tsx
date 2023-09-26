@@ -41,7 +41,7 @@ const LaboratoryQueueTabs: React.FC = () => {
               <div>
                 <div className={styles.headerBtnContainer}></div>
                 <EmptyState
-                  displayText={"Coming Soon"}
+                  displayText={"worklists"}
                   headerTitle={"Worklist"}
                 />
               </div>
@@ -50,7 +50,7 @@ const LaboratoryQueueTabs: React.FC = () => {
               <div>
                 <div className={styles.headerBtnContainer}></div>
                 <EmptyState
-                  displayText={"Coming Soon"}
+                  displayText={"referred tests"}
                   headerTitle={"Referred tests"}
                 />
               </div>
@@ -59,7 +59,7 @@ const LaboratoryQueueTabs: React.FC = () => {
               <div>
                 <div className={styles.headerBtnContainer}></div>
                 <EmptyState
-                  displayText={"Coming Soon"}
+                  displayText={"completed test"}
                   headerTitle={"Completed tests"}
                 />
               </div>
