@@ -44,7 +44,7 @@ export const laboratoryComponent = getAsyncLifecycle(
 export const laboratoryOrderDashboardLink = getSyncLifecycle(
   createDashboardLink({
     path: "laboratory-orders",
-    title: "Laboratory",
+    title: "Investigative Results",
     moduleName,
   }),
   options
