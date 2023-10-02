@@ -96,7 +96,7 @@ const LaboratoryQueueList: React.FC = () => {
               className={styles.patientSearch}
             />
           </div>
-          <TabPanels>
+          {/* <TabPanels>
             {tabs.map((tab, index) => {
               return (
                 <LaboratoryPatientList
@@ -106,7 +106,7 @@ const LaboratoryQueueList: React.FC = () => {
                 />
               );
             })}
-          </TabPanels>
+          </TabPanels> */}
         </Tabs>
       </section>
     </main>
