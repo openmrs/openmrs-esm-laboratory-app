@@ -1,0 +1,9 @@
+@use '@carbon/styles/scss/spacing';
+@use '@carbon/styles/scss/type';
+@import "~@openmrs/esm-styleguide/src/vars";
+@import '../root.scss';
+.headerBtnContainer {
+    background-color: $ui-background;
+    padding: spacing.$spacing-05;
+    text-align: right;
+  }

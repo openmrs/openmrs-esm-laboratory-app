@@ -47,6 +47,10 @@
     {
       "name": "add-to-worklist-dialog",
       "component": "addToWorklistDialog"
+    },
+    {
+      "name": "results-summary",
+      "component": "resultsSummaryWorkSpace"
     }
   ]
 }
