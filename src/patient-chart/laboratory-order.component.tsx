@@ -1,42 +1,25 @@
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  EmptyState,
-  EncounterList,
-  EncounterListColumn,
-  getObsFromEncounter,
-} from "@ohri/openmrs-esm-ohri-commons-lib";
+import { EmptyState } from "@ohri/openmrs-esm-ohri-commons-lib";
 import styles from "./laboratory-order.scss";
-import { age, usePagination, useSession } from "@openmrs/esm-framework";
-import { usePatientQueuesList } from "../queue-list/laboratory-patient-list.resource";
+import { useSession } from "@openmrs/esm-framework";
 import {
   DataTable,
-  DataTableHeader,
   DataTableSkeleton,
-  Pagination,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableExpandHeader,
-  TableExpandRow,
   TableHead,
   TableHeader,
   TableRow,
-  TabPanel,
   TableToolbar,
   TableToolbarContent,
   TableToolbarSearch,
   Layer,
   Tag,
-  TableExpandedRow,
+  DataTableHeader,
 } from "@carbon/react";
-import LabTests from "../queue-list/lab-tests/lab-tests.component";
-import {
-  formatWaitTime,
-  getTagColor,
-  trimVisitNumber,
-} from "../utils/functions";
 import ViewLaboratoryItemActionMenu from "./laboratory-item/view-laboratory-item.component";
 
 interface LaboratoryOrderOverviewProps {
@@ -69,14 +52,16 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
 
   const items = [
     {
-      encounterDate: "2023-04-05",
-      orders: ["test", "test", "test", "test", "test", "test", "test", "test"],
+      id: 1,
+      encounterDate: "2023-04-01",
+      orders: ["Crag", "CBC", "MalariaRDT", "CD4", "RFT", "Unalysis"],
       location: session.sessionLocation.display,
       results: "tests returned",
     },
     {
+      id: 2,
       encounterDate: "2023-04-05",
-      orders: ["test", "test", "test", "test", "test", "test", "test", "test"],
+      orders: ["Crag", "CBC", "CD4", "RFT", "Unalysis", "LFTs"],
       location: session.sessionLocation.display,
       results: "tests returned",
     },
@@ -104,7 +89,17 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
         content: (
           <>
             {entry.orders.map((order) => {
-              return <Tag role="tooltip">{order}</Tag>;
+              return (
+                <Tag
+                  style={{
+                    background: "rgb(111 111 111 / 97%)",
+                    color: "white",
+                  }}
+                  role="tooltip"
+                >
+                  {order}
+                </Tag>
+              );
             })}
           </>
         ),
@@ -132,7 +127,6 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   if (items?.length) {
     return (
       <div>
-        <div className={styles.headerBtnContainer}></div>
         <DataTable rows={tableRows} headers={columns} isSortable useZebraStyles>
           {({
             rows,
@@ -167,7 +161,6 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
               >
                 <TableHead>
                   <TableRow>
-                    <TableExpandHeader />
                     {headers.map((header) => (
                       <TableHeader {...getHeaderProps({ header })}>
                         {header.header}
@@ -179,28 +172,13 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                   {rows.map((row, index) => {
                     return (
                       <React.Fragment key={row.id}>
-                        <TableExpandRow {...getRowProps({ row })} key={row.id}>
+                        <TableRow {...getRowProps({ row })}>
                           {row.cells.map((cell) => (
                             <TableCell key={cell.id}>
                               {cell.value?.content ?? cell.value}
                             </TableCell>
                           ))}
-                        </TableExpandRow>
-                        {row.isExpanded ? (
-                          <TableExpandedRow
-                            className={styles.expandedLabQueueVisitRow}
-                            colSpan={headers.length + 2}
-                          >
-                            <>
-                              <LabTests />
-                            </>
-                          </TableExpandedRow>
-                        ) : (
-                          <TableExpandedRow
-                            className={styles.hiddenRow}
-                            colSpan={headers.length + 2}
-                          />
-                        )}
+                        </TableRow>
                       </React.Fragment>
                     );
                   })}
