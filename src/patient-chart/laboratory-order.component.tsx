@@ -27,6 +27,14 @@ interface LaboratoryOrderOverviewProps {
   patientUuid: string;
 }
 
+type FilterProps = {
+  rowIds: Array<string>;
+  headers: any;
+  cellsById: any;
+  inputValue: string;
+  getCellId: (row, key) => string;
+};
+
 const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   patientUuid,
 }) => {
@@ -89,10 +97,9 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   const handleChange = useCallback(
     (val) => {
       setSearchTerm(val?.target?.value);
-      if (searchTerm == null && val?.target?.value) {
-        setItems(initialItems);
+      if (searchTerm == null && val?.target?.value === null) {
+        setItems(items);
       }
-      // const filteredItems = items.filter((item) => item.orders.length === 100);
       let filteredItems = [];
       items.map((item) => {
         const newArray = item?.orders.filter(
@@ -106,8 +113,30 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
       console.info(filteredItems);
       setItems(filteredItems);
     },
-    [initialItems, items, searchTerm]
+    [items, searchTerm]
   );
+
+  const handleFilter = ({
+    rowIds,
+    headers,
+    cellsById,
+    inputValue,
+    getCellId,
+  }: FilterProps): Array<string> => {
+    return rowIds.filter((rowId) =>
+      headers.some(({ key }) => {
+        const cellId = getCellId(rowId, key);
+        const filterableValue = cellsById[cellId].value;
+        const filterTerm = inputValue.toLowerCase();
+
+        if (typeof filterableValue === "boolean") {
+          return false;
+        }
+
+        return ("" + filterableValue).toLowerCase().includes(filterTerm);
+      })
+    );
+  };
 
   const tableRows = useMemo(() => {
     return items?.map((entry) => ({
@@ -157,7 +186,12 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   if (items?.length >= 0) {
     return (
       <div>
-        <DataTable rows={tableRows} headers={columns} useZebraStyles>
+        <DataTable
+          rows={tableRows}
+          headers={columns}
+          useZebraStyles
+          filterRows={handleFilter}
+        >
           {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
             <TableContainer className={styles.tableContainer}>
               <TableToolbar
