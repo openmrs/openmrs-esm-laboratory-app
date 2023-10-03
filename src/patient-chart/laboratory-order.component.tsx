@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EmptyState } from "@ohri/openmrs-esm-ohri-commons-lib";
 import styles from "./laboratory-order.scss";
@@ -19,6 +19,7 @@ import {
   Layer,
   Tag,
   DataTableHeader,
+  Tile,
 } from "@carbon/react";
 import ViewLaboratoryItemActionMenu from "./laboratory-item/view-laboratory-item.component";
 
@@ -50,22 +51,25 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   //   currentPage,
   // } = usePagination(patientQueueEntries, currentPageSize);
 
-  const items = [
-    {
-      id: 1,
-      encounterDate: "2023-04-01",
-      orders: ["Crag", "CBC", "MalariaRDT", "CD4", "RFT", "Unalysis"],
-      location: session.sessionLocation.display,
-      results: "tests returned",
-    },
-    {
-      id: 2,
-      encounterDate: "2023-04-05",
-      orders: ["Crag", "CBC", "CD4", "RFT", "Unalysis", "LFTs"],
-      location: session.sessionLocation.display,
-      results: "tests returned",
-    },
-  ];
+  const initialItems = useMemo(() => {
+    const items = [
+      {
+        id: 1,
+        encounterDate: "2023-04-01",
+        orders: ["Crag", "CBC", "MalariaRDT", "CD4", "RFT", "Unalysis"],
+        location: session.sessionLocation.display,
+        results: "tests returned",
+      },
+      {
+        id: 2,
+        encounterDate: "2023-04-05",
+        orders: ["Crag", "CBC", "CD4", "RFT", "Unalysis", "LFTs"],
+        location: session.sessionLocation.display,
+        results: "tests returned",
+      },
+    ];
+    return items;
+  }, [session.sessionLocation.display]);
 
   let columns = [
     {
@@ -78,6 +82,32 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
     { id: 3, header: t("status", "Status"), key: "status" },
     { id: 4, header: t("actions", "Action"), key: "actions" },
   ];
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [items, setItems] = useState(initialItems);
+
+  const handleChange = useCallback(
+    (val) => {
+      setSearchTerm(val?.target?.value);
+      if (searchTerm == null && val?.target?.value) {
+        setItems(initialItems);
+      }
+      // const filteredItems = items.filter((item) => item.orders.length === 100);
+      let filteredItems = [];
+      items.map((item) => {
+        const newArray = item?.orders.filter(
+          (order) => order.toLowerCase().startsWith(val?.target?.value) == true
+        );
+        if (newArray.length >= 1) {
+          filteredItems.push(item);
+        }
+      });
+
+      console.info(filteredItems);
+      setItems(filteredItems);
+    },
+    [initialItems, items, searchTerm]
+  );
 
   const tableRows = useMemo(() => {
     return items?.map((entry) => ({
@@ -124,18 +154,11 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
     return <DataTableSkeleton role="progressbar" />;
   }
 
-  if (items?.length) {
+  if (items?.length >= 0) {
     return (
       <div>
-        <DataTable rows={tableRows} headers={columns} isSortable useZebraStyles>
-          {({
-            rows,
-            headers,
-            getHeaderProps,
-            getTableProps,
-            getRowProps,
-            onInputChange,
-          }) => (
+        <DataTable rows={tableRows} headers={columns} useZebraStyles>
+          {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
             <TableContainer className={styles.tableContainer}>
               <TableToolbar
                 style={{
@@ -148,7 +171,8 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                 <TableToolbarContent>
                   <Layer>
                     <TableToolbarSearch
-                      onChange={onInputChange}
+                      value={searchTerm}
+                      onChange={handleChange}
                       placeholder={t("searchThisList", "Search this list")}
                       size="sm"
                     />
@@ -184,6 +208,24 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                   })}
                 </TableBody>
               </Table>
+              {rows.length === 0 ? (
+                <div className={styles.tileContainer}>
+                  <Tile className={styles.tile}>
+                    <div className={styles.tileContent}>
+                      <p className={styles.content}>
+                        {t(
+                          "noTestOrdersToDisplay",
+                          "No test orders to display"
+                        )}
+                      </p>
+                      <p className={styles.helper}>
+                        {t("checkFilters", "Check the filters above")}
+                      </p>
+                    </div>
+                    <p className={styles.separator}>{t("or", "or")}</p>
+                  </Tile>
+                </div>
+              ) : null}
               {/* <Pagination
                 forwardText="Next page"
                 backwardText="Previous page"
@@ -208,12 +250,12 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
     );
   }
 
-  return (
-    <div>
-      <div className={styles.headerBtnContainer}></div>
-      <EmptyState displayText={"Tests Ordered"} headerTitle={"Tests Ordered"} />
-    </div>
-  );
+  // return (
+  //   <div>
+  //     {/* <div className={styles.headerBtnContainer}></div> */}
+  //     <EmptyState displayText={"Tests Ordered"} headerTitle={"Tests Ordered"} />
+  //   </div>
+  // );
 };
 
 export default LaboratoryOrder;
