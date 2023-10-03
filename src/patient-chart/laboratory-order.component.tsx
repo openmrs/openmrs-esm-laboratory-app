@@ -93,27 +93,31 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
 
   const [searchTerm, setSearchTerm] = useState("");
   const [items, setItems] = useState(initialItems);
+  const [initialTests] = useState(initialItems);
 
   const handleChange = useCallback(
     (val) => {
-      setSearchTerm(val?.target?.value);
-      if (searchTerm == null && val?.target?.value === null) {
-        setItems(items);
-      }
-      let filteredItems = [];
-      items.map((item) => {
-        const newArray = item?.orders.filter(
-          (order) => order.toLowerCase().startsWith(val?.target?.value) == true
-        );
-        if (newArray.length >= 1) {
-          filteredItems.push(item);
-        }
-      });
+      const searchText = val?.target?.value;
+      setSearchTerm(searchText);
+      if (searchText?.trim() == "") {
+        setItems(initialTests);
+      } else {
+        let filteredItems = [];
+        items.map((item) => {
+          const newArray = item?.orders.filter(
+            (order) =>
+              order.toLowerCase().startsWith(searchText?.toLowerCase()) == true
+          );
+          if (newArray.length >= 1) {
+            filteredItems.push(item);
+          }
+        });
 
-      console.info(filteredItems);
-      setItems(filteredItems);
+        console.info(filteredItems);
+        setItems(filteredItems);
+      }
     },
-    [items, searchTerm]
+    [items, initialTests]
   );
 
   const handleFilter = ({
