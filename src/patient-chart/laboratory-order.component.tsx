@@ -2,7 +2,12 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EmptyState } from "@ohri/openmrs-esm-ohri-commons-lib";
 import styles from "./laboratory-order.scss";
-import { useSession } from "@openmrs/esm-framework";
+import {
+  formatDate,
+  parseDate,
+  usePagination,
+  useSession,
+} from "@openmrs/esm-framework";
 import {
   DataTable,
   DataTableSkeleton,
@@ -20,8 +25,10 @@ import {
   Tag,
   DataTableHeader,
   Tile,
+  Pagination,
 } from "@carbon/react";
 import ViewLaboratoryItemActionMenu from "./laboratory-item/view-laboratory-item.component";
+import { useLabOrders } from "./laboratory-order.resource";
 
 interface LaboratoryOrderOverviewProps {
   patientUuid: string;
@@ -40,44 +47,18 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const session = useSession();
-
-  // const { patientQueueEntries, isLoading } = usePatientQueuesList(
-  //   session?.sessionLocation?.uuid,
-  //   status
-  // );
+  const { labRequests, isLoading: loading } = useLabOrders(patientUuid);
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [page, setPage] = useState(1);
   const [currentPageSize, setPageSize] = useState(10);
   const [nextOffSet, setNextOffSet] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
 
-  // const {
-  //   goTo,
-  //   results: paginatedQueueEntries,
-  //   currentPage,
-  // } = usePagination(patientQueueEntries, currentPageSize);
-
-  const initialItems = useMemo(() => {
-    const items = [
-      {
-        id: 1,
-        encounterDate: "2023-04-01",
-        orders: ["Crag", "CBC", "MalariaRDT", "CD4", "RFT", "Unalysis"],
-        location: session.sessionLocation.display,
-        results: "tests returned",
-      },
-      {
-        id: 2,
-        encounterDate: "2023-04-05",
-        orders: ["Crag", "CBC", "CD4", "RFT", "Unalysis", "LFTs"],
-        location: session.sessionLocation.display,
-        results: "tests returned",
-      },
-    ];
-    return items;
-  }, [session.sessionLocation.display]);
+  const {
+    goTo,
+    results: paginatedLabEntries,
+    currentPage,
+  } = usePagination(labRequests, currentPageSize);
 
   let columns = [
     {
@@ -92,8 +73,8 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   ];
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [items, setItems] = useState(initialItems);
-  const [initialTests] = useState(initialItems);
+  const [items, setItems] = useState(paginatedLabEntries);
+  const [initialTests] = useState(paginatedLabEntries);
 
   const handleChange = useCallback(
     (val) => {
@@ -106,14 +87,15 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
         items.map((item) => {
           const newArray = item?.orders.filter(
             (order) =>
-              order.toLowerCase().startsWith(searchText?.toLowerCase()) == true
+              order?.concept?.display
+                .toLowerCase()
+                .startsWith(searchText?.toLowerCase()) == true
           );
           if (newArray.length >= 1) {
             filteredItems.push(item);
           }
         });
 
-        console.info(filteredItems);
         setItems(filteredItems);
       }
     },
@@ -143,10 +125,18 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   };
 
   const tableRows = useMemo(() => {
-    return items?.map((entry) => ({
+    return paginatedLabEntries?.map((entry) => ({
       ...entry,
       encounterDate: {
-        content: <span>{entry.encounterDate}</span>,
+        content: (
+          <span>
+            {formatDate(parseDate(entry.encounterDatetime), {
+              time: false,
+              noToday: true,
+              mode: "wide",
+            })}
+          </span>
+        ),
       },
       orders: {
         content: (
@@ -160,7 +150,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                   }}
                   role="tooltip"
                 >
-                  {order}
+                  {order?.concept?.display}
                 </Tag>
               );
             })}
@@ -168,10 +158,10 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
         ),
       },
       location: {
-        content: <span>{entry.location}</span>,
+        content: <span>{entry.location.display}</span>,
       },
       status: {
-        content: <span>{entry.results}</span>,
+        content: <span>--</span>,
       },
       actions: {
         content: (
@@ -181,9 +171,9 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
         ),
       },
     }));
-  }, [items]);
+  }, [paginatedLabEntries]);
 
-  if (isLoading) {
+  if (loading) {
     return <DataTableSkeleton role="progressbar" />;
   }
 
@@ -264,13 +254,13 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                   </Tile>
                 </div>
               ) : null}
-              {/* <Pagination
+              <Pagination
                 forwardText="Next page"
                 backwardText="Previous page"
                 page={currentPage}
                 pageSize={currentPageSize}
                 pageSizes={pageSizes}
-                totalItems={patientQueueEntries?.length}
+                totalItems={paginatedLabEntries?.length}
                 className={styles.pagination}
                 onChange={({ pageSize, page }) => {
                   if (pageSize !== currentPageSize) {
@@ -280,7 +270,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                     goTo(page);
                   }
                 }}
-              /> */}
+              />
             </TableContainer>
           )}
         </DataTable>

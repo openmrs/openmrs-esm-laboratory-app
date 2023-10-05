@@ -16,10 +16,16 @@ export const configSchema = {
     _default: "159959AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
     _description: "Concept UUID for laboratory specimen types",
   },
+  laboratoryEncounterTypeUuid: {
+    _type: Type.String,
+    _default: "214e27a1-606a-4b1e-a96e-d736c87069d5",
+    _description: "Concept uuid for the laboratory tool encounter type.",
+  },
 };
 
 export type Config = {
   laboratoryQueueConcept: string;
   laboratoryLocationTag: string;
   laboratorySpecimenTypeConcept: string;
+  laboratoryEncounterTypeUuid: string;
 };

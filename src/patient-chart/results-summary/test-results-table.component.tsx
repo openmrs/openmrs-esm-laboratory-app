@@ -20,6 +20,11 @@ import {
 } from "@carbon/react";
 import styles from "./results-summary.scss";
 import RescentTestResultActionMenu from "./test-results-action-menu.component";
+import { Order } from "../laboratory-order.resource";
+
+interface TestOrdersProps {
+  order: Order;
+}
 
 const TestsResults: React.FC = () => {
   const { t } = useTranslation();
@@ -66,7 +71,7 @@ const TestsResults: React.FC = () => {
         content: <span>{entry.order}</span>,
       },
       result: {
-        content: <span>{entry.order}</span>,
+        content: <span>{entry.result}</span>,
       },
 
       actions: {
@@ -89,23 +94,6 @@ const TestsResults: React.FC = () => {
         <DataTable rows={tableRows} headers={columns} useZebraStyles>
           {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
             <TableContainer className={styles.tableContainer}>
-              <TableToolbar
-                style={{
-                  position: "static",
-                  height: "3rem",
-                  overflow: "visible",
-                  backgroundColor: "color",
-                }}
-              >
-                <TableToolbarContent>
-                  <Layer>
-                    <TableToolbarSearch
-                      placeholder={t("searchThisList", "Search this list")}
-                      size="sm"
-                    />
-                  </Layer>
-                </TableToolbarContent>
-              </TableToolbar>
               <Table
                 {...getTableProps()}
                 className={styles.activePatientsTable}

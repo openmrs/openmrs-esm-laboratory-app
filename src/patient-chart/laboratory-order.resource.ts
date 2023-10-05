@@ -1,4 +1,4 @@
-import { openmrsFetch } from "@openmrs/esm-framework";
+import { openmrsFetch, useConfig } from "@openmrs/esm-framework";
 import useSWR from "swr";
 
 export interface LaboratoryResponse {
@@ -14,7 +14,7 @@ export interface Result {
   form: Form;
   encounterType: EncounterType;
   obs: Ob[];
-  orders: any[];
+  orders: Order[];
   voided: boolean;
   auditInfo: AuditInfo;
   visit: Visit;
@@ -219,15 +219,100 @@ export interface Provider {
   links: Link[];
 }
 
-export function useLabOrders(patientUuid: string, encounterTypeUuid: string) {
-  const apiUrl = `encounter?patient=${patientUuid}&encounterType=${encounterTypeUuid}&v=full`;
+// order
+export interface Order {
+  uuid: string;
+  orderNumber: string;
+  accessionNumber: any;
+  patient: Patient;
+  concept: Concept;
+  action: string;
+  careSetting: CareSetting;
+  previousOrder: any;
+  dateActivated: string;
+  scheduledDate: any;
+  dateStopped: any;
+  autoExpireDate: any;
+  encounter: Encounter;
+  orderer: Orderer;
+  orderReason: any;
+  orderReasonNonCoded: any;
+  orderType: OrderType;
+  urgency: string;
+  instructions: any;
+  commentToFulfiller: any;
+  display: string;
+  specimenSource: any;
+  laterality: any;
+  clinicalHistory: any;
+  frequency: any;
+  numberOfRepeats: any;
+  links: Link[];
+  type: string;
+  resourceVersion: string;
+}
+
+export interface Patient {
+  uuid: string;
+  display: string;
+  links: Link[];
+}
+
+export interface Link {
+  rel: string;
+  uri: string;
+  resourceAlias: string;
+}
+
+export interface Concept {
+  uuid: string;
+  display: string;
+  links: Link[];
+}
+
+export interface CareSetting {
+  uuid: string;
+  display: string;
+  links: Link[];
+}
+
+export interface Encounter {
+  uuid: string;
+  display: string;
+  links: Link[];
+}
+
+export interface Orderer {
+  uuid: string;
+  display: string;
+  links: Link[];
+}
+
+export interface OrderType {
+  uuid: string;
+  display: string;
+  name: string;
+  javaClassName: string;
+  retired: boolean;
+  description: string;
+  conceptClasses: any[];
+  parent: any;
+  links: Link[];
+  resourceVersion: string;
+}
+
+export function useLabOrders(patientUuid: string) {
+  const config = useConfig();
+  const { laboratoryEncounterTypeUuid } = config;
+
+  const apiUrl = `/ws/rest/v1/encounter?patient=${patientUuid}&encounterType=${laboratoryEncounterTypeUuid}&v=full`;
   const { data, error, isLoading } = useSWR<
     { data: LaboratoryResponse },
     Error
   >(apiUrl, openmrsFetch);
 
   return {
-    visitNumber: data.data.results,
+    labRequests: data?.data ? data?.data?.results : [],
     isLoading,
     isError: error,
   };

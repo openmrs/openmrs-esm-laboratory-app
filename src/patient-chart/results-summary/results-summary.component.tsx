@@ -31,8 +31,13 @@ import {
 import { Printer, MailAll, Edit } from "@carbon/react/icons";
 import styles from "./results-summary.scss";
 import TestsResults from "./test-results-table.component";
+import { LaboratoryResponse } from "../laboratory-order.resource";
 
-const ResultsSummary = () => {
+interface ResultsSummaryProps {
+  labRequest: LaboratoryResponse;
+}
+
+const ResultsSummary: React.FC<ResultsSummaryProps> = () => {
   const PrintButtonAction: React.FC = () => {
     const handleButtonClick = (event: MouseEvent) => {
       event.preventDefault();
@@ -58,7 +63,7 @@ const ResultsSummary = () => {
         kind="ghost"
         size="sm"
         onClick={(e) => handleButtonClick(e)}
-        renderIcon={(props) => <Edit size={16} {...props} />}
+        renderIcon={(props) => <MailAll size={16} {...props} />}
       >
         {/* {children} */}
       </Button>
@@ -74,7 +79,7 @@ const ResultsSummary = () => {
         kind="ghost"
         size="sm"
         onClick={(e) => handleButtonClick(e)}
-        renderIcon={(props) => <MailAll size={16} {...props} />}
+        renderIcon={(props) => <Edit size={16} {...props} />}
       >
         {/* {children} */}
       </Button>
@@ -92,9 +97,9 @@ const ResultsSummary = () => {
         </div>
       </section>
       <section className={styles.section}>
-        <div>
-          <span>Date : </span>
-          <span> Ordered By :</span>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <span style={{ margin: "5px" }}>Date : </span>
+          <span style={{ margin: "5px" }}> Ordered By :</span>
         </div>
       </section>
       <section className={styles.section}>

@@ -2,15 +2,14 @@ import { showModal, useSession } from "@openmrs/esm-framework";
 import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Tooltip } from "@carbon/react";
-import { View } from "@carbon/react/icons";
-import { launchPatientWorkspace } from "@openmrs/esm-patient-common-lib";
+import { ArrowRight } from "@carbon/react/icons";
 
-interface RescentTestResultActionMenuProps {
+interface RescendTestResultActionMenuProps {
   closeModal: () => void;
 }
 
-const RescentTestResultActionMenu: React.FC<
-  RescentTestResultActionMenuProps
+const RescendTestResultActionMenu: React.FC<
+  RescendTestResultActionMenuProps
 > = () => {
   const { t } = useTranslation();
 
@@ -18,11 +17,11 @@ const RescentTestResultActionMenu: React.FC<
     <Tooltip align="bottom" label="Rescend Results">
       <Button
         kind="ghost"
-        iconDescription={t("rescend", "Recend Tests ")}
-        renderIcon={(props) => <View size={16} {...props} />}
+        iconDescription={t("rescend", "Rescend Tests ")}
+        renderIcon={(props) => <ArrowRight size={16} {...props} />}
       ></Button>
     </Tooltip>
   );
 };
 
-export default RescentTestResultActionMenu;
+export default RescendTestResultActionMenu;
