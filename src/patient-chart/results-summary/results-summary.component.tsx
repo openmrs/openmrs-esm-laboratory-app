@@ -6,7 +6,7 @@ import TestsResults from "./test-results-table.component";
 import { useReactToPrint } from "react-to-print";
 import { useGetEncounterById } from "../laboratory-item/view-laboratory-item.resource";
 import { ErrorState } from "@openmrs/esm-patient-common-lib";
-import PrintResultsSummary from "./results-summary.component";
+import PrintResultsSummary from "./print-results-summary.component";
 
 interface ResultsSummaryProps {
   encounterUuid: string;
@@ -45,7 +45,7 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
     return (
       <div>
         <div ref={contentToPrintRef}>
-          <PrintResultsSummary encounterUuid={""} />
+          <PrintResultsSummary encounterResponse={encounter} />
         </div>
         <Button
           kind="ghost"
