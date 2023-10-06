@@ -6,6 +6,7 @@ import TestsResults from "./test-results-table.component";
 import { useReactToPrint } from "react-to-print";
 import { useGetEncounterById } from "../laboratory-item/view-laboratory-item.resource";
 import { ErrorState } from "@openmrs/esm-patient-common-lib";
+import PrintResultsSummary from "./results-summary.component";
 
 interface ResultsSummaryProps {
   encounterUuid: string;
@@ -43,9 +44,13 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
 
     return (
       <div>
+        <div ref={contentToPrintRef}>
+          <PrintResultsSummary encounterUuid={""} />
+        </div>
         <Button
           kind="ghost"
           size="sm"
+          onClick={handlePrint}
           renderIcon={(props) => <Printer size={16} {...props} />}
         />
       </div>
@@ -83,14 +88,12 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
     return <DataTableSkeleton role="progressbar" />;
   }
   if (isError) {
-    return <ErrorState error={isError} headerTitle={"An Error occured"} />;
+    return <ErrorState error={isError} headerTitle={"Error"} />;
   }
 
   if (encounter) {
-    console.info("Encounter data---->", encounter);
-    // const encounter = JSON.parse(encounter);
     return (
-      <>
+      <div>
         <section className={styles.section}>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <div></div>
@@ -129,7 +132,7 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
         <section className={styles.section}>
           <TestsResults orders={encounter?.orders} />
         </section>
-      </>
+      </div>
     );
   }
 };
