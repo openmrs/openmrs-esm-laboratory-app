@@ -10,83 +10,61 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableToolbar,
-  TableToolbarContent,
-  TableToolbarSearch,
-  Layer,
-  Tag,
-  DataTableHeader,
   Tile,
 } from "@carbon/react";
 import styles from "./results-summary.scss";
-import RescentTestResultActionMenu from "./test-results-action-menu.component";
+import RescendTestResultActionMenu from "./test-results-rescend-action-menu.component";
 import { Order } from "../laboratory-order.resource";
+import DeleteTestResultActionMenu from "./test-results-delete-action-menu.component";
 
 interface TestOrdersProps {
-  order: Order;
+  orders: Order[];
 }
 
-const TestsResults: React.FC = () => {
+const TestsResults: React.FC<TestOrdersProps> = ({ orders }) => {
   const { t } = useTranslation();
-
-  const [isLoading, setIsLoading] = useState(false);
-
-  const initialItems = useMemo(() => {
-    const items = [
-      {
-        id: 0,
-        order: "CD4",
-        result: "30-56",
-      },
-      {
-        id: 1,
-        order: "LFTs",
-        result: "34-90",
-      },
-      {
-        id: 2,
-        order: "Malaria",
-        result: "Positive ( + )",
-      },
-    ];
-    return items;
-  }, []);
 
   let columns = [
     {
       id: 0,
-      header: t("order", "Order"),
-      key: "order",
+      header: t("orderNo", "OrderNo"),
+      key: "orderNo",
     },
-    { id: 1, header: t("result", "Result"), key: "result" },
-    { id: 2, header: t("actions", "Actions"), key: "actions" },
+    { id: 1, header: t("order", "Order"), key: "order" },
+    {
+      id: 2,
+      header: t("expectedResult", "Expected Results"),
+      key: "expectedResults",
+    },
+    { id: 3, header: t("actions", "Actions"), key: "actions" },
   ];
-
-  const [items, setItems] = useState(initialItems);
+  const [items, setItems] = useState(orders);
 
   const tableRows = useMemo(() => {
     return items?.map((entry) => ({
       ...entry,
-      order: {
-        content: <span>{entry.order}</span>,
+      id: entry.uuid,
+      orderNo: {
+        content: <span>{entry.orderNumber}</span>,
       },
-      result: {
-        content: <span>{entry.result}</span>,
+      order: {
+        content: <span>{entry.display}</span>,
+      },
+
+      expectedResult: {
+        content: <span>--</span>,
       },
 
       actions: {
         content: (
           <>
-            <RescentTestResultActionMenu closeModal={() => true} />
+            <RescendTestResultActionMenu closeModal={() => true} />
+            <DeleteTestResultActionMenu closeModal={() => true} />
           </>
         ),
       },
     }));
   }, [items]);
-
-  if (isLoading) {
-    return <DataTableSkeleton role="progressbar" />;
-  }
 
   if (items?.length >= 0) {
     return (

@@ -2,12 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EmptyState } from "@ohri/openmrs-esm-ohri-commons-lib";
 import styles from "./laboratory-order.scss";
-import {
-  formatDate,
-  parseDate,
-  usePagination,
-  useSession,
-} from "@openmrs/esm-framework";
+import { usePagination, useSession } from "@openmrs/esm-framework";
 import {
   DataTable,
   DataTableSkeleton,
@@ -85,7 +80,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
       } else {
         let filteredItems = [];
         items.map((item) => {
-          const newArray = item?.orders.filter(
+          const newArray = item?.orders?.filter(
             (order) =>
               order?.concept?.display
                 .toLowerCase()
@@ -127,16 +122,9 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   const tableRows = useMemo(() => {
     return paginatedLabEntries?.map((entry) => ({
       ...entry,
+      id: entry.uuid,
       encounterDate: {
-        content: (
-          <span>
-            {formatDate(parseDate(entry.encounterDatetime), {
-              time: false,
-              noToday: true,
-              mode: "wide",
-            })}
-          </span>
-        ),
+        content: <span>{entry.encounterDatetime}</span>,
       },
       orders: {
         content: (
@@ -166,7 +154,10 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
       actions: {
         content: (
           <>
-            <ViewLaboratoryItemActionMenu closeModal={() => true} />
+            <ViewLaboratoryItemActionMenu
+              closeModal={() => true}
+              encounterUuid={entry.uuid}
+            />
           </>
         ),
       },

@@ -1,26 +1,26 @@
-import { showModal, useSession } from "@openmrs/esm-framework";
 import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Tooltip } from "@carbon/react";
 import { View } from "@carbon/react/icons";
 import { launchPatientWorkspace } from "@openmrs/esm-patient-common-lib";
-import { LaboratoryResponse } from "../laboratory-order.resource";
 
 interface ViewLaboratoryItemActionMenuProps {
   closeModal: () => void;
+  encounterUuid: string;
 }
 
 const ViewLaboratoryItemActionMenu: React.FC<
   ViewLaboratoryItemActionMenuProps
-> = () => {
+> = ({ encounterUuid }) => {
   const { t } = useTranslation();
 
   const handleClick = useCallback(
     () =>
       launchPatientWorkspace("results-summary", {
         workspaceTitle: `Results Summary Form`,
+        encounterUuid,
       }),
-    []
+    [encounterUuid]
   );
 
   return (

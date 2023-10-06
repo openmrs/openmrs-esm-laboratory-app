@@ -1,56 +1,54 @@
-import React, { Children } from "react";
-import {
-  Button,
-  DataTable,
-  DataTableHeader,
-  DataTableSkeleton,
-  DefinitionTooltip,
-  Layer,
-  Pagination,
-  Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableExpandedRow,
-  TableExpandHeader,
-  TableExpandRow,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableToolbar,
-  TableToolbarContent,
-  TableToolbarSearch,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Tag,
-  Tile,
-} from "@carbon/react";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, DataTableSkeleton } from "@carbon/react";
 import { Printer, MailAll, Edit } from "@carbon/react/icons";
 import styles from "./results-summary.scss";
 import TestsResults from "./test-results-table.component";
-import { LaboratoryResponse } from "../laboratory-order.resource";
+import { useReactToPrint } from "react-to-print";
+import { useGetEncounterById } from "../laboratory-item/view-laboratory-item.resource";
+import { ErrorState } from "@openmrs/esm-patient-common-lib";
 
 interface ResultsSummaryProps {
-  labRequest: LaboratoryResponse;
+  encounterUuid: string;
 }
 
-const ResultsSummary: React.FC<ResultsSummaryProps> = () => {
+const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
+  // get encouter details
+  const { encounter, isLoading, isError } = useGetEncounterById(encounterUuid);
+
   const PrintButtonAction: React.FC = () => {
-    const handleButtonClick = (event: MouseEvent) => {
-      event.preventDefault();
-    };
+    const [isPrinting, setIsPrinting] = useState(false);
+
+    const contentToPrintRef = useRef(null);
+
+    const onBeforeGetContentResolve = useRef(null);
+
+    useEffect(() => {
+      if (onBeforeGetContentResolve.current) {
+        onBeforeGetContentResolve.current();
+      }
+    }, [isPrinting]);
+
+    const handlePrint = useReactToPrint({
+      content: () => contentToPrintRef.current,
+      onBeforeGetContent: () =>
+        new Promise((resolve) => {
+          onBeforeGetContentResolve.current = resolve;
+          setIsPrinting(true);
+        }),
+      onAfterPrint: () => {
+        onBeforeGetContentResolve.current = null;
+        setIsPrinting(false);
+      },
+    });
+
     return (
-      <Button
-        kind="ghost"
-        size="sm"
-        onClick={(e) => handleButtonClick(e)}
-        renderIcon={(props) => <Printer size={16} {...props} />}
-      >
-        {/* {children} */}
-      </Button>
+      <div>
+        <Button
+          kind="ghost"
+          size="sm"
+          renderIcon={(props) => <Printer size={16} {...props} />}
+        />
+      </div>
     );
   };
 
@@ -64,9 +62,7 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = () => {
         size="sm"
         onClick={(e) => handleButtonClick(e)}
         renderIcon={(props) => <MailAll size={16} {...props} />}
-      >
-        {/* {children} */}
-      </Button>
+      />
     );
   };
 
@@ -80,49 +76,62 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = () => {
         size="sm"
         onClick={(e) => handleButtonClick(e)}
         renderIcon={(props) => <Edit size={16} {...props} />}
-      >
-        {/* {children} */}
-      </Button>
+      />
     );
   };
-  return (
-    <>
-      <section className={styles.section}>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <div></div>
-          <div>
-            <PrintButtonAction />
-            <EmailButtonAction />
+  if (isLoading) {
+    return <DataTableSkeleton role="progressbar" />;
+  }
+  if (isError) {
+    return <ErrorState error={isError} headerTitle={"An Error occured"} />;
+  }
+
+  if (encounter) {
+    console.info("Encounter data---->", encounter);
+    // const encounter = JSON.parse(encounter);
+    return (
+      <>
+        <section className={styles.section}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div></div>
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <PrintButtonAction />
+              <EmailButtonAction />
+            </div>
           </div>
-        </div>
-      </section>
-      <section className={styles.section}>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <span style={{ margin: "5px" }}>Date : </span>
-          <span style={{ margin: "5px" }}> Ordered By :</span>
-        </div>
-      </section>
-      <section className={styles.section}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <div>
-            <span> Results Ordered</span>
+        </section>
+        <section className={styles.section}>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <span style={{ margin: "5px" }}>
+              Date : {encounter?.encounterDatetime}
+            </span>
+            <span style={{ margin: "5px" }}>
+              Ordered By : {encounter?.auditInfo?.creator?.display}
+            </span>
           </div>
-          <div>
-            <EditButtonAction />
+        </section>
+        <section className={styles.section}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <span> Results Ordered</span>
+            </div>
+            <div>
+              <EditButtonAction />
+            </div>
           </div>
-        </div>
-      </section>
-      <section className={styles.section}>
-        <TestsResults />
-      </section>
-    </>
-  );
+        </section>
+        <section className={styles.section}>
+          <TestsResults orders={encounter?.orders} />
+        </section>
+      </>
+    );
+  }
 };
 
 export default ResultsSummary;
