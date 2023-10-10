@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./print-results-summary.scss";
-import TestsResults from "./test-results-table.component";
+import TestsPrintResults from "./test-print-results-table.component";
 import { EncounterResponse } from "../laboratory-item/view-laboratory-item.resource";
 
 interface PrintResultsSummaryProps {
@@ -37,7 +37,7 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
         </div>
       </section>
       <section className={styles.section}>
-        <TestsResults orders={encounterResponse?.orders} />
+        <TestsPrintResults orders={encounterResponse?.orders} />
       </section>
     </div>
   );
