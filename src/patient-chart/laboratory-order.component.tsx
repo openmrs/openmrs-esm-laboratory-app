@@ -2,7 +2,14 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EmptyState } from "@ohri/openmrs-esm-ohri-commons-lib";
 import styles from "./laboratory-order.scss";
-import { usePagination, useSession } from "@openmrs/esm-framework";
+import {
+  usePagination,
+  useSession,
+  formatDate,
+  openmrsFetch,
+  parseDate,
+} from "@openmrs/esm-framework";
+
 import {
   DataTable,
   DataTableSkeleton,
@@ -124,7 +131,13 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
       ...entry,
       id: entry.uuid,
       encounterDate: {
-        content: <span>{entry.encounterDatetime}</span>,
+        content: (
+          <span>
+            {formatDate(parseDate(entry.encounterDatetime), {
+              time: true,
+            })}
+          </span>
+        ),
       },
       orders: {
         content: (

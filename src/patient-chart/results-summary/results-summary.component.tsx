@@ -7,6 +7,7 @@ import { useReactToPrint } from "react-to-print";
 import { useGetEncounterById } from "../laboratory-item/view-laboratory-item.resource";
 import { ErrorState } from "@openmrs/esm-patient-common-lib";
 import PrintResultsSummary from "./print-results-summary.component";
+import { formatDate, parseDate } from "@openmrs/esm-framework";
 
 interface ResultsSummaryProps {
   encounterUuid: string;
@@ -106,7 +107,10 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
         <section className={styles.section}>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ margin: "5px" }}>
-              Date : {encounter?.encounterDatetime}
+              Date :{" "}
+              {formatDate(parseDate(encounter.encounterDatetime), {
+                time: false,
+              })}
             </span>
             <span style={{ margin: "5px" }}>
               Ordered By : {encounter?.auditInfo?.creator?.display}

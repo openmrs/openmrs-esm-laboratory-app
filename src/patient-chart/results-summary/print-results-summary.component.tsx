@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./print-results-summary.scss";
 import TestsPrintResults from "./test-print-results-table.component";
 import { EncounterResponse } from "../laboratory-item/view-laboratory-item.resource";
+import { formatDate, parseDate } from "@openmrs/esm-framework";
 
 interface PrintResultsSummaryProps {
   encounterResponse: EncounterResponse;
@@ -15,7 +16,10 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
       <section className={styles.section}>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <span style={{ margin: "5px" }}>
-            Date : {encounterResponse?.encounterDatetime}
+            Date :
+            {formatDate(parseDate(encounterResponse.encounterDatetime), {
+              time: false,
+            })}
           </span>
           <span style={{ margin: "5px" }}>
             Ordered By : {encounterResponse?.auditInfo?.creator?.display}
