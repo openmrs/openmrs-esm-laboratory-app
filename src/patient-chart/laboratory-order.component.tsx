@@ -8,6 +8,7 @@ import {
   formatDate,
   openmrsFetch,
   parseDate,
+  ErrorState,
 } from "@openmrs/esm-framework";
 
 import {
@@ -49,7 +50,11 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { labRequests, isLoading: loading } = useLabOrders(patientUuid);
+  const {
+    labRequests,
+    isLoading: loading,
+    isError,
+  } = useLabOrders(patientUuid);
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [page, setPage] = useState(1);
@@ -179,6 +184,10 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
 
   if (loading) {
     return <DataTableSkeleton role="progressbar" />;
+  }
+
+  if (isError) {
+    return <ErrorState error={isError} headerTitle={"Error"} />;
   }
 
   if (items?.length >= 0) {
