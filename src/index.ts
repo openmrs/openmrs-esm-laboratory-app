@@ -59,6 +59,19 @@ export const addToWorklistDialog = getAsyncLifecycle(
   options
 );
 
+export const resultsSummaryWorkSpace = getAsyncLifecycle(
+  () => import("./patient-chart/results-summary/results-summary.component"),
+  options
+);
+
+export const editResultsDialog = getAsyncLifecycle(
+  () =>
+    import(
+      "./patient-chart/results-summary/results-dialog/edit-results-dialog.component"
+    ),
+  options
+);
+
 export function startupApp() {
   defineConfigSchema(moduleName, configSchema);
 }

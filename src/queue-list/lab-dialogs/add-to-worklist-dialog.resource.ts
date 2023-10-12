@@ -117,3 +117,10 @@ export function useSpecimenTypes() {
     isLoading,
   };
 }
+
+// generate specimen id
+export function useGenerateSampleID() {
+  return {
+    sampleID: {},
+  };
+}

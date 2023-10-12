@@ -7,7 +7,7 @@
   "main": "src/index.ts",
   "source": true,
   "scripts": {
-    "start": "openmrs develop --backend http://167.71.32.250:8080",
+    "start": "openmrs develop --backend http://194.163.171.253:8282",
     "serve": "webpack serve --mode=development",
     "build": "webpack --mode production",
     "analyze": "webpack --mode=production --env analyze=true",
@@ -46,7 +46,8 @@
   },
   "dependencies": {
     "@carbon/react": "^1.14.0",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "react-to-print": "^2.14.15"
   },
   "peerDependencies": {
     "@openmrs/esm-framework": "*",
