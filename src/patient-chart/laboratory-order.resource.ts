@@ -309,7 +309,7 @@ export function useLabOrders(patientUuid: string) {
   const { data, error, isLoading } = useSWR<
     { data: LaboratoryResponse },
     Error
-  >(apiUrl, openmrsFetch);
+  >(apiUrl, openmrsFetch, { refreshInterval: 3000 });
 
   return {
     labRequests: data?.data ? data?.data?.results : [],
