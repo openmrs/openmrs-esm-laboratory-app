@@ -1,19 +1,34 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Button, DataTableSkeleton } from "@carbon/react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Button,
+  DataTableSkeleton,
+  Form,
+  ModalBody,
+  ModalFooter,
+} from "@carbon/react";
 import { Printer, MailAll, Edit } from "@carbon/react/icons";
 import styles from "./results-summary.scss";
 import TestsResults from "./test-results-table.component";
 import { useReactToPrint } from "react-to-print";
-import { useGetEncounterById } from "../laboratory-item/view-laboratory-item.resource";
+import {
+  EncounterResponse,
+  useGetEncounterById,
+} from "../laboratory-item/view-laboratory-item.resource";
 import { ErrorState } from "@openmrs/esm-patient-common-lib";
 import PrintResultsSummary from "./print-results-summary.component";
-import { formatDate, parseDate } from "@openmrs/esm-framework";
+import { formatDate, parseDate, showModal } from "@openmrs/esm-framework";
+import { useTranslation } from "react-i18next";
 
 interface ResultsSummaryProps {
   encounterUuid: string;
 }
 
+interface EditResultsProps {
+  encounterResponse: EncounterResponse;
+}
+
 const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
+  const { t } = useTranslation();
   // get encouter details
   const { encounter, isLoading, isError } = useGetEncounterById(encounterUuid);
 
@@ -72,15 +87,22 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
     );
   };
 
-  const EditButtonAction: React.FC = () => {
-    const handleButtonClick = (event: MouseEvent) => {
-      event.preventDefault();
-    };
+  const EditButtonAction: React.FC<EditResultsProps> = ({
+    encounterResponse,
+  }) => {
+    console.info("encounter edit", encounter);
+
+    const launchEditResultModal = useCallback(() => {
+      const dispose = showModal("edit-results-dialog", {
+        encounterResponse,
+        closeModal: () => dispose(),
+      });
+    }, [encounterResponse]);
     return (
       <Button
         kind="ghost"
         size="sm"
-        onClick={(e) => handleButtonClick(e)}
+        onClick={launchEditResultModal}
         renderIcon={(props) => <Edit size={16} {...props} />}
       />
     );
@@ -95,47 +117,55 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
   if (encounter) {
     return (
       <div>
-        <section className={styles.section}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div></div>
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <PrintButtonAction />
-              <EmailButtonAction />
-            </div>
-          </div>
-        </section>
-        <section className={styles.section}>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ margin: "5px" }}>
-              Date :{" "}
-              {formatDate(parseDate(encounter.encounterDatetime), {
-                time: false,
-              })}
-            </span>
-            <span style={{ margin: "5px" }}>
-              Ordered By : {encounter?.auditInfo?.creator?.display}
-            </span>
-          </div>
-        </section>
-        <section className={styles.section}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div>
-              <span> Results Ordered</span>
-            </div>
-            <div>
-              <EditButtonAction />
-            </div>
-          </div>
-        </section>
-        <section className={styles.section}>
-          <TestsResults orders={encounter?.orders} />
-        </section>
+        <Form>
+          <ModalBody>
+            <section className={styles.section}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div></div>
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <PrintButtonAction />
+                  <EmailButtonAction />
+                </div>
+              </div>
+            </section>
+            <section className={styles.section}>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span style={{ margin: "5px" }}>
+                  Date :{" "}
+                  {formatDate(parseDate(encounter.encounterDatetime), {
+                    time: true,
+                  })}
+                </span>
+                <span style={{ margin: "5px" }}>
+                  Ordered By : {encounter?.auditInfo?.creator?.display}
+                </span>
+              </div>
+            </section>
+            <section className={styles.section}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <span> Results Ordered</span>
+                </div>
+                <div>
+                  <EditButtonAction encounterResponse={encounter} />
+                </div>
+              </div>
+            </section>
+            <section className={styles.section}>
+              <TestsResults orders={encounter?.orders} />
+            </section>
+          </ModalBody>
+          {/* <ModalFooter>
+            <Button kind="secondary">{t("cancel", "Cancel")}</Button>
+            <Button type="submit">{t("results", "Save")}</Button>
+          </ModalFooter> */}
+        </Form>
       </div>
     );
   }
