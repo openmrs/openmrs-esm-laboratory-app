@@ -231,7 +231,7 @@ export interface Order {
   previousOrder: any;
   dateActivated: string;
   scheduledDate: any;
-  dateStopped: any;
+  dateStopped: string;
   autoExpireDate: any;
   encounter: Encounter;
   orderer: Orderer;
@@ -300,6 +300,19 @@ export interface OrderType {
   links: Link[];
   resourceVersion: string;
 }
+
+export const getOrderColor = (activated: string, stopped: string) => {
+  const numAct = parseInt(activated);
+  let numStopped = 0;
+  if (stopped == null) {
+    numStopped = parseInt(stopped);
+  }
+  if (numAct <= 0 && numStopped == 0) {
+    return "green";
+  } else {
+    return "#6F6F6F";
+  }
+};
 
 export function useLabOrders(patientUuid: string) {
   const config = useConfig();

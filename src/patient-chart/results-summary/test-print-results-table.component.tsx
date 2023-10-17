@@ -37,7 +37,7 @@ const TestsPrintResults: React.FC<TestOrdersProps> = ({ orders }) => {
       key: "expectedResults",
     },
     {
-      id: 2,
+      id: 3,
       header: t("results", " Results"),
       key: "results",
     },

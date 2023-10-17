@@ -31,7 +31,7 @@ import {
   Pagination,
 } from "@carbon/react";
 import ViewLaboratoryItemActionMenu from "./laboratory-item/view-laboratory-item.component";
-import { useLabOrders } from "./laboratory-order.resource";
+import { getOrderColor, useLabOrders } from "./laboratory-order.resource";
 
 interface LaboratoryOrderOverviewProps {
   patientUuid: string;
@@ -151,7 +151,10 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
               return (
                 <Tag
                   style={{
-                    background: "rgb(111 111 111 / 97%)",
+                    background: `${getOrderColor(
+                      order.dateActivated,
+                      order.dateStopped
+                    )}`,
                     color: "white",
                   }}
                   role="tooltip"
