@@ -233,7 +233,6 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
               >
                 <TableHead>
                   <TableRow>
-                    <TableExpandHeader />
                     {headers.map((header) => (
                       <TableHeader {...getHeaderProps({ header })}>
                         {header.header}
@@ -245,26 +244,13 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                   {rows.map((row, index) => {
                     return (
                       <React.Fragment key={row.id}>
-                        <TableExpandRow {...getRowProps({ row })}>
+                        <TableRow {...getRowProps({ row })}>
                           {row.cells.map((cell) => (
                             <TableCell key={cell.id}>
                               {cell.value?.content ?? cell.value}
                             </TableCell>
                           ))}
-                        </TableExpandRow>
-                        {row.isExpanded ? (
-                          <TableExpandedRow
-                            className={styles.expandedActiveVisitRow}
-                            colSpan={headers.length + 2}
-                          >
-                            <Results encounterUuid={row.id} />
-                          </TableExpandedRow>
-                        ) : (
-                          <TableExpandedRow
-                            className={styles.hiddenRow}
-                            colSpan={headers.length + 2}
-                          />
-                        )}
+                        </TableRow>
                       </React.Fragment>
                     );
                   })}

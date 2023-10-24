@@ -18,6 +18,7 @@ import { ErrorState } from "@openmrs/esm-patient-common-lib";
 import PrintResultsSummary from "./print-results-summary.component";
 import { formatDate, parseDate, showModal } from "@openmrs/esm-framework";
 import { useTranslation } from "react-i18next";
+import { useGetLabEncounterTests } from "./results/results.resource";
 
 interface ResultsSummaryProps {
   encounterUuid: string;
@@ -32,6 +33,7 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
   // get encouter details
   const { encounter, isLoading, isError } = useGetEncounterById(encounterUuid);
 
+  // print button
   const PrintButtonAction: React.FC = () => {
     const [isPrinting, setIsPrinting] = useState(false);
 
@@ -73,6 +75,7 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
     );
   };
 
+  // email button
   const EmailButtonAction: React.FC = () => {
     const handleButtonClick = (event: MouseEvent) => {
       event.preventDefault();
@@ -87,11 +90,10 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
     );
   };
 
+  // edit button
   const EditButtonAction: React.FC<EditResultsProps> = ({
     encounterResponse,
   }) => {
-    console.info("encounter edit", encounter);
-
     const launchEditResultModal = useCallback(() => {
       const dispose = showModal("edit-results-dialog", {
         encounterResponse,
@@ -107,6 +109,7 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
       />
     );
   };
+
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
   }
@@ -153,12 +156,15 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
                   <span> Results Ordered</span>
                 </div>
                 <div>
-                  <EditButtonAction encounterResponse={encounter} />
+                  {/* <EditButtonAction encounterResponse={encounter} /> */}
                 </div>
               </div>
             </section>
             <section className={styles.section}>
-              <TestsResults orders={encounter?.orders} />
+              <TestsResults
+                encounterUuid={encounter.uuid}
+                orders={encounter?.orders}
+              />
             </section>
           </ModalBody>
           {/* <ModalFooter>

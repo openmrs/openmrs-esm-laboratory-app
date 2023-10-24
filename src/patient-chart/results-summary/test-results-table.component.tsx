@@ -11,18 +11,49 @@ import {
   TableHeader,
   TableRow,
   Tile,
+  TableExpandHeader,
+  TableExpandRow,
+  TableExpandedRow,
 } from "@carbon/react";
 import styles from "./results-summary.scss";
 import RescendTestResultActionMenu from "./test-results-rescend-action-menu.component";
 import { Order } from "../laboratory-order.resource";
 import DeleteTestResultActionMenu from "./test-results-delete-action-menu.component";
+import { Result, useGetLabEncounterTests } from "./results/results.resource";
 
 interface TestOrdersProps {
+  encounterUuid: string;
   orders: Order[];
 }
 
-const TestsResults: React.FC<TestOrdersProps> = ({ orders }) => {
+const TestsResults: React.FC<TestOrdersProps> = ({ encounterUuid, orders }) => {
   const { t } = useTranslation();
+
+  const [ordersList, setOrdersList] = useState(orders);
+
+  const [results, setResults] = useState({});
+
+  const orderNos = useMemo(() => {
+    return ordersList?.map((entry) => ({
+      orderNo: entry.orderNumber,
+    }));
+  }, [ordersList]);
+
+  // get encounter results
+  const {
+    labResults,
+    isLoading: loading,
+    isError: error,
+  } = useGetLabEncounterTests(encounterUuid);
+
+  let list = [];
+  orderNos.map((orderNo) => {
+    const results = labResults.filter(
+      (result) => result?.order === orderNo.orderNo
+    );
+    list.push(results);
+  });
+  // setResults(list);
 
   let columns = [
     {
@@ -36,40 +67,44 @@ const TestsResults: React.FC<TestOrdersProps> = ({ orders }) => {
       header: t("expectedResult", "Expected Results"),
       key: "expectedResults",
     },
+    {
+      id: 2,
+      header: t("result", "Results"),
+      key: "result",
+    },
     { id: 3, header: t("actions", "Actions"), key: "actions" },
   ];
-  const [items, setItems] = useState(orders);
 
-  const tableRows = useMemo(() => {
-    return items?.map((entry) => ({
-      ...entry,
-      id: entry.uuid,
+  const resultRows = useMemo(() => {
+    return list[0]?.map((result: Result) => ({
+      id: result.order,
       orderNo: {
-        content: <span>{entry.orderNumber}</span>,
+        content: <span>{result.order}</span>,
       },
       order: {
-        content: <span>{entry.display}</span>,
+        content: <span>{result.result[0].investigation}</span>,
       },
-
       expectedResult: {
         content: <span>--</span>,
       },
-
+      result: {
+        content: <span>{result.result[0].value}</span>,
+      },
       actions: {
         content: (
           <>
-            <RescendTestResultActionMenu closeModal={() => true} />
+            {/* <RescendTestResultActionMenu closeModal={() => true} /> */}
             <DeleteTestResultActionMenu closeModal={() => true} />
           </>
         ),
       },
     }));
-  }, [items]);
+  }, [list]);
 
-  if (items?.length >= 0) {
+  if (resultRows?.length >= 0) {
     return (
       <div>
-        <DataTable rows={tableRows} headers={columns} useZebraStyles>
+        <DataTable rows={resultRows} headers={columns} useZebraStyles>
           {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
             <TableContainer className={styles.tableContainer}>
               <Table
