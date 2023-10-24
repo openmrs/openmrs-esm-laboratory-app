@@ -64,8 +64,8 @@ const TestsResults: React.FC<TestOrdersProps> = ({ encounterUuid, orders }) => {
     { id: 1, header: t("order", "Order"), key: "order" },
     {
       id: 2,
-      header: t("expectedResult", "Expected Results"),
-      key: "expectedResults",
+      header: t("range", "Range"),
+      key: "range",
     },
     {
       id: 2,
@@ -84,7 +84,7 @@ const TestsResults: React.FC<TestOrdersProps> = ({ encounterUuid, orders }) => {
       order: {
         content: <span>{result.result[0].investigation}</span>,
       },
-      expectedResult: {
+      range: {
         content: <span>--</span>,
       },
       result: {
