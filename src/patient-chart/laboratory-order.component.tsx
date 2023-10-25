@@ -74,8 +74,8 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   let columns = [
     {
       id: 0,
-      header: t("encounterDate", "Encouter Date"),
-      key: "encounterDate",
+      header: t("orderDate", "Order Date"),
+      key: "orderDate",
     },
     { id: 1, header: t("orders", "Order"), key: "orders" },
     { id: 2, header: t("location", "Location"), key: "location" },
@@ -139,7 +139,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
     return paginatedLabEntries?.map((entry) => ({
       ...entry,
       id: entry.uuid,
-      encounterDate: {
+      orderDate: {
         content: (
           <span>
             {formatDate(parseDate(entry.encounterDatetime), {
@@ -152,20 +152,22 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
         content: (
           <>
             {entry.orders.map((order) => {
-              return (
-                <Tag
-                  style={{
-                    background: `${getOrderColor(
-                      order.dateActivated,
-                      order.dateStopped
-                    )}`,
-                    color: "white",
-                  }}
-                  role="tooltip"
-                >
-                  {order?.concept?.display}
-                </Tag>
-              );
+              if (order?.type === "testorder") {
+                return (
+                  <Tag
+                    style={{
+                      background: `${getOrderColor(
+                        order.dateActivated,
+                        order.dateStopped
+                      )}`,
+                      color: "white",
+                    }}
+                    role="tooltip"
+                  >
+                    {order?.concept?.display}
+                  </Tag>
+                );
+              }
             })}
           </>
         ),
@@ -181,7 +183,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
           <>
             <ViewLaboratoryItemActionMenu
               closeModal={() => true}
-              encounterUuid={entry.uuid}
+              encounter={entry}
             />
           </>
         ),
@@ -217,6 +219,47 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                 }}
               >
                 <TableToolbarContent>
+                  <div
+                    style={{
+                      fontSize: "10px",
+                      margin: "5px",
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    Key:
+                    <Tag
+                      size="sm"
+                      style={{
+                        background: "green",
+                        color: "white",
+                      }}
+                      title="Result Complete"
+                    >
+                      {"Completed"}
+                    </Tag>
+                    <Tag
+                      size="sm"
+                      style={{
+                        background: "red",
+                        color: "white",
+                      }}
+                      title="Result Rejected"
+                    >
+                      {"Rejected"}
+                    </Tag>
+                    <Tag
+                      size="sm"
+                      style={{
+                        background: "#6F6F6F",
+                        color: "white",
+                      }}
+                      title="Result Requested"
+                    >
+                      {"Requested"}
+                    </Tag>
+                  </div>
                   <Layer>
                     <TableToolbarSearch
                       value={searchTerm}

@@ -16,95 +16,67 @@ import {
   TableExpandedRow,
 } from "@carbon/react";
 import styles from "./results-summary.scss";
-import RescendTestResultActionMenu from "./test-results-rescend-action-menu.component";
-import { Order } from "../laboratory-order.resource";
 import DeleteTestResultActionMenu from "./test-results-delete-action-menu.component";
-import { Result, useGetLabEncounterTests } from "./results/results.resource";
+import { Ob } from "../laboratory-item/view-laboratory-item.resource";
+import TestResultsChildren from "./test-children-results.component";
 
 interface TestOrdersProps {
-  encounterUuid: string;
-  orders: Order[];
+  obs: Ob[];
 }
 
-const TestsResults: React.FC<TestOrdersProps> = ({ encounterUuid, orders }) => {
+const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
   const { t } = useTranslation();
 
-  const [ordersList, setOrdersList] = useState(orders);
-
-  const [results, setResults] = useState({});
-
-  const orderNos = useMemo(() => {
-    return ordersList?.map((entry) => ({
-      orderNo: entry.orderNumber,
-    }));
-  }, [ordersList]);
-
-  // get encounter results
-  const {
-    labResults,
-    isLoading: loading,
-    isError: error,
-  } = useGetLabEncounterTests(encounterUuid);
-
-  let list = [];
-  orderNos.map((orderNo) => {
-    const results = labResults.filter(
-      (result) => result?.order === orderNo.orderNo
-    );
-    list.push(results);
-  });
-  // setResults(list);
-
   let columns = [
-    {
-      id: 0,
-      header: t("orderNo", "OrderNo"),
-      key: "orderNo",
-    },
     { id: 1, header: t("order", "Order"), key: "order" },
-    {
-      id: 2,
-      header: t("range", "Range"),
-      key: "range",
-    },
     {
       id: 2,
       header: t("result", "Results"),
       key: "result",
     },
-    { id: 3, header: t("actions", "Actions"), key: "actions" },
+    {
+      id: 3,
+      header: t("range", "Reference Range"),
+      key: "range",
+    },
+    { id: 4, header: t("actions", "Actions"), key: "actions" },
   ];
 
-  const resultRows = useMemo(() => {
-    return list[0]?.map((result: Result) => ({
-      id: result.order,
-      orderNo: {
-        content: <span>{result.order}</span>,
-      },
+  const obsRows = useMemo(() => {
+    return obs.map((ob) => ({
+      id: ob.uuid,
       order: {
-        content: <span>{result.result[0].investigation}</span>,
+        content: <span>{ob?.concept?.display}</span>,
+      },
+      result: {
+        content:
+          ob.groupMembers === null ? (
+            <span>
+              {typeof ob?.value === "number"
+                ? ob?.value.toString()
+                : ob?.value.display}
+            </span>
+          ) : (
+            "--"
+          ),
       },
       range: {
         content: <span>--</span>,
       },
-      result: {
-        content: <span>{result.result[0].value}</span>,
-      },
       actions: {
         content: (
           <>
-            {/* <RescendTestResultActionMenu closeModal={() => true} /> */}
             <DeleteTestResultActionMenu closeModal={() => true} />
           </>
         ),
       },
     }));
-  }, [list]);
+  }, [obs]);
 
-  if (resultRows?.length >= 0) {
+  if (obsRows?.length >= 0) {
     return (
       <div>
-        <DataTable rows={resultRows} headers={columns} useZebraStyles>
+        <DataTable rows={obsRows} headers={columns} useZebraStyles>
           {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
             <TableContainer className={styles.tableContainer}>
               <Table
@@ -113,6 +85,7 @@ const TestsResults: React.FC<TestOrdersProps> = ({ encounterUuid, orders }) => {
               >
                 <TableHead>
                   <TableRow>
+                    <TableExpandHeader />
                     {headers.map((header) => (
                       <TableHeader {...getHeaderProps({ header })}>
                         {header.header}
@@ -124,13 +97,32 @@ const TestsResults: React.FC<TestOrdersProps> = ({ encounterUuid, orders }) => {
                   {rows.map((row, index) => {
                     return (
                       <React.Fragment key={row.id}>
-                        <TableRow {...getRowProps({ row })}>
+                        <TableExpandRow {...getRowProps({ row })}>
                           {row.cells.map((cell) => (
                             <TableCell key={cell.id}>
                               {cell.value?.content ?? cell.value}
                             </TableCell>
                           ))}
-                        </TableRow>
+                        </TableExpandRow>
+                        {row.isExpanded ? (
+                          <TableExpandedRow
+                            className={styles.expandedActiveVisitRow}
+                            colSpan={headers.length + 2}
+                          >
+                            {obs[index]?.groupMembers ? (
+                              <TestResultsChildren
+                                members={obs[index]?.groupMembers}
+                              />
+                            ) : (
+                              <span>--</span>
+                            )}
+                          </TableExpandedRow>
+                        ) : (
+                          <TableExpandedRow
+                            className={styles.hiddenRow}
+                            colSpan={headers.length + 2}
+                          />
+                        )}
                       </React.Fragment>
                     );
                   })}

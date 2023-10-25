@@ -136,7 +136,7 @@ export interface Ob {
   groupMembers: any;
   comment: any;
   location: Location2;
-  order: any;
+  order: Order;
   encounter: Encounter;
   voided: boolean;
   value: any;
