@@ -1,10 +1,8 @@
 import React, { AnchorHTMLAttributes, useMemo } from "react";
 import { GroupMember } from "../laboratory-order.resource";
-import { ErrorState } from "@openmrs/esm-framework";
 import { useTranslation } from "react-i18next";
 import {
   DataTable,
-  DataTableSkeleton,
   Table,
   TableBody,
   TableCell,
@@ -13,14 +11,11 @@ import {
   TableHeader,
   TableRow,
   Tile,
-  TableExpandHeader,
-  TableExpandRow,
-  TableExpandedRow,
   InlineLoading,
 } from "@carbon/react";
 import styles from "./results-summary.scss";
-import TestsChildrenDetail from "./tests-children-detail.component";
-import { useGetConceptById } from "./results-summary.resource";
+import { assessValue, useGetConceptById } from "./results-summary.resource";
+import { ObsMetaInfo } from "../../types";
 
 interface TestsResultsChildrenProps {
   members: GroupMember[];
@@ -30,6 +25,35 @@ interface ReferenceRangeProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   conceptUuid: string;
 }
 
+interface ColorRangeIndicatorProps
+  extends AnchorHTMLAttributes<HTMLAnchorElement> {
+  value: number;
+  conceptUuid: string;
+}
+
+const StyledTableCell = ({
+  interpretation,
+  children,
+}: {
+  interpretation: string;
+  children: React.ReactNode;
+}) => {
+  switch (interpretation) {
+    case "critically_high":
+      return (
+        <TableCell className={styles.criticallyHigh}>{children}</TableCell>
+      );
+    case "critically_low":
+      return <TableCell className={styles.criticallyLow}>{children}</TableCell>;
+    case "high":
+      return <TableCell className={styles.high}>{children}</TableCell>;
+    case "low":
+      return <TableCell className={styles.low}>{children}</TableCell>;
+    default:
+      return <TableCell>{children}</TableCell>;
+  }
+};
+
 const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
   members,
 }) => {
@@ -37,18 +61,14 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
 
   let columns = [
     { id: 1, header: t("test", "Test"), key: "test" },
+
     {
       id: 2,
-      header: t("date", "Date"),
-      key: "date",
-    },
-    {
-      id: 3,
       header: t("results", "Results"),
       key: "value",
     },
     {
-      id: 4,
+      id: 3,
       header: t("range", "Reference Range"),
       key: "range",
     },
@@ -60,11 +80,8 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
       test: {
         content: <span>{member?.concept?.display}</span>,
       },
-      date: {
-        content: <span>{member.obsDatetime}</span>,
-      },
       value: {
-        content: <span>{member?.value}</span>,
+        content: <span>{member?.value.toString()}</span>,
       },
     }));
   }, [members]);
@@ -92,6 +109,27 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
         <span>{concept?.units}</span>
       </div>
     );
+  };
+
+  const ColorRangeIndicator: React.FC<ColorRangeIndicatorProps> = ({
+    value,
+    conceptUuid,
+  }) => {
+    const {
+      concept: concept,
+      isLoading,
+      isError,
+    } = useGetConceptById(conceptUuid);
+    if (isLoading) {
+      return <InlineLoading status="active" />;
+    }
+
+    if (isError) {
+      return <span>Error</span>;
+    }
+
+    const resultedValue = assessValue(value,range);
+    return <span></span>;
   };
 
   if (results?.length >= 0) {
@@ -126,6 +164,13 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
                                 >
                                   {cell.value?.content}
                                 </ReferenceRange>
+                              ) : cell.info.header === "value" ? (
+                                <ColorRangeIndicator
+                                  conceptUuid={members[index].concept.uuid}
+                                  value={members[index].value}
+                                >
+                                  {cell.value?.content}
+                                </ColorRangeIndicator>
                               ) : (
                                 cell.value?.content
                               )}

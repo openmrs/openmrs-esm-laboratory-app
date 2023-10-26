@@ -19,6 +19,7 @@ import styles from "./results-summary.scss";
 import DeleteTestResultActionMenu from "./test-results-delete-action-menu.component";
 import { Ob } from "../laboratory-item/view-laboratory-item.resource";
 import TestResultsChildren from "./test-children-results.component";
+import { formatDate, parseDate } from "@openmrs/esm-framework";
 
 interface TestOrdersProps {
   obs: Ob[];
@@ -31,14 +32,15 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
     { id: 1, header: t("order", "Order"), key: "order" },
     {
       id: 2,
-      header: t("result", "Results"),
-      key: "result",
+      header: t("date", "Date"),
+      key: "date",
     },
     {
       id: 3,
-      header: t("range", "Reference Range"),
-      key: "range",
+      header: t("result", "Results"),
+      key: "result",
     },
+
     { id: 4, header: t("actions", "Actions"), key: "actions" },
   ];
 
@@ -49,6 +51,15 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
       id: ob.uuid,
       order: {
         content: <span>{ob?.concept?.display}</span>,
+      },
+      date: {
+        content: (
+          <span>
+            {formatDate(parseDate(ob?.obsDatetime), {
+              time: false,
+            })}
+          </span>
+        ),
       },
       result: {
         content:
@@ -62,9 +73,7 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
             "--"
           ),
       },
-      range: {
-        content: <span>--</span>,
-      },
+
       actions: {
         content: (
           <>

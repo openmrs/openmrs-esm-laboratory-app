@@ -47,16 +47,6 @@ const TestsChildrenDetail: React.FC<TestsChildrenDetailProps> = ({
             </div>
           </div>
         </div>
-        {/* <div style={{ display: "block" }}>
-          <span>Names</span>
-          {concept.names.map((name) => {
-            return (
-              <div>
-                <span>{name.display}</span>
-              </div>
-            );
-          })}
-        </div> */}
       </div>
     </>
   );

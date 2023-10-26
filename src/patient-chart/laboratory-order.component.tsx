@@ -143,7 +143,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
         content: (
           <span>
             {formatDate(parseDate(entry.encounterDatetime), {
-              time: true,
+              time: false,
             })}
           </span>
         ),

@@ -1,5 +1,6 @@
 @use '@carbon/styles/scss/spacing';
 @use '@carbon/styles/scss/type';
+@use '@carbon/styles/scss/colors';
 @import "~@openmrs/esm-styleguide/src/vars";
 @import '../../root.scss';
 
@@ -69,5 +70,85 @@
       left: 0.5rem;
       margin-right: -50%;
     }
+  }
+
+
+  td {
+    white-space: nowrap;
+  }
+  
+  .criticallyLow, .criticallyHigh, .low, .high {
+    td:nth-child(2) {
+      @include type.type-style("heading-compact-01");
+    }
+  }
+  
+  .criticallyLow, .criticallyHigh {
+    border: 2px solid colors.$red-60 !important;
+  }
+  
+  .low, .high {
+    border: 1.5px solid colors.$black-100 !important;
+  }
+  
+  .criticallyLow {
+    td:nth-child(2)::after {
+      content: " ↓↓";
+    }
+  }
+  
+  .criticallyHigh {
+    td:nth-child(2)::after {
+      content: " ↑↑";
+    }
+  }
+  
+  .low {
+    td:nth-child(2)::after {
+      content: " ↓";
+    }
+  }
+  
+  .high {
+    td:nth-child(2)::after {
+      content: " ↑";
+    }
+  }
+  
+  .off-scale-low {
+    td:nth-child(2)::after {
+      content: " ↓↓↓";
+    }
+  }
+  
+  .off-scale-high {
+    td:nth-child(2)::after {
+      content: " ↑↑↑";
+    }
+  }
+  
+  .offScaleHigh,
+  .offScaleLow,
+  .criticallyHigh,
+  .criticallyLow,
+  .high,
+  .low {
+    @include type.type-style('heading-compact-01');
+  }
+  
+  .criticallyLow::after {
+    content: " ↓↓";
+  }
+  
+  .criticallyHigh::after {
+    content: " ↑↑";
+  }
+  
+  .low::after {
+    content: " ↓";
+  }
+  
+  .high::after {
+    content: " ↑";
   }
 

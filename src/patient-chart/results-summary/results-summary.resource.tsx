@@ -1,5 +1,15 @@
 import { openmrsFetch } from "@openmrs/esm-framework";
+import { ObsMetaInfo } from "@openmrs/esm-patient-common-lib";
+
 import useSWR from "swr";
+
+export type ObservationInterpretation =
+  | "critically_low"
+  | "critically_high"
+  | "high"
+  | "low"
+  | "normal";
+
 export interface ConceptResponse {
   uuid: string;
   display: string;
@@ -125,6 +135,29 @@ export interface ChangedBy {
   uuid: string;
   display: string;
   links: Link[];
+}
+
+export function assessValue(
+  value: number,
+  range: ObsMetaInfo
+): ObservationInterpretation {
+  if (range?.hiCritical && value >= range.hiCritical) {
+    return "critically_high";
+  }
+
+  if (range?.hiNormal && value > range.hiNormal) {
+    return "high";
+  }
+
+  if (range?.lowCritical && value <= range.lowCritical) {
+    return "critically_low";
+  }
+
+  if (range?.lowNormal && value < range.lowNormal) {
+    return "low";
+  }
+
+  return "normal";
 }
 
 export function useGetConceptById(conceptUuid: string) {
