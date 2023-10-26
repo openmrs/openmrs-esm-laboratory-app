@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { AnchorHTMLAttributes, useMemo } from "react";
 import { GroupMember } from "../laboratory-order.resource";
 import { ErrorState } from "@openmrs/esm-framework";
 import { useTranslation } from "react-i18next";
@@ -16,11 +16,18 @@ import {
   TableExpandHeader,
   TableExpandRow,
   TableExpandedRow,
+  InlineLoading,
 } from "@carbon/react";
 import styles from "./results-summary.scss";
+import TestsChildrenDetail from "./tests-children-detail.component";
+import { useGetConceptById } from "./results-summary.resource";
 
 interface TestsResultsChildrenProps {
   members: GroupMember[];
+}
+
+interface ReferenceRangeProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
+  conceptUuid: string;
 }
 
 const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
@@ -59,15 +66,33 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
       value: {
         content: <span>{member?.value}</span>,
       },
-      range: {
-        content: <span>--</span>,
-      },
     }));
   }, [members]);
 
   if (members === undefined) {
     return <span>No Data</span>;
   }
+
+  const ReferenceRange: React.FC<ReferenceRangeProps> = ({ conceptUuid }) => {
+    const {
+      concept: concept,
+      isLoading,
+      isError,
+    } = useGetConceptById(conceptUuid);
+
+    if (isLoading) {
+      return <InlineLoading status="active" />;
+    }
+    if (isError) {
+      return <span>Error</span>;
+    }
+    return (
+      <div>
+        <span>{concept?.hiNormal}</span> : <span>{concept?.lowNormal}</span>
+        <span>{concept?.units}</span>
+      </div>
+    );
+  };
 
   if (results?.length >= 0) {
     return (
@@ -95,7 +120,15 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
                         <TableRow {...getRowProps({ row })}>
                           {row.cells.map((cell) => (
                             <TableCell key={cell.id}>
-                              {cell.value?.content ?? cell.value}
+                              {cell.info.header === "range" ? (
+                                <ReferenceRange
+                                  conceptUuid={members[index].concept.uuid}
+                                >
+                                  {cell.value?.content}
+                                </ReferenceRange>
+                              ) : (
+                                cell.value?.content
+                              )}
                             </TableCell>
                           ))}
                         </TableRow>

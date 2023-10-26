@@ -42,8 +42,10 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
     { id: 4, header: t("actions", "Actions"), key: "actions" },
   ];
 
+  const obsList = obs.filter((ob) => ob?.order?.type === "testorder");
+
   const obsRows = useMemo(() => {
-    return obs.map((ob) => ({
+    return obsList.map((ob) => ({
       id: ob.uuid,
       order: {
         content: <span>{ob?.concept?.display}</span>,
@@ -71,7 +73,7 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
         ),
       },
     }));
-  }, [obs]);
+  }, [obsList]);
 
   if (obsRows?.length >= 0) {
     return (
@@ -109,13 +111,9 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
                             className={styles.expandedActiveVisitRow}
                             colSpan={headers.length + 2}
                           >
-                            {obs[index]?.groupMembers ? (
-                              <TestResultsChildren
-                                members={obs[index]?.groupMembers}
-                              />
-                            ) : (
-                              <span>--</span>
-                            )}
+                            <TestResultsChildren
+                              members={obsList[index].groupMembers}
+                            />
                           </TableExpandedRow>
                         ) : (
                           <TableExpandedRow
@@ -146,23 +144,6 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
                   </Tile>
                 </div>
               ) : null}
-              {/* <Pagination
-                forwardText="Next page"
-                backwardText="Previous page"
-                page={currentPage}
-                pageSize={currentPageSize}
-                pageSizes={pageSizes}
-                totalItems={patientQueueEntries?.length}
-                className={styles.pagination}
-                onChange={({ pageSize, page }) => {
-                  if (pageSize !== currentPageSize) {
-                    setPageSize(pageSize);
-                  }
-                  if (page !== currentPage) {
-                    goTo(page);
-                  }
-                }}
-              /> */}
             </TableContainer>
           )}
         </DataTable>

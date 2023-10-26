@@ -35,7 +35,7 @@ import {
 } from "@carbon/react";
 import ViewLaboratoryItemActionMenu from "./laboratory-item/view-laboratory-item.component";
 import { getOrderColor, useLabOrders } from "./laboratory-order.resource";
-import Results from "./results-summary/results/results.component";
+import TestsResults from "./results-summary/test-results-table.component";
 
 interface LaboratoryOrderOverviewProps {
   patientUuid: string;
@@ -276,6 +276,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
               >
                 <TableHead>
                   <TableRow>
+                    <TableExpandHeader />
                     {headers.map((header) => (
                       <TableHeader {...getHeaderProps({ header })}>
                         {header.header}
@@ -287,13 +288,28 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                   {rows.map((row, index) => {
                     return (
                       <React.Fragment key={row.id}>
-                        <TableRow {...getRowProps({ row })}>
+                        <TableExpandRow {...getRowProps({ row })}>
                           {row.cells.map((cell) => (
                             <TableCell key={cell.id}>
                               {cell.value?.content ?? cell.value}
                             </TableCell>
                           ))}
-                        </TableRow>
+                        </TableExpandRow>
+                        {row.isExpanded ? (
+                          <TableExpandedRow
+                            className={styles.expandedActiveVisitRow}
+                            colSpan={headers.length + 2}
+                          >
+                            <TestsResults
+                              obs={paginatedLabEntries[index].obs}
+                            />
+                          </TableExpandedRow>
+                        ) : (
+                          <TableExpandedRow
+                            className={styles.hiddenRow}
+                            colSpan={headers.length + 2}
+                          />
+                        )}
                       </React.Fragment>
                     );
                   })}
