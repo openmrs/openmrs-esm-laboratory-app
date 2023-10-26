@@ -1,4 +1,4 @@
-import { openmrsFetch, useConfig } from "@openmrs/esm-framework";
+import { formatDate, openmrsFetch, useConfig } from "@openmrs/esm-framework";
 import useSWR from "swr";
 
 export interface LaboratoryResponse {
@@ -131,7 +131,7 @@ export interface Ob {
   accessionNumber: any;
   obsGroup: any;
   valueCodedName: any;
-  groupMembers: any;
+  groupMembers: GroupMember[];
   comment: any;
   location: Location;
   order: any;
@@ -143,6 +143,35 @@ export interface Ob {
   formFieldNamespace: string;
   links: Link[];
   resourceVersion: string;
+}
+
+export interface GroupMember {
+  uuid: string;
+  display: string;
+  concept: Concept;
+  person: Person;
+  obsDatetime: string;
+  accessionNumber: any;
+  obsGroup: ObsGroup;
+  valueCodedName: any;
+  groupMembers: any;
+  comment: any;
+  location: Location;
+  order: Order;
+  encounter: Encounter;
+  voided: boolean;
+  value: number;
+  valueModifier: any;
+  formFieldPath: any;
+  formFieldNamespace: any;
+  links: Link[];
+  resourceVersion: string;
+}
+
+export interface ObsGroup {
+  uuid: string;
+  display: string;
+  links: Link[];
 }
 
 export interface Concept {
@@ -231,7 +260,7 @@ export interface Order {
   previousOrder: any;
   dateActivated: string;
   scheduledDate: any;
-  dateStopped: any;
+  dateStopped: string;
   autoExpireDate: any;
   encounter: Encounter;
   orderer: Orderer;
@@ -300,6 +329,29 @@ export interface OrderType {
   links: Link[];
   resourceVersion: string;
 }
+
+export const getOrderColor = (activated: string, stopped: string) => {
+  const numAct = formatWaitTime(activated);
+  let testStopped: Number;
+  if (stopped === null) {
+    testStopped = 0;
+  }
+
+  if (numAct >= 0 && testStopped == 0) {
+    return "#6F6F6F"; // #6F6F6F
+  } else {
+    return "green"; // green
+  }
+};
+
+export const formatWaitTime = (waitTime: string) => {
+  const num = parseInt(waitTime);
+  const hours = num / 60;
+  const rhours = Math.floor(hours);
+  const minutes = (hours - rhours) * 60;
+  const rminutes = Math.round(minutes);
+  return rminutes;
+};
 
 export function useLabOrders(patientUuid: string) {
   const config = useConfig();

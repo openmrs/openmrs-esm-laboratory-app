@@ -11,65 +11,83 @@ import {
   TableHeader,
   TableRow,
   Tile,
+  TableExpandHeader,
+  TableExpandRow,
+  TableExpandedRow,
 } from "@carbon/react";
 import styles from "./results-summary.scss";
-import RescendTestResultActionMenu from "./test-results-rescend-action-menu.component";
-import { Order } from "../laboratory-order.resource";
 import DeleteTestResultActionMenu from "./test-results-delete-action-menu.component";
+import { Ob } from "../laboratory-item/view-laboratory-item.resource";
+import TestResultsChildren from "./test-children-results.component";
+import { formatDate, parseDate } from "@openmrs/esm-framework";
 
 interface TestOrdersProps {
-  orders: Order[];
+  obs: Ob[];
 }
 
-const TestsResults: React.FC<TestOrdersProps> = ({ orders }) => {
+const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
   const { t } = useTranslation();
 
   let columns = [
-    {
-      id: 0,
-      header: t("orderNo", "OrderNo"),
-      key: "orderNo",
-    },
     { id: 1, header: t("order", "Order"), key: "order" },
     {
       id: 2,
-      header: t("expectedResult", "Expected Results"),
-      key: "expectedResults",
+      header: t("date", "Date"),
+      key: "date",
     },
-    { id: 3, header: t("actions", "Actions"), key: "actions" },
+    {
+      id: 3,
+      header: t("result", "Results"),
+      key: "result",
+    },
+
+    { id: 4, header: t("actions", "Actions"), key: "actions" },
   ];
-  const [items, setItems] = useState(orders);
 
-  const tableRows = useMemo(() => {
-    return items?.map((entry) => ({
-      ...entry,
-      id: entry.uuid,
-      orderNo: {
-        content: <span>{entry.orderNumber}</span>,
-      },
+  const obsList = obs.filter((ob) => ob?.order?.type === "testorder");
+
+  const obsRows = useMemo(() => {
+    return obsList.map((ob) => ({
+      id: ob.uuid,
       order: {
-        content: <span>{entry.display}</span>,
+        content: <span>{ob?.concept?.display}</span>,
       },
-
-      expectedResult: {
-        content: <span>--</span>,
+      date: {
+        content: (
+          <span>
+            {formatDate(parseDate(ob?.obsDatetime), {
+              time: false,
+            })}
+          </span>
+        ),
+      },
+      result: {
+        content:
+          ob.groupMembers === null ? (
+            <span>
+              {typeof ob?.value === "number"
+                ? ob?.value.toString()
+                : ob?.value.display}
+            </span>
+          ) : (
+            "--"
+          ),
       },
 
       actions: {
         content: (
           <>
-            <RescendTestResultActionMenu closeModal={() => true} />
             <DeleteTestResultActionMenu closeModal={() => true} />
           </>
         ),
       },
     }));
-  }, [items]);
+  }, [obsList]);
 
-  if (items?.length >= 0) {
+  if (obsRows?.length >= 0) {
     return (
       <div>
-        <DataTable rows={tableRows} headers={columns} useZebraStyles>
+        <DataTable rows={obsRows} headers={columns} useZebraStyles>
           {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
             <TableContainer className={styles.tableContainer}>
               <Table
@@ -78,6 +96,7 @@ const TestsResults: React.FC<TestOrdersProps> = ({ orders }) => {
               >
                 <TableHead>
                   <TableRow>
+                    <TableExpandHeader />
                     {headers.map((header) => (
                       <TableHeader {...getHeaderProps({ header })}>
                         {header.header}
@@ -89,13 +108,28 @@ const TestsResults: React.FC<TestOrdersProps> = ({ orders }) => {
                   {rows.map((row, index) => {
                     return (
                       <React.Fragment key={row.id}>
-                        <TableRow {...getRowProps({ row })}>
+                        <TableExpandRow {...getRowProps({ row })}>
                           {row.cells.map((cell) => (
                             <TableCell key={cell.id}>
                               {cell.value?.content ?? cell.value}
                             </TableCell>
                           ))}
-                        </TableRow>
+                        </TableExpandRow>
+                        {row.isExpanded ? (
+                          <TableExpandedRow
+                            className={styles.expandedActiveVisitRow}
+                            colSpan={headers.length + 2}
+                          >
+                            <TestResultsChildren
+                              members={obsList[index].groupMembers}
+                            />
+                          </TableExpandedRow>
+                        ) : (
+                          <TableExpandedRow
+                            className={styles.hiddenRow}
+                            colSpan={headers.length + 2}
+                          />
+                        )}
                       </React.Fragment>
                     );
                   })}
@@ -119,23 +153,6 @@ const TestsResults: React.FC<TestOrdersProps> = ({ orders }) => {
                   </Tile>
                 </div>
               ) : null}
-              {/* <Pagination
-                forwardText="Next page"
-                backwardText="Previous page"
-                page={currentPage}
-                pageSize={currentPageSize}
-                pageSizes={pageSizes}
-                totalItems={patientQueueEntries?.length}
-                className={styles.pagination}
-                onChange={({ pageSize, page }) => {
-                  if (pageSize !== currentPageSize) {
-                    setPageSize(pageSize);
-                  }
-                  if (page !== currentPage) {
-                    goTo(page);
-                  }
-                }}
-              /> */}
             </TableContainer>
           )}
         </DataTable>

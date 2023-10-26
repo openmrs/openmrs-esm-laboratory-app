@@ -9,6 +9,7 @@ import {
   openmrsFetch,
   parseDate,
   ErrorState,
+  useLayoutType,
 } from "@openmrs/esm-framework";
 
 import {
@@ -29,9 +30,13 @@ import {
   DataTableHeader,
   Tile,
   Pagination,
+  TableExpandHeader,
+  TableExpandRow,
+  TableExpandedRow,
 } from "@carbon/react";
 import ViewLaboratoryItemActionMenu from "./laboratory-item/view-laboratory-item.component";
-import { useLabOrders } from "./laboratory-order.resource";
+import { getOrderColor, useLabOrders } from "./laboratory-order.resource";
+import TestsResults from "./results-summary/test-results-table.component";
 
 interface LaboratoryOrderOverviewProps {
   patientUuid: string;
@@ -49,6 +54,8 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   patientUuid,
 }) => {
   const { t } = useTranslation();
+
+  const isTablet = useLayoutType() === "tablet";
 
   const {
     labRequests,
@@ -70,8 +77,8 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   let columns = [
     {
       id: 0,
-      header: t("encounterDate", "Encouter Date"),
-      key: "encounterDate",
+      header: t("orderDate", "Order Date"),
+      key: "orderDate",
     },
     { id: 1, header: t("orders", "Order"), key: "orders" },
     { id: 2, header: t("location", "Location"), key: "location" },
@@ -135,11 +142,11 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
     return paginatedLabEntries?.map((entry) => ({
       ...entry,
       id: entry.uuid,
-      encounterDate: {
+      orderDate: {
         content: (
           <span>
             {formatDate(parseDate(entry.encounterDatetime), {
-              time: true,
+              time: false,
             })}
           </span>
         ),
@@ -148,17 +155,22 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
         content: (
           <>
             {entry.orders.map((order) => {
-              return (
-                <Tag
-                  style={{
-                    background: "rgb(111 111 111 / 97%)",
-                    color: "white",
-                  }}
-                  role="tooltip"
-                >
-                  {order?.concept?.display}
-                </Tag>
-              );
+              if (order?.type === "testorder") {
+                return (
+                  <Tag
+                    style={{
+                      background: `${getOrderColor(
+                        order.dateActivated,
+                        order.dateStopped
+                      )}`,
+                      color: "white",
+                    }}
+                    role="tooltip"
+                  >
+                    {order?.concept?.display}
+                  </Tag>
+                );
+              }
             })}
           </>
         ),
@@ -174,7 +186,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
           <>
             <ViewLaboratoryItemActionMenu
               closeModal={() => true}
-              encounterUuid={entry.uuid}
+              encounter={entry}
             />
           </>
         ),
@@ -198,6 +210,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
           headers={columns}
           useZebraStyles
           filterRows={handleFilter}
+          size={isTablet ? "lg" : "sm"}
         >
           {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
             <TableContainer className={styles.tableContainer}>
@@ -210,6 +223,47 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                 }}
               >
                 <TableToolbarContent>
+                  <div
+                    style={{
+                      fontSize: "10px",
+                      margin: "5px",
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    Key:
+                    <Tag
+                      size="sm"
+                      style={{
+                        background: "green",
+                        color: "white",
+                      }}
+                      title="Result Complete"
+                    >
+                      {"Completed"}
+                    </Tag>
+                    <Tag
+                      size="sm"
+                      style={{
+                        background: "red",
+                        color: "white",
+                      }}
+                      title="Result Rejected"
+                    >
+                      {"Rejected"}
+                    </Tag>
+                    <Tag
+                      size="sm"
+                      style={{
+                        background: "#6F6F6F",
+                        color: "white",
+                      }}
+                      title="Result Requested"
+                    >
+                      {"Requested"}
+                    </Tag>
+                  </div>
                   <Layer>
                     <TableToolbarSearch
                       value={searchTerm}
@@ -226,6 +280,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
               >
                 <TableHead>
                   <TableRow>
+                    <TableExpandHeader />
                     {headers.map((header) => (
                       <TableHeader {...getHeaderProps({ header })}>
                         {header.header}
@@ -237,13 +292,28 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                   {rows.map((row, index) => {
                     return (
                       <React.Fragment key={row.id}>
-                        <TableRow {...getRowProps({ row })}>
+                        <TableExpandRow {...getRowProps({ row })}>
                           {row.cells.map((cell) => (
                             <TableCell key={cell.id}>
                               {cell.value?.content ?? cell.value}
                             </TableCell>
                           ))}
-                        </TableRow>
+                        </TableExpandRow>
+                        {row.isExpanded ? (
+                          <TableExpandedRow
+                            className={styles.expandedActiveVisitRow}
+                            colSpan={headers.length + 2}
+                          >
+                            <TestsResults
+                              obs={paginatedLabEntries[index].obs}
+                            />
+                          </TableExpandedRow>
+                        ) : (
+                          <TableExpandedRow
+                            className={styles.hiddenRow}
+                            colSpan={headers.length + 2}
+                          />
+                        )}
                       </React.Fragment>
                     );
                   })}

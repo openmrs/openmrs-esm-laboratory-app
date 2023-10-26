@@ -3,24 +3,25 @@ import { useTranslation } from "react-i18next";
 import { Button, Tooltip } from "@carbon/react";
 import { View } from "@carbon/react/icons";
 import { launchPatientWorkspace } from "@openmrs/esm-patient-common-lib";
+import { EncounterResponse } from "./view-laboratory-item.resource";
 
 interface ViewLaboratoryItemActionMenuProps {
   closeModal: () => void;
-  encounterUuid: string;
+  encounter: EncounterResponse;
 }
 
 const ViewLaboratoryItemActionMenu: React.FC<
   ViewLaboratoryItemActionMenuProps
-> = ({ encounterUuid }) => {
+> = ({ encounter }) => {
   const { t } = useTranslation();
 
   const handleClick = useCallback(
     () =>
       launchPatientWorkspace("results-summary", {
         workspaceTitle: `Results Summary Form`,
-        encounterUuid,
+        encounter,
       }),
-    [encounterUuid]
+    [encounter]
   );
 
   return (

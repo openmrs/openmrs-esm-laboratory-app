@@ -10,28 +10,22 @@ import { Printer, MailAll, Edit } from "@carbon/react/icons";
 import styles from "./results-summary.scss";
 import TestsResults from "./test-results-table.component";
 import { useReactToPrint } from "react-to-print";
-import {
-  EncounterResponse,
-  useGetEncounterById,
-} from "../laboratory-item/view-laboratory-item.resource";
-import { ErrorState } from "@openmrs/esm-patient-common-lib";
+import { EncounterResponse } from "../laboratory-item/view-laboratory-item.resource";
 import PrintResultsSummary from "./print-results-summary.component";
 import { formatDate, parseDate, showModal } from "@openmrs/esm-framework";
 import { useTranslation } from "react-i18next";
+import { Order } from "../laboratory-order.resource";
 
 interface ResultsSummaryProps {
-  encounterUuid: string;
+  encounter: EncounterResponse;
 }
 
-interface EditResultsProps {
-  encounterResponse: EncounterResponse;
-}
-
-const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
+const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounter }) => {
   const { t } = useTranslation();
   // get encouter details
-  const { encounter, isLoading, isError } = useGetEncounterById(encounterUuid);
+  // const { encounter, isLoading, isError } = useGetEncounterById(encounterUuid);
 
+  // print button
   const PrintButtonAction: React.FC = () => {
     const [isPrinting, setIsPrinting] = useState(false);
 
@@ -73,6 +67,7 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
     );
   };
 
+  // email button
   const EmailButtonAction: React.FC = () => {
     const handleButtonClick = (event: MouseEvent) => {
       event.preventDefault();
@@ -87,32 +82,14 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
     );
   };
 
-  const EditButtonAction: React.FC<EditResultsProps> = ({
-    encounterResponse,
-  }) => {
-    console.info("encounter edit", encounter);
+  // if (encounter) {
+  //   return <DataTableSkeleton role="progressbar" />;
+  // }
+  // if (isError) {
+  //   return <ErrorState error={isError} headerTitle={"Error"} />;
+  // }
 
-    const launchEditResultModal = useCallback(() => {
-      const dispose = showModal("edit-results-dialog", {
-        encounterResponse,
-        closeModal: () => dispose(),
-      });
-    }, [encounterResponse]);
-    return (
-      <Button
-        kind="ghost"
-        size="sm"
-        onClick={launchEditResultModal}
-        renderIcon={(props) => <Edit size={16} {...props} />}
-      />
-    );
-  };
-  if (isLoading) {
-    return <DataTableSkeleton role="progressbar" />;
-  }
-  if (isError) {
-    return <ErrorState error={isError} headerTitle={"Error"} />;
-  }
+  const obsData = encounter.obs.filter((ob) => ob?.order?.type === "testorder");
 
   if (encounter) {
     return (
@@ -153,12 +130,12 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounterUuid }) => {
                   <span> Results Ordered</span>
                 </div>
                 <div>
-                  <EditButtonAction encounterResponse={encounter} />
+                  {/* <EditButtonAction encounterResponse={encounter} /> */}
                 </div>
               </div>
             </section>
             <section className={styles.section}>
-              <TestsResults orders={encounter?.orders} />
+              <TestsResults obs={obsData} />
             </section>
           </ModalBody>
           {/* <ModalFooter>
