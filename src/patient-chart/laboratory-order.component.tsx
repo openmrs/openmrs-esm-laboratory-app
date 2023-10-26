@@ -9,6 +9,7 @@ import {
   openmrsFetch,
   parseDate,
   ErrorState,
+  useLayoutType,
 } from "@openmrs/esm-framework";
 
 import {
@@ -53,6 +54,8 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   patientUuid,
 }) => {
   const { t } = useTranslation();
+
+  const isTablet = useLayoutType() === "tablet";
 
   const {
     labRequests,
@@ -207,6 +210,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
           headers={columns}
           useZebraStyles
           filterRows={handleFilter}
+          size={isTablet ? "lg" : "sm"}
         >
           {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
             <TableContainer className={styles.tableContainer}>

@@ -14,8 +14,7 @@ import {
   InlineLoading,
 } from "@carbon/react";
 import styles from "./results-summary.scss";
-import { assessValue, useGetConceptById } from "./results-summary.resource";
-import { ObsMetaInfo } from "../../types";
+import { useGetConceptById } from "./results-summary.resource";
 
 interface TestsResultsChildrenProps {
   members: GroupMember[];
@@ -98,16 +97,20 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
     } = useGetConceptById(conceptUuid);
 
     if (isLoading) {
-      return <InlineLoading status="active" />;
+      return <TableCell>{<InlineLoading status="active" />}</TableCell>;
     }
     if (isError) {
-      return <span>Error</span>;
+      return <TableCell>{<span>Error</span>}</TableCell>;
     }
     return (
-      <div>
-        <span>{concept?.hiNormal}</span> : <span>{concept?.lowNormal}</span>
-        <span>{concept?.units}</span>
-      </div>
+      <TableCell>
+        {
+          <div>
+            <span>{concept?.lowNormal}</span> : <span>{concept?.hiNormal}</span>
+            <span>{concept?.units}</span>
+          </div>
+        }
+      </TableCell>
     );
   };
 
@@ -121,15 +124,31 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
       isError,
     } = useGetConceptById(conceptUuid);
     if (isLoading) {
-      return <InlineLoading status="active" />;
+      return <TableCell>{<InlineLoading status="active" />}</TableCell>;
     }
 
     if (isError) {
-      return <span>Error</span>;
+      return <TableCell>{<span>Error</span>}</TableCell>;
     }
 
-    const resultedValue = assessValue(value,range);
-    return <span></span>;
+    let range = "";
+
+    if (concept?.hiCritical && value >= concept.hiCritical) {
+      range = styles.criticallyHigh;
+    }
+
+    if (concept?.hiNormal && value > concept.hiNormal) {
+      range = styles.high;
+    }
+
+    if (concept?.lowCritical && value <= concept.lowCritical) {
+      range = styles.criticallyLow;
+    }
+
+    if (concept?.lowNormal && value < concept.lowNormal) {
+      range = styles.low;
+    }
+    return <TableCell className={range}>{value}</TableCell>;
   };
 
   if (results?.length >= 0) {
@@ -156,26 +175,24 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
                     return (
                       <React.Fragment key={row.id}>
                         <TableRow {...getRowProps({ row })}>
-                          {row.cells.map((cell) => (
-                            <TableCell key={cell.id}>
-                              {cell.info.header === "range" ? (
-                                <ReferenceRange
-                                  conceptUuid={members[index].concept.uuid}
-                                >
-                                  {cell.value?.content}
-                                </ReferenceRange>
-                              ) : cell.info.header === "value" ? (
-                                <ColorRangeIndicator
-                                  conceptUuid={members[index].concept.uuid}
-                                  value={members[index].value}
-                                >
-                                  {cell.value?.content}
-                                </ColorRangeIndicator>
-                              ) : (
-                                cell.value?.content
-                              )}
-                            </TableCell>
-                          ))}
+                          {row.cells.map((cell) =>
+                            cell.info.header === "range" ? (
+                              <ReferenceRange
+                                conceptUuid={members[index].concept.uuid}
+                              >
+                                {cell.value?.content}
+                              </ReferenceRange>
+                            ) : cell.info.header === "value" ? (
+                              <ColorRangeIndicator
+                                conceptUuid={members[index].concept.uuid}
+                                value={members[index].value}
+                              />
+                            ) : (
+                              <TableCell key={cell.id}>
+                                {cell.value?.content}
+                              </TableCell>
+                            )
+                          )}
                         </TableRow>
                       </React.Fragment>
                     );
