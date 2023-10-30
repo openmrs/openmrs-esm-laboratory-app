@@ -59,6 +59,11 @@ export const addToWorklistDialog = getAsyncLifecycle(
   options
 );
 
+export const sendEmailDialog = getAsyncLifecycle(
+  () => import("./patient-chart/results-summary/send-email-dialog.component"),
+  options
+);
+
 export const resultsSummaryWorkSpace = getAsyncLifecycle(
   () => import("./patient-chart/results-summary/results-summary.component"),
   options

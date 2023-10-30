@@ -160,12 +160,78 @@ export interface GroupMember {
   order: Order;
   encounter: Encounter;
   voided: boolean;
-  value: number;
+  value: number | Value;
   valueModifier: any;
   formFieldPath: any;
   formFieldNamespace: any;
   links: Link[];
   resourceVersion: string;
+}
+
+export interface Value {
+  uuid: string;
+  display: string;
+  name: Name;
+  datatype: Datatype;
+  conceptClass: ConceptClass;
+  set: boolean;
+  version: any;
+  retired: boolean;
+  names: Name2[];
+  descriptions: Description[];
+  mappings: Mapping[];
+  answers: any[];
+  setMembers: any[];
+  attributes: any[];
+  links: Link[];
+  resourceVersion: string;
+}
+
+export interface Name {
+  display: string;
+  uuid: string;
+  name: string;
+  locale: string;
+  localePreferred: boolean;
+  conceptNameType: string;
+  links: Link[];
+  resourceVersion: string;
+}
+
+export interface Link {
+  rel: string;
+  uri: string;
+  resourceAlias: string;
+}
+
+export interface Datatype {
+  uuid: string;
+  display: string;
+  links: Link[];
+}
+
+export interface ConceptClass {
+  uuid: string;
+  display: string;
+  links: Link[];
+}
+
+export interface Name2 {
+  uuid: string;
+  display: string;
+  links: Link[];
+}
+
+export interface Description {
+  uuid: string;
+  display: string;
+  links: Link[];
+}
+
+export interface Mapping {
+  uuid: string;
+  display: string;
+  links: Link[];
 }
 
 export interface ObsGroup {

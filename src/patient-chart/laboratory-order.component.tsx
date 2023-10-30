@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { EmptyState } from "@ohri/openmrs-esm-ohri-commons-lib";
 import styles from "./laboratory-order.scss";
@@ -10,6 +16,7 @@ import {
   parseDate,
   ErrorState,
   useLayoutType,
+  showModal,
 } from "@openmrs/esm-framework";
 
 import {
@@ -33,13 +40,24 @@ import {
   TableExpandHeader,
   TableExpandRow,
   TableExpandedRow,
+  Button,
 } from "@carbon/react";
+import { Printer, MailAll, Edit } from "@carbon/react/icons";
+
 import ViewLaboratoryItemActionMenu from "./laboratory-item/view-laboratory-item.component";
 import { getOrderColor, useLabOrders } from "./laboratory-order.resource";
 import TestsResults from "./results-summary/test-results-table.component";
+import { useReactToPrint } from "react-to-print";
+import SendEmailDialog from "./results-summary/send-email-dialog.component";
+import PrintResultsSummary from "./results-summary/print-results-summary.component";
+import { EncounterResponse } from "./laboratory-item/view-laboratory-item.resource";
 
 interface LaboratoryOrderOverviewProps {
   patientUuid: string;
+}
+
+interface PrintProps {
+  encounter: EncounterResponse;
 }
 
 type FilterProps = {
@@ -116,6 +134,63 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
     [items, initialTests]
   );
 
+  const EmailButtonAction: React.FC = () => {
+    const launchSendEmailModal = useCallback(() => {
+      const dispose = showModal("send-email-dialog", {
+        closeModal: () => dispose(),
+      });
+    }, []);
+
+    return (
+      <Button
+        kind="ghost"
+        size="sm"
+        onClick={(e) => launchSendEmailModal()}
+        renderIcon={(props) => <MailAll size={16} {...props} />}
+      />
+    );
+  };
+
+  const PrintButtonAction: React.FC<PrintProps> = ({ encounter }) => {
+    const [isPrinting, setIsPrinting] = useState(false);
+
+    const contentToPrintRef = useRef(null);
+
+    const onBeforeGetContentResolve = useRef(null);
+
+    useEffect(() => {
+      if (onBeforeGetContentResolve.current) {
+        onBeforeGetContentResolve.current();
+      }
+    }, [isPrinting]);
+
+    const handlePrint = useReactToPrint({
+      content: () => contentToPrintRef.current,
+      onBeforeGetContent: () =>
+        new Promise((resolve) => {
+          onBeforeGetContentResolve.current = resolve;
+          setIsPrinting(true);
+        }),
+      onAfterPrint: () => {
+        onBeforeGetContentResolve.current = null;
+        setIsPrinting(false);
+      },
+    });
+
+    return (
+      <div>
+        <div ref={contentToPrintRef}>
+          <PrintResultsSummary encounterResponse={encounter} />
+        </div>
+        <Button
+          kind="ghost"
+          size="sm"
+          onClick={handlePrint}
+          renderIcon={(props) => <Printer size={16} {...props} />}
+        />
+      </div>
+    );
+  };
   const handleFilter = ({
     rowIds,
     headers,
@@ -184,10 +259,8 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
       actions: {
         content: (
           <>
-            <ViewLaboratoryItemActionMenu
-              closeModal={() => true}
-              encounter={entry}
-            />
+            <PrintButtonAction encounter={entry} />
+            <EmailButtonAction />
           </>
         ),
       },

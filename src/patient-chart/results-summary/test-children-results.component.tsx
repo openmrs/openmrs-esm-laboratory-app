@@ -1,5 +1,5 @@
 import React, { AnchorHTMLAttributes, useMemo } from "react";
-import { GroupMember } from "../laboratory-order.resource";
+import { GroupMember, Value } from "../laboratory-order.resource";
 import { useTranslation } from "react-i18next";
 import {
   DataTable,
@@ -26,32 +26,9 @@ interface ReferenceRangeProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
 
 interface ColorRangeIndicatorProps
   extends AnchorHTMLAttributes<HTMLAnchorElement> {
-  value: number;
+  value: number | Value;
   conceptUuid: string;
 }
-
-const StyledTableCell = ({
-  interpretation,
-  children,
-}: {
-  interpretation: string;
-  children: React.ReactNode;
-}) => {
-  switch (interpretation) {
-    case "critically_high":
-      return (
-        <TableCell className={styles.criticallyHigh}>{children}</TableCell>
-      );
-    case "critically_low":
-      return <TableCell className={styles.criticallyLow}>{children}</TableCell>;
-    case "high":
-      return <TableCell className={styles.high}>{children}</TableCell>;
-    case "low":
-      return <TableCell className={styles.low}>{children}</TableCell>;
-    default:
-      return <TableCell>{children}</TableCell>;
-  }
-};
 
 const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
   members,
@@ -80,10 +57,16 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
         content: <span>{member?.concept?.display}</span>,
       },
       value: {
-        content: <span>{member?.value.toString()}</span>,
+        content: (
+          <span>
+            {typeof member?.value === "number" ? member.value : member.display}
+          </span>
+        ),
       },
     }));
   }, [members]);
+
+  console.info("results--->", JSON.stringify(results, null, 2));
 
   if (members === undefined) {
     return <span>No Data</span>;
@@ -131,24 +114,34 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
       return <TableCell>{<span>Error</span>}</TableCell>;
     }
 
+    if (concept?.datatype.display === "coded") {
+      return (
+        <TableCell>
+          {typeof value === "object" ? value.display : value}
+        </TableCell>
+      );
+    }
+
     let range = "";
+    if (typeof value === "number") {
+      if (concept?.hiCritical && value >= concept?.hiCritical) {
+        range = styles.criticallyHigh;
+      }
 
-    if (concept?.hiCritical && value >= concept.hiCritical) {
-      range = styles.criticallyHigh;
-    }
+      if (concept?.hiNormal && value > concept?.hiNormal) {
+        range = styles.high;
+      }
 
-    if (concept?.hiNormal && value > concept.hiNormal) {
-      range = styles.high;
-    }
+      if (concept?.lowCritical && value <= concept?.lowCritical) {
+        range = styles.criticallyLow;
+      }
 
-    if (concept?.lowCritical && value <= concept.lowCritical) {
-      range = styles.criticallyLow;
+      if (concept?.lowNormal && value < concept?.lowNormal) {
+        range = styles.low;
+      }
+      return <TableCell className={range}>{value}</TableCell>;
     }
-
-    if (concept?.lowNormal && value < concept.lowNormal) {
-      range = styles.low;
-    }
-    return <TableCell className={range}>{value}</TableCell>;
+    return <TableCell>{value.display}</TableCell>;
   };
 
   if (results?.length >= 0) {
@@ -189,7 +182,7 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
                               />
                             ) : (
                               <TableCell key={cell.id}>
-                                {cell.value?.content}
+                                {cell.value?.content ?? cell.value}
                               </TableCell>
                             )
                           )}
