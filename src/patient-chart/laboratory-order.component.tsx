@@ -258,10 +258,10 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
       },
       actions: {
         content: (
-          <>
+          <div>
             <PrintButtonAction encounter={entry} />
-            <EmailButtonAction />
-          </>
+            {/* <EmailButtonAction /> */}
+          </div>
         ),
       },
     }));
@@ -309,6 +309,16 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                     <Tag
                       size="sm"
                       style={{
+                        background: "#6F6F6F",
+                        color: "white",
+                      }}
+                      title="Result Requested"
+                    >
+                      {"Requested"}
+                    </Tag>
+                    <Tag
+                      size="sm"
+                      style={{
                         background: "green",
                         color: "white",
                       }}
@@ -325,16 +335,6 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                       title="Result Rejected"
                     >
                       {"Rejected"}
-                    </Tag>
-                    <Tag
-                      size="sm"
-                      style={{
-                        background: "#6F6F6F",
-                        color: "white",
-                      }}
-                      title="Result Requested"
-                    >
-                      {"Requested"}
                     </Tag>
                   </div>
                   <Layer>
