@@ -87,12 +87,14 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
     }
     return (
       <TableCell>
-        {
+        {concept?.hiNormal === undefined || concept?.lowNormal === undefined ? (
+          "N/A"
+        ) : (
           <div>
             <span>{concept?.lowNormal}</span> : <span>{concept?.hiNormal}</span>
             <span>{concept?.units}</span>
           </div>
-        }
+        )}
       </TableCell>
     );
   };
