@@ -62,16 +62,7 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
         ),
       },
       result: {
-        content:
-          ob.groupMembers === null ? (
-            <span>
-              {typeof ob?.value === "number"
-                ? ob?.value.toString()
-                : ob?.value.display}
-            </span>
-          ) : (
-            "--"
-          ),
+        content: <span>{ob?.display}</span>,
       },
 
       actions: {

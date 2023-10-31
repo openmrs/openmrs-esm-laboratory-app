@@ -26,61 +26,8 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounter }) => {
   // const { encounter, isLoading, isError } = useGetEncounterById(encounterUuid);
 
   // print button
-  const PrintButtonAction: React.FC = () => {
-    const [isPrinting, setIsPrinting] = useState(false);
-
-    const contentToPrintRef = useRef(null);
-
-    const onBeforeGetContentResolve = useRef(null);
-
-    useEffect(() => {
-      if (onBeforeGetContentResolve.current) {
-        onBeforeGetContentResolve.current();
-      }
-    }, [isPrinting]);
-
-    const handlePrint = useReactToPrint({
-      content: () => contentToPrintRef.current,
-      onBeforeGetContent: () =>
-        new Promise((resolve) => {
-          onBeforeGetContentResolve.current = resolve;
-          setIsPrinting(true);
-        }),
-      onAfterPrint: () => {
-        onBeforeGetContentResolve.current = null;
-        setIsPrinting(false);
-      },
-    });
-
-    return (
-      <div>
-        <div ref={contentToPrintRef}>
-          <PrintResultsSummary encounterResponse={encounter} />
-        </div>
-        <Button
-          kind="ghost"
-          size="sm"
-          onClick={handlePrint}
-          renderIcon={(props) => <Printer size={16} {...props} />}
-        />
-      </div>
-    );
-  };
 
   // email button
-  const EmailButtonAction: React.FC = () => {
-    const handleButtonClick = (event: MouseEvent) => {
-      event.preventDefault();
-    };
-    return (
-      <Button
-        kind="ghost"
-        size="sm"
-        onClick={(e) => handleButtonClick(e)}
-        renderIcon={(props) => <MailAll size={16} {...props} />}
-      />
-    );
-  };
 
   // if (encounter) {
   //   return <DataTableSkeleton role="progressbar" />;
@@ -100,8 +47,8 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounter }) => {
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <div></div>
                 <div style={{ display: "flex", flexDirection: "row" }}>
-                  <PrintButtonAction />
-                  <EmailButtonAction />
+                  {/* <PrintButtonAction /> */}
+                  {/* <EmailButtonAction /> */}
                 </div>
               </div>
             </section>
@@ -135,7 +82,7 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounter }) => {
               </div>
             </section>
             <section className={styles.section}>
-              <TestsResults obs={obsData} />
+              {/* <TestsResults obs={obsData} /> */}
             </section>
           </ModalBody>
           {/* <ModalFooter>

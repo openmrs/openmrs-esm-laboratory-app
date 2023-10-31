@@ -41,7 +41,7 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
         </div>
       </section>
       <section className={styles.section}>
-        <TestsPrintResults orders={encounterResponse?.orders} />
+        <TestsPrintResults obs={encounterResponse?.obs} />
       </section>
     </div>
   );

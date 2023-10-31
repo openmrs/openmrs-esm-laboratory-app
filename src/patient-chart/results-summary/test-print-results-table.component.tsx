@@ -16,54 +16,30 @@ import styles from "./results-summary.scss";
 import RescendTestResultActionMenu from "./test-results-rescend-action-menu.component";
 import { Order } from "../laboratory-order.resource";
 import DeleteTestResultActionMenu from "./test-results-delete-action-menu.component";
+import { Ob } from "../laboratory-item/view-laboratory-item.resource";
 
 interface TestOrdersProps {
-  orders: Order[];
+  obs: Ob[];
 }
 
-const TestsPrintResults: React.FC<TestOrdersProps> = ({ orders }) => {
+const TestsPrintResults: React.FC<TestOrdersProps> = ({ obs }) => {
   const { t } = useTranslation();
 
-  let columns = [
-    {
-      id: 0,
-      header: t("orderNo", "OrderNo"),
-      key: "orderNo",
-    },
-    { id: 1, header: t("order", "Order"), key: "order" },
-    {
-      id: 2,
-      header: t("expectedResult", "Expected Results"),
-      key: "expectedResults",
-    },
-    {
-      id: 3,
-      header: t("results", " Results"),
-      key: "results",
-    },
-  ];
-  const [items, setItems] = useState(orders);
+  let columns = [{ id: 1, header: t("order", "Order"), key: "order" }];
+
+  const filteredItems = obs.filter((ob) => ob?.order?.type === "testorder");
 
   const tableRows = useMemo(() => {
-    return items?.map((entry) => ({
+    return filteredItems?.map((entry) => ({
       ...entry,
       id: entry.uuid,
-      orderNo: {
-        content: <span>{entry.orderNumber}</span>,
-      },
       order: {
         content: <span>{entry.display}</span>,
       },
-      expectedResults: {
-        content: <span>--</span>,
-      },
-      results: {
-        content: <span>--</span>,
-      },
     }));
-  }, [items]);
+  }, [filteredItems]);
 
-  if (items?.length >= 0) {
+  if (filteredItems?.length >= 0) {
     return (
       <div>
         <DataTable rows={tableRows} headers={columns} useZebraStyles>

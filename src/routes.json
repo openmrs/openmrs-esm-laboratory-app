@@ -55,6 +55,10 @@
     {
       "name":"edit-results-dialog",
       "component": "editResultsDialog"
+    },
+    {
+      "name":"send-email-dialog",
+      "component": "sendEmailDialog"
     }
   ]
 }

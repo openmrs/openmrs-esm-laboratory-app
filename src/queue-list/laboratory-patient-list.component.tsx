@@ -58,7 +58,7 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
 
   const { patientQueueEntries, isLoading } = usePatientQueuesList(
     session?.sessionLocation?.uuid,
-    status
+    "pending"
   );
 
   const pageSizes = [10, 20, 30, 40, 50];
