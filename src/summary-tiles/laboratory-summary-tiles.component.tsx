@@ -9,7 +9,7 @@ const LaboratorySummaryTiles: React.FC = () => {
   const { t } = useTranslation();
   const { metrics, isError, isLoading } = useMetrics();
 
-  if (isLoading) {
+  if (isLoading || isError) {
     return <DataTableSkeleton role="progressbar" />;
   }
 
