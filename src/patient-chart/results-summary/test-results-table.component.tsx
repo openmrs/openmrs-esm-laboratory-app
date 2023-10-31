@@ -132,15 +132,11 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
                     <div className={styles.tileContent}>
                       <p className={styles.content}>
                         {t(
-                          "noTestOrdersToDisplay",
-                          "No test orders to display"
+                          "noTestResultsToDisplay",
+                          "No test results to display"
                         )}
                       </p>
-                      <p className={styles.helper}>
-                        {t("checkFilters", "Check the filters above")}
-                      </p>
                     </div>
-                    <p className={styles.separator}>{t("or", "or")}</p>
                   </Tile>
                 </div>
               ) : null}
