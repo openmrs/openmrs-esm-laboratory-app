@@ -98,7 +98,7 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
           <div>
             <span style={{ fontSize: "18px", fontWeight: "bold" }}>
               {" "}
-              Test Result
+              Test Results
             </span>
           </div>
           <div></div>
