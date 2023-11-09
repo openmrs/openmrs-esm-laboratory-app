@@ -40,11 +40,9 @@ const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
           {Object.keys(groupedResults).map((test) => (
             <tr key={test}>
               <td>{test}</td>
-              <td>
-                <table>
-                  <RowTest groupMembers={groupedResults[test].groupMembers} />
-                </table>
-              </td>
+              <table>
+                <RowTest groupMembers={groupedResults[test].groupMembers} />
+              </table>
             </tr>
           ))}
         </tbody>
