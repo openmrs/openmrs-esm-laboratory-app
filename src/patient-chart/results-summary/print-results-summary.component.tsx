@@ -64,7 +64,9 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
           }}
         >
           <img src={logoImg} alt={"logo"} width={150} height={150} />
-          <h4>{encounterResponse.visit.location.display}</h4>
+          <span style={{ margin: "2px", fontSize: "20px", fontWeight: "bold" }}>
+            {encounterResponse.visit.location.display}
+          </span>
         </div>
       </section>
 
@@ -76,10 +78,10 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
           }}
         >
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ margin: "5px" }}>
+            <span style={{ margin: "5px", fontSize: "10px" }}>
               Name : {patient?.person?.display}
             </span>
-            <span style={{ margin: "5px" }}>
+            <span style={{ margin: "5px", fontSize: "10px" }}>
               Gender :
               {patient?.person?.gender === "M"
                 ? " Male"
@@ -87,19 +89,19 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
                 ? "Female"
                 : "Unknown"}
             </span>
-            <span style={{ margin: "5px" }}>
+            <span style={{ margin: "5px", fontSize: "10px" }}>
               Age : {patient?.person?.age} years
             </span>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ margin: "5px" }}>
+            <span style={{ margin: "5px", fontSize: "10px" }}>
               Clinician : {encounterResponse?.auditInfo?.creator?.display}
             </span>
-            <span style={{ margin: "5px" }}>
+            <span style={{ margin: "5px", fontSize: "10px" }}>
               Prepared By : {encounterResponse?.auditInfo?.creator?.display}
             </span>
-            <span style={{ margin: "5px" }}>
+            <span style={{ margin: "5px", fontSize: "10px" }}>
               Date :
               {formatDate(parseDate(encounterResponse.encounterDatetime), {
                 time: false,
@@ -117,7 +119,7 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
           }}
         >
           <div>
-            <span style={{ fontSize: "18px", fontWeight: "bold" }}>
+            <span style={{ fontSize: "16px", fontWeight: "bold" }}>
               Test Results
             </span>
           </div>
