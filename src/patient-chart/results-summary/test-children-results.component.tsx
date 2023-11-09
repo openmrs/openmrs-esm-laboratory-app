@@ -66,8 +66,6 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
     }));
   }, [members]);
 
-  console.info("results--->", JSON.stringify(results, null, 2));
-
   if (members === undefined) {
     return <span>No Data</span>;
   }
@@ -92,7 +90,7 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
         ) : (
           <div>
             <span>{concept?.lowNormal}</span> : <span>{concept?.hiNormal}</span>
-            <span>{concept?.units}</span>
+            {"  "} <span>{concept?.units}</span>
           </div>
         )}
       </TableCell>

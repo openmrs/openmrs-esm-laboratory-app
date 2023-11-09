@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "./print-results-summary.scss";
-import { ErrorState } from "@openmrs/esm-framework";
 import { GroupMember } from "../laboratory-order.resource";
 
 interface PrintResultsTableProps {
@@ -20,7 +19,21 @@ const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
         {groupMembers?.map((element, index) => {
           return (
             <tr key={index}>
-              <td>{element?.display}</td>
+              {typeof element.value === "number" ? (
+                <>
+                  <td>{element?.concept.display}</td>
+
+                  <td>{element?.value}</td>
+                </>
+              ) : typeof element.value === "object" ? (
+                <>
+                  <td>{element?.concept.display}</td>
+
+                  <td>{element?.value.display}</td>
+                </>
+              ) : (
+                <td>{element?.display}</td>
+              )}
             </tr>
           );
         })}
