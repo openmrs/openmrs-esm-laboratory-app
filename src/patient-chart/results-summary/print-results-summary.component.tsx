@@ -54,21 +54,20 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
   }, [filteredItems]);
   return (
     <div className={styles.printPage}>
-      <section className={styles.section}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <img src={logoImg} alt={"logo"} width={150} height={150} />
-          <span style={{ margin: "2px", fontSize: "20px", fontWeight: "bold" }}>
-            {encounterResponse.visit.location.display}
-          </span>
-        </div>
-      </section>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+          margin: "5px",
+        }}
+      >
+        <img src={logoImg} alt={"logo"} width={150} height={150} />
+        <span style={{ fontSize: "20px", fontWeight: "bold" }}>
+          {encounterResponse.visit.location.display}
+        </span>
+      </div>
 
       <section className={styles.section}>
         <div
