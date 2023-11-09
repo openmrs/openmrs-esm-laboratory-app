@@ -81,6 +81,7 @@ export interface ParentLocation {
   display: string;
 }
 
+// get queue rooms
 export function useQueueRoomLocations(currentQueueLocation: string) {
   const apiUrl = `/ws/rest/v1/location/${currentQueueLocation}?v=full`;
   const { data, error, isLoading } = useSWR<{ data: QueueRoomsResponse }>(
@@ -119,8 +120,36 @@ export function useSpecimenTypes() {
 }
 
 // generate specimen id
-export function useGenerateSampleID() {
-  return {
-    sampleID: {},
-  };
+export async function GenerateSpecimenId(uuid: string) {
+  const abortController = new AbortController();
+  return openmrsFetch(`/ws/rest/v1/generatesampleId?uuid=${uuid}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    signal: abortController.signal,
+  });
+}
+
+// update Order
+export async function UpdateOrder(uuid: string, body: any) {
+  const abortController = new AbortController();
+  return openmrsFetch(`/ws/rest/v1/fulfillerdetails/${uuid}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    signal: abortController.signal,
+    body: body,
+  });
+}
+
+export async function GetOrderByUuid(uuid: string) {
+  const abortController = new AbortController();
+  return openmrsFetch(`/ws/rest/v1/order/${uuid}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    signal: abortController.signal,
+  });
 }

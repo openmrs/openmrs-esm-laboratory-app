@@ -32,6 +32,8 @@ const LaboratoryQueueTabs: React.FC = () => {
             <Tab>{t("worklist", "Worklist")}</Tab>
             <Tab>{t("referredTests", "Referred tests")}</Tab>
             <Tab>{t("completedTests", "Completed tests")}</Tab>
+            <Tab>{t("reviewList", "Review List")}</Tab>
+            <Tab>{t("approveList", "Approval List")}</Tab>
           </TabList>
           <TabPanels>
             <TabPanel style={{ padding: 0 }}>
@@ -61,6 +63,24 @@ const LaboratoryQueueTabs: React.FC = () => {
                 <EmptyState
                   displayText={"completed test"}
                   headerTitle={"Completed tests"}
+                />
+              </div>
+            </TabPanel>
+            <TabPanel style={{ padding: 0 }}>
+              <div>
+                <div className={styles.headerBtnContainer}></div>
+                <EmptyState
+                  displayText={"reviewList"}
+                  headerTitle={"Review List"}
+                />
+              </div>
+            </TabPanel>
+            <TabPanel style={{ padding: 0 }}>
+              <div>
+                <div className={styles.headerBtnContainer}></div>
+                <EmptyState
+                  displayText={"approve list"}
+                  headerTitle={"Approval List"}
                 />
               </div>
             </TabPanel>

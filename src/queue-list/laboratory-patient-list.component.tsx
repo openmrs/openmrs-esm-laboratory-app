@@ -38,8 +38,6 @@ import {
   trimVisitNumber,
 } from "../utils/functions";
 import LabTests from "./lab-tests/lab-tests.component";
-import AddToWorklist from "./lab-dialogs/add-to-worklist-dialog.component";
-import PickLabRequestActionMenu from "./pick-lab-request-menu.component";
 import { EmptyState } from "@openmrs/esm-patient-common-lib";
 
 // type FilterProps = {
@@ -78,12 +76,12 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     { id: 2, header: t("age", "Age"), key: "age" },
     { id: 3, header: t("orderedFrom", "Ordered from"), key: "orderedFrom" },
     { id: 4, header: t("waitingTime", "Waiting time"), key: "waitingTime" },
-    { id: 5, header: t("actions", "Actions"), key: "actions" },
   ];
 
   const tableRows = useMemo(() => {
     return paginatedQueueEntries?.map((entry) => ({
       ...entry,
+      encounter: entry.encounter,
       visitId: {
         content: <span>{trimVisitNumber(entry.visitNumber)}</span>,
       },
@@ -106,14 +104,6 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
               {formatWaitTime(entry.waitTime, t)}
             </span>
           </Tag>
-        ),
-      },
-      actions: {
-        content: (
-          <PickLabRequestActionMenu
-            queueEntry={entry}
-            closeModal={() => true}
-          />
         ),
       },
     }));
@@ -159,6 +149,7 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
   }
+
   if (patientQueueEntries?.length) {
     return (
       <div>
@@ -222,7 +213,9 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
                             colSpan={headers.length + 2}
                           >
                             <>
-                              <LabTests />
+                              <LabTests
+                                encounter={patientQueueEntries[index].encounter}
+                              />
                             </>
                           </TableExpandedRow>
                         ) : (

@@ -27,6 +27,7 @@ import logoImg from "../../../assets/logo/logo.png";
 import { PatientResource, useGetPatientByUuid } from "../../utils/functions";
 import { useTranslation } from "react-i18next";
 import TestResultsChildren from "./test-children-results.component";
+import PrintResultsTable from "./print-results-table.component";
 
 interface PrintResultsSummaryProps {
   encounterResponse: EncounterResponse;
@@ -39,52 +40,72 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  let columns = [
-    { id: 1, header: t("order", "Order"), key: "order" },
-    { id: 2, header: t("results", "Results"), key: "result" },
-  ];
-
   const filteredItems = encounterResponse.obs.filter(
     (ob) => ob?.order?.type === "testorder"
   );
 
-  const tableRows = useMemo(() => {
-    return filteredItems?.map((entry) => ({
-      ...entry,
-      id: entry.uuid,
-      order: {
-        content: <span>{entry.display}</span>,
-      },
-      result: {
-        content: <span>--</span>,
-      },
-    }));
+  const results = useMemo(() => {
+    let groupedResults = [];
+
+    filteredItems.forEach((element) => {
+      groupedResults[element.order.display] = element;
+    });
+    return groupedResults;
   }, [filteredItems]);
   return (
     <div className={styles.printPage}>
       <section className={styles.section}>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <img src={logoImg} alt={"logo"} width={150} height={150} />
+          <h4>{encounterResponse.visit.location.display}</h4>
         </div>
       </section>
 
       <section className={styles.section}>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <span style={{ margin: "5px" }}>
-            Patient Name : {patient?.person?.display}
-          </span>{" "}
-          <span style={{ margin: "5px" }}>
-            Patient Gender : {patient?.person?.gender}
-          </span>{" "}
-          <span style={{ margin: "5px" }}>
-            Patient Age : {patient?.person?.age}
-          </span>{" "}
-          <span style={{ margin: "5px" }}>
-            Date :
-            {formatDate(parseDate(encounterResponse.encounterDatetime), {
-              time: false,
-            })}
-          </span>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <span style={{ margin: "5px" }}>
+              Name : {patient?.person?.display}
+            </span>
+            <span style={{ margin: "5px" }}>
+              Gender :
+              {patient?.person?.gender === "M"
+                ? " Male"
+                : patient?.person?.gender === "F"
+                ? "Female"
+                : "Unknown"}
+            </span>
+            <span style={{ margin: "5px" }}>
+              Age : {patient?.person?.age} years
+            </span>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <span style={{ margin: "5px" }}>
+              Clinician : {encounterResponse?.auditInfo?.creator?.display}
+            </span>
+            <span style={{ margin: "5px" }}>
+              Prepared By : {encounterResponse?.auditInfo?.creator?.display}
+            </span>
+            <span style={{ margin: "5px" }}>
+              Date :
+              {formatDate(parseDate(encounterResponse.encounterDatetime), {
+                time: false,
+              })}
+            </span>
+          </div>
         </div>
       </section>
       <section className={styles.section}>
@@ -97,7 +118,6 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
         >
           <div>
             <span style={{ fontSize: "18px", fontWeight: "bold" }}>
-              {" "}
               Test Results
             </span>
           </div>
@@ -105,86 +125,9 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
         </div>
       </section>
       <section className={styles.section}>
-        {/* <TestsPrintResults obs={encounterResponse?.obs} /> */}
-        <div>
-          <DataTable
-            rows={tableRows}
-            headers={columns}
-            useZebraStyles
-            experimentalAutoAlign={true}
-          >
-            {({
-              rows,
-              headers,
-              getHeaderProps,
-              getTableProps,
-              getRowProps,
-            }) => (
-              <TableContainer className={styles.tableContainer}>
-                <Table
-                  {...getTableProps()}
-                  className={styles.activePatientsTable}
-                >
-                  <TableHead>
-                    <TableRow>
-                      {headers.map((header) => (
-                        <TableHeader {...getHeaderProps({ header })}>
-                          {header.header}
-                        </TableHeader>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row, index) => {
-                      return (
-                        <React.Fragment key={row.id}>
-                          <TableRow {...getRowProps({ row })}>
-                            {row.cells.map((cell) => (
-                              <TableCell key={cell.id}>
-                                {cell.value?.content ?? cell.value}
-                              </TableCell>
-                            ))}
-                          </TableRow>
-                        </React.Fragment>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-                {rows.length === 0 ? (
-                  <div className={styles.tileContainer}>
-                    <Tile className={styles.tile}>
-                      <div className={styles.tileContent}>
-                        <p className={styles.content}>
-                          {t(
-                            "noTestResultsToDisplay",
-                            "No test results to display"
-                          )}
-                        </p>
-                      </div>
-                    </Tile>
-                  </div>
-                ) : null}
-                {/* <Pagination
-                forwardText="Next page"
-                backwardText="Previous page"
-                page={currentPage}
-                pageSize={currentPageSize}
-                pageSizes={pageSizes}
-                totalItems={patientQueueEntries?.length}
-                className={styles.pagination}
-                onChange={({ pageSize, page }) => {
-                  if (pageSize !== currentPageSize) {
-                    setPageSize(pageSize);
-                  }
-                  if (page !== currentPage) {
-                    goTo(page);
-                  }
-                }}
-              /> */}
-              </TableContainer>
-            )}
-          </DataTable>
-        </div>
+        {Object.keys(results).length > 0 && (
+          <PrintResultsTable groupedResults={results} />
+        )}
       </section>
     </div>
   );

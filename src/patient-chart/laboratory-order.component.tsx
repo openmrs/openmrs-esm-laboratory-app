@@ -96,10 +96,10 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   let columns = [
     {
       id: 0,
-      header: t("orderDate", "Order Date"),
+      header: t("orderDate", "Test Date"),
       key: "orderDate",
     },
-    { id: 1, header: t("orders", "Order"), key: "orders" },
+    { id: 1, header: t("tests", "Tests"), key: "orders" },
     { id: 2, header: t("location", "Location"), key: "location" },
     { id: 3, header: t("status", "Status"), key: "status" },
     { id: 4, header: t("actions", "Action"), key: "actions" },
