@@ -8,12 +8,14 @@ import { MappedPatientQueueEntry } from "./laboratory-patient-list.resource";
 import { Encounter, Order } from "../types/patient-queues";
 
 interface PickLabRequestActionMenuProps {
+  queueId: string;
   encounter: Encounter;
   order: Order;
   closeModal: () => void;
 }
 
 const PickLabRequestActionMenu: React.FC<PickLabRequestActionMenuProps> = ({
+  queueId,
   encounter,
   order,
 }) => {
@@ -22,10 +24,11 @@ const PickLabRequestActionMenu: React.FC<PickLabRequestActionMenuProps> = ({
   const launchPickLabRequestQueueModal = useCallback(() => {
     const dispose = showModal("add-to-worklist-dialog", {
       closeModal: () => dispose(),
+      queueId,
       encounter,
       order,
     });
-  }, [encounter, order]);
+  }, [encounter, order, queueId]);
 
   return (
     <Tooltip align="top" label="Pick Lab Request">

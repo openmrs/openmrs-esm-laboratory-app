@@ -30,9 +30,10 @@ import PickLabRequestActionMenu from "../pick-lab-request-menu.component";
 
 interface LabTestsProps {
   encounter: Encounter;
+  queueId: string;
 }
 
-const LabTests: React.FC<LabTestsProps> = ({ encounter }) => {
+const LabTests: React.FC<LabTestsProps> = ({ encounter, queueId }) => {
   const { t } = useTranslation();
   // console.info(encounter);
   let columns = [
@@ -62,11 +63,12 @@ const LabTests: React.FC<LabTestsProps> = ({ encounter }) => {
             closeModal={() => true}
             order={item}
             encounter={encounter}
+            queueId={queueId}
           />
         ),
       },
     }));
-  }, [encounter]);
+  }, [encounter, queueId]);
 
   if (!encounter) {
     return (

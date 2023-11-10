@@ -215,6 +215,7 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
                             <>
                               <LabTests
                                 encounter={patientQueueEntries[index].encounter}
+                                queueId={paginatedQueueEntries[index].uuid}
                               />
                             </>
                           </TableExpandedRow>

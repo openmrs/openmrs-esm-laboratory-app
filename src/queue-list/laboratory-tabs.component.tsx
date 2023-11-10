@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import styles from "./laboratory-queue.scss";
 import LaboratoryPatientList from "./laboratory-patient-list.component";
 import { EmptyState } from "@openmrs/esm-patient-common-lib";
+import WorkList from "../work-list/work-list.component";
 
 enum TabTypes {
   STARRED,
@@ -40,13 +41,11 @@ const LaboratoryQueueTabs: React.FC = () => {
               <LaboratoryPatientList />
             </TabPanel>
             <TabPanel style={{ padding: 0 }}>
-              <div>
-                <div className={styles.headerBtnContainer}></div>
-                <EmptyState
-                  displayText={"worklists"}
-                  headerTitle={"Worklist"}
-                />
-              </div>
+              <WorkList
+                careSetting={"6f0c9a92-6f24-11e3-af88-005056821db0"}
+                activatedOnOrAfterDate={"2023-11-04 00:00:00"}
+                fulfillerStatus={"IN_PROGRESS"}
+              />
             </TabPanel>
             <TabPanel style={{ padding: 0 }}>
               <div>

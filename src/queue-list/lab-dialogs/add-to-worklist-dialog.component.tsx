@@ -37,12 +37,14 @@ import {
 import { Encounter, Order } from "../../types/patient-queues";
 
 interface AddToWorklistDialogProps {
+  queueId;
   encounter: Encounter;
   order: Order;
   closeModal: () => void;
 }
 
 const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
+  queueId,
   encounter,
   order,
   closeModal,
@@ -110,8 +112,10 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
     event.preventDefault();
     // pick lab test
     let body = {
-      accessionNumber: specimenID,
-      specimenSource: specimenType,
+      sampleId: specimenID,
+      specimenSourceId: specimenType,
+      unProcessedOrders: "",
+      patientQueueId: queueId,
     };
 
     UpdateOrder(order.uuid, body).then(
@@ -125,6 +129,7 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
             "You have successfully picked an Order"
           ),
         });
+        closeModal();
       },
       (error) => {
         showNotification({
