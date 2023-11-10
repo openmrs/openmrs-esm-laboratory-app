@@ -24,12 +24,20 @@ const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
                   <td>{element?.concept.display}</td>
 
                   <td>{element?.value}</td>
+
+                  <td>--</td>
+
+                  <td>--</td>
                 </>
               ) : typeof element.value === "object" ? (
                 <>
                   <td>{element?.concept.display}</td>
 
                   <td>{element?.value.display}</td>
+
+                  <td>--</td>
+
+                  <td>--</td>
                 </>
               ) : (
                 <td>{element?.display}</td>
@@ -45,15 +53,23 @@ const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
       <table>
         <thead>
           <tr>
-            <th>Tests Requested</th>
-            <th>Results</th>
+            <th>Tests</th>
+            <th>Result</th>
+            <th>Reference Range</th>
+            <th>Units</th>
           </tr>
         </thead>
+      </table>
+      <table>
         <tbody>
           {Object.keys(groupedResults).map((test) => (
-            <tr key={test}>
-              <td>{test}</td>
-              <table>
+            <tr key={test} style={{ margin: "10px" }}>
+              <span
+                style={{ margin: "10px", fontSize: "8px", fontWeight: "bold" }}
+              >
+                {test}
+              </span>
+              <table style={{ margin: "10px" }}>
                 <RowTest groupMembers={groupedResults[test].groupMembers} />
               </table>
             </tr>
