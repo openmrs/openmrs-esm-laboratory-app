@@ -2,6 +2,7 @@ import React from "react";
 import { LaboratoryHeader } from "./header/laboratory-header.component";
 import LaboratorySummaryTiles from "./summary-tiles/laboratory-summary-tiles.component";
 import LaboratoryQueueList from "./queue-list/laboratory-tabs.component";
+import Overlay from "./components/overlay/overlay.component";
 
 const Laboratory: React.FC = () => {
   return (
@@ -9,6 +10,7 @@ const Laboratory: React.FC = () => {
       <LaboratoryHeader />
       <LaboratorySummaryTiles />
       <LaboratoryQueueList />
+      <Overlay />
     </div>
   );
 };

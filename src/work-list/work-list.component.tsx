@@ -1,6 +1,8 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, AnchorHTMLAttributes } from "react";
 import { useTranslation } from "react-i18next";
 import { EmptyState, ErrorState } from "@openmrs/esm-patient-common-lib";
+import { Microscope } from "@carbon/react/icons";
+
 import {
   DataTable,
   DataTableHeader,
@@ -22,10 +24,13 @@ import {
   Layer,
   Tag,
   TableExpandedRow,
+  Button,
 } from "@carbon/react";
 import { useGetOrdersWorklist } from "./work-list.resource";
 import styles from "./work-list.scss";
 import { usePagination } from "@openmrs/esm-framework";
+import { launchOverlay } from "../components/overlay/hook";
+import ResultForm from "../results/result-form.component";
 
 interface WorklistProps {
   careSetting: string;
@@ -73,6 +78,18 @@ const WorkList: React.FC<WorklistProps> = ({
     { id: 7, header: t("actions", "Actions"), key: "actions" },
   ];
 
+  const ResultsOrder: React.FC = () => {
+    return (
+      <Button
+        kind="ghost"
+        onClick={() => {
+          launchOverlay(t("resultForm", "Result  Test"), <ResultForm />);
+        }}
+        renderIcon={(props) => <Microscope size={16} {...props} />}
+      />
+    );
+  };
+
   const tableRows = useMemo(() => {
     return paginatedWorkListEntries?.map((entry) => ({
       ...entry,
@@ -84,8 +101,9 @@ const WorkList: React.FC<WorklistProps> = ({
       orderer: { content: <span>{entry.orderer.display}</span> },
       orderType: { content: <span>{entry.orderType.display}</span> },
       urgency: { content: <span>{entry.urgency}</span> },
+      actions: { content: <ResultsOrder /> },
     }));
-  }, [paginatedWorkListEntries]);
+  }, [ResultsOrder, paginatedWorkListEntries]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;

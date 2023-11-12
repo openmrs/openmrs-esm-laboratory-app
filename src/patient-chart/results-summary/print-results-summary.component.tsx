@@ -210,13 +210,12 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
             flexDirection: "row",
           }}
         >
-          <span style={{ fontSize: "14px" }}>
+          <span style={{ fontSize: "14px", marginBottom: "10px" }}>
             Results Reviewed / Authorized by :
             <span style={{ marginLeft: "50px" }}>
               {encounterResponse?.auditInfo?.creator?.display}
             </span>
           </span>
-          <span> </span>
         </div>
         <div
           style={{
@@ -226,11 +225,11 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
             flexDirection: "row",
           }}
         >
-          <span style={{ fontSize: "14px" }}>
-            Sign : ............................
-          </span>
-          <span style={{ fontSize: "14px", marginLeft: "50px" }}>
-            Date : ............................
+          <span style={{ fontSize: "14px", marginTop: "10px" }}>
+            Sign : .............................................{" "}
+            <span style={{ fontSize: "14px", marginLeft: "50px" }}>
+              Date : ............................
+            </span>
           </span>
         </div>
       </section>
