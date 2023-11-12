@@ -38,6 +38,10 @@ interface WorklistProps {
   fulfillerStatus: string;
 }
 
+interface ResultsOrderProps {
+  patientUuid: string;
+}
+
 const WorkList: React.FC<WorklistProps> = ({
   careSetting,
   activatedOnOrAfterDate,
@@ -78,12 +82,15 @@ const WorkList: React.FC<WorklistProps> = ({
     { id: 7, header: t("actions", "Actions"), key: "actions" },
   ];
 
-  const ResultsOrder: React.FC = () => {
+  const ResultsOrder: React.FC<ResultsOrderProps> = ({ patientUuid }) => {
     return (
       <Button
         kind="ghost"
         onClick={() => {
-          launchOverlay(t("resultForm", "Result  Test"), <ResultForm />);
+          launchOverlay(
+            t("resultForm", "Result  Test"),
+            <ResultForm patientUuid={patientUuid} />
+          );
         }}
         renderIcon={(props) => <Microscope size={16} {...props} />}
       />
@@ -101,7 +108,7 @@ const WorkList: React.FC<WorklistProps> = ({
       orderer: { content: <span>{entry.orderer.display}</span> },
       orderType: { content: <span>{entry.orderType.display}</span> },
       urgency: { content: <span>{entry.urgency}</span> },
-      actions: { content: <ResultsOrder /> },
+      actions: { content: <ResultsOrder patientUuid={entry.patient.uuid} /> },
     }));
   }, [ResultsOrder, paginatedWorkListEntries]);
 
