@@ -26,7 +26,7 @@ import {
   TableExpandedRow,
   Button,
 } from "@carbon/react";
-import { useGetOrdersWorklist } from "./work-list.resource";
+import { Result, useGetOrdersWorklist } from "./work-list.resource";
 import styles from "./work-list.scss";
 import { usePagination } from "@openmrs/esm-framework";
 import { launchOverlay } from "../components/overlay/hook";
@@ -39,6 +39,7 @@ interface WorklistProps {
 }
 
 interface ResultsOrderProps {
+  order: Result;
   patientUuid: string;
 }
 
@@ -82,14 +83,17 @@ const WorkList: React.FC<WorklistProps> = ({
     { id: 7, header: t("actions", "Actions"), key: "actions" },
   ];
 
-  const ResultsOrder: React.FC<ResultsOrderProps> = ({ patientUuid }) => {
+  const ResultsOrder: React.FC<ResultsOrderProps> = ({
+    order,
+    patientUuid,
+  }) => {
     return (
       <Button
         kind="ghost"
         onClick={() => {
           launchOverlay(
-            t("resultForm", "Result  Test"),
-            <ResultForm patientUuid={patientUuid} />
+            t("resultForm", "Result  Tests"),
+            <ResultForm patientUuid={patientUuid} order={order} />
           );
         }}
         renderIcon={(props) => <Microscope size={16} {...props} />}
@@ -98,7 +102,7 @@ const WorkList: React.FC<WorklistProps> = ({
   };
 
   const tableRows = useMemo(() => {
-    return paginatedWorkListEntries?.map((entry) => ({
+    return paginatedWorkListEntries?.map((entry, index) => ({
       ...entry,
       id: entry.uuid,
       orderNumber: { content: <span>{entry.orderNumber}</span> },
@@ -108,7 +112,14 @@ const WorkList: React.FC<WorklistProps> = ({
       orderer: { content: <span>{entry.orderer.display}</span> },
       orderType: { content: <span>{entry.orderType.display}</span> },
       urgency: { content: <span>{entry.urgency}</span> },
-      actions: { content: <ResultsOrder patientUuid={entry.patient.uuid} /> },
+      actions: {
+        content: (
+          <ResultsOrder
+            patientUuid={entry.patient.uuid}
+            order={paginatedWorkListEntries[index]}
+          />
+        ),
+      },
     }));
   }, [ResultsOrder, paginatedWorkListEntries]);
 
