@@ -120,21 +120,33 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // assign value to test
+    let groupMembers = [];
     let obsValue = [];
+    const ob = {
+      concept: { uuid: order.concept.uuid },
+      status: "FINAL",
+      order: { uuid: order.uuid },
+      groupMembers: groupMembers,
+    };
     concept.forEach((item) => {
-      const ob = {
-        concept: order.concept.uuid,
-        value: inputValues[`${item.uuid}`],
+      const groupMember = {
+        concept: { uuid: item.uuid },
+        value: {
+          uuid: inputValues[`${item.uuid}`],
+        },
         status: "FINAL",
-        order: order.uuid,
+        order: { uuid: order.uuid },
       };
-      obsValue.push(ob);
+      groupMembers.push(groupMember);
     });
+    obsValue.push(ob);
 
     const payload = {
       obs: obsValue,
     };
     setIsSubmitting(true);
+
+    console.info("payload--->", payload);
     // update encounter
     UpdateEncounter(order.encounter.uuid, payload).then(
       () => {
