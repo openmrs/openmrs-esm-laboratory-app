@@ -17,6 +17,7 @@ import {
   TableToolbarContent,
   TableToolbarSearch,
   Layer,
+  Tile,
 } from "@carbon/react";
 
 import styles from "./review-list.scss";
@@ -91,7 +92,7 @@ const ReviewList: React.FC<ReviewlistProps> = ({
     );
   }
 
-  if (paginatedWorkListEntries?.length) {
+  if (paginatedWorkListEntries?.length >= 0) {
     return (
       <div>
         <div className={styles.headerBtnContainer}></div>
@@ -152,6 +153,20 @@ const ReviewList: React.FC<ReviewlistProps> = ({
                   })}
                 </TableBody>
               </Table>
+              {rows.length === 0 ? (
+                <div className={styles.tileContainer}>
+                  <Tile className={styles.tile}>
+                    <div className={styles.tileContent}>
+                      <p className={styles.content}>
+                        {t(
+                          "noReviewListToDisplay",
+                          "No review list to display"
+                        )}
+                      </p>
+                    </div>
+                  </Tile>
+                </div>
+              ) : null}
               <Pagination
                 forwardText="Next page"
                 backwardText="Previous page"

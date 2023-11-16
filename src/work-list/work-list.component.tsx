@@ -25,6 +25,7 @@ import {
   Tag,
   TableExpandedRow,
   Button,
+  Tile,
 } from "@carbon/react";
 import { Result, useGetOrdersWorklist } from "./work-list.resource";
 import styles from "./work-list.scss";
@@ -135,7 +136,7 @@ const WorkList: React.FC<WorklistProps> = ({
     );
   }
 
-  if (paginatedWorkListEntries?.length) {
+  if (paginatedWorkListEntries?.length >= 0) {
     return (
       <div>
         <div className={styles.headerBtnContainer}></div>
@@ -196,6 +197,20 @@ const WorkList: React.FC<WorklistProps> = ({
                   })}
                 </TableBody>
               </Table>
+              {rows.length === 0 ? (
+                <div className={styles.tileContainer}>
+                  <Tile className={styles.tile}>
+                    <div className={styles.tileContent}>
+                      <p className={styles.content}>
+                        {t(
+                          "noWorklistsToDisplay",
+                          "No workists orders to display"
+                        )}
+                      </p>
+                    </div>
+                  </Tile>
+                </div>
+              ) : null}
               <Pagination
                 forwardText="Next page"
                 backwardText="Previous page"

@@ -17,6 +17,7 @@ import {
   TableToolbarContent,
   TableToolbarSearch,
   Layer,
+  Tile,
 } from "@carbon/react";
 import styles from "./completed-list.scss";
 
@@ -152,6 +153,20 @@ const CompletedList: React.FC<CompletedlistProps> = ({
                   })}
                 </TableBody>
               </Table>
+              {rows.length === 0 ? (
+                <div className={styles.tileContainer}>
+                  <Tile className={styles.tile}>
+                    <div className={styles.tileContent}>
+                      <p className={styles.content}>
+                        {t(
+                          "noCompletedListToDisplay",
+                          "No Completed List to display"
+                        )}
+                      </p>
+                    </div>
+                  </Tile>
+                </div>
+              ) : null}
               <Pagination
                 forwardText="Next page"
                 backwardText="Previous page"
