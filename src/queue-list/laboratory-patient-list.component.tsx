@@ -20,6 +20,7 @@ import {
   Layer,
   Tag,
   TableExpandedRow,
+  Tile,
 } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import {
@@ -150,7 +151,7 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     return <DataTableSkeleton role="progressbar" />;
   }
 
-  if (patientQueueEntries?.length) {
+  if (patientQueueEntries?.length >= 0) {
     return (
       <div>
         <div className={styles.headerBtnContainer}></div>
@@ -230,6 +231,20 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
                   })}
                 </TableBody>
               </Table>
+              {rows.length === 0 ? (
+                <div className={styles.tileContainer}>
+                  <Tile className={styles.tile}>
+                    <div className={styles.tileContent}>
+                      <p className={styles.content}>
+                        {t(
+                          "noWorklistsToDisplay",
+                          "No workists orders to display"
+                        )}
+                      </p>
+                    </div>
+                  </Tile>
+                </div>
+              ) : null}
               <Pagination
                 forwardText="Next page"
                 backwardText="Previous page"
@@ -253,13 +268,6 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
       </div>
     );
   }
-
-  return (
-    <div>
-      <div className={styles.headerBtnContainer}></div>
-      <EmptyState displayText={"Tests Ordered"} headerTitle={"Tests Ordered"} />
-    </div>
-  );
 };
 
 export default LaboratoryPatientList;

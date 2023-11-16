@@ -26,6 +26,10 @@ import {
   TableExpandedRow,
   Button,
   Tile,
+  DatePicker,
+  DatePickerInput,
+  Select,
+  SelectItem,
 } from "@carbon/react";
 import { Result, useGetOrdersWorklist } from "./work-list.resource";
 import styles from "./work-list.scss";
@@ -34,8 +38,6 @@ import { launchOverlay } from "../components/overlay/hook";
 import ResultForm from "../results/result-form.component";
 
 interface WorklistProps {
-  careSetting: string;
-  activatedOnOrAfterDate: string;
   fulfillerStatus: string;
 }
 
@@ -44,14 +46,18 @@ interface ResultsOrderProps {
   patientUuid: string;
 }
 
-const WorkList: React.FC<WorklistProps> = ({
-  careSetting,
-  activatedOnOrAfterDate,
-  fulfillerStatus,
-}) => {
+const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
   const { t } = useTranslation();
 
-  const { workListEntries, isLoading, isError } = useGetOrdersWorklist(
+  const [careSetting, setCareSetting] = useState();
+
+  const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState();
+
+  const [selectedCareSetting, setSelectedCareSetting] = useState();
+
+  const careSettings = ["INPATIENT", "OUTPATIENT"];
+
+  const { workListEntries, isLoading } = useGetOrdersWorklist(
     careSetting,
     activatedOnOrAfterDate,
     fulfillerStatus
@@ -127,14 +133,6 @@ const WorkList: React.FC<WorklistProps> = ({
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
   }
-  if (isError) {
-    return (
-      <ErrorState
-        error={`Error returning worklist` + isError.message}
-        headerTitle={"Worklist Error"}
-      />
-    );
-  }
 
   if (paginatedWorkListEntries?.length >= 0) {
     return (
@@ -159,6 +157,45 @@ const WorkList: React.FC<WorklistProps> = ({
                 }}
               >
                 <TableToolbarContent>
+                  <Layer>
+                    <Select
+                      labelText={t("selectCareSetting", "Select CareSetting")}
+                      id="care-setting"
+                      invalidText="Required"
+                      value={careSetting}
+                      onChange={(event) => setCareSetting(event.target.value)}
+                    >
+                      {!selectedCareSetting ? (
+                        <SelectItem
+                          text={t("selectCareSetting", "Select CareSetting")}
+                          value=""
+                        />
+                      ) : null}
+                      {careSettings?.length > 0 &&
+                        careSettings.map((careSetting) => (
+                          <SelectItem
+                            key={careSetting}
+                            text={careSetting}
+                            value={careSetting}
+                          >
+                            {careSetting}
+                          </SelectItem>
+                        ))}
+                    </Select>
+                  </Layer>
+                  <Layer>
+                    <DatePicker datePickerType="single">
+                      <DatePickerInput
+                        id="activatedOnOrAfterDate"
+                        placeholder="mm/dd/yyyy"
+                        labelText={t("dateActivated", "Date Activated")}
+                        onChange={(event) =>
+                          setActivatedOnOrAfterDate(event.target.value)
+                        }
+                        type="date"
+                      />
+                    </DatePicker>
+                  </Layer>
                   <Layer>
                     <TableToolbarSearch
                       onChange={onInputChange}

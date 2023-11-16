@@ -48,12 +48,7 @@ const LaboratoryQueueTabs: React.FC = () => {
             <TabPanel style={{ padding: 0 }}>
               <div>
                 <div className={styles.headerBtnContainer}></div>
-
-                <WorkList
-                  careSetting={"6f0c9a92-6f24-11e3-af88-005056821db0"}
-                  activatedOnOrAfterDate={"2023-11-04 00:00:00"}
-                  fulfillerStatus={"IN_PROGRESS"}
-                />
+                <WorkList fulfillerStatus={"IN_PROGRESS"} />
               </div>
             </TabPanel>
             <TabPanel style={{ padding: 0 }}>
@@ -68,11 +63,7 @@ const LaboratoryQueueTabs: React.FC = () => {
             <TabPanel style={{ padding: 0 }}>
               <div>
                 <div className={styles.headerBtnContainer}></div>
-                <ReviewList
-                  careSetting={"6f0c9a92-6f24-11e3-af88-005056821db0"}
-                  activatedOnOrAfterDate={"2023-11-04 00:00:00"}
-                  fulfillerStatus={"IN_PROGRESS"}
-                />
+                <ReviewList fulfillerStatus={"IN_PROGRESS"} />
               </div>
             </TabPanel>
             <TabPanel style={{ padding: 0 }}>
@@ -87,11 +78,7 @@ const LaboratoryQueueTabs: React.FC = () => {
             <TabPanel style={{ padding: 0 }}>
               <div>
                 <div className={styles.headerBtnContainer}></div>
-                <CompletedList
-                  careSetting={"6f0c9a92-6f24-11e3-af88-005056821db0"}
-                  activatedOnOrAfterDate={"2023-11-04 00:00:00"}
-                  fulfillerStatus={"IN_PROGRESS"}
-                />
+                <CompletedList fulfillerStatus={"COMPLETED"} />
               </div>
             </TabPanel>
           </TabPanels>

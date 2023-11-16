@@ -18,24 +18,31 @@ import {
   TableToolbarSearch,
   Layer,
   Tile,
+  DatePicker,
+  DatePickerInput,
+  Select,
+  SelectItem,
+  Dropdown,
 } from "@carbon/react";
 import styles from "./completed-list.scss";
 
 interface CompletedlistProps {
-  careSetting: string;
-  activatedOnOrAfterDate: string;
   fulfillerStatus: string;
 }
 
-const CompletedList: React.FC<CompletedlistProps> = ({
-  careSetting,
-  activatedOnOrAfterDate,
-  fulfillerStatus,
-}) => {
+const CompletedList: React.FC<CompletedlistProps> = ({ fulfillerStatus }) => {
   const { t } = useTranslation();
 
+  // const [careSetting, setCareSetting] = useState();
+
+  const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState();
+
+  const [selectedCareSetting, setSelectedCareSetting] = useState();
+
+  const careSettings = ["INPATIENT", "OUTPATIENT"];
+
   const { workListEntries, isLoading, isError } = useGetOrdersWorklist(
-    careSetting,
+    selectedCareSetting,
     activatedOnOrAfterDate,
     fulfillerStatus
   );
@@ -83,16 +90,8 @@ const CompletedList: React.FC<CompletedlistProps> = ({
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
   }
-  if (isError) {
-    return (
-      <ErrorState
-        error={`Error returning completed list` + isError.message}
-        headerTitle={"Completed list Error"}
-      />
-    );
-  }
 
-  if (paginatedWorkListEntries?.length) {
+  if (paginatedWorkListEntries?.length >= 0) {
     return (
       <div>
         <div className={styles.headerBtnContainer}></div>
@@ -114,8 +113,48 @@ const CompletedList: React.FC<CompletedlistProps> = ({
                   backgroundColor: "color",
                 }}
               >
-                <TableToolbarContent>
-                  <Layer>
+                <TableToolbarContent className={styles.toolbar}>
+                  <Layer style={{ margin: "5px" }}>
+                    <Select
+                      labelText={""}
+                      id="care-setting"
+                      value={selectedCareSetting}
+                      onChange={(event) =>
+                        setSelectedCareSetting(event.target.value)
+                      }
+                    >
+                      {!selectedCareSetting ? (
+                        <SelectItem
+                          text={t("selectCareSetting", "Select CareSetting...")}
+                          value=""
+                        />
+                      ) : null}
+                      {careSettings?.length > 0 &&
+                        careSettings.map((careSetting) => (
+                          <SelectItem
+                            key={careSetting}
+                            text={careSetting}
+                            value={careSetting}
+                          >
+                            {careSetting}
+                          </SelectItem>
+                        ))}
+                    </Select>
+                  </Layer>
+                  <Layer style={{ margin: "5px" }}>
+                    <DatePicker datePickerType="single">
+                      <DatePickerInput
+                        labelText={""}
+                        id="activatedOnOrAfterDate"
+                        placeholder="mm/dd/yyyy"
+                        onChange={(event) =>
+                          setActivatedOnOrAfterDate(event.target.value)
+                        }
+                        type="date"
+                      />
+                    </DatePicker>
+                  </Layer>
+                  <Layer style={{ margin: "5px" }}>
                     <TableToolbarSearch
                       onChange={onInputChange}
                       placeholder={t("searchThisList", "Search this list")}
@@ -124,6 +163,7 @@ const CompletedList: React.FC<CompletedlistProps> = ({
                   </Layer>
                 </TableToolbarContent>
               </TableToolbar>
+              <br />
               <Table
                 {...getTableProps()}
                 className={styles.activePatientsTable}

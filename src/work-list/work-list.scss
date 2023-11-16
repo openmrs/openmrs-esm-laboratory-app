@@ -122,6 +122,7 @@ title {
     border-bottom: none;
   }
 }
+
 .headerBtnContainer {
   background-color: $ui-background;
   padding: spacing.$spacing-05;
@@ -178,13 +179,37 @@ title {
   td {
     padding: 0.5rem;
 
-    > div {
+    >div {
       max-height: max-content !important;
       background-color: $ui-02;
     }
   }
 
-  th[colspan] td[colspan] > div:first-child {
+  th[colspan] td[colspan]>div:first-child {
     padding: 0 1rem;
   }
+}
+
+
+.tileContainer {
+  background-color: $ui-02;
+  border-top: 1px solid $ui-03;
+  padding: 5rem 0;
+}
+
+.tile {
+  margin: auto;
+  width: fit-content;
+}
+
+.tileContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.content {
+  @include type.type-style('heading-compact-02');
+  color: $text-02;
+  margin-bottom: 0.5rem;
 }
