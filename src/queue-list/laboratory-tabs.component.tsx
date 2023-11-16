@@ -34,20 +34,27 @@ const LaboratoryQueueTabs: React.FC = () => {
             <Tab>{t("testedOrders", "Tests ordered")}</Tab>
             <Tab>{t("worklist", "Worklist")}</Tab>
             <Tab>{t("referredTests", "Referred tests")}</Tab>
-            <Tab>{t("completedTests", "Completed tests")}</Tab>
             <Tab>{t("reviewList", "Review List")}</Tab>
             <Tab>{t("approveList", "Approval List")}</Tab>
+            <Tab>{t("completedTests", "Completed tests")}</Tab>
           </TabList>
           <TabPanels>
             <TabPanel style={{ padding: 0 }}>
-              <LaboratoryPatientList />
+              <div>
+                <div className={styles.headerBtnContainer}></div>
+                <LaboratoryPatientList />
+              </div>
             </TabPanel>
             <TabPanel style={{ padding: 0 }}>
-              <WorkList
-                careSetting={"6f0c9a92-6f24-11e3-af88-005056821db0"}
-                activatedOnOrAfterDate={"2023-11-04 00:00:00"}
-                fulfillerStatus={"IN_PROGRESS"}
-              />
+              <div>
+                <div className={styles.headerBtnContainer}></div>
+
+                <WorkList
+                  careSetting={"6f0c9a92-6f24-11e3-af88-005056821db0"}
+                  activatedOnOrAfterDate={"2023-11-04 00:00:00"}
+                  fulfillerStatus={"IN_PROGRESS"}
+                />
+              </div>
             </TabPanel>
             <TabPanel style={{ padding: 0 }}>
               <div>
@@ -59,10 +66,14 @@ const LaboratoryQueueTabs: React.FC = () => {
               </div>
             </TabPanel>
             <TabPanel style={{ padding: 0 }}>
-              <CompletedList />
-            </TabPanel>
-            <TabPanel style={{ padding: 0 }}>
-              <ReviewList />
+              <div>
+                <div className={styles.headerBtnContainer}></div>
+                <ReviewList
+                  careSetting={"6f0c9a92-6f24-11e3-af88-005056821db0"}
+                  activatedOnOrAfterDate={"2023-11-04 00:00:00"}
+                  fulfillerStatus={"IN_PROGRESS"}
+                />
+              </div>
             </TabPanel>
             <TabPanel style={{ padding: 0 }}>
               <div>
@@ -70,6 +81,16 @@ const LaboratoryQueueTabs: React.FC = () => {
                 <EmptyState
                   displayText={"approve list"}
                   headerTitle={"Approval List"}
+                />
+              </div>
+            </TabPanel>
+            <TabPanel style={{ padding: 0 }}>
+              <div>
+                <div className={styles.headerBtnContainer}></div>
+                <CompletedList
+                  careSetting={"6f0c9a92-6f24-11e3-af88-005056821db0"}
+                  activatedOnOrAfterDate={"2023-11-04 00:00:00"}
+                  fulfillerStatus={"IN_PROGRESS"}
                 />
               </div>
             </TabPanel>
