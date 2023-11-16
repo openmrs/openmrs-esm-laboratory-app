@@ -26,14 +26,15 @@ const SummaryTile: React.FC<SummaryTileProps> = ({
           <label className={styles.headerLabel}>{headerLabel}</label>
           {children}
         </div>
+        <div></div>
         <Button
           kind="ghost"
           renderIcon={(props) => (
             <ArrowRight size={16} className={styles.arrowIcon} />
           )}
-          iconDescription={t("view", "View")}
+          iconDescription={t("view", "View ")}
         >
-          {t("view", "View")}
+          {t("view", "View ")}
         </Button>
       </div>
       <div>

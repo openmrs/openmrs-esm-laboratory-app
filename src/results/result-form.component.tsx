@@ -6,6 +6,9 @@ import {
   TextInput,
   Select,
   SelectItem,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
 } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import { closeOverlay } from "../components/overlay/hook";
@@ -163,24 +166,27 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   return (
     <>
       <div className="">
-        {isLoading && (
-          <InlineLoading
-            className={styles.bannerLoading}
-            iconDescription="Loading"
-            description="Loading banner"
-            status="active"
-          />
-        )}
-        {patient && (
-          <ExtensionSlot name="patient-header-slot" state={bannerState} />
-        )}
+        <ModalBody>
+          {isLoading && (
+            <InlineLoading
+              className={styles.bannerLoading}
+              iconDescription="Loading"
+              description="Loading banner"
+              status="active"
+            />
+          )}
+          {patient && (
+            <ExtensionSlot name="patient-header-slot" state={bannerState} />
+          )}
 
-        {concept?.length > 0 && (
-          <section className={styles.section}>
-            <Questions conceptMembers={concept} />
-          </section>
-        )}
-        <section className={styles.section}>
+          {concept?.length > 0 && (
+            <section className={styles.section}>
+              <Questions conceptMembers={concept} />
+            </section>
+          )}
+        </ModalBody>
+
+        <ModalFooter>
           <Button
             disabled={isSubmitting}
             onClick={() => closeOverlay()}
@@ -189,7 +195,7 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
             {t("cancel", "Cancel")}
           </Button>
           <Button onClick={(e) => handleSubmit(e)}>Save tests</Button>
-        </section>
+        </ModalFooter>
       </div>
     </>
   );

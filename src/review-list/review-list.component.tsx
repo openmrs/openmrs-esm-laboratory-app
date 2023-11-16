@@ -33,19 +33,12 @@ interface ReviewlistProps {
 const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
   const { t } = useTranslation();
 
-  const [careSetting, setCareSetting] = useState();
+  const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState("");
 
-  const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState();
-
-  const [selectedCareSetting, setSelectedCareSetting] = useState();
-
-  const { workListEntries, isLoading, isError } = useGetOrdersWorklist(
-    careSetting,
+  const { workListEntries, isLoading } = useGetOrdersWorklist(
     activatedOnOrAfterDate,
     fulfillerStatus
   );
-
-  const careSettings = ["INPATIENT", "OUTPATIENT"];
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [page, setPage] = useState(1);
@@ -113,42 +106,17 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
                 }}
               >
                 <TableToolbarContent>
-                  <Layer>
-                    <Select
-                      labelText={t("selectCareSetting", "Select CareSetting")}
-                      id="care-setting"
-                      invalidText="Required"
-                      value={careSetting}
-                      onChange={(event) => setCareSetting(event.target.value)}
-                    >
-                      {!selectedCareSetting ? (
-                        <SelectItem
-                          text={t("selectCareSetting", "Select CareSetting")}
-                          value=""
-                        />
-                      ) : null}
-                      {careSettings?.length > 0 &&
-                        careSettings.map((careSetting) => (
-                          <SelectItem
-                            key={careSetting}
-                            text={careSetting}
-                            value={careSetting}
-                          >
-                            {careSetting}
-                          </SelectItem>
-                        ))}
-                    </Select>
-                  </Layer>
-                  <Layer>
-                    <DatePicker datePickerType="single">
+                  <Layer style={{ margin: "5px" }}>
+                    <DatePicker dateFormat="Y-m-d" datePickerType="single">
                       <DatePickerInput
+                        labelText={""}
                         id="activatedOnOrAfterDate"
-                        placeholder="mm/dd/yyyy"
-                        labelText={t("dateActivated", "Date Activated")}
-                        onChange={(event) =>
-                          setActivatedOnOrAfterDate(event.target.value)
-                        }
+                        placeholder="YYYY-MM-DD"
+                        onChange={(event) => {
+                          setActivatedOnOrAfterDate(event.target.value);
+                        }}
                         type="date"
+                        value={activatedOnOrAfterDate}
                       />
                     </DatePicker>
                   </Layer>

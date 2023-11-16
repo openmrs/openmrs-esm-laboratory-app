@@ -77,7 +77,7 @@ export function usePatientQueueRequest(apiUrl: string) {
 
   return {
     patientQueueEntries: mapppedQueues || [],
-    patientQueueCount: mapppedQueues?.length,
+    patientQueueCount: mapppedQueues?.length ?? 0,
     isLoading,
     isError: error,
     isValidating,

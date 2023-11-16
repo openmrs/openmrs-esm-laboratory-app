@@ -49,16 +49,9 @@ interface ResultsOrderProps {
 const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
   const { t } = useTranslation();
 
-  const [careSetting, setCareSetting] = useState();
-
-  const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState();
-
-  const [selectedCareSetting, setSelectedCareSetting] = useState();
-
-  const careSettings = ["INPATIENT", "OUTPATIENT"];
+  const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState("");
 
   const { workListEntries, isLoading } = useGetOrdersWorklist(
-    careSetting,
     activatedOnOrAfterDate,
     fulfillerStatus
   );
@@ -157,42 +150,17 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
                 }}
               >
                 <TableToolbarContent>
-                  <Layer>
-                    <Select
-                      labelText={t("selectCareSetting", "Select CareSetting")}
-                      id="care-setting"
-                      invalidText="Required"
-                      value={careSetting}
-                      onChange={(event) => setCareSetting(event.target.value)}
-                    >
-                      {!selectedCareSetting ? (
-                        <SelectItem
-                          text={t("selectCareSetting", "Select CareSetting")}
-                          value=""
-                        />
-                      ) : null}
-                      {careSettings?.length > 0 &&
-                        careSettings.map((careSetting) => (
-                          <SelectItem
-                            key={careSetting}
-                            text={careSetting}
-                            value={careSetting}
-                          >
-                            {careSetting}
-                          </SelectItem>
-                        ))}
-                    </Select>
-                  </Layer>
-                  <Layer>
-                    <DatePicker datePickerType="single">
+                  <Layer style={{ margin: "5px" }}>
+                    <DatePicker dateFormat="Y-m-d" datePickerType="single">
                       <DatePickerInput
+                        labelText={""}
                         id="activatedOnOrAfterDate"
-                        placeholder="mm/dd/yyyy"
-                        labelText={t("dateActivated", "Date Activated")}
-                        onChange={(event) =>
-                          setActivatedOnOrAfterDate(event.target.value)
-                        }
+                        placeholder="YYYY-MM-DD"
+                        onChange={(event) => {
+                          setActivatedOnOrAfterDate(event.target.value);
+                        }}
                         type="date"
+                        value={activatedOnOrAfterDate}
                       />
                     </DatePicker>
                   </Layer>
