@@ -59,6 +59,10 @@
     {
       "name":"send-email-dialog",
       "component": "sendEmailDialog"
+    },
+    {
+      "name" : "review-item-dialog",
+      "component": "reviewItemDialog"
     }
   ]
 }

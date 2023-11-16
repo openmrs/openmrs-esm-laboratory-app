@@ -77,6 +77,11 @@ export const editResultsDialog = getAsyncLifecycle(
   options
 );
 
+export const reviewItemDialog = getAsyncLifecycle(
+  () => import("./review-list/dialog/review-item.component"),
+  options
+);
+
 export function startupApp() {
   defineConfigSchema(moduleName, configSchema);
 }

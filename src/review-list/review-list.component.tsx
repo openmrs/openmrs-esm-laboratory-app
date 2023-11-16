@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useGetOrdersWorklist } from "../work-list/work-list.resource";
-import { ErrorState, usePagination } from "@openmrs/esm-framework";
+import { ErrorState, showModal, usePagination } from "@openmrs/esm-framework";
 import {
   DataTable,
   DataTableSkeleton,
@@ -22,12 +22,34 @@ import {
   DatePickerInput,
   Select,
   SelectItem,
+  Button,
 } from "@carbon/react";
 
 import styles from "./review-list.scss";
+import { Add } from "@carbon/react/icons";
 
 interface ReviewlistProps {
   fulfillerStatus: string;
+}
+
+function ApproveTestMenu() {
+  const { t } = useTranslation();
+  const launchReviewItemModal = useCallback(() => {
+    const dispose = showModal("review-item-dialog", {
+      closeModal: () => dispose(),
+    });
+  }, []);
+
+  return (
+    <Button
+      kind="ghost"
+      onClick={launchReviewItemModal}
+      iconDescription={t("approveTest", "Approve Results")}
+      renderIcon={(props) => <Add size={16} {...props} />}
+    >
+      {t("approveTest", "Approve Results")}
+    </Button>
+  );
 }
 
 const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
@@ -152,6 +174,9 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
                               {cell.value?.content ?? cell.value}
                             </TableCell>
                           ))}
+                          <TableCell className="cds--table-column-menu">
+                            <ApproveTestMenu />
+                          </TableCell>
                         </TableRow>
                       </React.Fragment>
                     );
