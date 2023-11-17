@@ -129,11 +129,20 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       groupMembers: groupMembers,
     };
     concept.forEach((item) => {
+      let value;
+      if (
+        item.datatype.display === "Numeric" ||
+        item.datatype.display === "Text"
+      ) {
+        value = inputValues[`${item.uuid}`];
+      } else if (item.datatype.display === "Coded") {
+        value = {
+          uuid: inputValues[`${item.uuid}`],
+        };
+      }
       const groupMember = {
         concept: { uuid: item.uuid },
-        value: {
-          uuid: inputValues[`${item.uuid}`],
-        },
+        value: value,
         status: "FINAL",
         order: { uuid: order.uuid },
       };
