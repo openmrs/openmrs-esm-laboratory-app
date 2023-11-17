@@ -154,8 +154,6 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       obs: obsValue,
     };
     setIsSubmitting(true);
-
-    console.info("payload--->", payload);
     // update encounter
     UpdateEncounter(order.encounter.uuid, payload).then(
       () => {
