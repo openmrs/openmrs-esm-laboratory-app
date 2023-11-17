@@ -27,18 +27,26 @@ import {
 
 import styles from "./review-list.scss";
 import { Add } from "@carbon/react/icons";
+import { Ob } from "../patient-chart/laboratory-order.resource";
+import { Encounter } from "../types";
 
 interface ReviewlistProps {
   fulfillerStatus: string;
 }
+interface ApproveResultMenuProps {
+  encounterUuid: string;
+}
 
-function ApproveTestMenu() {
+const ApproveTestMenu: React.FC<ApproveResultMenuProps> = ({
+  encounterUuid,
+}) => {
   const { t } = useTranslation();
   const launchReviewItemModal = useCallback(() => {
     const dispose = showModal("review-item-dialog", {
+      encounterUuid,
       closeModal: () => dispose(),
     });
-  }, []);
+  }, [encounterUuid]);
 
   return (
     <Button
@@ -50,7 +58,7 @@ function ApproveTestMenu() {
       {t("approveTest", "Approve Results")}
     </Button>
   );
-}
+};
 
 const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
   const { t } = useTranslation();
@@ -175,7 +183,11 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
                             </TableCell>
                           ))}
                           <TableCell className="cds--table-column-menu">
-                            <ApproveTestMenu />
+                            <ApproveTestMenu
+                              encounterUuid={
+                                paginatedWorkListEntries[index].encounter.uuid
+                              }
+                            />
                           </TableCell>
                         </TableRow>
                       </React.Fragment>
