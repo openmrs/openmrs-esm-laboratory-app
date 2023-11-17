@@ -1,20 +1,12 @@
 import React, { useMemo } from "react";
 import {
   Button,
-  ContentSwitcher,
   Form,
   ModalBody,
   ModalFooter,
   ModalHeader,
-  Select,
-  SelectItem,
-  Switch,
-  TextArea,
-  Grid,
-  Checkbox,
-  TextInput,
-  IconButton,
   InlineLoading,
+  Checkbox,
 } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import { useGetEncounterById } from "../../patient-chart/laboratory-item/view-laboratory-item.resource";
@@ -106,32 +98,36 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
           )}
           <section className={styles.section}>
             <table>
-              <thead>
-                <tr>
-                  <th>Tests</th>
-                  <th>Result</th>
-                  <th>Reference Range</th>
-                  <th>Units</th>
-                </tr>
-              </thead>
-            </table>
-            <table>
               <tbody>
                 {Object.keys(filteredGroupedResults).map((test) => (
                   <tr key={test} style={{ margin: "10px" }}>
-                    <span
+                    <Checkbox
                       style={{
                         margin: "10px",
-                        fontSize: "8px",
+                        fontSize: "15px",
                         fontWeight: "bold",
                       }}
-                    >
-                      {test}
-                    </span>
+                      onChange={() => {}}
+                      labelText={test}
+                      id={`test-${test}`}
+                    />
+
                     <table style={{ margin: "10px" }}>
-                      <RowTest
-                        groupMembers={filteredGroupedResults[test].groupMembers}
-                      />
+                      <thead>
+                        <tr>
+                          <th>Tests</th>
+                          <th>Result</th>
+                          <th>Reference Range</th>
+                          <th>Units</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <RowTest
+                          groupMembers={
+                            filteredGroupedResults[test].groupMembers
+                          }
+                        />
+                      </tbody>
                     </table>
                   </tr>
                 ))}
