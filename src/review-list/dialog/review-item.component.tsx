@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Button,
   Form,
@@ -10,7 +10,6 @@ import {
 } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import { useGetEncounterById } from "../../patient-chart/laboratory-item/view-laboratory-item.resource";
-import { ErrorState } from "@openmrs/esm-patient-common-lib";
 import styles from "../review-list.scss";
 import { GroupMember } from "../../patient-chart/laboratory-order.resource";
 
@@ -43,6 +42,17 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
     });
     return groupedResults;
   }, [testsOrder]);
+
+  const [checkedItems, setCheckedItems] = useState({});
+
+  const handleCheckboxChange = (test, groupMembers) => {
+    setCheckedItems((prevCheckedItems) => ({
+      ...prevCheckedItems,
+      [test]: {
+        groupMembers,
+      },
+    }));
+  };
 
   const RowTest: React.FC<ResultsRowProps> = ({ groupMembers }) => {
     return (
@@ -99,17 +109,24 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
           <section className={styles.section}>
             <table>
               <tbody>
-                {Object.keys(filteredGroupedResults).map((test) => (
+                {Object.keys(filteredGroupedResults).map((test, index) => (
                   <tr key={test} style={{ margin: "10px" }}>
                     <Checkbox
+                      key={index}
                       style={{
                         margin: "10px",
                         fontSize: "15px",
                         fontWeight: "bold",
                       }}
-                      onChange={() => {}}
+                      onChange={() =>
+                        handleCheckboxChange(
+                          test,
+                          filteredGroupedResults[test].groupMembers
+                        )
+                      }
                       labelText={test}
                       id={`test-${test}`}
+                      checked={checkedItems[test] || false}
                     />
 
                     <table style={{ margin: "10px" }}>
