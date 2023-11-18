@@ -36,6 +36,7 @@ import styles from "./work-list.scss";
 import { usePagination } from "@openmrs/esm-framework";
 import { launchOverlay } from "../components/overlay/hook";
 import ResultForm from "../results/result-form.component";
+import { getStatusColor } from "../utils/functions";
 
 interface WorklistProps {
   fulfillerStatus: string;
@@ -77,10 +78,11 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
     },
     { id: 2, header: t("test", "Test"), key: "test" },
     { id: 3, header: t("action", "Action"), key: "action" },
-    { id: 4, header: t("orderer", "Orderer"), key: "orderer" },
-    { id: 5, header: t("orderType", "Order Type"), key: "orderType" },
-    { id: 6, header: t("urgency", "Urgency"), key: "urgency" },
-    { id: 7, header: t("actions", "Actions"), key: "actions" },
+    { id: 4, header: t("status", "Status"), key: "status" },
+    { id: 5, header: t("orderer", "Orderer"), key: "orderer" },
+    { id: 6, header: t("orderType", "Order Type"), key: "orderType" },
+    { id: 7, header: t("urgency", "Urgency"), key: "urgency" },
+    { id: 8, header: t("actions", "Actions"), key: "actions" },
   ];
 
   const ResultsOrder: React.FC<ResultsOrderProps> = ({
@@ -109,6 +111,20 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
       accessionNumber: { content: <span>{entry.accessionNumber}</span> },
       test: { content: <span>{entry.concept.display}</span> },
       action: { content: <span>{entry.action}</span> },
+      status: {
+        content: (
+          <>
+            <Tag>
+              <span
+                className={styles.statusContainer}
+                style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
+              >
+                <span>{entry.fulfillerStatus}</span>
+              </span>
+            </Tag>
+          </>
+        ),
+      },
       orderer: { content: <span>{entry.orderer.display}</span> },
       orderType: { content: <span>{entry.orderType.display}</span> },
       urgency: { content: <span>{entry.urgency}</span> },
