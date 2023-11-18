@@ -1,15 +1,16 @@
 @use '@carbon/styles/scss/spacing';
 @use '@carbon/styles/scss/type';
 @import '~@openmrs/esm-styleguide/src/vars';
+@import '../../root.scss';
 
 .desktopOverlay {
   position: fixed;
   top: spacing.$spacing-09;
-  width: 100%;
+  width: 37rem;
   right: 0;
   bottom: 0;
   border-left: 1px solid $text-03;
-  background-color: white;
+  background-color: $ui-01;
   overflow-y: auto;
   height: calc(100vh - 3rem);
 }
@@ -35,7 +36,7 @@
     width: 0;
   }
 
-  & > div {
+  &>div {
     margin-top: spacing.$spacing-09;
   }
 }
@@ -89,9 +90,4 @@
     padding: 0 0 0 0;
     overflow-y: auto;
   }
-}
-
-/* Combo */
-:global(.cds--list-box__menu) {
-  z-index: 20000;
 }
