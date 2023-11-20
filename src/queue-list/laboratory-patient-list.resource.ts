@@ -46,6 +46,7 @@ export function usePatientQueueRequest(apiUrl: string) {
       name: queue.patient?.person.display,
       patientUuid: queue.patient?.uuid,
       priorityComment: queue.priorityComment,
+      encounter: queue.encounter,
       priority:
         queue.priorityComment === "Urgent" ? "Priority" : queue.priorityComment,
       priorityLevel: queue.priority,
@@ -76,7 +77,7 @@ export function usePatientQueueRequest(apiUrl: string) {
 
   return {
     patientQueueEntries: mapppedQueues || [],
-    patientQueueCount: mapppedQueues?.length,
+    patientQueueCount: mapppedQueues?.length ?? 0,
     isLoading,
     isError: error,
     isValidating,

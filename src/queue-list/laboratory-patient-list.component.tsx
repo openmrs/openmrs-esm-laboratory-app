@@ -20,6 +20,7 @@ import {
   Layer,
   Tag,
   TableExpandedRow,
+  Tile,
 } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import {
@@ -38,8 +39,6 @@ import {
   trimVisitNumber,
 } from "../utils/functions";
 import LabTests from "./lab-tests/lab-tests.component";
-import AddToWorklist from "./lab-dialogs/add-to-worklist-dialog.component";
-import PickLabRequestActionMenu from "./pick-lab-request-menu.component";
 import { EmptyState } from "@openmrs/esm-patient-common-lib";
 
 // type FilterProps = {
@@ -78,12 +77,12 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     { id: 2, header: t("age", "Age"), key: "age" },
     { id: 3, header: t("orderedFrom", "Ordered from"), key: "orderedFrom" },
     { id: 4, header: t("waitingTime", "Waiting time"), key: "waitingTime" },
-    { id: 5, header: t("actions", "Actions"), key: "actions" },
   ];
 
   const tableRows = useMemo(() => {
     return paginatedQueueEntries?.map((entry) => ({
       ...entry,
+      encounter: entry.encounter,
       visitId: {
         content: <span>{trimVisitNumber(entry.visitNumber)}</span>,
       },
@@ -106,14 +105,6 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
               {formatWaitTime(entry.waitTime, t)}
             </span>
           </Tag>
-        ),
-      },
-      actions: {
-        content: (
-          <PickLabRequestActionMenu
-            queueEntry={entry}
-            closeModal={() => true}
-          />
         ),
       },
     }));
@@ -159,7 +150,8 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
   }
-  if (patientQueueEntries?.length) {
+
+  if (patientQueueEntries?.length >= 0) {
     return (
       <div>
         <div className={styles.headerBtnContainer}></div>
@@ -222,7 +214,10 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
                             colSpan={headers.length + 2}
                           >
                             <>
-                              <LabTests />
+                              <LabTests
+                                encounter={patientQueueEntries[index].encounter}
+                                queueId={paginatedQueueEntries[index].uuid}
+                              />
                             </>
                           </TableExpandedRow>
                         ) : (
@@ -236,6 +231,20 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
                   })}
                 </TableBody>
               </Table>
+              {rows.length === 0 ? (
+                <div className={styles.tileContainer}>
+                  <Tile className={styles.tile}>
+                    <div className={styles.tileContent}>
+                      <p className={styles.content}>
+                        {t(
+                          "noWorklistsToDisplay",
+                          "No workists orders to display"
+                        )}
+                      </p>
+                    </div>
+                  </Tile>
+                </div>
+              ) : null}
               <Pagination
                 forwardText="Next page"
                 backwardText="Previous page"
@@ -259,13 +268,6 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
       </div>
     );
   }
-
-  return (
-    <div>
-      <div className={styles.headerBtnContainer}></div>
-      <EmptyState displayText={"Tests Ordered"} headerTitle={"Tests Ordered"} />
-    </div>
-  );
 };
 
 export default LaboratoryPatientList;

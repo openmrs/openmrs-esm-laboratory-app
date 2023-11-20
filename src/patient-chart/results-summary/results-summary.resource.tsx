@@ -172,3 +172,14 @@ export function useGetConceptById(conceptUuid: string) {
     isError: error,
   };
 }
+
+export async function GetPatientByUuid(uuid: string) {
+  const abortController = new AbortController();
+
+  return openmrsFetch(`/ws/rest/v1/patient/${uuid}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    signal: abortController.signal,
+  });
+}

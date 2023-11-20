@@ -4,6 +4,9 @@ import { useTranslation } from "react-i18next";
 import styles from "./laboratory-queue.scss";
 import LaboratoryPatientList from "./laboratory-patient-list.component";
 import { EmptyState } from "@openmrs/esm-patient-common-lib";
+import WorkList from "../work-list/work-list.component";
+import ReviewList from "../review-list/review-list.component";
+import CompletedList from "../completed-list/completed-list.component";
 
 enum TabTypes {
   STARRED,
@@ -31,19 +34,20 @@ const LaboratoryQueueTabs: React.FC = () => {
             <Tab>{t("testedOrders", "Tests ordered")}</Tab>
             <Tab>{t("worklist", "Worklist")}</Tab>
             <Tab>{t("referredTests", "Referred tests")}</Tab>
-            <Tab>{t("completedTests", "Completed tests")}</Tab>
+            <Tab>{t("reviewList", "Review")}</Tab>
+            <Tab>{t("approveList", "Approved")}</Tab>
           </TabList>
           <TabPanels>
             <TabPanel style={{ padding: 0 }}>
-              <LaboratoryPatientList />
+              <div>
+                <div className={styles.headerBtnContainer}></div>
+                <LaboratoryPatientList />
+              </div>
             </TabPanel>
             <TabPanel style={{ padding: 0 }}>
               <div>
                 <div className={styles.headerBtnContainer}></div>
-                <EmptyState
-                  displayText={"worklists"}
-                  headerTitle={"Worklist"}
-                />
+                <WorkList fulfillerStatus={"IN_PROGRESS"} />
               </div>
             </TabPanel>
             <TabPanel style={{ padding: 0 }}>
@@ -58,10 +62,13 @@ const LaboratoryQueueTabs: React.FC = () => {
             <TabPanel style={{ padding: 0 }}>
               <div>
                 <div className={styles.headerBtnContainer}></div>
-                <EmptyState
-                  displayText={"completed test"}
-                  headerTitle={"Completed tests"}
-                />
+                <ReviewList fulfillerStatus={"IN_PROGRESS"} />
+              </div>
+            </TabPanel>
+            <TabPanel style={{ padding: 0 }}>
+              <div>
+                <div className={styles.headerBtnContainer}></div>
+                <CompletedList fulfillerStatus={"COMPLETED"} />
               </div>
             </TabPanel>
           </TabPanels>

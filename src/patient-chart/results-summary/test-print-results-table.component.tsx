@@ -11,12 +11,16 @@ import {
   TableHeader,
   TableRow,
   Tile,
+  TableExpandHeader,
+  TableExpandRow,
+  TableExpandedRow,
 } from "@carbon/react";
 import styles from "./results-summary.scss";
 import RescendTestResultActionMenu from "./test-results-rescend-action-menu.component";
 import { Order } from "../laboratory-order.resource";
 import DeleteTestResultActionMenu from "./test-results-delete-action-menu.component";
 import { Ob } from "../laboratory-item/view-laboratory-item.resource";
+import TestResultsChildren from "./test-children-results.component";
 
 interface TestOrdersProps {
   obs: Ob[];
@@ -25,7 +29,10 @@ interface TestOrdersProps {
 const TestsPrintResults: React.FC<TestOrdersProps> = ({ obs }) => {
   const { t } = useTranslation();
 
-  let columns = [{ id: 1, header: t("order", "Order"), key: "order" }];
+  let columns = [
+    { id: 1, header: t("order", "Order"), key: "order" },
+    { id: 2, header: t("results", "Results"), key: "result" },
+  ];
 
   const filteredItems = obs.filter((ob) => ob?.order?.type === "testorder");
 
@@ -33,8 +40,12 @@ const TestsPrintResults: React.FC<TestOrdersProps> = ({ obs }) => {
     return filteredItems?.map((entry) => ({
       ...entry,
       id: entry.uuid,
+      members: entry?.groupMembers,
       order: {
         content: <span>{entry.display}</span>,
+      },
+      result: {
+        content: <span>--</span>,
       },
     }));
   }, [filteredItems]);
@@ -42,7 +53,12 @@ const TestsPrintResults: React.FC<TestOrdersProps> = ({ obs }) => {
   if (filteredItems?.length >= 0) {
     return (
       <div>
-        <DataTable rows={tableRows} headers={columns} useZebraStyles>
+        <DataTable
+          rows={tableRows}
+          headers={columns}
+          useZebraStyles
+          expanded={false}
+        >
           {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
             <TableContainer className={styles.tableContainer}>
               <Table
@@ -51,6 +67,7 @@ const TestsPrintResults: React.FC<TestOrdersProps> = ({ obs }) => {
               >
                 <TableHead>
                   <TableRow>
+                    <TableExpandHeader />
                     {headers.map((header) => (
                       <TableHeader {...getHeaderProps({ header })}>
                         {header.header}
@@ -62,13 +79,28 @@ const TestsPrintResults: React.FC<TestOrdersProps> = ({ obs }) => {
                   {rows.map((row, index) => {
                     return (
                       <React.Fragment key={row.id}>
-                        <TableRow {...getRowProps({ row })}>
+                        <TableExpandRow {...getRowProps({ row })}>
                           {row.cells.map((cell) => (
                             <TableCell key={cell.id}>
                               {cell.value?.content ?? cell.value}
                             </TableCell>
                           ))}
-                        </TableRow>
+                        </TableExpandRow>
+                        {row.isExpanded ? (
+                          <TableExpandedRow
+                            className={styles.expandedActiveVisitRow}
+                            colSpan={headers.length + 2}
+                          >
+                            <TestResultsChildren
+                              members={filteredItems[index].groupMembers}
+                            />
+                          </TableExpandedRow>
+                        ) : (
+                          <TableExpandedRow
+                            className={styles.hiddenRow}
+                            colSpan={headers.length + 2}
+                          />
+                        )}
                       </React.Fragment>
                     );
                   })}
@@ -80,15 +112,11 @@ const TestsPrintResults: React.FC<TestOrdersProps> = ({ obs }) => {
                     <div className={styles.tileContent}>
                       <p className={styles.content}>
                         {t(
-                          "noTestOrdersToDisplay",
-                          "No test orders to display"
+                          "noTestResultsToDisplay",
+                          "No test results to display"
                         )}
                       </p>
-                      <p className={styles.helper}>
-                        {t("checkFilters", "Check the filters above")}
-                      </p>
                     </div>
-                    <p className={styles.separator}>{t("or", "or")}</p>
                   </Tile>
                 </div>
               ) : null}

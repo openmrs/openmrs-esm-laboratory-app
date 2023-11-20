@@ -13,11 +13,11 @@
 @media print {
   @page {
     size: auto;
-    margin: 10px;
+    margin: 5px;
   }
 
   .section {
-    margin: 10px;
+    margin: 5px;
   }
 
   .headerBtnContainer {
@@ -82,6 +82,24 @@
       left: 0.5rem;
       margin-right: -50%;
     }
+  }
+
+  table {
+    font-family: Arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td, th {
+    border: 1px solid #000;
+    text-align: left;
+    font-size: 8px;
+    padding: 8px;
+    width: 80px;
+  }
+  
+  th {
+    background-color: #f2f2f2;
   }
 
 }

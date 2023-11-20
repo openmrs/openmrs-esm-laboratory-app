@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
 import { FetchResponse, openmrsFetch } from "@openmrs/esm-framework";
+import { Result } from "../work-list/work-list.resource";
 
 export function useMetrics() {
   const metrics = {
@@ -33,29 +34,17 @@ export function useServices() {
   };
 }
 
-// test ordered
-export function useOrderedTests() {
-  return {
-    count: 0,
-  };
-}
 // worklist
-export function useWorklistsStats() {
+export function useLabTestsStats(fulfillerStatus: string) {
+  const apiUrl = `/ws/rest/v1/order?orderTypes=52a447d3-a64a-11e3-9aeb-50e549534c5e&isStopped=false&fulfillerStatus=${fulfillerStatus}&v=full
+  `;
+  const { data, error, isLoading } = useSWR<
+    { data: { results: Array<Result> } },
+    Error
+  >(apiUrl, openmrsFetch);
   return {
-    count: 0,
-  };
-}
-
-// referred tests
-export function useReferredTestsStats() {
-  return {
-    count: 0,
-  };
-}
-
-// results
-export function useResultsStats() {
-  return {
-    count: 0,
+    count: data?.data ? data.data.results.length : 0,
+    isLoading,
+    isError: error,
   };
 }

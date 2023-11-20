@@ -1,39 +1,121 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useGetLabOrders } from "./lab-tests.resource";
 
-import { DataTableSkeleton } from "@carbon/react";
+import {
+  DataTable,
+  DataTableHeader,
+  DataTableSkeleton,
+  Pagination,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableExpandHeader,
+  TableExpandRow,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TabPanel,
+  TableToolbar,
+  TableToolbarContent,
+  TableToolbarSearch,
+  Layer,
+  Tag,
+  TableExpandedRow,
+} from "@carbon/react";
 import { ErrorState } from "@openmrs/esm-framework";
+import { Encounter } from "../../types/patient-queues";
+import styles from "../laboratory-queue.scss";
+import PickLabRequestActionMenu from "../pick-lab-request-menu.component";
 
-const LabTests = () => {
+interface LabTestsProps {
+  encounter: Encounter;
+  queueId: string;
+}
+
+const LabTests: React.FC<LabTestsProps> = ({ encounter, queueId }) => {
   const { t } = useTranslation();
-
-  // get lab orders
-  const { data: labOrders, isLoading, isError } = useGetLabOrders("");
-
-  if (isLoading) {
-    return <DataTableSkeleton role="progressbar" />;
-  }
-
-  if (isError) {
-    return <ErrorState error={isError} headerTitle={"Results Error"} />;
-  }
-
-  // const filteredItems = labOrders.orders.filter(
-  //   (ob) => ob?.order?.type === "testorder"
-  // );
-
+  // console.info(encounter);
   let columns = [
+    { id: 1, header: t("order", "Order"), key: "order", align: "left" },
     {
-      id: 1,
-      header: t("date", "Date"),
-      key: "date",
+      id: 2,
+      header: t("orderType", "OrderType"),
+      key: "orderType",
+      align: "center",
     },
-    { id: 2, header: t("orderNumber", "Order Number"), key: "orderNumber" },
-    { id: 3, header: t("order", "Order"), key: "order" },
-
-    { id: 5, header: t("actions", "Actions"), key: "actions" },
+    { id: 3, header: t("actions", "Actions"), key: "actions", align: "center" },
   ];
+
+  const tableRows = useMemo(() => {
+    return encounter?.orders?.map((item) => ({
+      ...item,
+      id: item.uuid,
+      order: {
+        content: <span>{item.display}</span>,
+      },
+      orderType: {
+        content: <span>{item.type}</span>,
+      },
+      actions: {
+        content: (
+          <PickLabRequestActionMenu
+            closeModal={() => true}
+            order={item}
+            encounter={encounter}
+            queueId={queueId}
+          />
+        ),
+      },
+    }));
+  }, [encounter, queueId]);
+
+  if (!encounter) {
+    return (
+      <ErrorState
+        error={"Error Loading encounter"}
+        headerTitle={"Tests Error"}
+      />
+    );
+  }
+
+  return (
+    <div>
+      <div className={styles.headerBtnContainer}></div>
+      <DataTable rows={tableRows} headers={columns} isSortable useZebraStyles>
+        {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
+          <TableContainer className={styles.tableContainer}>
+            <Table {...getTableProps()} className={styles.activePatientsTable}>
+              <TableHead>
+                <TableRow>
+                  {headers.map((header) => (
+                    <TableHeader {...getHeaderProps({ header })}>
+                      {header.header}
+                    </TableHeader>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row, index) => {
+                  return (
+                    <React.Fragment key={row.id}>
+                      <TableRow {...getRowProps({ row })} key={row.id}>
+                        {row.cells.map((cell) => (
+                          <TableCell key={cell.id}>
+                            {cell.value?.content ?? cell.value}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </React.Fragment>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </DataTable>
+    </div>
+  );
 };
 
 export default LabTests;

@@ -51,6 +51,7 @@ import { useReactToPrint } from "react-to-print";
 import SendEmailDialog from "./results-summary/send-email-dialog.component";
 import PrintResultsSummary from "./results-summary/print-results-summary.component";
 import { EncounterResponse } from "./laboratory-item/view-laboratory-item.resource";
+import { useGetPatientByUuid } from "../utils/functions";
 
 interface LaboratoryOrderOverviewProps {
   patientUuid: string;
@@ -95,10 +96,10 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   let columns = [
     {
       id: 0,
-      header: t("orderDate", "Order Date"),
+      header: t("orderDate", "Test Date"),
       key: "orderDate",
     },
-    { id: 1, header: t("orders", "Order"), key: "orders" },
+    { id: 1, header: t("tests", "Tests"), key: "orders" },
     { id: 2, header: t("location", "Location"), key: "location" },
     { id: 3, header: t("status", "Status"), key: "status" },
     { id: 4, header: t("actions", "Action"), key: "actions" },
@@ -152,6 +153,8 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   };
 
   const PrintButtonAction: React.FC<PrintProps> = ({ encounter }) => {
+    const { patient } = useGetPatientByUuid(encounter.patient.uuid);
+
     const [isPrinting, setIsPrinting] = useState(false);
 
     const contentToPrintRef = useRef(null);
@@ -180,7 +183,10 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
     return (
       <div>
         <div ref={contentToPrintRef}>
-          <PrintResultsSummary encounterResponse={encounter} />
+          <PrintResultsSummary
+            encounterResponse={encounter}
+            patient={patient}
+          />
         </div>
         <Button
           kind="ghost"
@@ -284,6 +290,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
           useZebraStyles
           filterRows={handleFilter}
           size={isTablet ? "lg" : "sm"}
+          experimentalAutoAlign={true}
         >
           {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
             <TableContainer className={styles.tableContainer}>
@@ -339,6 +346,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                   </div>
                   <Layer>
                     <TableToolbarSearch
+                      expanded={true}
                       value={searchTerm}
                       onChange={handleChange}
                       placeholder={t("searchThisList", "Search this list")}

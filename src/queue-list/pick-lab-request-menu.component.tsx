@@ -5,23 +5,30 @@ import { showModal } from "@openmrs/esm-framework";
 import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { MappedPatientQueueEntry } from "./laboratory-patient-list.resource";
+import { Encounter, Order } from "../types/patient-queues";
 
 interface PickLabRequestActionMenuProps {
-  queueEntry: MappedPatientQueueEntry;
+  queueId: string;
+  encounter: Encounter;
+  order: Order;
   closeModal: () => void;
 }
 
 const PickLabRequestActionMenu: React.FC<PickLabRequestActionMenuProps> = ({
-  queueEntry,
+  queueId,
+  encounter,
+  order,
 }) => {
   const { t } = useTranslation();
 
   const launchPickLabRequestQueueModal = useCallback(() => {
     const dispose = showModal("add-to-worklist-dialog", {
       closeModal: () => dispose(),
-      queueEntry,
+      queueId,
+      encounter,
+      order,
     });
-  }, [queueEntry]);
+  }, [encounter, order, queueId]);
 
   return (
     <Tooltip align="top" label="Pick Lab Request">

@@ -22,22 +22,26 @@ const LaboratoryQueueList: React.FC = () => {
     {
       key: "testedOrders",
       header: t("testedOrders", "Tests ordered"),
-      status: "ACTIVE",
     },
     {
       key: "worklist",
       header: t("worklist", "Worklist"),
-      status: "",
     },
     {
       key: "referredTests",
       header: t("referredTests", "Referred tests"),
-      status: "",
     },
     {
       key: "completedTests",
       header: t("completedTests", "Completed tests"),
-      status: "",
+    },
+    {
+      key: "reviewList",
+      header: t("reviewList", "Review List"),
+    },
+    {
+      key: "approveList",
+      header: t("approveList", "Approval List"),
     },
   ];
 

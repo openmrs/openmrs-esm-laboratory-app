@@ -29,19 +29,21 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
   const { t } = useTranslation();
 
   let columns = [
-    { id: 1, header: t("order", "Order"), key: "order" },
+    { id: 0, header: t("order", "Order"), key: "order", align: "center" },
     {
-      id: 2,
+      id: 1,
       header: t("date", "Date"),
       key: "date",
+      align: "center",
     },
     {
-      id: 3,
+      id: 2,
       header: t("result", "Results"),
       key: "result",
+      align: "center",
     },
 
-    { id: 4, header: t("actions", "Actions"), key: "actions" },
+    { id: 3, header: t("actions", "Actions"), key: "actions" },
   ];
 
   const obsList = obs.filter((ob) => ob?.order?.type === "testorder");
