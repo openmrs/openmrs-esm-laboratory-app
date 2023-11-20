@@ -90,7 +90,7 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
         ) : (
           <div>
             <span>{concept?.lowNormal}</span> : <span>{concept?.hiNormal}</span>
-            {"  "} <span>{concept?.units}</span>
+            <span style={{ marginLeft: "10px" }}>{concept?.units}</span>
           </div>
         )}
       </TableCell>

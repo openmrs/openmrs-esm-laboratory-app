@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { useGetEncounterById } from "../../patient-chart/laboratory-item/view-laboratory-item.resource";
 import styles from "../review-list.scss";
 import { GroupMember } from "../../patient-chart/laboratory-order.resource";
+import { useGetConceptById } from "../../patient-chart/results-summary/results-summary.resource";
 
 interface ReviewItemDialogProps {
   encounterUuid: string;
@@ -20,6 +21,10 @@ interface ReviewItemDialogProps {
 
 interface ResultsRowProps {
   groupMembers: GroupMember[];
+}
+
+interface ValueUnitsProps {
+  conceptUuid: string;
 }
 
 const ReviewItem: React.FC<ReviewItemDialogProps> = ({
@@ -54,6 +59,49 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
     }));
   };
 
+  // get Units
+  const ValueUnits: React.FC<ValueUnitsProps> = ({ conceptUuid }) => {
+    const {
+      concept: concept,
+      isLoading,
+      isError,
+    } = useGetConceptById(conceptUuid);
+    if (isLoading) {
+      return <InlineLoading status="active" />;
+    }
+    if (isError) {
+      return <span>Error</span>;
+    }
+    return <span style={{ marginLeft: "10px" }}>{concept?.units}</span>;
+  };
+
+  // get Reference Range
+  const ReferenceRange: React.FC<ValueUnitsProps> = ({ conceptUuid }) => {
+    const {
+      concept: concept,
+      isLoading,
+      isError,
+    } = useGetConceptById(conceptUuid);
+    if (isLoading) {
+      return <InlineLoading status="active" />;
+    }
+    if (isError) {
+      return <span>Error</span>;
+    }
+    return (
+      <>
+        {concept?.hiNormal === undefined || concept?.lowNormal === undefined ? (
+          "N/A"
+        ) : (
+          <div>
+            <span>{concept?.lowNormal ? concept?.lowNormal : "--"}</span> :{" "}
+            <span>{concept?.hiNormal ? concept?.hiNormal : "--"}</span>
+          </div>
+        )}
+      </>
+    );
+  };
+
   const RowTest: React.FC<ResultsRowProps> = ({ groupMembers }) => {
     return (
       <>
@@ -66,9 +114,21 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
 
                   <td>{element?.value}</td>
 
-                  <td>--</td>
+                  <td>
+                    {
+                      <ReferenceRange
+                        conceptUuid={groupMembers[index].concept.uuid}
+                      />
+                    }
+                  </td>
 
-                  <td>--</td>
+                  <td>
+                    {
+                      <ValueUnits
+                        conceptUuid={groupMembers[index].concept.uuid}
+                      />
+                    }
+                  </td>
                 </>
               ) : typeof element.value === "object" ? (
                 <>
@@ -76,9 +136,21 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
 
                   <td>{element?.value.display}</td>
 
-                  <td>--</td>
+                  <td>
+                    {
+                      <ReferenceRange
+                        conceptUuid={groupMembers[index].concept.uuid}
+                      />
+                    }
+                  </td>
 
-                  <td>--</td>
+                  <td>
+                    {
+                      <ValueUnits
+                        conceptUuid={groupMembers[index].concept.uuid}
+                      />
+                    }
+                  </td>
                 </>
               ) : (
                 <td>{element?.display}</td>
