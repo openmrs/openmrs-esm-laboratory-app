@@ -1,6 +1,16 @@
 import React from "react";
 import styles from "./print-results-summary.scss";
 import { GroupMember } from "../laboratory-order.resource";
+import { useGetConceptById } from "./results-summary.resource";
+import {
+  Button,
+  Form,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  InlineLoading,
+  Checkbox,
+} from "@carbon/react";
 
 interface PrintResultsTableProps {
   groupedResults: any[];
@@ -10,10 +20,57 @@ interface ResultsRowProps {
   groupMembers: GroupMember[];
 }
 
+interface ValueUnitsProps {
+  conceptUuid: string;
+}
+
 const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
   groupedResults,
 }) => {
   const RowTest: React.FC<ResultsRowProps> = ({ groupMembers }) => {
+    // get Units
+    const ValueUnits: React.FC<ValueUnitsProps> = ({ conceptUuid }) => {
+      const {
+        concept: concept,
+        isLoading,
+        isError,
+      } = useGetConceptById(conceptUuid);
+      if (isLoading) {
+        return <InlineLoading status="active" />;
+      }
+      if (isError) {
+        return <span>Error</span>;
+      }
+      return <span style={{ marginLeft: "10px" }}>{concept?.units}</span>;
+    };
+
+    // get Reference Range
+    const ReferenceRange: React.FC<ValueUnitsProps> = ({ conceptUuid }) => {
+      const {
+        concept: concept,
+        isLoading,
+        isError,
+      } = useGetConceptById(conceptUuid);
+      if (isLoading) {
+        return <InlineLoading status="active" />;
+      }
+      if (isError) {
+        return <span>Error</span>;
+      }
+      return (
+        <>
+          {concept?.hiNormal === undefined ||
+          concept?.lowNormal === undefined ? (
+            "N/A"
+          ) : (
+            <div>
+              <span>{concept?.lowNormal ? concept?.lowNormal : "--"}</span> :{" "}
+              <span>{concept?.hiNormal ? concept?.hiNormal : "--"}</span>
+            </div>
+          )}
+        </>
+      );
+    };
     return (
       <>
         {groupMembers?.map((element, index) => {
@@ -25,19 +82,42 @@ const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
 
                   <td>{element?.value}</td>
 
-                  <td>--</td>
+                  <td>
+                    {
+                      <ReferenceRange
+                        conceptUuid={groupMembers[index].concept.uuid}
+                      />
+                    }
+                  </td>
 
-                  <td>--</td>
+                  <td>
+                    {
+                      <ValueUnits
+                        conceptUuid={groupMembers[index].concept.uuid}
+                      />
+                    }
+                  </td>
                 </>
               ) : typeof element.value === "object" ? (
                 <>
                   <td>{element?.concept.display}</td>
 
                   <td>{element?.value.display}</td>
+                  <td>
+                    {
+                      <ReferenceRange
+                        conceptUuid={groupMembers[index].concept.uuid}
+                      />
+                    }
+                  </td>
 
-                  <td>--</td>
-
-                  <td>--</td>
+                  <td>
+                    {
+                      <ValueUnits
+                        conceptUuid={groupMembers[index].concept.uuid}
+                      />
+                    }
+                  </td>
                 </>
               ) : (
                 <td>{element?.display}</td>
