@@ -33,7 +33,7 @@ import {
 } from "@carbon/react";
 import { Result, useGetOrdersWorklist } from "./work-list.resource";
 import styles from "./work-list.scss";
-import { usePagination } from "@openmrs/esm-framework";
+import { formatDate, parseDate, usePagination } from "@openmrs/esm-framework";
 import { launchOverlay } from "../components/overlay/hook";
 import ResultForm from "../results/result-form.component";
 import { getStatusColor } from "../utils/functions";
@@ -70,19 +70,21 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
 
   // get picked orders
   let columns = [
-    { id: 0, header: t("orderNumber", "Order Number"), key: "orderNumber" },
+    { id: 0, header: t("date", "Date"), key: "date" },
+
+    { id: 1, header: t("orderNumber", "Order Number"), key: "orderNumber" },
     {
-      id: 1,
+      id: 2,
       header: t("accessionNumber", "Accession Number"),
       key: "accessionNumber",
     },
-    { id: 2, header: t("test", "Test"), key: "test" },
-    { id: 3, header: t("action", "Action"), key: "action" },
-    { id: 4, header: t("status", "Status"), key: "status" },
-    { id: 5, header: t("orderer", "Orderer"), key: "orderer" },
-    { id: 6, header: t("orderType", "Order Type"), key: "orderType" },
-    { id: 7, header: t("urgency", "Urgency"), key: "urgency" },
-    { id: 8, header: t("actions", "Actions"), key: "actions" },
+    { id: 3, header: t("test", "Test"), key: "test" },
+    { id: 4, header: t("action", "Action"), key: "action" },
+    { id: 5, header: t("status", "Status"), key: "status" },
+    { id: 6, header: t("orderer", "Orderer"), key: "orderer" },
+    { id: 7, header: t("orderType", "Order Type"), key: "orderType" },
+    { id: 8, header: t("urgency", "Urgency"), key: "urgency" },
+    { id: 9, header: t("actions", "Actions"), key: "actions" },
   ];
 
   const ResultsOrder: React.FC<ResultsOrderProps> = ({
@@ -107,6 +109,13 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
     return paginatedWorkListEntries?.map((entry, index) => ({
       ...entry,
       id: entry.uuid,
+      date: {
+        content: (
+          <>
+            <span>{formatDate(parseDate(entry.dateActivated))}</span>
+          </>
+        ),
+      },
       orderNumber: { content: <span>{entry.orderNumber}</span> },
       accessionNumber: { content: <span>{entry.accessionNumber}</span> },
       test: { content: <span>{entry.concept.display}</span> },

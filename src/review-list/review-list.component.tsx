@@ -1,7 +1,13 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useGetOrdersWorklist } from "../work-list/work-list.resource";
-import { ErrorState, showModal, usePagination } from "@openmrs/esm-framework";
+import {
+  ErrorState,
+  formatDate,
+  parseDate,
+  showModal,
+  usePagination,
+} from "@openmrs/esm-framework";
 import {
   DataTable,
   DataTableSkeleton,
@@ -85,24 +91,33 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
 
   // get picked orders
   let columns = [
-    { id: 0, header: t("orderNumber", "Order Number"), key: "orderNumber" },
+    { id: 0, header: t("date", "Date"), key: "date" },
+
+    { id: 1, header: t("orderNumber", "Order Number"), key: "orderNumber" },
     {
-      id: 1,
+      id: 2,
       header: t("accessionNumber", "Accession Number"),
       key: "accessionNumber",
     },
-    { id: 2, header: t("test", "Test"), key: "test" },
-    { id: 3, header: t("action", "Action"), key: "action" },
-    { id: 4, header: t("status", "Status"), key: "status" },
-    { id: 5, header: t("orderer", "Orderer"), key: "orderer" },
-    { id: 6, header: t("orderType", "Order Type"), key: "orderType" },
-    { id: 7, header: t("urgency", "Urgency"), key: "urgency" },
+    { id: 3, header: t("test", "Test"), key: "test" },
+    { id: 4, header: t("action", "Action"), key: "action" },
+    { id: 5, header: t("status", "Status"), key: "status" },
+    { id: 6, header: t("orderer", "Orderer"), key: "orderer" },
+    { id: 7, header: t("orderType", "Order Type"), key: "orderType" },
+    { id: 8, header: t("urgency", "Urgency"), key: "urgency" },
   ];
 
   const tableRows = useMemo(() => {
     return paginatedWorkListEntries?.map((entry, index) => ({
       ...entry,
       id: entry.uuid,
+      date: {
+        content: (
+          <>
+            <span>{formatDate(parseDate(entry.dateActivated))}</span>
+          </>
+        ),
+      },
       orderNumber: { content: <span>{entry.orderNumber}</span> },
       accessionNumber: { content: <span>{entry.accessionNumber}</span> },
       test: { content: <span>{entry.concept.display}</span> },
