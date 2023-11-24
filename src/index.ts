@@ -82,6 +82,11 @@ export const reviewItemDialog = getAsyncLifecycle(
   options
 );
 
+export const rejectOrderDialog = getAsyncLifecycle(
+  () => import("./reject-order/reject-order-dialog.component"),
+  options
+);
+
 export function startupApp() {
   defineConfigSchema(moduleName, configSchema);
 }

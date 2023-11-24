@@ -1,7 +1,12 @@
-import React, { useState, useMemo, AnchorHTMLAttributes } from "react";
+import React, {
+  useState,
+  useMemo,
+  AnchorHTMLAttributes,
+  useCallback,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { EmptyState, ErrorState } from "@openmrs/esm-patient-common-lib";
-import { Microscope } from "@carbon/react/icons";
+import { Microscope, TrashCan } from "@carbon/react/icons";
 
 import {
   DataTable,
@@ -33,7 +38,12 @@ import {
 } from "@carbon/react";
 import { Result, useGetOrdersWorklist } from "./work-list.resource";
 import styles from "./work-list.scss";
-import { formatDate, parseDate, usePagination } from "@openmrs/esm-framework";
+import {
+  formatDate,
+  parseDate,
+  showModal,
+  usePagination,
+} from "@openmrs/esm-framework";
 import { launchOverlay } from "../components/overlay/hook";
 import ResultForm from "../results/result-form.component";
 import { getStatusColor } from "../utils/functions";
@@ -45,6 +55,10 @@ interface WorklistProps {
 interface ResultsOrderProps {
   order: Result;
   patientUuid: string;
+}
+
+interface RejectOrderProps {
+  order: string;
 }
 
 const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
@@ -67,6 +81,22 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
     results: paginatedWorkListEntries,
     currentPage,
   } = usePagination(workListEntries, currentPageSize);
+
+  const RejectOrder: React.FC<RejectOrderProps> = ({ order }) => {
+    const launchRejectOrderModal = useCallback(() => {
+      const dispose = showModal("reject-order-dialog", {
+        closeModal: () => dispose(),
+        order,
+      });
+    }, [order]);
+    return (
+      <Button
+        kind="ghost"
+        onClick={launchRejectOrderModal}
+        renderIcon={(props) => <TrashCan size={16} {...props} />}
+      />
+    );
+  };
 
   // get picked orders
   let columns = [
@@ -139,10 +169,13 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
       urgency: { content: <span>{entry.urgency}</span> },
       actions: {
         content: (
-          <ResultsOrder
-            patientUuid={entry.patient.uuid}
-            order={paginatedWorkListEntries[index]}
-          />
+          <>
+            <ResultsOrder
+              patientUuid={entry.patient.uuid}
+              order={paginatedWorkListEntries[index]}
+            />
+            <RejectOrder order={paginatedWorkListEntries[index].uuid} />
+          </>
         ),
       },
     }));

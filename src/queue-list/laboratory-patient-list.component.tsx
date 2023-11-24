@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   DataTable,
-  DataTableHeader,
   DataTableSkeleton,
   Pagination,
   Table,
@@ -21,13 +20,17 @@ import {
   Tag,
   TableExpandedRow,
   Tile,
+  Button,
 } from "@carbon/react";
+import { TrashCan } from "@carbon/react/icons";
+
 import { useTranslation } from "react-i18next";
 import {
   age,
   formatDate,
   formatDatetime,
   parseDate,
+  showModal,
   usePagination,
   useSession,
 } from "@openmrs/esm-framework";
@@ -51,6 +54,10 @@ import { EmptyState } from "@openmrs/esm-patient-common-lib";
 
 interface LaboratoryPatientListProps {}
 
+interface RejectOrderProps {
+  order: string;
+}
+
 const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
   const { t } = useTranslation();
   const session = useSession();
@@ -71,16 +78,33 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     currentPage,
   } = usePagination(patientQueueEntries, currentPageSize);
 
+  const RejectOrder: React.FC<RejectOrderProps> = ({ order }) => {
+    const launchRejectOrderModal = useCallback(() => {
+      const dispose = showModal("reject-order-dialog", {
+        closeModal: () => dispose(),
+        order,
+      });
+    }, [order]);
+    return (
+      <Button
+        kind="ghost"
+        onClick={launchRejectOrderModal}
+        renderIcon={(props) => <TrashCan size={16} {...props} />}
+      />
+    );
+  };
+
   let columns = [
     { id: 0, header: t("visitId", "Visit ID"), key: "visitId" },
     { id: 1, header: t("names", "Names"), key: "names" },
     { id: 2, header: t("age", "Age"), key: "age" },
     { id: 3, header: t("orderedFrom", "Ordered from"), key: "orderedFrom" },
     { id: 4, header: t("waitingTime", "Waiting time"), key: "waitingTime" },
+    { id: 5, header: t("actions", "Actions"), key: "actions" },
   ];
 
   const tableRows = useMemo(() => {
-    return paginatedQueueEntries?.map((entry) => ({
+    return paginatedQueueEntries?.map((entry, index) => ({
       ...entry,
       encounter: entry.encounter,
       visitId: {
@@ -105,6 +129,13 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
               {formatWaitTime(entry.waitTime, t)}
             </span>
           </Tag>
+        ),
+      },
+      actions: {
+        content: (
+          <>
+            <RejectOrder order={paginatedQueueEntries[index].encounter.uuid} />
+          </>
         ),
       },
     }));

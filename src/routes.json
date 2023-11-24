@@ -63,6 +63,10 @@
     {
       "name" : "review-item-dialog",
       "component": "reviewItemDialog"
+    },
+    {
+      "name" : "reject-order-dialog",
+      "component": "rejectOrderDialog"
     }
   ]
 }
