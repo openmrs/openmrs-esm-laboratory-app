@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Button,
@@ -18,9 +18,12 @@ import {
 } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import styles from "./reject-order-dialog.scss";
+import { Result } from "../work-list/work-list.resource";
+import { RejectOrder } from "./reject-order-dialog.resource";
+import { showNotification, showToast } from "@openmrs/esm-framework";
 
 interface RejectOrderDialogProps {
-  order: string;
+  order: Result;
   closeModal: () => void;
 }
 
@@ -29,8 +32,38 @@ const RejectOrderDialog: React.FC<RejectOrderDialogProps> = ({
   closeModal,
 }) => {
   const { t } = useTranslation();
+
+  const [notes, setNotes] = useState("");
+
   const rejectOrder = async (event) => {
     event.preventDefault();
+
+    const payload = {
+      fulfillerStatus: "DECLINED",
+      instructions: notes,
+    };
+    RejectOrder(order.uuid, payload).then(
+      (resp) => {
+        showToast({
+          critical: true,
+          title: t("rejectOrder", "Rejected Order"),
+          kind: "success",
+          description: t(
+            "successfullyrejected",
+            `You have successfully rejected an Order with OrderNumber ${order.orderNumber} `
+          ),
+        });
+        closeModal();
+      },
+      (err) => {
+        showNotification({
+          title: t(`errorRejecting order', 'Error Rejecting a order`),
+          kind: "error",
+          critical: true,
+          description: err?.message,
+        });
+      }
+    );
   };
 
   return (
@@ -42,7 +75,27 @@ const RejectOrderDialog: React.FC<RejectOrderDialogProps> = ({
         />
         <ModalBody>
           <div className={styles.modalBody}>
-            <section className={styles.section}></section>
+            <section className={styles.section}>
+              <h5 className={styles.section}>
+                {order?.accessionNumber} &nbsp; · &nbsp;{order?.fulfillerStatus}{" "}
+                &nbsp; · &nbsp;
+                {order?.orderNumber}
+                &nbsp;
+              </h5>
+            </section>
+            <br />
+            <section className={styles.section}>
+              <TextArea
+                labelText={t("notes", "Enter instructions ")}
+                id="nextNotes"
+                name="nextNotes"
+                invalidText="Required"
+                helperText="Please enter notes"
+                maxCount={500}
+                enableCounter
+                onChange={(e) => setNotes(e.target.value)}
+              />
+            </section>
           </div>
         </ModalBody>
         <ModalFooter>

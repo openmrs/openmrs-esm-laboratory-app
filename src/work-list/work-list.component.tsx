@@ -58,7 +58,7 @@ interface ResultsOrderProps {
 }
 
 interface RejectOrderProps {
-  order: string;
+  order: Result;
 }
 
 const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
@@ -174,7 +174,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
               patientUuid={entry.patient.uuid}
               order={paginatedWorkListEntries[index]}
             />
-            <RejectOrder order={paginatedWorkListEntries[index].uuid} />
+            <RejectOrder order={paginatedWorkListEntries[index]} />
           </>
         ),
       },
