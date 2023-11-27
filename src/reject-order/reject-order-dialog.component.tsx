@@ -39,8 +39,8 @@ const RejectOrderDialog: React.FC<RejectOrderDialogProps> = ({
     event.preventDefault();
 
     const payload = {
-      fulfillerStatus: "DECLINED",
-      instructions: notes,
+      fulfillerStatus: "EXCEPTION", // Todo changed to Declined when UgEMR module is upgraded to 2.6.1
+      fulfillerComment: notes,
     };
     RejectOrder(order.uuid, payload).then(
       (resp) => {
@@ -86,11 +86,11 @@ const RejectOrderDialog: React.FC<RejectOrderDialogProps> = ({
             <br />
             <section className={styles.section}>
               <TextArea
-                labelText={t("notes", "Enter instructions ")}
+                labelText={t("notes", "Enter Comments ")}
                 id="nextNotes"
                 name="nextNotes"
                 invalidText="Required"
-                helperText="Please enter notes"
+                helperText="Please enter comment"
                 maxCount={500}
                 enableCounter
                 onChange={(e) => setNotes(e.target.value)}
