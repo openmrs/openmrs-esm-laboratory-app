@@ -6,6 +6,7 @@ import {
   formatDate,
   parseDate,
   usePagination,
+  isDesktop,
 } from "@openmrs/esm-framework";
 import {
   DataTable,
@@ -119,7 +120,7 @@ const CompletedList: React.FC<CompletedlistProps> = ({ fulfillerStatus }) => {
     return (
       <div>
         <div className={styles.headerBtnContainer}></div>
-        <DataTable rows={tableRows} headers={columns} isSortable useZebraStyles>
+        <DataTable rows={tableRows} headers={columns} useZebraStyles>
           {({
             rows,
             headers,
@@ -170,7 +171,7 @@ const CompletedList: React.FC<CompletedlistProps> = ({ fulfillerStatus }) => {
                   <TableRow>
                     {headers.map((header) => (
                       <TableHeader {...getHeaderProps({ header })}>
-                        {header.header}
+                        {header.header?.content ?? header.header}
                       </TableHeader>
                     ))}
                   </TableRow>
