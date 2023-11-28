@@ -71,7 +71,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
     fulfillerStatus
   );
 
-  const pageSizes = [10, 20, 30, 40, 50];
+  const pageSizes = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
   const [page, setPage] = useState(1);
   const [currentPageSize, setPageSize] = useState(10);
   const [nextOffSet, setNextOffSet] = useState(0);
@@ -280,7 +280,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
                 page={currentPage}
                 pageSize={currentPageSize}
                 pageSizes={pageSizes}
-                totalItems={paginatedWorkListEntries?.length}
+                totalItems={workListEntries?.length}
                 className={styles.pagination}
                 onChange={({ pageSize, page }) => {
                   if (pageSize !== currentPageSize) {
