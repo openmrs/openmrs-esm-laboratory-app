@@ -149,7 +149,7 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
     return (
       <div>
         <div className={styles.headerBtnContainer}></div>
-        <DataTable rows={tableRows} headers={columns} isSortable useZebraStyles>
+        <DataTable rows={tableRows} headers={columns} useZebraStyles>
           {({
             rows,
             headers,
@@ -199,7 +199,7 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
                   <TableRow>
                     {headers.map((header) => (
                       <TableHeader {...getHeaderProps({ header })}>
-                        {header.header}
+                        {header.header?.content ?? header.header}
                       </TableHeader>
                     ))}
                   </TableRow>

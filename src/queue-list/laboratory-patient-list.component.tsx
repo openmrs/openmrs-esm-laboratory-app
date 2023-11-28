@@ -140,44 +140,6 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
       },
     }));
   }, [paginatedQueueEntries, t]);
-
-  // const handleFilter = ({
-  //   rowIds,
-  //   headers,
-  //   cellsById,
-  //   inputValue,
-  //   getCellId,
-  // }: FilterProps): Array<string> => {
-  //   return rowIds.filter((rowId) =>
-  //     headers.some(({ key }) => {
-  //       const cellId = getCellId(rowId, key);
-  //       const filterableValue = cellsById[cellId].value;
-  //       const filterTerm = inputValue.toLowerCase();
-
-  //       if (typeof filterableValue === "boolean") {
-  //         return false;
-  //       }
-  //       if (filterableValue.hasOwnProperty("content")) {
-  //         if (Array.isArray(filterableValue.content.props.children)) {
-  //           return (
-  //             "" + filterableValue.content.props.children[1].props.children
-  //           )
-  //             .toLowerCase()
-  //             .includes(filterTerm);
-  //         }
-  //         if (typeof filterableValue.content.props.children === "object") {
-  //           return ("" + filterableValue.content.props.children.props.children)
-  //             .toLowerCase()
-  //             .includes(filterTerm);
-  //         }
-  //         return ("" + filterableValue.content.props.children)
-  //           .toLowerCase()
-  //           .includes(filterTerm);
-  //       }
-  //       return ("" + filterableValue).toLowerCase().includes(filterTerm);
-  //     })
-  //   );
-  // };
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
   }
@@ -186,7 +148,7 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     return (
       <div>
         <div className={styles.headerBtnContainer}></div>
-        <DataTable rows={tableRows} headers={columns} isSortable useZebraStyles>
+        <DataTable rows={tableRows} headers={columns} useZebraStyles>
           {({
             rows,
             headers,
@@ -223,7 +185,7 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
                     <TableExpandHeader />
                     {headers.map((header) => (
                       <TableHeader {...getHeaderProps({ header })}>
-                        {header.header}
+                        {header.header?.content ?? header.header}
                       </TableHeader>
                     ))}
                   </TableRow>

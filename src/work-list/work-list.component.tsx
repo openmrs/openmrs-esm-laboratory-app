@@ -189,7 +189,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
     return (
       <div>
         <div className={styles.headerBtnContainer}></div>
-        <DataTable rows={tableRows} headers={columns} isSortable useZebraStyles>
+        <DataTable rows={tableRows} headers={columns} useZebraStyles>
           {({
             rows,
             headers,
@@ -239,7 +239,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
                   <TableRow>
                     {headers.map((header) => (
                       <TableHeader {...getHeaderProps({ header })}>
-                        {header.header}
+                        {header.header?.content ?? header.header}
                       </TableHeader>
                     ))}
                   </TableRow>
