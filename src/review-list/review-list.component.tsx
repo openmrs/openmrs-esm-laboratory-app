@@ -247,7 +247,7 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
                 page={currentPage}
                 pageSize={currentPageSize}
                 pageSizes={pageSizes}
-                totalItems={paginatedWorkListEntries?.length}
+                totalItems={workListEntries?.length}
                 className={styles.pagination}
                 onChange={({ pageSize, page }) => {
                   if (pageSize !== currentPageSize) {
