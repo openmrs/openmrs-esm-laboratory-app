@@ -72,9 +72,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
   );
 
   const pageSizes = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
-  const [page, setPage] = useState(1);
   const [currentPageSize, setPageSize] = useState(10);
-  const [nextOffSet, setNextOffSet] = useState(0);
 
   const {
     goTo,
@@ -136,49 +134,51 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
   };
 
   const tableRows = useMemo(() => {
-    return paginatedWorkListEntries?.map((entry, index) => ({
-      ...entry,
-      id: entry.uuid,
-      date: {
-        content: (
-          <>
-            <span>{formatDate(parseDate(entry.dateActivated))}</span>
-          </>
-        ),
-      },
-      orderNumber: { content: <span>{entry.orderNumber}</span> },
-      accessionNumber: { content: <span>{entry.accessionNumber}</span> },
-      test: { content: <span>{entry.concept.display}</span> },
-      action: { content: <span>{entry.action}</span> },
-      status: {
-        content: (
-          <>
-            <Tag>
-              <span
-                className={styles.statusContainer}
-                style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
-              >
-                <span>{entry.fulfillerStatus}</span>
-              </span>
-            </Tag>
-          </>
-        ),
-      },
-      orderer: { content: <span>{entry.orderer.display}</span> },
-      orderType: { content: <span>{entry.orderType.display}</span> },
-      urgency: { content: <span>{entry.urgency}</span> },
-      actions: {
-        content: (
-          <>
-            <ResultsOrder
-              patientUuid={entry.patient.uuid}
-              order={paginatedWorkListEntries[index]}
-            />
-            <RejectOrder order={paginatedWorkListEntries[index]} />
-          </>
-        ),
-      },
-    }));
+    return paginatedWorkListEntries
+      ?.filter((item) => item.action === "REVISE")
+      .map((entry, index) => ({
+        ...entry,
+        id: entry.uuid,
+        date: {
+          content: (
+            <>
+              <span>{formatDate(parseDate(entry.dateActivated))}</span>
+            </>
+          ),
+        },
+        orderNumber: { content: <span>{entry.orderNumber}</span> },
+        accessionNumber: { content: <span>{entry.accessionNumber}</span> },
+        test: { content: <span>{entry.concept.display}</span> },
+        action: { content: <span>{entry.action}</span> },
+        status: {
+          content: (
+            <>
+              <Tag>
+                <span
+                  className={styles.statusContainer}
+                  style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
+                >
+                  <span>{entry.fulfillerStatus}</span>
+                </span>
+              </Tag>
+            </>
+          ),
+        },
+        orderer: { content: <span>{entry.orderer.display}</span> },
+        orderType: { content: <span>{entry.orderType.display}</span> },
+        urgency: { content: <span>{entry.urgency}</span> },
+        actions: {
+          content: (
+            <>
+              <ResultsOrder
+                patientUuid={entry.patient.uuid}
+                order={paginatedWorkListEntries[index]}
+              />
+              <RejectOrder order={paginatedWorkListEntries[index]} />
+            </>
+          ),
+        },
+      }));
   }, [ResultsOrder, paginatedWorkListEntries]);
 
   if (isLoading) {

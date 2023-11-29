@@ -59,16 +59,11 @@ const LabTests: React.FC<LabTestsProps> = ({ encounter, queueId }) => {
       },
       actions: {
         content: (
-          <PickLabRequestActionMenu
-            closeModal={() => true}
-            order={item}
-            encounter={encounter}
-            queueId={queueId}
-          />
+          <PickLabRequestActionMenu closeModal={() => true} order={item} />
         ),
       },
     }));
-  }, [encounter, queueId]);
+  }, [encounter]);
 
   if (!encounter) {
     return (

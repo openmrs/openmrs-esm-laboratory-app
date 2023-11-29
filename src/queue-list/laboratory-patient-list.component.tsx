@@ -38,12 +38,13 @@ import {
 } from "@openmrs/esm-framework";
 import styles from "./laboratory-queue.scss";
 import { getStatusColor } from "../utils/functions";
-import { useGetOrdersWorklist } from "../work-list/work-list.resource";
+import { Result, useGetOrdersWorklist } from "../work-list/work-list.resource";
+import PickLabRequestActionMenu from "./pick-lab-request-menu.component";
 
 interface LaboratoryPatientListProps {}
 
 interface RejectOrderProps {
-  order: string;
+  order: Result;
 }
 
 const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
@@ -101,45 +102,51 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
   ];
 
   const tableRows = useMemo(() => {
-    return paginatedWorklistQueueEntries?.map((entry, index) => ({
-      ...entry,
-      id: entry.uuid,
-      date: {
-        content: (
-          <>
-            <span>{formatDate(parseDate(entry.dateActivated))}</span>
-          </>
-        ),
-      },
-      orderNumber: { content: <span>{entry.orderNumber}</span> },
-      accessionNumber: { content: <span>{entry.accessionNumber}</span> },
-      test: { content: <span>{entry.concept.display}</span> },
-      action: { content: <span>{entry.action}</span> },
-      status: {
-        content: (
-          <>
-            <Tag>
-              <span
-                className={styles.statusContainer}
-                style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
-              >
-                <span>{entry.fulfillerStatus}</span>
-              </span>
-            </Tag>
-          </>
-        ),
-      },
-      orderer: { content: <span>{entry.orderer.display}</span> },
-      orderType: { content: <span>{entry.orderType.display}</span> },
-      urgency: { content: <span>{entry.urgency}</span> },
-      actions: {
-        content: (
-          <>
-            <RejectOrder order={paginatedWorklistQueueEntries[index].uuid} />
-          </>
-        ),
-      },
-    }));
+    return paginatedWorklistQueueEntries
+      ?.filter((item) => item.action === "NEW")
+      .map((entry, index) => ({
+        ...entry,
+        id: entry.uuid,
+        date: {
+          content: (
+            <>
+              <span>{formatDate(parseDate(entry.dateActivated))}</span>
+            </>
+          ),
+        },
+        orderNumber: { content: <span>{entry.orderNumber}</span> },
+        accessionNumber: { content: <span>{entry.accessionNumber}</span> },
+        test: { content: <span>{entry.concept.display}</span> },
+        action: { content: <span>{entry.action}</span> },
+        status: {
+          content: (
+            <>
+              <Tag>
+                <span
+                  className={styles.statusContainer}
+                  style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
+                >
+                  <span>{entry.fulfillerStatus}</span>
+                </span>
+              </Tag>
+            </>
+          ),
+        },
+        orderer: { content: <span>{entry.orderer.display}</span> },
+        orderType: { content: <span>{entry.orderType.display}</span> },
+        urgency: { content: <span>{entry.urgency}</span> },
+        actions: {
+          content: (
+            <>
+              <PickLabRequestActionMenu
+                order={paginatedWorklistQueueEntries[index]}
+                closeModal={() => true}
+              />
+              <RejectOrder order={paginatedWorklistQueueEntries[index]} />
+            </>
+          ),
+        },
+      }));
   }, [paginatedWorklistQueueEntries]);
 
   if (isLoading) {

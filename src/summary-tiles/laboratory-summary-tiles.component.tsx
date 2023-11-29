@@ -12,10 +12,7 @@ const LaboratorySummaryTiles: React.FC = () => {
   const session = useSession();
 
   // get tests ordered
-  const { patientQueueCount } = usePatientQueuesList(
-    session?.sessionLocation?.uuid,
-    "pending"
-  );
+  const { count: testOrderedCount } = useLabTestsStats("");
 
   // get worklists
   const { count: worklistCount } = useLabTestsStats("IN_PROGRESS");
@@ -30,7 +27,7 @@ const LaboratorySummaryTiles: React.FC = () => {
       <div className={styles.cardContainer}>
         <SummaryTile
           label={t("orders", "Orders")}
-          value={patientQueueCount}
+          value={testOrderedCount}
           headerLabel={t("testsOrdered", "Tests ordered")}
         />
         <SummaryTile
