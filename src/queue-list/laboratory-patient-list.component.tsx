@@ -21,6 +21,8 @@ import {
   TableExpandedRow,
   Tile,
   Button,
+  DatePicker,
+  DatePickerInput,
 } from "@carbon/react";
 import { TrashCan } from "@carbon/react/icons";
 
@@ -35,22 +37,8 @@ import {
   useSession,
 } from "@openmrs/esm-framework";
 import styles from "./laboratory-queue.scss";
-import { usePatientQueuesList } from "./laboratory-patient-list.resource";
-import {
-  formatWaitTime,
-  getTagColor,
-  trimVisitNumber,
-} from "../utils/functions";
-import LabTests from "./lab-tests/lab-tests.component";
-import { EmptyState } from "@openmrs/esm-patient-common-lib";
-
-// type FilterProps = {
-//   rowIds: Array<string>;
-//   headers: Array<DataTableHeader>;
-//   cellsById: any;
-//   inputValue: string;
-//   getCellId: (row, key) => string;
-// };
+import { getStatusColor } from "../utils/functions";
+import { useGetOrdersWorklist } from "../work-list/work-list.resource";
 
 interface LaboratoryPatientListProps {}
 
@@ -60,23 +48,22 @@ interface RejectOrderProps {
 
 const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
   const { t } = useTranslation();
-  const session = useSession();
 
-  const { patientQueueEntries, isLoading } = usePatientQueuesList(
-    session?.sessionLocation?.uuid,
-    "pending"
+  const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState("");
+
+  const { workListEntries, isLoading } = useGetOrdersWorklist(
+    activatedOnOrAfterDate,
+    ""
   );
 
   const pageSizes = [10, 20, 30, 40, 50];
-  const [page, setPage] = useState(1);
   const [currentPageSize, setPageSize] = useState(10);
-  const [nextOffSet, setNextOffSet] = useState(0);
 
   const {
     goTo,
-    results: paginatedQueueEntries,
+    results: paginatedWorklistQueueEntries,
     currentPage,
-  } = usePagination(patientQueueEntries, currentPageSize);
+  } = usePagination(workListEntries, currentPageSize);
 
   const RejectOrder: React.FC<RejectOrderProps> = ({ order }) => {
     const launchRejectOrderModal = useCallback(() => {
@@ -94,57 +81,72 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     );
   };
 
+  // get picked orders
   let columns = [
-    { id: 0, header: t("visitId", "Visit ID"), key: "visitId" },
-    { id: 1, header: t("names", "Names"), key: "names" },
-    { id: 2, header: t("age", "Age"), key: "age" },
-    { id: 3, header: t("orderedFrom", "Ordered from"), key: "orderedFrom" },
-    { id: 4, header: t("waitingTime", "Waiting time"), key: "waitingTime" },
-    { id: 5, header: t("actions", "Actions"), key: "actions" },
+    { id: 0, header: t("date", "Date"), key: "date" },
+
+    { id: 1, header: t("orderNumber", "Order Number"), key: "orderNumber" },
+    {
+      id: 2,
+      header: t("accessionNumber", "Accession Number"),
+      key: "accessionNumber",
+    },
+    { id: 3, header: t("test", "Test"), key: "test" },
+    { id: 4, header: t("action", "Action"), key: "action" },
+    { id: 5, header: t("status", "Status"), key: "status" },
+    { id: 6, header: t("orderer", "Orderer"), key: "orderer" },
+    { id: 7, header: t("orderType", "Order Type"), key: "orderType" },
+    { id: 8, header: t("urgency", "Urgency"), key: "urgency" },
+    { id: 9, header: t("actions", "Actions"), key: "actions" },
   ];
 
   const tableRows = useMemo(() => {
-    return paginatedQueueEntries?.map((entry, index) => ({
+    return paginatedWorklistQueueEntries?.map((entry, index) => ({
       ...entry,
-      encounter: entry.encounter,
-      visitId: {
-        content: <span>{trimVisitNumber(entry.visitNumber)}</span>,
-      },
-      names: {
-        content: <span>{entry.name}</span>,
-      },
-      age: {
-        content: <span>{age(entry.patientDob)}</span>,
-      },
-      orderedFrom: {
-        content: <span>{entry.locationFromName}</span>,
-      },
-      waitingTime: {
+      id: entry.uuid,
+      date: {
         content: (
-          <Tag>
-            <span
-              className={styles.statusContainer}
-              style={{ color: `${getTagColor(entry.waitTime)}` }}
-            >
-              {formatWaitTime(entry.waitTime, t)}
-            </span>
-          </Tag>
+          <>
+            <span>{formatDate(parseDate(entry.dateActivated))}</span>
+          </>
         ),
       },
+      orderNumber: { content: <span>{entry.orderNumber}</span> },
+      accessionNumber: { content: <span>{entry.accessionNumber}</span> },
+      test: { content: <span>{entry.concept.display}</span> },
+      action: { content: <span>{entry.action}</span> },
+      status: {
+        content: (
+          <>
+            <Tag>
+              <span
+                className={styles.statusContainer}
+                style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
+              >
+                <span>{entry.fulfillerStatus}</span>
+              </span>
+            </Tag>
+          </>
+        ),
+      },
+      orderer: { content: <span>{entry.orderer.display}</span> },
+      orderType: { content: <span>{entry.orderType.display}</span> },
+      urgency: { content: <span>{entry.urgency}</span> },
       actions: {
         content: (
           <>
-            <RejectOrder order={paginatedQueueEntries[index].encounter.uuid} />
+            <RejectOrder order={paginatedWorklistQueueEntries[index].uuid} />
           </>
         ),
       },
     }));
-  }, [paginatedQueueEntries, t]);
+  }, [paginatedWorklistQueueEntries]);
+
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
   }
 
-  if (patientQueueEntries?.length >= 0) {
+  if (paginatedWorklistQueueEntries?.length >= 0) {
     return (
       <div>
         <div className={styles.headerBtnContainer}></div>
@@ -167,6 +169,20 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
                 }}
               >
                 <TableToolbarContent>
+                  <Layer style={{ margin: "5px" }}>
+                    <DatePicker dateFormat="Y-m-d" datePickerType="single">
+                      <DatePickerInput
+                        labelText={""}
+                        id="activatedOnOrAfterDate"
+                        placeholder="YYYY-MM-DD"
+                        onChange={(event) => {
+                          setActivatedOnOrAfterDate(event.target.value);
+                        }}
+                        type="date"
+                        value={activatedOnOrAfterDate}
+                      />
+                    </DatePicker>
+                  </Layer>
                   <Layer>
                     <TableToolbarSearch
                       onChange={onInputChange}
@@ -182,7 +198,6 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
               >
                 <TableHead>
                   <TableRow>
-                    <TableExpandHeader />
                     {headers.map((header) => (
                       <TableHeader {...getHeaderProps({ header })}>
                         {header.header?.content ?? header.header}
@@ -194,31 +209,13 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
                   {rows.map((row, index) => {
                     return (
                       <React.Fragment key={row.id}>
-                        <TableExpandRow {...getRowProps({ row })} key={row.id}>
+                        <TableRow {...getRowProps({ row })} key={row.id}>
                           {row.cells.map((cell) => (
                             <TableCell key={cell.id}>
                               {cell.value?.content ?? cell.value}
                             </TableCell>
                           ))}
-                        </TableExpandRow>
-                        {row.isExpanded ? (
-                          <TableExpandedRow
-                            className={styles.expandedLabQueueVisitRow}
-                            colSpan={headers.length + 2}
-                          >
-                            <>
-                              <LabTests
-                                encounter={patientQueueEntries[index].encounter}
-                                queueId={paginatedQueueEntries[index].uuid}
-                              />
-                            </>
-                          </TableExpandedRow>
-                        ) : (
-                          <TableExpandedRow
-                            className={styles.hiddenRow}
-                            colSpan={headers.length + 2}
-                          />
-                        )}
+                        </TableRow>
                       </React.Fragment>
                     );
                   })}
@@ -244,7 +241,7 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
                 page={currentPage}
                 pageSize={currentPageSize}
                 pageSizes={pageSizes}
-                totalItems={patientQueueEntries?.length}
+                totalItems={workListEntries?.length}
                 className={styles.pagination}
                 onChange={({ pageSize, page }) => {
                   if (pageSize !== currentPageSize) {
