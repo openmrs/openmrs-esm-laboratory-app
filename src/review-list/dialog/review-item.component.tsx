@@ -13,6 +13,8 @@ import { useGetEncounterById } from "../../patient-chart/laboratory-item/view-la
 import styles from "../review-list.scss";
 import { GroupMember } from "../../patient-chart/laboratory-order.resource";
 import { useGetConceptById } from "../../patient-chart/results-summary/results-summary.resource";
+import { ApproverOrder } from "./review-item.resource";
+import { showNotification, showToast } from "@openmrs/esm-framework";
 
 interface ReviewItemDialogProps {
   encounterUuid: string;
@@ -50,13 +52,54 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
 
   const [checkedItems, setCheckedItems] = useState({});
 
-  const handleCheckboxChange = (test, groupMembers) => {
+  const handleCheckboxChange = (test, groupMembers, uuid) => {
     setCheckedItems((prevCheckedItems) => ({
       ...prevCheckedItems,
       [test]: {
         groupMembers,
+        uuid,
       },
     }));
+  };
+
+  console.info(checkedItems);
+
+  // handle approve
+  const approveOrder = async (e) => {
+    e.preventDefault();
+
+    let uuids = [];
+
+    Object.keys(checkedItems).map((item, index) => {
+      uuids.push(filteredGroupedResults[item].uuid);
+    });
+
+    const payload = {
+      orders: uuids.join(","),
+    };
+
+    ApproverOrder(payload).then(
+      () => {
+        showToast({
+          critical: true,
+          title: t("approveOrder", "Approve Order"),
+          kind: "success",
+          description: t(
+            "successfullyApproved",
+            `You have successfully approved Order `
+          ),
+        });
+        closeModal();
+      },
+      (err) => {
+        showNotification({
+          title: t(`errorApproving order', 'Error Approving a order`),
+          kind: "error",
+          critical: true,
+          description: err?.message,
+        });
+      }
+    );
   };
 
   // get Units
@@ -193,7 +236,8 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
                       onChange={() =>
                         handleCheckboxChange(
                           test,
-                          filteredGroupedResults[test].groupMembers
+                          filteredGroupedResults[test].groupMembers,
+                          filteredGroupedResults[test].uuid
                         )
                       }
                       labelText={test}
@@ -228,7 +272,9 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
           <Button kind="secondary" onClick={closeModal}>
             {t("cancel", "Cancel")}
           </Button>
-          <Button type="submit">{t("approveResult", "Approve Result")}</Button>
+          <Button type="submit" onClick={approveOrder}>
+            {t("approveResult", "Approve Result")}
+          </Button>
         </ModalFooter>
       </Form>
     </div>
