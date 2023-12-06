@@ -87,17 +87,19 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     { id: 0, header: t("date", "Date"), key: "date" },
 
     { id: 1, header: t("orderNumber", "Order Number"), key: "orderNumber" },
+    { id: 2, header: t("patient", "Patient"), key: "patient" },
+
     {
-      id: 2,
+      id: 3,
       header: t("accessionNumber", "Accession Number"),
       key: "accessionNumber",
     },
-    { id: 3, header: t("test", "Test"), key: "test" },
-    { id: 4, header: t("action", "Action"), key: "action" },
-    { id: 5, header: t("status", "Status"), key: "status" },
-    { id: 6, header: t("orderer", "Orderer"), key: "orderer" },
-    { id: 8, header: t("urgency", "Urgency"), key: "urgency" },
-    { id: 9, header: t("actions", "Actions"), key: "actions" },
+    { id: 4, header: t("test", "Test"), key: "test" },
+    { id: 5, header: t("action", "Action"), key: "action" },
+    { id: 6, header: t("status", "Status"), key: "status" },
+    { id: 8, header: t("orderer", "Orderer"), key: "orderer" },
+    { id: 9, header: t("urgency", "Urgency"), key: "urgency" },
+    { id: 10, header: t("actions", "Actions"), key: "actions" },
   ];
 
   const tableRows = useMemo(() => {
@@ -110,6 +112,13 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
           content: (
             <>
               <span>{formatDate(parseDate(entry.dateActivated))}</span>
+            </>
+          ),
+        },
+        patient: {
+          content: (
+            <>
+              <span>{entry.patient.display.split("-")[1]}</span>
             </>
           ),
         },
