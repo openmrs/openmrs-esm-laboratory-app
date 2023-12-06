@@ -96,7 +96,6 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     { id: 4, header: t("action", "Action"), key: "action" },
     { id: 5, header: t("status", "Status"), key: "status" },
     { id: 6, header: t("orderer", "Orderer"), key: "orderer" },
-    { id: 7, header: t("orderType", "Order Type"), key: "orderType" },
     { id: 8, header: t("urgency", "Urgency"), key: "urgency" },
     { id: 9, header: t("actions", "Actions"), key: "actions" },
   ];
@@ -133,7 +132,6 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
           ),
         },
         orderer: { content: <span>{entry.orderer.display}</span> },
-        orderType: { content: <span>{entry.orderType.display}</span> },
         urgency: { content: <span>{entry.urgency}</span> },
         actions: {
           content: (
