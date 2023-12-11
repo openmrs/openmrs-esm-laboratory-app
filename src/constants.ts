@@ -1,4 +1,4 @@
-export const moduleName = "@ugandaemr/openmrs-esm-laboratory-app";
+export const moduleName = "@openmrs/esm-laboratory-app";
 
 export const LABORATARORY_ENCOUNTER_TYPE =
   "cbf01392-ca29-11e9-a32f-2a2ae2dbcce4";

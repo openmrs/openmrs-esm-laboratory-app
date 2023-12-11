@@ -7,7 +7,7 @@ import { configSchema } from "./config-schema";
 import { createHomeDashboardLink } from "./components/create-dashboard-link.component";
 import { createDashboardLink } from "@openmrs/esm-patient-common-lib";
 
-const moduleName = "@ugandaemr/esm-laboratory-app";
+const moduleName = "@openmrs/esm-laboratory-app";
 
 const options = {
   featureName: "ugandaemr-laboratory",

@@ -1,13 +1,13 @@
 {
-  "name": "@ugandaemr/openmrs-esm-laboratory-app",
-  "version": "1.0.1",
+  "name": "@openmrs/esm-laboratory-app",
+  "version": "1.0.0",
   "license": "MPL-2.0",
   "description": "Laboratory microfrontend for OpenMRS 3.x",
   "browser": "dist/openmrs-esm-laboratory-app.js",
   "main": "src/index.ts",
   "source": true,
   "scripts": {
-    "start": "openmrs develop --backend http://194.163.171.253:8282",
+    "start": "openmrs develop",
     "serve": "webpack serve --mode=development",
     "build": "webpack --mode production",
     "analyze": "webpack --mode=production --env analyze=true",
@@ -35,14 +35,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/METS-Programme/openmrs-esm-laboratory.git"
+    "url": "git+https://github.com/openmrs/openmrs-esm-laboratory.git"
   },
-  "homepage": "https://github.com/METS-Programme/openmrs-esm-laboratory#readme",
+  "homepage": "https://github.com/openmrs/openmrs-esm-laboratory#readme",
   "publishConfig": {
     "access": "public"
   },
   "bugs": {
-    "url": "https://github.com/METS-Programme/openmrs-esm-laboratory/issues"
+    "url": "https://github.com/openmrs/openmrs-esm-laboratory/issues"
   },
   "dependencies": {
     "@carbon/react": "^1.14.0",

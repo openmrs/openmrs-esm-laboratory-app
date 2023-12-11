@@ -3,13 +3,21 @@
 A frontend module for managing laboratory requests and queues built on OpenMRS 3.x
 
 For more information, please refer to the
-[OpenMRS 3.x Frontend Documentation](https://openmrs.github.io/openmrs-esm-core/#/).
+[OpenMRS 3.x Frontend Documentation](https://o3-docs.openmrs.org/).
+
+### Dashboard
+
+<img src="https://raw.githubusercontent.com/openmrs/openmrs-esm-laboratory/chore/updates-package-name/assets/screenshots/labs_general_dashboard.png" />
+
+### Adding Results
+
+<img src="https://raw.githubusercontent.com/openmrs/openmrs-esm-laboratory/chore/updates-package-name/assets/screenshots/labs_enter_results.png" />
 
 # Getting Started
 
 ```sh
 # Clone the repository
-git clone git@github.com:METS-Programme/openmrs-esm-laboratory.git
+git clone git@github.com:openmrs/openmrs-esm-laboratory.git
 
 # to install dependencies
 yarn
