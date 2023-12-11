@@ -7,11 +7,11 @@ For more information, please refer to the
 
 ### Dashboard
 
-<img src="https://raw.githubusercontent.com/openmrs/openmrs-esm-laboratory/chore/updates-package-name/assets/screenshots/labs_general_dashboard.png" />
+<img src="https://raw.githubusercontent.com/openmrs/openmrs-esm-laboratory/main/assets/screenshots/labs_enter_results.png" />
 
 ### Adding Results
 
-<img src="https://raw.githubusercontent.com/openmrs/openmrs-esm-laboratory/chore/updates-package-name/assets/screenshots/labs_enter_results.png" />
+<img src="https://raw.githubusercontent.com/openmrs/openmrs-esm-laboratory/main/assets/screenshots/labs_enter_results.png" />
 
 # Getting Started
 
