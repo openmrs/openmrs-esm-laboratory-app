@@ -9,7 +9,7 @@ For more information, please refer to the
 
 ```sh
 # Clone the repository
-git clone git@github.com:METS-Programme/openmrs-esm-laboratory.git
+git clone git@github.com:openmrs/openmrs-esm-laboratory.git
 
 # to install dependencies
 yarn
