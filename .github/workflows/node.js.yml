@@ -9,7 +9,7 @@ on:
     types:
       - created
 env:
-  ESM_NAME: "@openmrs/openmrs-esm-laboratory-app"
+  ESM_NAME: "@openmrs/esm-laboratory-app"
   JS_NAME: "openmrs-esm-laboratory-app.js"
 
 jobs:
