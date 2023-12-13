@@ -12,5 +12,7 @@
   "transferred": "Transferred",
   "visitId": "Visit ID",
   "waitingTime": "Waiting time",
-  "worklist": "Worklist"
+  "worklist": "Worklist",
+  "rejectOrder": "Reject Order",
+  "pickLabRequest": "Pick Lab Request"
 }

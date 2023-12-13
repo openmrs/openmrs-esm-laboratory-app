@@ -9,6 +9,8 @@ import {
   TableContainer,
   TableExpandHeader,
   TableExpandRow,
+  OverflowMenuItem,
+  OverflowMenu,
   TableHead,
   TableHeader,
   TableRow,
@@ -39,7 +41,7 @@ import {
 import styles from "./laboratory-queue.scss";
 import { getStatusColor } from "../utils/functions";
 import { Result, useGetOrdersWorklist } from "../work-list/work-list.resource";
-import PickLabRequestActionMenu from "./pick-lab-request-menu.component";
+import { Order } from "../types/patient-queues";
 
 interface LaboratoryPatientListProps {}
 
@@ -66,21 +68,36 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     currentPage,
   } = usePagination(workListEntries, currentPageSize);
 
-  const RejectOrder: React.FC<RejectOrderProps> = ({ order }) => {
-    const launchRejectOrderModal = useCallback(() => {
-      const dispose = showModal("reject-order-dialog", {
-        closeModal: () => dispose(),
-        order,
-      });
-    }, [order]);
-    return (
-      <Button
-        kind="ghost"
-        onClick={launchRejectOrderModal}
-        renderIcon={(props) => <TrashCan size={16} {...props} />}
-      />
-    );
-  };
+  // const RejectOrder: React.FC<RejectOrderProps> = ({ order }) => {
+  //   const launchRejectOrderModal = useCallback(() => {
+  //     const dispose = showModal("reject-order-dialog", {
+  //       closeModal: () => dispose(),
+  //       order,
+  //     });
+  //   }, [order]);
+  //   return (
+  //     <Button
+  //       kind="ghost"
+  //       onClick={launchRejectOrderModal}
+  //       renderIcon={(props) => <TrashCan size={16} {...props} />}
+  //     />
+  //   );
+  // };
+
+  const handleRejectOrder = useCallback((order: Result) => {
+    const dispose = showModal("reject-order-dialog", {
+      closeModal: () => dispose(),
+      order,
+    });
+  }, []);
+
+  const launchPickLabRequestQueueModal = useCallback((order: Order) => {
+    const dispose = showModal("add-to-worklist-dialog", {
+      closeModal: () => dispose(),
+
+      order,
+    });
+  }, []);
 
   // get picked orders
   let columns = [
@@ -136,11 +153,31 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
         actions: {
           content: (
             <>
-              <PickLabRequestActionMenu
-                order={paginatedWorklistQueueEntries[index]}
-                closeModal={() => true}
-              />
-              <RejectOrder order={paginatedWorklistQueueEntries[index]} />
+              <OverflowMenu
+                flipped={document?.dir === "rtl"}
+                aria-label="Actions menu"
+                floatingMenu
+              >
+                <OverflowMenuItem
+                  itemText={t("pickLabRequest", "Pick Lab Request")}
+                  requireTitle
+                  onClick={() =>
+                    launchPickLabRequestQueueModal(
+                      paginatedWorklistQueueEntries[index]
+                    )
+                  }
+                />
+                <OverflowMenuItem
+                  className={styles.menuItem}
+                  id="discontinue"
+                  itemText={t("rejectOrder", "Reject Order")}
+                  onClick={() =>
+                    handleRejectOrder(paginatedWorklistQueueEntries[index])
+                  }
+                  isDelete={true}
+                  hasDivider
+                />
+              </OverflowMenu>
             </>
           ),
         },
@@ -155,7 +192,12 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     return (
       <div>
         <div className={styles.headerBtnContainer}></div>
-        <DataTable rows={tableRows} headers={columns} useZebraStyles>
+        <DataTable
+          rows={tableRows}
+          headers={columns}
+          useZebraStyles
+          overflowMenuOnHover={true}
+        >
           {({
             rows,
             headers,
