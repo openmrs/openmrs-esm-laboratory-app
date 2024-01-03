@@ -26,10 +26,11 @@ import {
   DatePicker,
   DatePickerInput,
 } from "@carbon/react";
-import { TrashCan } from "@carbon/react/icons";
+import { TrashCan, OverflowMenuVertical } from "@carbon/react/icons";
 
 import { useTranslation } from "react-i18next";
 import {
+  ExtensionSlot,
   age,
   formatDate,
   formatDatetime,
@@ -41,7 +42,7 @@ import {
 import styles from "./laboratory-queue.scss";
 import { getStatusColor } from "../utils/functions";
 import { Result, useGetOrdersWorklist } from "../work-list/work-list.resource";
-import { Order } from "../types/patient-queues";
+import OrderCustomOverflowMenuComponent from "../ui-components/overflow-menu.component";
 
 interface LaboratoryPatientListProps {}
 
@@ -67,38 +68,6 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     results: paginatedWorklistQueueEntries,
     currentPage,
   } = usePagination(workListEntries, currentPageSize);
-
-  // const RejectOrder: React.FC<RejectOrderProps> = ({ order }) => {
-  //   const launchRejectOrderModal = useCallback(() => {
-  //     const dispose = showModal("reject-order-dialog", {
-  //       closeModal: () => dispose(),
-  //       order,
-  //     });
-  //   }, [order]);
-  //   return (
-  //     <Button
-  //       kind="ghost"
-  //       onClick={launchRejectOrderModal}
-  //       renderIcon={(props) => <TrashCan size={16} {...props} />}
-  //     />
-  //   );
-  // };
-
-  const handleRejectOrder = useCallback((order: Result) => {
-    const dispose = showModal("reject-order-dialog", {
-      closeModal: () => dispose(),
-      order,
-    });
-  }, []);
-
-  const launchPickLabRequestQueueModal = useCallback((order: Order) => {
-    const dispose = showModal("add-to-worklist-dialog", {
-      closeModal: () => dispose(),
-
-      order,
-    });
-  }, []);
-
   // get picked orders
   let columns = [
     { id: 0, header: t("date", "Date"), key: "date" },
@@ -153,31 +122,22 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
         actions: {
           content: (
             <>
-              <OverflowMenu
-                flipped={document?.dir === "rtl"}
-                aria-label="Actions menu"
-                floatingMenu
+              <OrderCustomOverflowMenuComponent
+                menuTitle={
+                  <>
+                    <OverflowMenuVertical
+                      size={16}
+                      style={{ marginLeft: "0.3rem" }}
+                    />
+                  </>
+                }
               >
-                <OverflowMenuItem
-                  itemText={t("pickLabRequest", "Pick Lab Request")}
-                  requireTitle
-                  onClick={() =>
-                    launchPickLabRequestQueueModal(
-                      paginatedWorklistQueueEntries[index]
-                    )
-                  }
+                <ExtensionSlot
+                  className={styles.menuLink}
+                  state={{ order: paginatedWorklistQueueEntries[index] }}
+                  name="order-actions-slot"
                 />
-                <OverflowMenuItem
-                  className={styles.menuItem}
-                  id="discontinue"
-                  itemText={t("rejectOrder", "Reject Order")}
-                  onClick={() =>
-                    handleRejectOrder(paginatedWorklistQueueEntries[index])
-                  }
-                  isDelete={true}
-                  hasDivider
-                />
-              </OverflowMenu>
+              </OrderCustomOverflowMenuComponent>
             </>
           ),
         },

@@ -5,6 +5,9 @@ import {
 } from "@openmrs/esm-framework";
 import { configSchema } from "./config-schema";
 import { createHomeDashboardLink } from "./components/create-dashboard-link.component";
+import pickLabRequestButtonComponent from "./order-actions/pick-lab-request.component";
+import rejectOrderButtonComponent from "./order-actions/reject-order.component";
+
 import { createDashboardLink } from "@openmrs/esm-patient-common-lib";
 
 const moduleName = "@ugandaemr/esm-laboratory-app";
@@ -84,6 +87,16 @@ export const reviewItemDialog = getAsyncLifecycle(
 
 export const rejectOrderDialog = getAsyncLifecycle(
   () => import("./reject-order/reject-order-dialog.component"),
+  options
+);
+
+export const pickLabRequestButton = getAsyncLifecycle(
+  () => import("./queue-list/pick-lab-request-menu.component"),
+  options
+);
+
+export const rejectOrderButton = getAsyncLifecycle(
+  () => import("./order-actions/reject-order.component"),
   options
 );
 

@@ -67,6 +67,16 @@
     {
       "name" : "reject-order-dialog",
       "component": "rejectOrderDialog"
+    },
+    {
+      "name": "pick-lab-request-button",
+      "component": "pickLabRequestButton",
+      "slot": "order-actions-slot"
+    },
+    {
+      "name": "reject-order-button",
+      "component": "rejectOrderButton",
+      "slot": "order-actions-slot"
     }
   ]
 }
