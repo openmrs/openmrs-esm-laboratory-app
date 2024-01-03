@@ -5,8 +5,6 @@ import {
 } from "@openmrs/esm-framework";
 import { configSchema } from "./config-schema";
 import { createHomeDashboardLink } from "./components/create-dashboard-link.component";
-import pickLabRequestButtonComponent from "./order-actions/pick-lab-request.component";
-import rejectOrderButtonComponent from "./order-actions/reject-order.component";
 
 import { createDashboardLink } from "@openmrs/esm-patient-common-lib";
 
