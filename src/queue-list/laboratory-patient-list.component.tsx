@@ -242,7 +242,7 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
                       <p className={styles.content}>
                         {t(
                           "noWorklistsToDisplay",
-                          "No workists orders to display"
+                          "No worklists orders to display"
                         )}
                       </p>
                     </div>
