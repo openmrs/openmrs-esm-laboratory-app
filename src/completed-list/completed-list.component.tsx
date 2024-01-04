@@ -50,7 +50,6 @@ interface TableRowProps {
     urgency: string;
     dateActivated: string;
     patient: { display: string };
-  
   };
 }
 
