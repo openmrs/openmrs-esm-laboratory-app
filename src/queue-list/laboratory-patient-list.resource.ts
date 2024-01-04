@@ -39,7 +39,7 @@ export function usePatientQueueRequest(apiUrl: string) {
     Error
   >(apiUrl, openmrsFetch, { refreshInterval: 3000 });
 
-  const mapppedQueues = data?.data?.results.map((queue: PatientQueue) => {
+  const mappedQueues = data?.data?.results.map((queue: PatientQueue) => {
     return {
       ...queue,
       id: queue.uuid,
@@ -76,8 +76,8 @@ export function usePatientQueueRequest(apiUrl: string) {
   });
 
   return {
-    patientQueueEntries: mapppedQueues || [],
-    patientQueueCount: mapppedQueues?.length ?? 0,
+    patientQueueEntries: mappedQueues || [],
+    patientQueueCount: mappedQueues?.length ?? 0,
     isLoading,
     isError: error,
     isValidating,
