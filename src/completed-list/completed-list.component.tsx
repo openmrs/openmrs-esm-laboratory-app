@@ -85,7 +85,7 @@ const CustomTableRow: React.FC<TableRowProps> = ({ entry }) => {
   return (
     <TableRow key={uuid}>
       <TableCell>
-        <span>{formatDate(parseDate(dateActivated))}</span>
+        <span className="single-line-date">{formatDate(parseDate(dateActivated))}</span>
       </TableCell>
       <TableCell>
         <span>{orderNumber}</span>
