@@ -46,7 +46,7 @@ const LaboratoryQueueTabs: React.FC = () => {
             <Tab>{t("testedOrders", "Tests ordered")}</Tab>
             <Tab>{t("worklist", "Worklist")}</Tab>
             <Tab>{t("referredTests", "Referred tests")}</Tab>
-            <Tab>{t("reviewList", "Reviewy")}</Tab>
+            <Tab>{t("reviewList", "Review")}</Tab>
             <Tab>{t("approveList", "Approved")}</Tab>
             {extensions.map((extension, index) => (
               <Tab
