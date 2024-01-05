@@ -85,7 +85,7 @@ const CustomTableRow: React.FC<TableRowProps> = ({ entry }) => {
   return (
     <TableRow key={uuid}>
       <TableCell>
-        <span className="single-line-date">
+        <span className="single-line-content">
           {formatDate(parseDate(dateActivated))}
         </span>
       </TableCell>
@@ -102,7 +102,7 @@ const CustomTableRow: React.FC<TableRowProps> = ({ entry }) => {
         <span>{concept.display}</span>
       </TableCell>
       <TableCell>
-        <span className="single-line-action">{action}</span>
+        <span className="single-line-content">{action}</span>
       </TableCell>
       <TableCell>
         <StatusTag fulfillerStatus={fulfillerStatus} />
