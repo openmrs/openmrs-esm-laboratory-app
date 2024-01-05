@@ -237,3 +237,10 @@ title {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.single-line-action {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -102,7 +102,7 @@ const CustomTableRow: React.FC<TableRowProps> = ({ entry }) => {
         <span>{concept.display}</span>
       </TableCell>
       <TableCell>
-        <span>{action}</span>
+        <span className="single-line-action">{action}</span>
       </TableCell>
       <TableCell>
         <StatusTag fulfillerStatus={fulfillerStatus} />
