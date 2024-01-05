@@ -1,4 +1,10 @@
 import React, { useEffect, useState } from "react";
+import {
+  type AssignedExtension,
+  Extension,
+  ExtensionSlot,
+  useConnectedExtensions,
+} from "@openmrs/esm-framework";
 import { Tab, Tabs, TabList, TabPanels, TabPanel, Search } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import styles from "./laboratory-queue.scss";
@@ -15,9 +21,15 @@ enum TabTypes {
   ALL,
 }
 
+const labPanelSlot = "lab-panels-slot";
+
 const LaboratoryQueueTabs: React.FC = () => {
   const { t } = useTranslation();
   const [selectedTab, setSelectedTab] = useState(0);
+  const extensions = useConnectedExtensions(
+    labPanelSlot
+  ) as AssignedExtension[];
+
   return (
     <main className={`omrs-main-content`}>
       <section className={styles.orderTabsContainer}>
@@ -34,8 +46,20 @@ const LaboratoryQueueTabs: React.FC = () => {
             <Tab>{t("testedOrders", "Tests ordered")}</Tab>
             <Tab>{t("worklist", "Worklist")}</Tab>
             <Tab>{t("referredTests", "Referred tests")}</Tab>
-            <Tab>{t("reviewList", "Review")}</Tab>
+            <Tab>{t("reviewList", "Reviewy")}</Tab>
             <Tab>{t("approveList", "Approved")}</Tab>
+            {extensions.map((extension, index) => (
+              <Tab
+                key={index}
+                className={styles.tab}
+                id={`${extension.meta.title || index}-tab`}
+              >
+                {t(extension.meta.title, {
+                  ns: extension.moduleName,
+                  defaultValue: extension.meta.title,
+                })}
+              </Tab>
+            ))}
           </TabList>
           <TabPanels>
             <TabPanel style={{ padding: 0 }}>
@@ -71,6 +95,11 @@ const LaboratoryQueueTabs: React.FC = () => {
                 <CompletedList fulfillerStatus={"COMPLETED"} />
               </div>
             </TabPanel>
+            <ExtensionSlot name={labPanelSlot}>
+              <TabPanel>
+                <Extension />
+              </TabPanel>
+            </ExtensionSlot>
           </TabPanels>
         </Tabs>
       </section>
