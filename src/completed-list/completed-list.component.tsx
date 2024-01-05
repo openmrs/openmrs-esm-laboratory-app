@@ -53,7 +53,9 @@ interface TableRowProps {
   };
 }
 
-const StatusTag: React.FC<{ fulfillerStatus: string }> = ({ fulfillerStatus }) => {
+const StatusTag: React.FC<{ fulfillerStatus: string }> = ({
+  fulfillerStatus,
+}) => {
   return (
     <Tag>
       <span
@@ -134,12 +136,15 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
     currentPage,
   } = usePagination(workListEntries, currentPageSize);
 
-
   const tableColumns = [
     { id: 0, header: t("date", "Date"), key: "date" },
     { id: 1, header: t("orderNumber", "Order Number"), key: "orderNumber" },
     { id: 2, header: t("patient", "Patient"), key: "patient" },
-    { id: 3, header: t("accessionNumber", "Accession Number"), key: "accessionNumber" },
+    {
+      id: 3,
+      header: t("accessionNumber", "Accession Number"),
+      key: "accessionNumber",
+    },
     { id: 4, header: t("test", "Test"), key: "test" },
     { id: 5, header: t("action", "Action"), key: "action" },
     { id: 6, header: t("status", "Status"), key: "status" },
@@ -161,8 +166,7 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
     return (
       <div>
         <div className={styles.headerBtnContainer}></div>
-        <DataTable rows={tableRows} headers={tableColumns} useZebraStyles>
-        </DataTable>
+        <DataTable rows={tableRows} headers={tableColumns} useZebraStyles />
       </div>
     );
   } else {
