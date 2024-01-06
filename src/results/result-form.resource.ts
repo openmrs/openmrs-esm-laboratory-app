@@ -14,11 +14,21 @@ export interface ConceptResponse {
   descriptions: Description[];
   mappings: Mapping[];
   answers: any[];
-  setMembers: SetMember[];
+  setMembers: ConceptResponse[];
   auditInfo: AuditInfo;
   attributes: any[];
   links: Link18[];
   resourceVersion: string;
+}
+
+export interface ConceptMiniResponse {
+  uuid: string;
+  display: string;
+  name: Name;
+  datatype: Datatype;
+  conceptClass: ConceptClass;
+  set: boolean;
+  answers: any[];
 }
 
 export interface Name {
@@ -305,8 +315,11 @@ export function useGetOrderConceptByUuid(uuid: string) {
     { data: ConceptResponse },
     Error
   >(apiUrl, openmrsFetch);
+  console.log("Mini concept data: ", data);
+  const defList = new Array();
+  defList.push(data?.data);
   return {
-    concept: data?.data ? data?.data.setMembers : [],
+    concept: data?.data ? data?.data.setMembers : defList,
     isLoading,
     isError: error,
     isValidating,
@@ -314,6 +327,22 @@ export function useGetOrderConceptByUuid(uuid: string) {
   };
 }
 
+export function useGetOrderConceptDetailsByUuid(uuid: string) {
+  const apiUrl = `/ws/rest/v1/concept/${uuid}?v=full`;
+  const { data, error, isLoading, isValidating, mutate } = useSWR<
+    { data: ConceptResponse },
+    Error
+  >(apiUrl, openmrsFetch);
+  console.log("log url", data);
+
+  return {
+    concept: data?.data ?? {},
+    isLoading,
+    isError: error,
+    isValidating,
+    mutate,
+  };
+}
 // create observation
 export async function UpdateEncounter(uuid: string, payload: any) {
   const abortController = new AbortController();

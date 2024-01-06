@@ -47,6 +47,7 @@ import {
 import { launchOverlay } from "../components/overlay/hook";
 import ResultForm from "../results/result-form.component";
 import { getStatusColor } from "../utils/functions";
+import LabResultForm from "../results/single-result-form.component";
 
 interface WorklistProps {
   fulfillerStatus: string;
@@ -126,7 +127,8 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
         onClick={() => {
           launchOverlay(
             t("resultForm", "Result  Tests"),
-            <ResultForm patientUuid={patientUuid} order={order} />
+            // <ResultForm patientUuid={patientUuid} order={order} />
+            <LabResultForm patientUuid={patientUuid} order={order} />
           );
         }}
         renderIcon={(props) => <Microscope size={16} {...props} />}
@@ -136,7 +138,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
 
   const tableRows = useMemo(() => {
     return paginatedWorkListEntries
-      ?.filter((item) => item.action === "REVISE")
+      ?.filter((item) => item.fulfillerStatus === "IN_PROGRESS")
       .map((entry, index) => ({
         ...entry,
         id: entry.uuid,
