@@ -128,9 +128,6 @@ export function useGetOrdersWorklist(
     Error
   >(apiUrl, openmrsFetch);
 
-  console.log(
-    `Worklist data for date ${activatedOnOrAfterDate} and status ${fulfillerStatus}`
-  );
   return {
     workListEntries: data?.data ? data.data.results : [],
     isLoading,
