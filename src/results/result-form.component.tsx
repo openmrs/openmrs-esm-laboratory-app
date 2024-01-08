@@ -33,7 +33,6 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   const [selectedOption, setSelectedOption] = useState();
   const [inputValues, setInputValues] = useState({});
 
-
   const bannerState = useMemo(() => {
     if (patient) {
       return {
