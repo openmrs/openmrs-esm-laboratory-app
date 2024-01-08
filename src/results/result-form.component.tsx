@@ -1,15 +1,6 @@
 import React, { useMemo, useState } from "react";
 import styles from "./result-form.scss";
-import {
-  Button,
-  InlineLoading,
-  TextInput,
-  Select,
-  SelectItem,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-} from "@carbon/react";
+import { Button, InlineLoading, ModalBody, ModalFooter } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import { closeOverlay } from "../components/overlay/hook";
 import {
@@ -23,6 +14,7 @@ import {
   useGetOrderConceptByUuid,
 } from "./result-form.resource";
 import { Result } from "../work-list/work-list.resource";
+import ResultFormField from "./result-form-field.component";
 
 interface ResultFormProps {
   patientUuid: string;
@@ -38,9 +30,9 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [selectedOption, setSelectedOption] = useState();
   const [inputValues, setInputValues] = useState({});
 
-  const [selectedOption, setSelectedOption] = useState();
 
   const bannerState = useMemo(() => {
     if (patient) {
@@ -52,67 +44,23 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
     }
   }, [patient, patientUuid]);
 
-  // getInput values
-  const handleInputChange = (memberUuid, value) => {
-    setInputValues((prevValues) => ({
-      ...prevValues,
-      [memberUuid]: value,
-    }));
-  };
-
   // create input fields
-  const Questions = ({ conceptMembers }) => {
+  const Questions = ({ concept }) => {
     const inputFields = useMemo(() => {
-      return conceptMembers.map((member) => {
-        let inputField;
+      if (concept === undefined) {
+        return null;
+      }
 
-        if (
-          member.datatype.display === "Text" ||
-          member.datatype.display === "Numeric"
-        ) {
-          inputField = (
-            <TextInput
-              key={member.uuid}
-              className={styles.textInput}
-              name={`member-${member.uuid}-test-id`}
-              id={`member-${member.uuid}-test-id`}
-              type={member.datatype.display === "Numeric" ? "number" : "text"}
-              labelText={member?.display}
-              value={inputValues[member.uuid] || ""}
-              onChange={(e) => handleInputChange(member.uuid, e.target.value)}
-            />
-          );
-        } else if (member.datatype.display === "Coded") {
-          inputField = (
-            <Select
-              key={member.uuid}
-              className={styles.textInput}
-              name={`member-${member.uuid}-test-id`}
-              id={`member-${member.uuid}-test-id`}
-              type="text"
-              labelText={member?.display}
-              value={inputValues[member.uuid] || ""}
-              onChange={(e) => handleInputChange(member.uuid, e.target.value)}
-            >
-              {!setSelectedOption ? (
-                <SelectItem text={t("option", "Choose an Option")} value="" />
-              ) : null}
-              {member?.answers?.map((answer) => (
-                <SelectItem
-                  key={answer.uuid}
-                  text={answer.display}
-                  value={answer.uuid}
-                >
-                  {answer.display}
-                </SelectItem>
-              ))}
-            </Select>
-          );
-        }
-
-        return inputField;
-      });
-    }, [conceptMembers]); // Memoize when conceptMembers changes
+      if (concept.set && concept.setMembers.length > 0) {
+        return concept.setMembers.map((member) => {
+          let inputField = <ResultFormField concept={member} />;
+          return inputField;
+        });
+      } else if (!concept.set && concept.setMembers.length === 0) {
+        let inputField = <ResultFormField concept={concept} />;
+        return <>{inputField}</>;
+      }
+    }, [concept]); // Memoize when conceptMembers changes
 
     return <>{inputFields}</>;
   };
@@ -128,26 +76,49 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       order: { uuid: order.uuid },
       groupMembers: groupMembers,
     };
-    concept.forEach((item) => {
+
+    if (concept.set && concept.setMembers.length > 0) {
+      concept.setMembers.forEach((item) => {
+        let value;
+        if (
+          item.datatype.display === "Numeric" ||
+          item.datatype.display === "Text"
+        ) {
+          value = inputValues[`${item.uuid}`];
+        } else if (item.datatype.display === "Coded") {
+          value = {
+            uuid: inputValues[`${item.uuid}`],
+          };
+        }
+        const groupMember = {
+          concept: { uuid: item.uuid },
+          value: value,
+          status: "FINAL",
+          order: { uuid: order.uuid },
+        };
+        groupMembers.push(groupMember);
+      });
+    } else if (!concept.set && concept.setMembers.length === 0) {
       let value;
       if (
-        item.datatype.display === "Numeric" ||
-        item.datatype.display === "Text"
+        concept.datatype.display === "Numeric" ||
+        concept.datatype.display === "Text"
       ) {
-        value = inputValues[`${item.uuid}`];
-      } else if (item.datatype.display === "Coded") {
+        value = inputValues[`${concept.uuid}`];
+      } else if (concept.datatype.display === "Coded") {
         value = {
-          uuid: inputValues[`${item.uuid}`],
+          uuid: inputValues[`${concept.uuid}`],
         };
       }
       const groupMember = {
-        concept: { uuid: item.uuid },
+        concept: { uuid: concept.uuid },
         value: value,
         status: "FINAL",
         order: { uuid: order.uuid },
       };
       groupMembers.push(groupMember);
-    });
+    }
+
     obsValue.push(ob);
 
     const payload = {
@@ -198,9 +169,9 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
             <ExtensionSlot name="patient-header-slot" state={bannerState} />
           )}
 
-          {concept?.length > 0 && (
+          {concept && (
             <section className={styles.section}>
-              <Questions conceptMembers={concept} />
+              <Questions concept={concept} />
             </section>
           )}
         </ModalBody>
