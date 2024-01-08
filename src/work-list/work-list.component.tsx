@@ -136,7 +136,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
 
   const tableRows = useMemo(() => {
     return paginatedWorkListEntries
-      ?.filter((item) => item.action === "REVISE")
+      ?.filter((item) => item.fulfillerStatus === "IN_PROGRESS")
       .map((entry, index) => ({
         ...entry,
         id: entry.uuid,

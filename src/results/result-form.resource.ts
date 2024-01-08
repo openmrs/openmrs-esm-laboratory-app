@@ -14,7 +14,7 @@ export interface ConceptResponse {
   descriptions: Description[];
   mappings: Mapping[];
   answers: any[];
-  setMembers: SetMember[];
+  setMembers: ConceptReference[];
   auditInfo: AuditInfo;
   attributes: any[];
   links: Link18[];
@@ -142,7 +142,7 @@ export interface Link8 {
   resourceAlias: string;
 }
 
-export interface SetMember {
+export interface ConceptReference {
   uuid: string;
   display: string;
   name: Name3;
@@ -306,7 +306,7 @@ export function useGetOrderConceptByUuid(uuid: string) {
     Error
   >(apiUrl, openmrsFetch);
   return {
-    concept: data?.data ? data?.data.setMembers : [],
+    concept: data?.data,
     isLoading,
     isError: error,
     isValidating,
