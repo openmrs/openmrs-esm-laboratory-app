@@ -26,7 +26,7 @@ const labPanelSlot = "lab-panels-slot";
 const LaboratoryQueueTabs: React.FC = () => {
   const { t } = useTranslation();
   const [selectedTab, setSelectedTab] = useState(0);
-  const extensions = useConnectedExtensions(
+  const tabExtensions = useConnectedExtensions(
     labPanelSlot
   ) as AssignedExtension[];
 
@@ -48,18 +48,26 @@ const LaboratoryQueueTabs: React.FC = () => {
             <Tab>{t("referredTests", "Referred tests")}</Tab>
             <Tab>{t("reviewList", "Review")}</Tab>
             <Tab>{t("approveList", "Approved")}</Tab>
-            {extensions.map((extension, index) => (
-              <Tab
-                key={index}
-                className={styles.tab}
-                id={`${extension.meta.title || index}-tab`}
-              >
-                {t(extension.meta.title, {
-                  ns: extension.moduleName,
-                  defaultValue: extension.meta.title,
-                })}
-              </Tab>
-            ))}
+            {tabExtensions
+              .filter((extension) => Object.keys(extension.meta).length > 0)
+              .map((extension, index) => {
+                const { name, title } = extension.meta;
+
+                if (name && title) {
+                  return (
+                    <Tab
+                      key={index}
+                      className={styles.tab}
+                      id={`${title || index}-tab`}
+                    >
+                      {t(title, {
+                        ns: extension.moduleName,
+                        defaultValue: title,
+                      })}
+                    </Tab>
+                  );
+                }
+              })}
           </TabList>
           <TabPanels>
             <TabPanel style={{ padding: 0 }}>
