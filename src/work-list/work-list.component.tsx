@@ -125,7 +125,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
         kind="ghost"
         onClick={() => {
           launchOverlay(
-            t("resultForm", "Result  Tests"),
+            t("resultForm", "Lab results form"),
             <ResultForm patientUuid={patientUuid} order={order} />
           );
         }}

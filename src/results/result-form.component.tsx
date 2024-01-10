@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, createContext, useContext } from "react";
 import styles from "./result-form.scss";
 import { Button, InlineLoading, ModalBody, ModalFooter } from "@carbon/react";
 import { useTranslation } from "react-i18next";
@@ -25,14 +25,14 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   const { t } = useTranslation();
 
   const { patient, isLoading } = usePatient(patientUuid);
-
   const { concept } = useGetOrderConceptByUuid(order.concept.uuid);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const [selectedOption, setSelectedOption] = useState();
   const [inputValues, setInputValues] = useState({});
+  const formValuesContext = createContext({});
 
+  const setFormValues = (val) => {
+    setInputValues(val);
+  };
   const bannerState = useMemo(() => {
     if (patient) {
       return {
@@ -52,11 +52,27 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
 
       if (concept.set && concept.setMembers.length > 0) {
         return concept.setMembers.map((member) => {
-          let inputField = <ResultFormField concept={member} />;
+          let inputField = (
+            <formValuesContext.Provider value={{ inputValues, setFormValues }}>
+              <ResultFormField
+                concept={member}
+                setFormValues={setFormValues}
+                inputValues={inputValues}
+              />
+            </formValuesContext.Provider>
+          );
           return inputField;
         });
       } else if (!concept.set && concept.setMembers.length === 0) {
-        let inputField = <ResultFormField concept={concept} />;
+        let inputField = (
+          <formValuesContext.Provider value={{ inputValues, setFormValues }}>
+            <ResultFormField
+              concept={concept}
+              setFormValues={setFormValues}
+              inputValues={inputValues}
+            />
+          </formValuesContext.Provider>
+        );
         return <>{inputField}</>;
       }
     }, [concept]); // Memoize when conceptMembers changes
@@ -66,17 +82,11 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // assign value to test
-    let groupMembers = [];
+    // assign result to test order
     let obsValue = [];
-    const ob = {
-      concept: { uuid: order.concept.uuid },
-      status: "FINAL",
-      order: { uuid: order.uuid },
-      groupMembers: groupMembers,
-    };
 
     if (concept.set && concept.setMembers.length > 0) {
+      let groupMembers = [];
       concept.setMembers.forEach((item) => {
         let value;
         if (
@@ -97,6 +107,13 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
         };
         groupMembers.push(groupMember);
       });
+
+      obsValue.push({
+        concept: { uuid: order.concept.uuid },
+        status: "FINAL",
+        order: { uuid: order.uuid },
+        groupMembers: groupMembers,
+      });
     } else if (!concept.set && concept.setMembers.length === 0) {
       let value;
       if (
@@ -109,16 +126,14 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
           uuid: inputValues[`${concept.uuid}`],
         };
       }
-      const groupMember = {
-        concept: { uuid: concept.uuid },
-        value: value,
+
+      obsValue.push({
+        concept: { uuid: order.concept.uuid },
         status: "FINAL",
         order: { uuid: order.uuid },
-      };
-      groupMembers.push(groupMember);
+        value: value,
+      });
     }
-
-    obsValue.push(ob);
 
     const payload = {
       obs: obsValue,
@@ -130,11 +145,11 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
         setIsSubmitting(false);
         showToast({
           critical: true,
-          title: t("updateEncounter", "Update Encounter"),
+          title: t("updateEncounter", "Update lab results"),
           kind: "success",
           description: t(
             "generateSuccessfully",
-            "You have successfully encounter with test results"
+            "You have successfully saved test results"
           ),
         });
       },
