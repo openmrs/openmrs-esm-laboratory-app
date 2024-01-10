@@ -111,7 +111,9 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
         date: {
           content: (
             <>
-              <span>{formatDate(parseDate(entry.dateActivated))}</span>
+              <span className={styles.table}>
+                {formatDate(parseDate(entry.dateActivated))}
+              </span>
             </>
           ),
         },
