@@ -32,10 +32,10 @@ const LaboratoryQueueTabs: React.FC = () => {
             contained
           >
             <Tab>{t("testedOrders", "Tests ordered")}</Tab>
-            <Tab>{t("worklist", "Worklist")}</Tab>
+            {/* <Tab>{t("worklist", "Worklist")}</Tab>
             <Tab>{t("referredTests", "Referred tests")}</Tab>
             <Tab>{t("reviewList", "Review")}</Tab>
-            <Tab>{t("approveList", "Approved")}</Tab>
+            <Tab>{t("approveList", "Approved")}</Tab> */}
           </TabList>
           <TabPanels>
             <TabPanel style={{ padding: 0 }}>
@@ -44,7 +44,7 @@ const LaboratoryQueueTabs: React.FC = () => {
                 <LaboratoryPatientList />
               </div>
             </TabPanel>
-            <TabPanel style={{ padding: 0 }}>
+            {/* <TabPanel style={{ padding: 0 }}>
               <div>
                 <div className={styles.headerBtnContainer}></div>
                 <WorkList fulfillerStatus={"IN_PROGRESS"} />
@@ -70,7 +70,7 @@ const LaboratoryQueueTabs: React.FC = () => {
                 <div className={styles.headerBtnContainer}></div>
                 <CompletedList fulfillerStatus={"COMPLETED"} />
               </div>
-            </TabPanel>
+            </TabPanel> */}
           </TabPanels>
         </Tabs>
       </section>
