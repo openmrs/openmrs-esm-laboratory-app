@@ -66,6 +66,8 @@ const LaboratoryQueueTabs: React.FC = () => {
                       })}
                     </Tab>
                   );
+                } else {
+                  return null;
                 }
               })}
           </TabList>
