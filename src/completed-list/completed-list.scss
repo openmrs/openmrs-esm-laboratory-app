@@ -231,9 +231,8 @@ title {
   margin-bottom: 0.5rem;
 }
 
-.single-line-content {
-  display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.table {
+  td {
+    white-space: nowrap;
+  }
 }
