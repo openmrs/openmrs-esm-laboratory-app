@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./result-form.scss";
 import { TextInput, Select, SelectItem } from "@carbon/react";
 import { useTranslation } from "react-i18next";
@@ -7,14 +7,19 @@ import { ConceptReference } from "./result-form.resource";
 
 interface ResultFormFieldProps {
   concept: ConceptReference;
+  setFormValues?: (value: any) => void;
+  inputValues?: any;
 }
-const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept }) => {
+const ResultFormField: React.FC<ResultFormFieldProps> = ({
+  concept,
+  setFormValues,
+  inputValues,
+}) => {
   const { t } = useTranslation();
-  const [inputValues, setInputValues] = useState({});
 
   // getInput values
   const handleInputChange = (memberUuid, value) => {
-    setInputValues((prevValues) => ({
+    setFormValues((prevValues) => ({
       ...prevValues,
       [memberUuid]: value,
     }));
@@ -38,8 +43,10 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept }) => {
         id={`member-${concept.uuid}-test-id`}
         type={concept.datatype.display === "Numeric" ? "number" : "text"}
         labelText={concept?.display}
-        value={inputValues[concept.uuid] || ""}
-        onChange={(e) => handleInputChange(concept.uuid, e.target.value)}
+        value={inputValues[`${concept.uuid}`] || ""}
+        onChange={(e) => {
+          handleInputChange(concept.uuid, e.target.value);
+        }}
       />
     );
   } else if (concept?.datatype?.display === "Coded") {
@@ -51,8 +58,10 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept }) => {
         id={`member-${concept.uuid}-test-id`}
         type="text"
         labelText={concept?.display}
-        value={inputValues[concept.uuid] || ""}
-        onChange={(e) => handleInputChange(concept.uuid, e.target.value)}
+        value={inputValues[`${concept.uuid}`]}
+        onChange={(e) => {
+          handleInputChange(concept.uuid, e.target.value);
+        }}
       >
         <SelectItem text={t("option", "Choose an Option")} value="" />
 
