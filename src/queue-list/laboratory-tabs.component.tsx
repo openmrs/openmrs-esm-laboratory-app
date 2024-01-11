@@ -30,6 +30,9 @@ const LaboratoryQueueTabs: React.FC = () => {
     labPanelSlot
   ) as AssignedExtension[];
 
+  // eslint-disable-next-line no-console
+  console.log(tabExtensions);
+
   return (
     <main className={`omrs-main-content`}>
       <section className={styles.orderTabsContainer}>
@@ -44,14 +47,17 @@ const LaboratoryQueueTabs: React.FC = () => {
             contained
           >
             <Tab>{t("testedOrders", "Tests ordered")}</Tab>
-            <Tab>{t("worklist", "Worklist")}</Tab>
+            {/* <Tab>{t("worklist", "Worklist")}</Tab>
             <Tab>{t("referredTests", "Referred tests")}</Tab>
             <Tab>{t("reviewList", "Review")}</Tab>
-            <Tab>{t("approveList", "Approved")}</Tab>
+            <Tab>{t("approveList", "Approved")}</Tab> */}
             {tabExtensions
               .filter((extension) => Object.keys(extension.meta).length > 0)
               .map((extension, index) => {
                 const { name, title } = extension.meta;
+
+                // eslint-disable-next-line no-console
+                console.log(title);
 
                 if (name && title) {
                   return (
@@ -78,7 +84,7 @@ const LaboratoryQueueTabs: React.FC = () => {
                 <LaboratoryPatientList />
               </div>
             </TabPanel>
-            <TabPanel style={{ padding: 0 }}>
+            {/* <TabPanel style={{ padding: 0 }}>
               <div>
                 <div className={styles.headerBtnContainer}></div>
                 <WorkList fulfillerStatus={"IN_PROGRESS"} />
@@ -104,7 +110,7 @@ const LaboratoryQueueTabs: React.FC = () => {
                 <div className={styles.headerBtnContainer}></div>
                 <CompletedList fulfillerStatus={"COMPLETED"} />
               </div>
-            </TabPanel>
+            </TabPanel> */}
             <ExtensionSlot name={labPanelSlot}>
               <TabPanel>
                 <Extension />
