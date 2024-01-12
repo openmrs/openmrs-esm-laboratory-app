@@ -2,12 +2,11 @@ import React from "react";
 import ReviewList from "../../review-list/review-list.component";
 import styles from "./lab-tabs.scss";
 
-// Define the props interface for the component
-interface ByComponentProps {
+interface ReviewListComponentProps {
   name: string;
 }
 
-const ByComponent: React.FC<ByComponentProps> = ({ name }) => {
+const ReviewListComponent: React.FC<ReviewListComponentProps> = () => {
   return (
     <div>
       <div className={styles.headerBtnContainer}></div>
@@ -16,4 +15,4 @@ const ByComponent: React.FC<ByComponentProps> = ({ name }) => {
   );
 };
 
-export default ByComponent;
+export default ReviewListComponent;
