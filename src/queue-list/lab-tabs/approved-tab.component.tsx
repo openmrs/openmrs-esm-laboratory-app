@@ -1,18 +1,19 @@
 import React from "react";
 import CompletedList from "../../completed-list/completed-list.component";
-import styles from "./lab-tabs.scss";
 
-interface CompletedListComponentProps {
+// Define the props interface for the component
+interface DyComponentProps {
   name: string;
 }
 
-const CompletedListComponent: React.FC<CompletedListComponentProps> = () => {
+// Define the functional component using TypeScript
+const DyComponent: React.FC<DyComponentProps> = ({ name }) => {
   return (
     <div>
-      <div className={styles.headerBtnContainer}></div>
+      {/* <div className={styles.headerBtnContainer}></div> */}
       <CompletedList fulfillerStatus={"COMPLETED"} />
     </div>
   );
 };
 
-export default CompletedListComponent;
+export default DyComponent;

@@ -1,15 +1,20 @@
 import React from "react";
 import { EmptyState } from "@openmrs/esm-patient-common-lib";
-import styles from "./lab-tabs.scss";
 
-interface ReferredTestsComponent {
+// Define the props interface for the component
+interface NyComponentProps {
   name: string;
 }
 
-const ReferredTestsComponent: React.FC<ReferredTestsComponent> = () => {
+// Define the functional component using TypeScript
+const NyComponent: React.FC<NyComponentProps> = ({ name }) => {
   return (
+    // <div>
+    //    <div className={styles.headerBtnContainer}></div>
+    //   <ReviewList fulfillerStatus={"IN_PROGRESS"} />
+    // </div>
     <div>
-      <div className={styles.headerBtnContainer}></div>
+      {/* <div className={styles.headerBtnContainer}></div> */}
       <EmptyState
         displayText={"referred tests"}
         headerTitle={"Referred tests"}
@@ -18,4 +23,4 @@ const ReferredTestsComponent: React.FC<ReferredTestsComponent> = () => {
   );
 };
 
-export default ReferredTestsComponent;
+export default NyComponent;
