@@ -67,6 +67,42 @@
     {
       "name" : "reject-order-dialog",
       "component": "rejectOrderDialog"
+    },
+    {
+      "name": "worklist-panel-component",
+      "slot": "lab-panels-slot",
+      "component": "worklistComponent",
+      "meta": {
+        "name": "worklistPanelSlot",
+        "title": "Worklist"
+      }
+    },
+    {
+      "name": "referred-panel-component",
+      "slot": "lab-panels-slot",
+      "component": "referredTestComponent",
+      "meta": {
+        "name": "referredPanleSlot",
+        "title": "Referred tests"
+      }
+    },
+    {
+      "name": "review-panel-component",
+      "slot": "lab-panels-slot",
+      "component": "reviewComponent",
+      "meta": {
+        "name": "reviewPanelSlot",
+        "title": "Review"
+      }
+    },
+    {
+      "name": "approved-panel-component",
+      "slot": "lab-panels-slot",
+      "component": "approvedComponent",
+      "meta": {
+        "name": "approvedPanelSlot",
+        "title": "Approved"
+      }
     }
   ]
 }
