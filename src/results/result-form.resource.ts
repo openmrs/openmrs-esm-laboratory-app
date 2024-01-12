@@ -326,3 +326,33 @@ export async function UpdateEncounter(uuid: string, payload: any) {
     body: payload,
   });
 }
+
+//TODO: the calls to update order and observations for results should be transactional to allow for rollback
+export async function UpdateOrderResult(
+  encounterUuid: string,
+  obsPayload: any,
+  orderPayload: any
+) {
+  const abortController = new AbortController();
+  const updateOrderCall = await openmrsFetch(`/ws/rest/v1/order`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    signal: abortController.signal,
+    body: orderPayload,
+  });
+
+  if (updateOrderCall.status === 201) {
+    return await openmrsFetch(`/ws/rest/v1/encounter/${encounterUuid}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      signal: abortController.signal,
+      body: obsPayload,
+    });
+  } else {
+    // handle errors
+  }
+}

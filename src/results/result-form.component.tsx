@@ -10,8 +10,8 @@ import {
   usePatient,
 } from "@openmrs/esm-framework";
 import {
-  UpdateEncounter,
   useGetOrderConceptByUuid,
+  UpdateOrderResult,
 } from "./result-form.resource";
 import { Result } from "../work-list/work-list.resource";
 import ResultFormField from "./result-form-field.component";
@@ -135,12 +135,27 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       });
     }
 
-    const payload = {
+    const obsPayload = {
       obs: obsValue,
     };
+
+    const orderDiscontinuationPayload = {
+      previousOrder: order.uuid,
+      type: "testorder",
+      action: "DISCONTINUE",
+      careSetting: order.careSetting.uuid,
+      encounter: order.encounter.uuid,
+      patient: order.patient.uuid,
+      concept: order.concept.uuid,
+      orderer: order.orderer,
+    };
+
     setIsSubmitting(true);
-    // update encounter
-    UpdateEncounter(order.encounter.uuid, payload).then(
+    UpdateOrderResult(
+      order.encounter.uuid,
+      obsPayload,
+      orderDiscontinuationPayload
+    ).then(
       () => {
         setIsSubmitting(false);
         showToast({
