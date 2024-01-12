@@ -87,26 +87,6 @@ export const rejectOrderDialog = getAsyncLifecycle(
   options
 );
 
-export const worklistComponent = getAsyncLifecycle(
-  () => import("./queue-list/lab-tabs/work-list-tab.component"),
-  options
-);
-
-export const referredTestComponent = getAsyncLifecycle(
-  () => import("./queue-list/lab-tabs/referred-test-tab.component"),
-  options
-);
-
-export const reviewComponent = getAsyncLifecycle(
-  () => import("./queue-list/lab-tabs/review-tab.component"),
-  options
-);
-
-export const approvedComponent = getAsyncLifecycle(
-  () => import("./queue-list/lab-tabs/approved-tab.component"),
-  options
-);
-
 export function startupApp() {
   defineConfigSchema(moduleName, configSchema);
 }
