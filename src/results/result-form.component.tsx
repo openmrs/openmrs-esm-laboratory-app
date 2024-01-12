@@ -1,4 +1,11 @@
-import React, { useMemo, useState, createContext, useContext } from "react";
+import React, {
+  useMemo,
+  useState,
+  createContext,
+  useRef,
+  useEffect,
+  forwardRef,
+} from "react";
 import styles from "./result-form.scss";
 import { Button, InlineLoading, ModalBody, ModalFooter } from "@carbon/react";
 import { useTranslation } from "react-i18next";
@@ -28,11 +35,18 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   const { concept } = useGetOrderConceptByUuid(order.concept.uuid);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [inputValues, setInputValues] = useState({});
+  const [focusElement, setFocusElement] = useState(null);
   const formValuesContext = createContext({});
 
-  const setFormValues = (val) => {
-    setInputValues(val);
-  };
+  const elementRef = useRef();
+
+  useEffect(() => {
+    elementRef.current = focusElement;
+    if (focusElement !== undefined) {
+      // focusElement?.getInputDOMNode()?.focus();
+    }
+    console.log("Element current", elementRef.current);
+  }, [focusElement]);
   const bannerState = useMemo(() => {
     if (patient) {
       return {
@@ -53,11 +67,20 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       if (concept.set && concept.setMembers.length > 0) {
         return concept.setMembers.map((member) => {
           let inputField = (
-            <formValuesContext.Provider value={{ inputValues, setFormValues }}>
+            <formValuesContext.Provider
+              value={{
+                inputValues,
+                setInputValues,
+                setFocusElement,
+                focusElement,
+              }}
+            >
               <ResultFormField
                 concept={member}
-                setFormValues={setFormValues}
+                setInputValues={setInputValues}
                 inputValues={inputValues}
+                setFocusElement={setFocusElement}
+                focusElement={focusElement}
               />
             </formValuesContext.Provider>
           );
@@ -65,11 +88,20 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
         });
       } else if (!concept.set && concept.setMembers.length === 0) {
         let inputField = (
-          <formValuesContext.Provider value={{ inputValues, setFormValues }}>
+          <formValuesContext.Provider
+            value={{
+              inputValues,
+              setInputValues,
+              setFocusElement,
+              focusElement,
+            }}
+          >
             <ResultFormField
               concept={concept}
-              setFormValues={setFormValues}
+              setInputValues={setInputValues}
               inputValues={inputValues}
+              setFocusElement={setFocusElement}
+              focusElement={focusElement}
             />
           </formValuesContext.Provider>
         );

@@ -2,24 +2,27 @@ import React from "react";
 import styles from "./result-form.scss";
 import { TextInput, Select, SelectItem } from "@carbon/react";
 import { useTranslation } from "react-i18next";
-
 import { ConceptReference } from "./result-form.resource";
 
 interface ResultFormFieldProps {
   concept: ConceptReference;
-  setFormValues?: (value: any) => void;
+  setInputValues?: (value: any) => void;
   inputValues?: any;
+  setFocusElement?: (value: any) => void;
+  focusElement: any;
 }
 const ResultFormField: React.FC<ResultFormFieldProps> = ({
   concept,
-  setFormValues,
+  setInputValues,
   inputValues,
+  setFocusElement,
+  focusElement,
 }) => {
   const { t } = useTranslation();
 
   // getInput values
   const handleInputChange = (memberUuid, value) => {
-    setFormValues((prevValues) => ({
+    setInputValues((prevValues) => ({
       ...prevValues,
       [memberUuid]: value,
     }));
@@ -46,6 +49,12 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
         value={inputValues[`${concept.uuid}`] || ""}
         onChange={(e) => {
           handleInputChange(concept.uuid, e.target.value);
+          setFocusElement(e.target);
+        }}
+        ref={(input) => {
+          if (input != null && focusElement == input) {
+            input.focus();
+          }
         }}
       />
     );
