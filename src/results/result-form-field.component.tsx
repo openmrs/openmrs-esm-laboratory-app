@@ -16,18 +16,18 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
   register,
 }) => {
   const { t } = useTranslation();
-  const isTextOrNumeric =
+  const isTextOrNumeric = (concept) =>
     concept.datatype?.display === "Text" ||
     concept.datatype?.display === "Numeric";
-  const isCoded = concept.datatype?.display === "Coded";
-  const isPanel = concept.setMembers?.length > 0;
+  const isCoded = (concept) => concept.datatype?.display === "Coded";
+  const isPanel = (concept) => concept.setMembers?.length > 0;
 
   return (
     <>
-      {isTextOrNumeric && (
+      {isTextOrNumeric(concept) && (
         <Controller
           control={control}
-          name="testResult"
+          name={concept.uuid}
           render={({ field }) => (
             <TextInput
               key={concept.uuid}
@@ -40,9 +40,9 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
           )}
         />
       )}
-      {isCoded && (
+      {isCoded(concept) && (
         <Controller
-          name="testResult"
+          name={concept.uuid}
           control={control}
           render={({ field }) => (
             <Select
@@ -68,17 +68,63 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
         />
       )}
 
-      {isPanel &&
-        concept.setMembers.map((member) => (
-          <TextInput
-            key={member.uuid}
-            className={styles.textInput}
-            {...register(member.uuid as any)}
-            type={member.datatype.display === "Numeric" ? "number" : "text"}
-            labelText={member.display}
-            autoFocus
-          />
-        ))}
+      {isPanel(concept) &&
+        concept.setMembers.map((member, index) => {
+          if (isTextOrNumeric(member)) {
+            return (
+              <Controller
+                control={control}
+                name={member.uuid}
+                render={({ field }) => (
+                  <TextInput
+                    key={member.uuid}
+                    className={styles.textInput}
+                    {...field}
+                    type={
+                      member.datatype.display === "Numeric" ? "number" : "text"
+                    }
+                    labelText={member?.display}
+                    autoFocus={index === 0}
+                  />
+                )}
+              />
+            );
+          }
+
+          if (isCoded(member)) {
+            return (
+              <Controller
+                name={member.uuid}
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    key={member.uuid}
+                    className={styles.textInput}
+                    {...field}
+                    type="text"
+                    labelText={member?.display}
+                    autoFocus={index === 0}
+                  >
+                    <SelectItem
+                      text={t("option", "Choose an Option")}
+                      value=""
+                    />
+
+                    {member?.answers?.map((answer) => (
+                      <SelectItem
+                        key={answer.uuid}
+                        text={answer.display}
+                        value={answer.uuid}
+                      >
+                        {answer.display}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                )}
+              />
+            );
+          }
+        })}
     </>
   );
 };

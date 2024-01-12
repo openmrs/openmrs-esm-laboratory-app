@@ -45,6 +45,7 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   const { concept, isLoading: isLoadingConcepts } = useGetOrderConceptByUuid(
     order.concept.uuid
   );
+
   const bannerState = useMemo(() => {
     if (patient) {
       return {
@@ -56,9 +57,108 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   }, [patient, patientUuid]);
 
   if (isLoadingConcepts) {
-    return <div>Loading concepts</div>;
+    return <div>Loading test details</div>;
   }
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // assign result to test order
+    const documentedValues = getValues();
+    let obsValue = [];
+
+    if (concept.set && concept.setMembers.length > 0) {
+      let groupMembers = [];
+      concept.setMembers.forEach((member) => {
+        let value;
+        if (
+          member.datatype.display === "Numeric" ||
+          member.datatype.display === "Text"
+        ) {
+          value = getValues()[`${member.uuid}`];
+        } else if (member.datatype.display === "Coded") {
+          value = {
+            uuid: getValues()[`${member.uuid}`],
+          };
+        }
+        const groupMember = {
+          concept: { uuid: member.uuid },
+          value: value,
+          status: "FINAL",
+          order: { uuid: order.uuid },
+        };
+        groupMembers.push(groupMember);
+      });
+
+      obsValue.push({
+        concept: { uuid: order.concept.uuid },
+        status: "FINAL",
+        order: { uuid: order.uuid },
+        groupMembers: groupMembers,
+      });
+    } else if (!concept.set && concept.setMembers.length === 0) {
+      let value;
+      if (
+        concept.datatype.display === "Numeric" ||
+        concept.datatype.display === "Text"
+      ) {
+        value = getValues()[`${concept.uuid}`];
+      } else if (concept.datatype.display === "Coded") {
+        value = {
+          uuid: getValues()[`${concept.uuid}`],
+        };
+      }
+
+      obsValue.push({
+        concept: { uuid: order.concept.uuid },
+        status: "FINAL",
+        order: { uuid: order.uuid },
+        value: value,
+      });
+    }
+
+    const obsPayload = {
+      obs: obsValue,
+    };
+
+    const orderDiscontinuationPayload = {
+      previousOrder: order.uuid,
+      type: "testorder",
+      action: "DISCONTINUE",
+      careSetting: order.careSetting.uuid,
+      encounter: order.encounter.uuid,
+      patient: order.patient.uuid,
+      concept: order.concept.uuid,
+      orderer: order.orderer,
+    };
+
+    UpdateOrderResult(
+      order.encounter.uuid,
+      obsPayload,
+      orderDiscontinuationPayload
+    ).then(
+      () => {
+        showToast({
+          critical: true,
+          title: t("updateEncounter", "Update lab results"),
+          kind: "success",
+          description: t(
+            "generateSuccessfully",
+            "You have successfully saved test results"
+          ),
+        });
+      },
+      (err) => {
+        showNotification({
+          title: t(
+            `errorUpdatingEncounter', 'Error occurred while updating encounter`
+          ),
+          kind: "error",
+          critical: true,
+          description: err?.message,
+        });
+      }
+    );
+  };
   return (
     <>
       <div className="">
@@ -74,7 +174,10 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
           {patient && (
             <ExtensionSlot name="patient-header-slot" state={bannerState} />
           )}
-
+          {/* // we need to display test name for test panels */}
+          {concept.setMembers.length > 0 && (
+            <div>Test panel: {concept.display}</div>
+          )}
           {concept && (
             <section className={styles.section}>
               <ResultFormField
@@ -94,7 +197,7 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
           >
             {t("cancel", "Cancel")}
           </Button>
-          <Button onClick={(e) => {}}>Save tests</Button>
+          <Button onClick={handleSubmit}>Save test results</Button>
         </ModalFooter>
       </div>
     </>
