@@ -3,90 +3,84 @@ import styles from "./result-form.scss";
 import { TextInput, Select, SelectItem } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import { ConceptReference } from "./result-form.resource";
+import { Controller } from "react-hook-form";
 
 interface ResultFormFieldProps {
   concept: ConceptReference;
-  setInputValues?: (value: any) => void;
-  inputValues?: any;
-  setFocusElement?: (value: any) => void;
-  focusElement: any;
+  control: any;
+  register: any;
 }
 const ResultFormField: React.FC<ResultFormFieldProps> = ({
   concept,
-  setInputValues,
-  inputValues,
-  setFocusElement,
-  focusElement,
+  control,
+  register,
 }) => {
   const { t } = useTranslation();
-
-  // getInput values
-  const handleInputChange = (memberUuid, value) => {
-    setInputValues((prevValues) => ({
-      ...prevValues,
-      [memberUuid]: value,
-    }));
-  };
-
-  // create input fields
-  if (concept === undefined) {
-    return null;
-  }
-
-  let inputField;
-  if (
+  const isTextOrNumeric =
     concept.datatype?.display === "Text" ||
-    concept.datatype?.display === "Numeric"
-  ) {
-    inputField = (
-      <TextInput
-        key={concept.uuid}
-        className={styles.textInput}
-        name={`member-${concept.uuid}-test-id`}
-        id={`member-${concept.uuid}-test-id`}
-        type={concept.datatype.display === "Numeric" ? "number" : "text"}
-        labelText={concept?.display}
-        value={inputValues[`${concept.uuid}`] || ""}
-        onChange={(e) => {
-          handleInputChange(concept.uuid, e.target.value);
-          setFocusElement(e.target);
-        }}
-        ref={(input) => {
-          if (input != null && focusElement == input) {
-            input.focus();
-          }
-        }}
-      />
-    );
-  } else if (concept?.datatype?.display === "Coded") {
-    inputField = (
-      <Select
-        key={concept.uuid}
-        className={styles.textInput}
-        name={`member-${concept.uuid}-test-id`}
-        id={`member-${concept.uuid}-test-id`}
-        type="text"
-        labelText={concept?.display}
-        value={inputValues[`${concept.uuid}`]}
-        onChange={(e) => {
-          handleInputChange(concept.uuid, e.target.value);
-        }}
-      >
-        <SelectItem text={t("option", "Choose an Option")} value="" />
+    concept.datatype?.display === "Numeric";
+  const isCoded = concept.datatype?.display === "Coded";
+  const isPanel = concept.setMembers?.length > 0;
 
-        {concept?.answers?.map((answer) => (
-          <SelectItem
-            key={answer.uuid}
-            text={answer.display}
-            value={answer.uuid}
-          >
-            {answer.display}
-          </SelectItem>
+  return (
+    <>
+      {isTextOrNumeric && (
+        <Controller
+          control={control}
+          name="testResult"
+          render={({ field }) => (
+            <TextInput
+              key={concept.uuid}
+              className={styles.textInput}
+              {...field}
+              type={concept.datatype.display === "Numeric" ? "number" : "text"}
+              labelText={concept?.display}
+              autoFocus
+            />
+          )}
+        />
+      )}
+      {isCoded && (
+        <Controller
+          name="testResult"
+          control={control}
+          render={({ field }) => (
+            <Select
+              key={concept.uuid}
+              className={styles.textInput}
+              {...field}
+              type="text"
+              labelText={concept?.display}
+            >
+              <SelectItem text={t("option", "Choose an Option")} value="" />
+
+              {concept?.answers?.map((answer) => (
+                <SelectItem
+                  key={answer.uuid}
+                  text={answer.display}
+                  value={answer.uuid}
+                >
+                  {answer.display}
+                </SelectItem>
+              ))}
+            </Select>
+          )}
+        />
+      )}
+
+      {isPanel &&
+        concept.setMembers.map((member) => (
+          <TextInput
+            key={member.uuid}
+            className={styles.textInput}
+            {...register(member.uuid as any)}
+            type={member.datatype.display === "Numeric" ? "number" : "text"}
+            labelText={member.display}
+            autoFocus
+          />
         ))}
-      </Select>
-    );
-  }
-  return <>{inputField}</>;
+    </>
+  );
 };
 
 export default ResultFormField;

@@ -1,13 +1,14 @@
-import React, {
-  useMemo,
-  useState,
-  createContext,
-  useRef,
-  useEffect,
-  forwardRef,
-} from "react";
+import React, { useMemo, useState, createContext } from "react";
 import styles from "./result-form.scss";
-import { Button, InlineLoading, ModalBody, ModalFooter } from "@carbon/react";
+import {
+  Button,
+  InlineLoading,
+  ModalBody,
+  ModalFooter,
+  TextInput,
+  Select,
+  SelectItem,
+} from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import { closeOverlay } from "../components/overlay/hook";
 import {
@@ -22,6 +23,7 @@ import {
 } from "./result-form.resource";
 import { Result } from "../work-list/work-list.resource";
 import ResultFormField from "./result-form-field.component";
+import { Controller, useForm } from "react-hook-form";
 
 interface ResultFormProps {
   patientUuid: string;
@@ -30,23 +32,19 @@ interface ResultFormProps {
 
 const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   const { t } = useTranslation();
+  const {
+    control,
+    register,
+    formState: { isSubmitting },
+    getValues,
+  } = useForm<{ testResult: string }>({
+    defaultValues: {},
+  });
 
   const { patient, isLoading } = usePatient(patientUuid);
-  const { concept } = useGetOrderConceptByUuid(order.concept.uuid);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [inputValues, setInputValues] = useState({});
-  const [focusElement, setFocusElement] = useState(null);
-  const formValuesContext = createContext({});
-
-  const elementRef = useRef();
-
-  useEffect(() => {
-    elementRef.current = focusElement;
-    if (focusElement !== undefined) {
-      // focusElement?.getInputDOMNode()?.focus();
-    }
-    console.log("Element current", elementRef.current);
-  }, [focusElement]);
+  const { concept, isLoading: isLoadingConcepts } = useGetOrderConceptByUuid(
+    order.concept.uuid
+  );
   const bannerState = useMemo(() => {
     if (patient) {
       return {
@@ -57,162 +55,9 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
     }
   }, [patient, patientUuid]);
 
-  // create input fields
-  const Questions = ({ concept }) => {
-    const inputFields = useMemo(() => {
-      if (concept === undefined) {
-        return null;
-      }
-
-      if (concept.set && concept.setMembers.length > 0) {
-        return concept.setMembers.map((member) => {
-          let inputField = (
-            <formValuesContext.Provider
-              value={{
-                inputValues,
-                setInputValues,
-                setFocusElement,
-                focusElement,
-              }}
-            >
-              <ResultFormField
-                concept={member}
-                setInputValues={setInputValues}
-                inputValues={inputValues}
-                setFocusElement={setFocusElement}
-                focusElement={focusElement}
-              />
-            </formValuesContext.Provider>
-          );
-          return inputField;
-        });
-      } else if (!concept.set && concept.setMembers.length === 0) {
-        let inputField = (
-          <formValuesContext.Provider
-            value={{
-              inputValues,
-              setInputValues,
-              setFocusElement,
-              focusElement,
-            }}
-          >
-            <ResultFormField
-              concept={concept}
-              setInputValues={setInputValues}
-              inputValues={inputValues}
-              setFocusElement={setFocusElement}
-              focusElement={focusElement}
-            />
-          </formValuesContext.Provider>
-        );
-        return <>{inputField}</>;
-      }
-    }, [concept]); // Memoize when conceptMembers changes
-
-    return <>{inputFields}</>;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // assign result to test order
-    let obsValue = [];
-
-    if (concept.set && concept.setMembers.length > 0) {
-      let groupMembers = [];
-      concept.setMembers.forEach((item) => {
-        let value;
-        if (
-          item.datatype.display === "Numeric" ||
-          item.datatype.display === "Text"
-        ) {
-          value = inputValues[`${item.uuid}`];
-        } else if (item.datatype.display === "Coded") {
-          value = {
-            uuid: inputValues[`${item.uuid}`],
-          };
-        }
-        const groupMember = {
-          concept: { uuid: item.uuid },
-          value: value,
-          status: "FINAL",
-          order: { uuid: order.uuid },
-        };
-        groupMembers.push(groupMember);
-      });
-
-      obsValue.push({
-        concept: { uuid: order.concept.uuid },
-        status: "FINAL",
-        order: { uuid: order.uuid },
-        groupMembers: groupMembers,
-      });
-    } else if (!concept.set && concept.setMembers.length === 0) {
-      let value;
-      if (
-        concept.datatype.display === "Numeric" ||
-        concept.datatype.display === "Text"
-      ) {
-        value = inputValues[`${concept.uuid}`];
-      } else if (concept.datatype.display === "Coded") {
-        value = {
-          uuid: inputValues[`${concept.uuid}`],
-        };
-      }
-
-      obsValue.push({
-        concept: { uuid: order.concept.uuid },
-        status: "FINAL",
-        order: { uuid: order.uuid },
-        value: value,
-      });
-    }
-
-    const obsPayload = {
-      obs: obsValue,
-    };
-
-    const orderDiscontinuationPayload = {
-      previousOrder: order.uuid,
-      type: "testorder",
-      action: "DISCONTINUE",
-      careSetting: order.careSetting.uuid,
-      encounter: order.encounter.uuid,
-      patient: order.patient.uuid,
-      concept: order.concept.uuid,
-      orderer: order.orderer,
-    };
-
-    setIsSubmitting(true);
-    UpdateOrderResult(
-      order.encounter.uuid,
-      obsPayload,
-      orderDiscontinuationPayload
-    ).then(
-      () => {
-        setIsSubmitting(false);
-        showToast({
-          critical: true,
-          title: t("updateEncounter", "Update lab results"),
-          kind: "success",
-          description: t(
-            "generateSuccessfully",
-            "You have successfully saved test results"
-          ),
-        });
-      },
-      (err) => {
-        setIsSubmitting(false);
-        showNotification({
-          title: t(
-            `errorUpdatingEncounter', 'Error occurred while updating encounter`
-          ),
-          kind: "error",
-          critical: true,
-          description: err?.message,
-        });
-      }
-    );
-  };
+  if (isLoadingConcepts) {
+    return <div>Loading concepts</div>;
+  }
 
   return (
     <>
@@ -232,7 +77,11 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
 
           {concept && (
             <section className={styles.section}>
-              <Questions concept={concept} />
+              <ResultFormField
+                register={register}
+                concept={concept}
+                control={control}
+              />
             </section>
           )}
         </ModalBody>
@@ -245,7 +94,7 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
           >
             {t("cancel", "Cancel")}
           </Button>
-          <Button onClick={(e) => handleSubmit(e)}>Save tests</Button>
+          <Button onClick={(e) => {}}>Save tests</Button>
         </ModalFooter>
       </div>
     </>
