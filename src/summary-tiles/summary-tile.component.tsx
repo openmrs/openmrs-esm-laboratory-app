@@ -35,6 +35,7 @@ const SummaryTile: React.FC<SummaryTileProps> = ({
           iconDescription={t("view", "View ")}
         >
           {t("view", "View ")}
+          &nbsp;
         </Button>
       </div>
       <div>
