@@ -1,4 +1,4 @@
-import React, { useMemo, useState, createContext, useContext } from "react";
+import React, { useMemo } from "react";
 import styles from "./result-form.scss";
 import { Button, InlineLoading, ModalBody, ModalFooter } from "@carbon/react";
 import { useTranslation } from "react-i18next";
@@ -15,6 +15,7 @@ import {
 } from "./result-form.resource";
 import { Result } from "../work-list/work-list.resource";
 import ResultFormField from "./result-form-field.component";
+import { useForm } from "react-hook-form";
 
 interface ResultFormProps {
   patientUuid: string;
@@ -23,16 +24,20 @@ interface ResultFormProps {
 
 const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   const { t } = useTranslation();
+  const {
+    control,
+    register,
+    formState: { isSubmitting },
+    getValues,
+  } = useForm<{ testResult: string }>({
+    defaultValues: {},
+  });
 
   const { patient, isLoading } = usePatient(patientUuid);
-  const { concept } = useGetOrderConceptByUuid(order.concept.uuid);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [inputValues, setInputValues] = useState({});
-  const formValuesContext = createContext({});
+  const { concept, isLoading: isLoadingConcepts } = useGetOrderConceptByUuid(
+    order.concept.uuid
+  );
 
-  const setFormValues = (val) => {
-    setInputValues(val);
-  };
   const bannerState = useMemo(() => {
     if (patient) {
       return {
@@ -43,64 +48,32 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
     }
   }, [patient, patientUuid]);
 
-  // create input fields
-  const Questions = ({ concept }) => {
-    const inputFields = useMemo(() => {
-      if (concept === undefined) {
-        return null;
-      }
-
-      if (concept.set && concept.setMembers.length > 0) {
-        return concept.setMembers.map((member) => {
-          let inputField = (
-            <formValuesContext.Provider value={{ inputValues, setFormValues }}>
-              <ResultFormField
-                concept={member}
-                setFormValues={setFormValues}
-                inputValues={inputValues}
-              />
-            </formValuesContext.Provider>
-          );
-          return inputField;
-        });
-      } else if (!concept.set && concept.setMembers.length === 0) {
-        let inputField = (
-          <formValuesContext.Provider value={{ inputValues, setFormValues }}>
-            <ResultFormField
-              concept={concept}
-              setFormValues={setFormValues}
-              inputValues={inputValues}
-            />
-          </formValuesContext.Provider>
-        );
-        return <>{inputField}</>;
-      }
-    }, [concept]); // Memoize when conceptMembers changes
-
-    return <>{inputFields}</>;
-  };
+  if (isLoadingConcepts) {
+    return <div>Loading test details</div>;
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // assign result to test order
+    const documentedValues = getValues();
     let obsValue = [];
 
     if (concept.set && concept.setMembers.length > 0) {
       let groupMembers = [];
-      concept.setMembers.forEach((item) => {
+      concept.setMembers.forEach((member) => {
         let value;
         if (
-          item.datatype.display === "Numeric" ||
-          item.datatype.display === "Text"
+          member.datatype.display === "Numeric" ||
+          member.datatype.display === "Text"
         ) {
-          value = inputValues[`${item.uuid}`];
-        } else if (item.datatype.display === "Coded") {
+          value = getValues()[`${member.uuid}`];
+        } else if (member.datatype.display === "Coded") {
           value = {
-            uuid: inputValues[`${item.uuid}`],
+            uuid: getValues()[`${member.uuid}`],
           };
         }
         const groupMember = {
-          concept: { uuid: item.uuid },
+          concept: { uuid: member.uuid },
           value: value,
           status: "FINAL",
           order: { uuid: order.uuid },
@@ -120,10 +93,10 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
         concept.datatype.display === "Numeric" ||
         concept.datatype.display === "Text"
       ) {
-        value = inputValues[`${concept.uuid}`];
+        value = getValues()[`${concept.uuid}`];
       } else if (concept.datatype.display === "Coded") {
         value = {
-          uuid: inputValues[`${concept.uuid}`],
+          uuid: getValues()[`${concept.uuid}`],
         };
       }
 
@@ -150,29 +123,27 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       orderer: order.orderer,
     };
 
-    setIsSubmitting(true);
     UpdateOrderResult(
       order.encounter.uuid,
       obsPayload,
       orderDiscontinuationPayload
     ).then(
       () => {
-        setIsSubmitting(false);
         showToast({
           critical: true,
           title: t("updateEncounter", "Update lab results"),
           kind: "success",
           description: t(
             "generateSuccessfully",
-            "You have successfully saved test results"
+            "You have successfully updated test results"
           ),
         });
+        closeOverlay();
       },
       (err) => {
-        setIsSubmitting(false);
         showNotification({
           title: t(
-            `errorUpdatingEncounter', 'Error occurred while updating encounter`
+            `errorUpdatingEncounter', 'Error occurred while updating test results`
           ),
           kind: "error",
           critical: true,
@@ -181,7 +152,6 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       }
     );
   };
-
   return (
     <>
       <div className="">
@@ -197,10 +167,17 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
           {patient && (
             <ExtensionSlot name="patient-header-slot" state={bannerState} />
           )}
-
+          {/* // we need to display test name for test panels */}
+          {concept.setMembers.length > 0 && (
+            <div>Test panel: {concept.display}</div>
+          )}
           {concept && (
             <section className={styles.section}>
-              <Questions concept={concept} />
+              <ResultFormField
+                register={register}
+                concept={concept}
+                control={control}
+              />
             </section>
           )}
         </ModalBody>
@@ -213,7 +190,7 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
           >
             {t("cancel", "Cancel")}
           </Button>
-          <Button onClick={(e) => handleSubmit(e)}>Save tests</Button>
+          <Button onClick={handleSubmit}>Save test results</Button>
         </ModalFooter>
       </div>
     </>

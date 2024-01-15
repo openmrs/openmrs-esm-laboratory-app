@@ -1684,6 +1684,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hookform/resolvers@npm:^3.3.4":
+  version: 3.3.4
+  resolution: "@hookform/resolvers@npm:3.3.4"
+  peerDependencies:
+    react-hook-form: ^7.0.0
+  checksum: 7761e3340d23acd092dec4023344678e62b0c0ea0ed5aa3687cd315fc339b3b965e11124d643811292e6962683357423e6fe646fffabf9b96f8322f41903924d
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.11.13":
   version: 0.11.13
   resolution: "@humanwhocodes/config-array@npm:0.11.13"
@@ -4179,6 +4188,7 @@ __metadata:
   resolution: "@openmrs/esm-laboratory-app@workspace:."
   dependencies:
     "@carbon/react": ^1.14.0
+    "@hookform/resolvers": ^3.3.4
     "@ohri/openmrs-esm-ohri-commons-lib": next
     "@openmrs/esm-extensions": next
     "@openmrs/esm-framework": next
@@ -4223,6 +4233,7 @@ __metadata:
     react: ^18.2.0
     react-csv: ^2.2.2
     react-dom: ^18.2.0
+    react-hook-form: ^7.49.3
     react-i18next: ^11.18.6
     react-pivottable: ^0.11.0
     react-plotly.js: ^2.0.0
@@ -4235,6 +4246,7 @@ __metadata:
     typescript: ^4.9.5
     webpack: ^5.88.1
     webpack-cli: ^5.1.3
+    zod: ^3.22.4
   peerDependencies:
     "@openmrs/esm-framework": "*"
     dayjs: 1.x
@@ -19112,6 +19124,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-hook-form@npm:^7.49.3":
+  version: 7.49.3
+  resolution: "react-hook-form@npm:7.49.3"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18
+  checksum: 9769845e2749f5c9d1d033be3819bc572ffa67f19ec2e567c61a58d0d060107facdf8425aab253c2e667c00853b7706a50bd6739fca6228c284c9313420ca26f
+  languageName: node
+  linkType: hard
+
 "react-i18next@npm:^11.18.6":
   version: 11.18.6
   resolution: "react-i18next@npm:11.18.6"
@@ -23612,6 +23633,13 @@ __metadata:
     synchronous-promise: ^2.0.13
     toposort: ^2.0.2
   checksum: ec7297457ed8a8ccbd7751c4f312a6e651fa5eeb62338d59c6c972f2e6f91d0ce9c7c4026c654afd7bf9fb5b3b651759d5ff5e6621562383390b366048edb5be
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.22.4":
+  version: 3.22.4
+  resolution: "zod@npm:3.22.4"
+  checksum: 80bfd7f8039b24fddeb0718a2ec7c02aa9856e4838d6aa4864335a047b6b37a3273b191ef335bf0b2002e5c514ef261ffcda5a589fb084a48c336ffc4cdbab7f
   languageName: node
   linkType: hard
 
