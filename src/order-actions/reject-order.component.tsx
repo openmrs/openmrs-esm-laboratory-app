@@ -13,7 +13,7 @@ const RejectOrderOverflowMenuItem: React.FC<
 > = ({ order }) => {
   const { t } = useTranslation();
 
-  const handleRejectOrder = useCallback(() => {
+  const handleRejectOrderModel = useCallback(() => {
     const dispose = showModal("reject-order-dialog", {
       closeModal: () => dispose(),
       order,
@@ -22,7 +22,7 @@ const RejectOrderOverflowMenuItem: React.FC<
   return (
     <OverflowMenuItem
       itemText={t("rejectOrder", "Reject Order")}
-      onClick={handleRejectOrder}
+      onClick={handleRejectOrderModel}
       style={{
         maxWidth: "100vw",
       }}
