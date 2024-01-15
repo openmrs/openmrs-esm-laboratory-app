@@ -30,12 +30,20 @@ const LaboratoryQueueTabs: React.FC = () => {
     labPanelSlot
   ) as AssignedExtension[];
 
+  // eslint-disable-next-line no-console
+  console.log(tabExtensions);
+
   return (
     <main className={`omrs-main-content`}>
       <section className={styles.orderTabsContainer}>
         <Tabs
           selectedIndex={selectedTab}
-          onChange={({ selectedIndex }) => setSelectedTab(selectedIndex)}
+          // onChange={({ selectedIndex }) => setSelectedTab(selectedIndex)}
+          onChange={(e) => {
+            // eslint-disable-next-line no-console
+            console.log("Selected Index:", e?.selectedIndex);
+            setSelectedTab(e?.selectedIndex);
+          }}
           className={styles.tabs}
         >
           <TabList
@@ -105,11 +113,20 @@ const LaboratoryQueueTabs: React.FC = () => {
                 <CompletedList fulfillerStatus={"COMPLETED"} />
               </div>
             </TabPanel>
-            <ExtensionSlot name={labPanelSlot}>
-              <TabPanel>
+            <div>
+              {" "}
+              <TabPanel style={{ padding: 0 }}>
+                <div>
+                  <div className={styles.headerBtnContainer}></div>
+                  <CompletedList fulfillerStatus={"COMPLETED"} />
+                </div>
+              </TabPanel>
+            </div>
+            <ExtensionSlot name={labPanelSlot} state={{}} />
+            {/* <TabPanel>
                 <Extension />
               </TabPanel>
-            </ExtensionSlot>
+            </ExtensionSlot> */}
           </TabPanels>
         </Tabs>
       </section>
