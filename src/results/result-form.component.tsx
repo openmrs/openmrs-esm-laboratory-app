@@ -1,14 +1,6 @@
-import React, { useMemo, useState, createContext } from "react";
+import React, { useMemo } from "react";
 import styles from "./result-form.scss";
-import {
-  Button,
-  InlineLoading,
-  ModalBody,
-  ModalFooter,
-  TextInput,
-  Select,
-  SelectItem,
-} from "@carbon/react";
+import { Button, InlineLoading, ModalBody, ModalFooter } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import { closeOverlay } from "../components/overlay/hook";
 import {
@@ -23,7 +15,7 @@ import {
 } from "./result-form.resource";
 import { Result } from "../work-list/work-list.resource";
 import ResultFormField from "./result-form-field.component";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 interface ResultFormProps {
   patientUuid: string;
