@@ -143,14 +143,15 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
           kind: "success",
           description: t(
             "generateSuccessfully",
-            "You have successfully saved test results"
+            "You have successfully updated test results"
           ),
         });
+        closeOverlay();
       },
       (err) => {
         showNotification({
           title: t(
-            `errorUpdatingEncounter', 'Error occurred while updating encounter`
+            `errorUpdatingEncounter', 'Error occurred while updating test results`
           ),
           kind: "error",
           critical: true,
