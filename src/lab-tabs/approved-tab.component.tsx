@@ -1,12 +1,13 @@
 import React from "react";
-import { Tab, Tabs, TabList, TabPanels, TabPanel, Search } from "@carbon/react";
+import CompletedList from "../completed-list/completed-list.component";
+import styles from "../queue-list/laboratory-queue.scss";
 
 const ApprovedComponent = () => {
   return (
-    <TabPanel>
-      <h1>Hello, React!</h1>
-      <p>This is a sample React component.</p>
-    </TabPanel>
+    <div>
+      <div className={styles.headerBtnContainer}></div>
+      <CompletedList fulfillerStatus={"COMPLETED"} />
+    </div>
   );
 };
 

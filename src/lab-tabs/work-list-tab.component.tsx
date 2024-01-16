@@ -1,12 +1,13 @@
 import React from "react";
-import { Tab, Tabs, TabList, TabPanels, TabPanel, Search } from "@carbon/react";
+import WorkList from "../work-list/work-list.component";
+import styles from "../queue-list/laboratory-queue.scss";
 
 const WorkListComponent = () => {
   return (
-    <TabPanel>
-      <h1>Hello, React!</h1>
-      <p>This is a sample React component.</p>
-    </TabPanel>
+    <div>
+      <div className={styles.headerBtnContainer}></div>
+      <WorkList fulfillerStatus={"IN_PROGRESS"} />
+    </div>
   );
 };
 

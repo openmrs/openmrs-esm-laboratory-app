@@ -1,12 +1,13 @@
 import React from "react";
-import { Tab, Tabs, TabList, TabPanels, TabPanel, Search } from "@carbon/react";
+import ReviewList from "../review-list/review-list.component";
+import styles from "../queue-list/laboratory-queue.scss";
 
 const ReviewComponent = () => {
   return (
-    <TabPanel>
-      <h1>Hello, React!</h1>
-      <p>This is a sample React component.</p>
-    </TabPanel>
+    <div>
+      <div className={styles.headerBtnContainer}></div>
+      <ReviewList fulfillerStatus={"IN_PROGRESS"} />
+    </div>
   );
 };
 

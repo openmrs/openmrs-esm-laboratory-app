@@ -1,12 +1,17 @@
 import React from "react";
-import { Tab, Tabs, TabList, TabPanels, TabPanel, Search } from "@carbon/react";
+import { EmptyState } from "@openmrs/esm-patient-common-lib";
+import styles from "../queue-list/laboratory-queue.scss";
 
 const ReferredComponent = () => {
   return (
-    <TabPanel>
-      <h1>Hello, React!</h1>
-      <p>This is a sample React component.</p>
-    </TabPanel>
+    <div>
+      <div className={styles.headerBtnContainer}></div>
+
+      <EmptyState
+        displayText={"referred tests"}
+        headerTitle={"Referred tests"}
+      />
+    </div>
   );
 };
 

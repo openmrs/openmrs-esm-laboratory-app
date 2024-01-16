@@ -93,12 +93,12 @@ export const reviewComponent = getAsyncLifecycle(
 );
 
 export const approvedComponent = getAsyncLifecycle(
-  () => import("./lab-tabs/referred-tab.component"),
+  () => import("./lab-tabs/approved-tab.component"),
   options
 );
 
 export const referredTestComponent = getAsyncLifecycle(
-  () => import("./lab-tabs/approved-tab.component"),
+  () => import("./lab-tabs/referred-tab.component"),
   options
 );
 

@@ -74,7 +74,7 @@
       "component": "worklistComponent",
       "meta": {
         "name": "worklistPanelSlot",
-        "title": "Ex-Worklist"
+        "title": "Worklist"
       }
     },
     {
@@ -83,7 +83,7 @@
       "component": "referredTestComponent",
       "meta": {
         "name": "referredPanleSlot",
-        "title": "Ex-Referred tests"
+        "title": "Referred tests"
       }
     },
     {
@@ -92,7 +92,7 @@
       "component": "reviewComponent",
       "meta": {
         "name": "reviewPanelSlot",
-        "title": "Ex-Review"
+        "title": "Review"
       }
     },
     {
@@ -101,7 +101,7 @@
       "component": "approvedComponent",
       "meta": {
         "name": "approvedPanelSlot",
-        "title": "Ex-Approved"
+        "title": "Approved"
       }
     }
 
