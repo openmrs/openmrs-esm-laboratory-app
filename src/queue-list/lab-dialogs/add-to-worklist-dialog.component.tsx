@@ -236,7 +236,7 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
                 <div style={{ width: "500px" }}>
                   <section className={styles.section}>
                     <Select
-                      labelText=" Specimen Type"
+                      labelText=""
                       id="speciment-types"
                       name="specimen-types"
                       value={specimenType}

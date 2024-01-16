@@ -1,15 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import styles from "./result-form.scss";
-import {
-  Button,
-  InlineLoading,
-  TextInput,
-  Select,
-  SelectItem,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-} from "@carbon/react";
+import { Button, InlineLoading, ModalBody, ModalFooter } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import { closeOverlay } from "../components/overlay/hook";
 import {
@@ -19,10 +10,12 @@ import {
   usePatient,
 } from "@openmrs/esm-framework";
 import {
-  UpdateEncounter,
   useGetOrderConceptByUuid,
+  UpdateOrderResult,
 } from "./result-form.resource";
 import { Result } from "../work-list/work-list.resource";
+import ResultFormField from "./result-form-field.component";
+import { useForm } from "react-hook-form";
 
 interface ResultFormProps {
   patientUuid: string;
@@ -31,16 +24,19 @@ interface ResultFormProps {
 
 const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   const { t } = useTranslation();
+  const {
+    control,
+    register,
+    formState: { isSubmitting },
+    getValues,
+  } = useForm<{ testResult: string }>({
+    defaultValues: {},
+  });
 
   const { patient, isLoading } = usePatient(patientUuid);
-
-  const { concept } = useGetOrderConceptByUuid(order.concept.uuid);
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const [inputValues, setInputValues] = useState({});
-
-  const [selectedOption, setSelectedOption] = useState();
+  const { concept, isLoading: isLoadingConcepts } = useGetOrderConceptByUuid(
+    order.concept.uuid
+  );
 
   const bannerState = useMemo(() => {
     if (patient) {
@@ -52,127 +48,102 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
     }
   }, [patient, patientUuid]);
 
-  // getInput values
-  const handleInputChange = (memberUuid, value) => {
-    setInputValues((prevValues) => ({
-      ...prevValues,
-      [memberUuid]: value,
-    }));
-  };
-
-  // create input fields
-  const Questions = ({ conceptMembers }) => {
-    const inputFields = useMemo(() => {
-      return conceptMembers.map((member) => {
-        let inputField;
-
-        if (
-          member.datatype.display === "Text" ||
-          member.datatype.display === "Numeric"
-        ) {
-          inputField = (
-            <TextInput
-              key={member.uuid}
-              className={styles.textInput}
-              name={`member-${member.uuid}-test-id`}
-              id={`member-${member.uuid}-test-id`}
-              type={member.datatype.display === "Numeric" ? "number" : "text"}
-              labelText={member?.display}
-              value={inputValues[member.uuid] || ""}
-              onChange={(e) => handleInputChange(member.uuid, e.target.value)}
-            />
-          );
-        } else if (member.datatype.display === "Coded") {
-          inputField = (
-            <Select
-              key={member.uuid}
-              className={styles.textInput}
-              name={`member-${member.uuid}-test-id`}
-              id={`member-${member.uuid}-test-id`}
-              type="text"
-              labelText={member?.display}
-              value={inputValues[member.uuid] || ""}
-              onChange={(e) => handleInputChange(member.uuid, e.target.value)}
-            >
-              {!setSelectedOption ? (
-                <SelectItem text={t("option", "Choose an Option")} value="" />
-              ) : null}
-              {member?.answers?.map((answer) => (
-                <SelectItem
-                  key={answer.uuid}
-                  text={answer.display}
-                  value={answer.uuid}
-                >
-                  {answer.display}
-                </SelectItem>
-              ))}
-            </Select>
-          );
-        }
-
-        return inputField;
-      });
-    }, [conceptMembers]); // Memoize when conceptMembers changes
-
-    return <>{inputFields}</>;
-  };
+  if (isLoadingConcepts) {
+    return <div>Loading test details</div>;
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // assign value to test
-    let groupMembers = [];
+    // assign result to test order
+    const documentedValues = getValues();
     let obsValue = [];
-    const ob = {
-      concept: { uuid: order.concept.uuid },
-      status: "FINAL",
-      order: { uuid: order.uuid },
-      groupMembers: groupMembers,
-    };
-    concept.forEach((item) => {
-      let value;
-      if (
-        item.datatype.display === "Numeric" ||
-        item.datatype.display === "Text"
-      ) {
-        value = inputValues[`${item.uuid}`];
-      } else if (item.datatype.display === "Coded") {
-        value = {
-          uuid: inputValues[`${item.uuid}`],
+
+    if (concept.set && concept.setMembers.length > 0) {
+      let groupMembers = [];
+      concept.setMembers.forEach((member) => {
+        let value;
+        if (
+          member.datatype.display === "Numeric" ||
+          member.datatype.display === "Text"
+        ) {
+          value = getValues()[`${member.uuid}`];
+        } else if (member.datatype.display === "Coded") {
+          value = {
+            uuid: getValues()[`${member.uuid}`],
+          };
+        }
+        const groupMember = {
+          concept: { uuid: member.uuid },
+          value: value,
+          status: "FINAL",
+          order: { uuid: order.uuid },
         };
-      }
-      const groupMember = {
-        concept: { uuid: item.uuid },
-        value: value,
+        groupMembers.push(groupMember);
+      });
+
+      obsValue.push({
+        concept: { uuid: order.concept.uuid },
         status: "FINAL",
         order: { uuid: order.uuid },
-      };
-      groupMembers.push(groupMember);
-    });
-    obsValue.push(ob);
+        groupMembers: groupMembers,
+      });
+    } else if (!concept.set && concept.setMembers.length === 0) {
+      let value;
+      if (
+        concept.datatype.display === "Numeric" ||
+        concept.datatype.display === "Text"
+      ) {
+        value = getValues()[`${concept.uuid}`];
+      } else if (concept.datatype.display === "Coded") {
+        value = {
+          uuid: getValues()[`${concept.uuid}`],
+        };
+      }
 
-    const payload = {
+      obsValue.push({
+        concept: { uuid: order.concept.uuid },
+        status: "FINAL",
+        order: { uuid: order.uuid },
+        value: value,
+      });
+    }
+
+    const obsPayload = {
       obs: obsValue,
     };
-    setIsSubmitting(true);
-    // update encounter
-    UpdateEncounter(order.encounter.uuid, payload).then(
+
+    const orderDiscontinuationPayload = {
+      previousOrder: order.uuid,
+      type: "testorder",
+      action: "DISCONTINUE",
+      careSetting: order.careSetting.uuid,
+      encounter: order.encounter.uuid,
+      patient: order.patient.uuid,
+      concept: order.concept.uuid,
+      orderer: order.orderer,
+    };
+
+    UpdateOrderResult(
+      order.encounter.uuid,
+      obsPayload,
+      orderDiscontinuationPayload
+    ).then(
       () => {
-        setIsSubmitting(false);
         showToast({
           critical: true,
-          title: t("updateEncounter", "Update Encounter"),
+          title: t("updateEncounter", "Update lab results"),
           kind: "success",
           description: t(
             "generateSuccessfully",
-            "You have successfully encounter with test results"
+            "You have successfully updated test results"
           ),
         });
+        closeOverlay();
       },
       (err) => {
-        setIsSubmitting(false);
         showNotification({
           title: t(
-            `errorUpdatingEncounter', 'Error occurred while updating encounter`
+            `errorUpdatingEncounter', 'Error occurred while updating test results`
           ),
           kind: "error",
           critical: true,
@@ -181,7 +152,6 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       }
     );
   };
-
   return (
     <>
       <div className="">
@@ -197,10 +167,17 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
           {patient && (
             <ExtensionSlot name="patient-header-slot" state={bannerState} />
           )}
-
-          {concept?.length > 0 && (
+          {/* // we need to display test name for test panels */}
+          {concept.setMembers.length > 0 && (
+            <div>Test panel: {concept.display}</div>
+          )}
+          {concept && (
             <section className={styles.section}>
-              <Questions conceptMembers={concept} />
+              <ResultFormField
+                register={register}
+                concept={concept}
+                control={control}
+              />
             </section>
           )}
         </ModalBody>
@@ -213,7 +190,7 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
           >
             {t("cancel", "Cancel")}
           </Button>
-          <Button onClick={(e) => handleSubmit(e)}>Save tests</Button>
+          <Button onClick={handleSubmit}>Save test results</Button>
         </ModalFooter>
       </div>
     </>

@@ -14,7 +14,7 @@ export interface ConceptResponse {
   descriptions: Description[];
   mappings: Mapping[];
   answers: any[];
-  setMembers: SetMember[];
+  setMembers: ConceptReference[];
   auditInfo: AuditInfo;
   attributes: any[];
   links: Link18[];
@@ -142,7 +142,7 @@ export interface Link8 {
   resourceAlias: string;
 }
 
-export interface SetMember {
+export interface ConceptReference {
   uuid: string;
   display: string;
   name: Name3;
@@ -306,7 +306,7 @@ export function useGetOrderConceptByUuid(uuid: string) {
     Error
   >(apiUrl, openmrsFetch);
   return {
-    concept: data?.data ? data?.data.setMembers : [],
+    concept: data?.data,
     isLoading,
     isError: error,
     isValidating,
@@ -325,4 +325,34 @@ export async function UpdateEncounter(uuid: string, payload: any) {
     signal: abortController.signal,
     body: payload,
   });
+}
+
+//TODO: the calls to update order and observations for results should be transactional to allow for rollback
+export async function UpdateOrderResult(
+  encounterUuid: string,
+  obsPayload: any,
+  orderPayload: any
+) {
+  const abortController = new AbortController();
+  const updateOrderCall = await openmrsFetch(`/ws/rest/v1/order`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    signal: abortController.signal,
+    body: orderPayload,
+  });
+
+  if (updateOrderCall.status === 201) {
+    return await openmrsFetch(`/ws/rest/v1/encounter/${encounterUuid}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      signal: abortController.signal,
+      body: obsPayload,
+    });
+  } else {
+    // handle errors
+  }
 }

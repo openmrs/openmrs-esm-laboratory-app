@@ -5,9 +5,10 @@ import {
 } from "@openmrs/esm-framework";
 import { configSchema } from "./config-schema";
 import { createHomeDashboardLink } from "./components/create-dashboard-link.component";
+
 import { createDashboardLink } from "@openmrs/esm-patient-common-lib";
 
-const moduleName = "@ugandaemr/esm-laboratory-app";
+const moduleName = "@openmrs/esm-laboratory-app";
 
 const options = {
   featureName: "ugandaemr-laboratory",
@@ -104,6 +105,16 @@ export const referredTestComponent = getAsyncLifecycle(
 
 export const worklistComponent = getAsyncLifecycle(
   () => import("./lab-tabs/work-list-tab.component"),
+  options
+);
+
+export const pickLabRequestButton = getAsyncLifecycle(
+  () => import("./queue-list/pick-lab-request-menu.component"),
+  options
+);
+
+export const rejectOrderButton = getAsyncLifecycle(
+  () => import("./order-actions/reject-order.component"),
   options
 );
 
