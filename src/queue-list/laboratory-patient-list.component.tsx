@@ -9,6 +9,8 @@ import {
   TableContainer,
   TableExpandHeader,
   TableExpandRow,
+  OverflowMenuItem,
+  OverflowMenu,
   TableHead,
   TableHeader,
   TableRow,
@@ -24,10 +26,11 @@ import {
   DatePicker,
   DatePickerInput,
 } from "@carbon/react";
-import { TrashCan } from "@carbon/react/icons";
+import { TrashCan, OverflowMenuVertical } from "@carbon/react/icons";
 
 import { useTranslation } from "react-i18next";
 import {
+  ExtensionSlot,
   age,
   formatDate,
   formatDatetime,
@@ -39,7 +42,7 @@ import {
 import styles from "./laboratory-queue.scss";
 import { getStatusColor } from "../utils/functions";
 import { Result, useGetOrdersWorklist } from "../work-list/work-list.resource";
-import PickLabRequestActionMenu from "./pick-lab-request-menu.component";
+import OrderCustomOverflowMenuComponent from "../ui-components/overflow-menu.component";
 
 interface LaboratoryPatientListProps {}
 
@@ -65,23 +68,6 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     results: paginatedWorklistQueueEntries,
     currentPage,
   } = usePagination(workListEntries, currentPageSize);
-
-  const RejectOrder: React.FC<RejectOrderProps> = ({ order }) => {
-    const launchRejectOrderModal = useCallback(() => {
-      const dispose = showModal("reject-order-dialog", {
-        closeModal: () => dispose(),
-        order,
-      });
-    }, [order]);
-    return (
-      <Button
-        kind="ghost"
-        onClick={launchRejectOrderModal}
-        renderIcon={(props) => <TrashCan size={16} {...props} />}
-      />
-    );
-  };
-
   // get picked orders
   let columns = [
     { id: 0, header: t("date", "Date"), key: "date" },
@@ -147,11 +133,22 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
         actions: {
           content: (
             <>
-              <PickLabRequestActionMenu
-                order={paginatedWorklistQueueEntries[index]}
-                closeModal={() => true}
-              />
-              <RejectOrder order={paginatedWorklistQueueEntries[index]} />
+              <OrderCustomOverflowMenuComponent
+                menuTitle={
+                  <>
+                    <OverflowMenuVertical
+                      size={16}
+                      style={{ marginLeft: "0.3rem" }}
+                    />
+                  </>
+                }
+              >
+                <ExtensionSlot
+                  className={styles.menuLink}
+                  state={{ order: paginatedWorklistQueueEntries[index] }}
+                  name="order-actions-slot"
+                />
+              </OrderCustomOverflowMenuComponent>
             </>
           ),
         },
@@ -166,7 +163,12 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     return (
       <div>
         <div className={styles.headerBtnContainer}></div>
-        <DataTable rows={tableRows} headers={columns} useZebraStyles>
+        <DataTable
+          rows={tableRows}
+          headers={columns}
+          useZebraStyles
+          overflowMenuOnHover={true}
+        >
           {({
             rows,
             headers,
