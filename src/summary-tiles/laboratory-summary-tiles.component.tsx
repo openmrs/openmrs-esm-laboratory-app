@@ -1,16 +1,14 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLabTestsStats, useMetrics } from "./laboratory-summary.resource";
-import SummaryTile from "./summary-tile.component";
 import styles from "./laboratory-summary-tiles.scss";
 import {
   AssignedExtension,
-  Extension,
   ExtensionSlot,
   useConnectedExtensions,
   useSession,
+  attach,
+  detachAll,
 } from "@openmrs/esm-framework";
-import { usePatientQueuesList } from "../queue-list/laboratory-patient-list.resource";
 
 const LaboratorySummaryTiles: React.FC = () => {
   const { t } = useTranslation();
@@ -23,51 +21,42 @@ const LaboratorySummaryTiles: React.FC = () => {
     labTileSlot
   ) as AssignedExtension[];
 
-  // eslint-disable-next-line no-console
-  console.log(tilesExtensions);
+  const [derivedSlots, setDerivedSlots] = useState<
+    { slot: string; extension: string }[]
+  >([]);
 
-  // console.log{tilesExtensions};
+  const extraTiles = useMemo(() => {
+    const filteredExtensions = tilesExtensions.filter(
+      (extension) => Object.keys(extension.meta).length > 0
+    );
+    const derivedSlotsBuffer = [];
+    return filteredExtensions.map((extension, index) => {
+      const slotName = `${labTileSlot}-${index}`;
+      derivedSlotsBuffer.push({
+        slot: slotName,
+        extension: extension.name,
+      });
+      if (filteredExtensions.length === index + 1) {
+        setDerivedSlots(derivedSlotsBuffer);
+      }
 
-  // get tests ordered
-  const { count: testOrderedCount } = useLabTestsStats("");
+      return <ExtensionSlot name={slotName} />;
+    });
+  }, [tilesExtensions]);
 
-  // get worklists
-  const { count: worklistCount } = useLabTestsStats("IN_PROGRESS");
+  useEffect(() => {
+    derivedSlots.forEach(({ slot, extension }) => {
+      attach(slot, extension);
+    });
 
-  // get refered lists
+    return () => {
+      derivedSlots.forEach(({ slot }) => {
+        detachAll(slot);
+      });
+    };
+  }, [derivedSlots]);
 
-  // get approved
-  const { count: completedCount } = useLabTestsStats("COMPLETED");
-
-  return (
-    <div className={styles.cardContainer}>
-      <SummaryTile
-        label={t("orders", "Orders")}
-        value={testOrderedCount}
-        headerLabel={t("testsOrdered", "Tests ordered")}
-      />
-      <SummaryTile
-        label={t("inProgress", "In progress")}
-        value={worklistCount}
-        headerLabel={t("worklist", "Worklist")}
-      />
-      <SummaryTile
-        label={t("transferred", "Transferred")}
-        value={0}
-        headerLabel={t("referredTests", "Referred tests")}
-      />
-      <SummaryTile
-        label={t("completed", "Completed")}
-        value={completedCount}
-        headerLabel={t("results", "Results")}
-      />
-
-      <ExtensionSlot name={labTileSlot}>
-        {" "}
-        <Extension />
-      </ExtensionSlot>
-    </div>
-  );
+  return <div className={styles.cardContainer}>{extraTiles}</div>;
 };
 
 export default LaboratorySummaryTiles;

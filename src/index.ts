@@ -118,7 +118,7 @@ export const rejectOrderButton = getAsyncLifecycle(
   options
 );
 
-export const worklisTileComponent = getAsyncLifecycle(
+export const worklistTileComponent = getAsyncLifecycle(
   () => import("./lab-tiles/worklist-tile.component"),
   options
 );
@@ -128,7 +128,7 @@ export const referredTileComponent = getAsyncLifecycle(
   options
 );
 
-export const completedTileSlot = getAsyncLifecycle(
+export const completedTileComponent = getAsyncLifecycle(
   () => import("./lab-tiles/completed-tile.component"),
   options
 );

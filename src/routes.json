@@ -105,12 +105,30 @@
       }
     },
     {
+      "name": "tests-ordered-tile-component",
+      "slot": "lab-tiles-slot",
+      "component": "testOrderedTileComponent",
+      "meta": {
+        "name": "testsOrderedTileSlot",
+        "title": "Ordered tests"
+      }
+    },
+    {
+      "name": "completed-tile-component",
+      "slot": "lab-tiles-slot",
+      "component": "completedTileComponent",
+      "meta": {
+        "name": "completedTileSlot",
+        "title": "Completed"
+      }
+    },
+    {
       "name": "worklist-tile-component",
       "slot": "lab-tiles-slot",
-      "component": "worklisTileComponent",
+      "component": "worklistTileComponent",
       "meta": {
         "name": "worklisTileSlot",
-        "title": "Ex-Worklist"
+        "title": "Worklist"
       }
     },
     {
@@ -122,25 +140,7 @@
         "title": "Ex-Referred tests"
       }
     },
-    {
-      "name": "completed-tile-component",
-      "slot": "lab-tiles-slot",
-      "component": "completedTileComponent",
-      "meta": {
-        "name": "completedTileSlot",
-        "title": "Ex-Completed tests"
-      }
-    },
-
-    {
-      "name": "tests-ordered-tile-component",
-      "slot": "lab-tiles-slot",
-      "component": "testOrderedTileComponent",
-      "meta": {
-        "name": "testsOrderedTileSlot",
-        "title": "Ex-Ordered tests"
-      }
-    },
+   
     {
       "name": "pick-lab-request-button",
       "component": "pickLabRequestButton",
