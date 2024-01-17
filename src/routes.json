@@ -105,6 +105,43 @@
       }
     },
     {
+      "name": "worklist-tile-component",
+      "slot": "lab-tiles-slot",
+      "component": "worklisTileComponent",
+      "meta": {
+        "name": "worklisTileSlot",
+        "title": "Ex-Worklist"
+      }
+    },
+    {
+      "name": "referred-tile-component",
+      "slot": "lab-tiles-slot",
+      "component": "referredTileComponent",
+      "meta": {
+        "name": "referredTileSlot",
+        "title": "Ex-Referred tests"
+      }
+    },
+    {
+      "name": "completed-tile-component",
+      "slot": "lab-tiles-slot",
+      "component": "completedTileComponent",
+      "meta": {
+        "name": "completedTileSlot",
+        "title": "Ex-Completed tests"
+      }
+    },
+
+    {
+      "name": "tests-ordered-tile-component",
+      "slot": "lab-tiles-slot",
+      "component": "testOrderedTileComponent",
+      "meta": {
+        "name": "testsOrderedTileSlot",
+        "title": "Ex-Ordered tests"
+      }
+    },
+    {
       "name": "pick-lab-request-button",
       "component": "pickLabRequestButton",
       "slot": "order-actions-slot"
