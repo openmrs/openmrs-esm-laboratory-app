@@ -27,8 +27,9 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   const {
     control,
     register,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
     getValues,
+    handleSubmit,
   } = useForm<{ testResult: string }>({
     defaultValues: {},
   });
@@ -52,7 +53,7 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
     return <div>Loading test details</div>;
   }
 
-  const handleSubmit = (e) => {
+  const onSubmit = (data, e) => {
     e.preventDefault();
     // assign result to test order
     const documentedValues = getValues();
@@ -168,16 +169,17 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
             <ExtensionSlot name="patient-header-slot" state={bannerState} />
           )}
           {/* // we need to display test name for test panels */}
-          {concept.setMembers.length > 0 && (
-            <div>Test panel: {concept.display}</div>
-          )}
+          {concept.setMembers.length > 0 && <div>{concept.display}</div>}
           {concept && (
             <section className={styles.section}>
-              <ResultFormField
-                register={register}
-                concept={concept}
-                control={control}
-              />
+              <form>
+                <ResultFormField
+                  register={register}
+                  concept={concept}
+                  control={control}
+                  errors={errors}
+                />
+              </form>
             </section>
           )}
         </ModalBody>
@@ -190,7 +192,7 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
           >
             {t("cancel", "Cancel")}
           </Button>
-          <Button onClick={handleSubmit}>Save test results</Button>
+          <Button onClick={handleSubmit(onSubmit)}>Save test results</Button>
         </ModalFooter>
       </div>
     </>
