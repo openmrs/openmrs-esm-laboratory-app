@@ -30,9 +30,9 @@ import { Renew } from "@carbon/react/icons";
 import {
   GenerateSpecimenId,
   GetOrderByUuid,
-  UpdateOrder,
   useQueueRoomLocations,
   useSpecimenTypes,
+  receiveOrder,
 } from "./add-to-worklist-dialog.resource";
 import { Encounter, Order } from "../../types/patient-queues";
 
@@ -112,14 +112,7 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
   const pickLabRequestQueue = async (event) => {
     event.preventDefault();
     // pick lab test
-    let body = {
-      sampleId: specimenID,
-      specimenSourceId: specimenType,
-      unProcessedOrders: "",
-      patientQueueId: queueId,
-    };
-
-    UpdateOrder(order.uuid, body).then(
+    receiveOrder(order.uuid, { fulfillerStatus: "IN_PROGRESS" }).then(
       () => {
         showToast({
           critical: true,
@@ -211,13 +204,7 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
                       value={specimenID}
                     />
                   </div>
-                  <div style={{ width: "50px" }}>
-                    <Button
-                      hasIconOnly
-                      onClick={(e) => generateId(e)}
-                      renderIcon={(props) => <Renew size={16} {...props} />}
-                    />
-                  </div>
+                  <div style={{ width: "50px" }}></div>
                 </div>
               </div>
             </section>

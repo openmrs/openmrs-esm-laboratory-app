@@ -128,8 +128,24 @@ export function useGetOrdersWorklist(
     Error
   >(apiUrl, openmrsFetch);
 
+  const orders = data?.data?.results?.filter((order) => {
+    if (fulfillerStatus === "") {
+      return (
+        order.fulfillerStatus === null &&
+        order.dateStopped === null &&
+        order.action === "NEW"
+      );
+    } else if (fulfillerStatus === "IN_PROGRESS") {
+      return (
+        order.fulfillerStatus === "IN_PROGRESS" &&
+        order.dateStopped === null &&
+        order.action !== "DISCONTINUE"
+      );
+    }
+  });
+
   return {
-    workListEntries: data?.data ? data.data.results : [],
+    workListEntries: orders?.length > 0 ? orders : [],
     isLoading,
     isError: error,
   };

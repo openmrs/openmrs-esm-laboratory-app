@@ -74,12 +74,6 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
 
     { id: 1, header: t("orderNumber", "Order Number"), key: "orderNumber" },
     { id: 2, header: t("patient", "Patient"), key: "patient" },
-
-    {
-      id: 3,
-      header: t("accessionNumber", "Accession Number"),
-      key: "accessionNumber",
-    },
     { id: 4, header: t("test", "Test"), key: "test" },
     { id: 5, header: t("action", "Action"), key: "action" },
     { id: 6, header: t("status", "Status"), key: "status" },
