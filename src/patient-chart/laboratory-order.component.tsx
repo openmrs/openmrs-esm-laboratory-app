@@ -87,11 +87,18 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   const [currentPageSize, setPageSize] = useState(10);
   const [nextOffSet, setNextOffSet] = useState(0);
 
+  const sortedLabRequests = useMemo(() => {
+    return [...labRequests].sort((a, b) => {
+      const dateA = new Date(a.encounterDatetime);
+      const dateB = new Date(b.encounterDatetime);
+      return dateB.getTime() - dateA.getTime();
+    });
+  }, [labRequests]);
   const {
     goTo,
     results: paginatedLabEntries,
     currentPage,
-  } = usePagination(labRequests, currentPageSize);
+  } = usePagination(sortedLabRequests, currentPageSize);
 
   let columns = [
     {
@@ -106,8 +113,8 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   ];
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [items, setItems] = useState(paginatedLabEntries);
-  const [initialTests] = useState(paginatedLabEntries);
+  const [items, setItems] = useState(sortedLabRequests);
+  const [initialTests] = useState(sortedLabRequests);
 
   const handleChange = useCallback(
     (val) => {
@@ -220,7 +227,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   };
 
   const tableRows = useMemo(() => {
-    return paginatedLabEntries?.map((entry) => ({
+    return paginatedLabEntries?.map((entry, index) => ({
       ...entry,
       id: entry.uuid,
       orderDate: {
@@ -281,7 +288,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
     return <ErrorState error={isError} headerTitle={"Error"} />;
   }
 
-  if (items?.length >= 0) {
+  if (paginatedLabEntries?.length >= 0) {
     return (
       <div>
         <DataTable
@@ -385,9 +392,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                             className={styles.expandedActiveVisitRow}
                             colSpan={headers.length + 2}
                           >
-                            <TestsResults
-                              obs={paginatedLabEntries[index].obs}
-                            />
+                            <TestsResults obs={sortedLabRequests[index].obs} />
                           </TableExpandedRow>
                         ) : (
                           <TableExpandedRow
