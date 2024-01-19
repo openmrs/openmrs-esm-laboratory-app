@@ -8,7 +8,7 @@ import { createHomeDashboardLink } from "./components/create-dashboard-link.comp
 
 import { createDashboardLink } from "@openmrs/esm-patient-common-lib";
 
-const moduleName = "@openmrs/esm-laboratory-app";
+const moduleName = "@kenyaemr/esm-laboratory-app";
 
 const options = {
   featureName: "ugandaemr-laboratory",
