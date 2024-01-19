@@ -42,8 +42,24 @@ export function useLabTestsStats(fulfillerStatus: string) {
     { data: { results: Array<Result> } },
     Error
   >(apiUrl, openmrsFetch);
+
+  const orders = data?.data?.results?.filter((order) => {
+    if (fulfillerStatus === "") {
+      return (
+        order.fulfillerStatus === null &&
+        order.dateStopped === null &&
+        order.action === "NEW"
+      );
+    } else if (fulfillerStatus === "IN_PROGRESS") {
+      return (
+        order.fulfillerStatus === "IN_PROGRESS" &&
+        order.dateStopped === null &&
+        order.action !== "DISCONTINUE"
+      );
+    }
+  });
   return {
-    count: data?.data ? data.data.results.length : 0,
+    count: orders?.length > 0 ? orders.length : 0,
     isLoading,
     isError: error,
   };
