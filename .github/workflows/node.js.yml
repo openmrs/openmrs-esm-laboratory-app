@@ -9,8 +9,8 @@ on:
     types:
       - created
 env:
-  ESM_NAME: "@openmrs/esm-laboratory-app"
-  JS_NAME: "openmrs-esm-laboratory-app.js"
+  ESM_NAME: "@kenyaemr/esm-laboratory-app"
+  JS_NAME: "kenyaemr-esm-laboratory-app.js"
 
 jobs:
   build:
