@@ -116,6 +116,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   const [items, setItems] = useState(paginatedLabEntries);
   const [initialTests, setInitialTests] = useState(paginatedLabEntries);
 
+
   const handleChange = useCallback((event) => {
     const searchText = event?.target?.value?.trim().toLowerCase();
     setSearchTerm(searchText);
@@ -223,7 +224,9 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   };
 
   const tableRows = useMemo(() => {
+
     return items?.map((entry, index) => ({
+
       ...entry,
       id: entry.uuid,
       orderDate: {
