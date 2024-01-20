@@ -113,34 +113,30 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   ];
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [items, setItems] = useState(sortedLabRequests);
-  const [initialTests] = useState(sortedLabRequests);
+  const [items, setItems] = useState(paginatedLabEntries);
+  const [initialTests, setInitialTests] = useState(paginatedLabEntries);
 
-  const handleChange = useCallback(
-    (val) => {
-      const searchText = val?.target?.value;
-      setSearchTerm(searchText);
-      if (searchText?.trim() == "") {
-        setItems(initialTests);
-      } else {
-        let filteredItems = [];
-        items.map((item) => {
-          const newArray = item?.orders?.filter(
-            (order) =>
-              order?.concept?.display
-                .toLowerCase()
-                .startsWith(searchText?.toLowerCase()) == true
-          );
-          if (newArray.length >= 1) {
-            filteredItems.push(item);
-          }
-        });
+  const handleChange = useCallback((event) => {
+    const searchText = event?.target?.value?.trim().toLowerCase();
+    setSearchTerm(searchText);
+  }, []);
 
-        setItems(filteredItems);
-      }
-    },
-    [items, initialTests]
-  );
+  useEffect(() => {
+    if (!searchTerm) {
+      setItems(initialTests);
+    } else {
+      const filteredItems = initialTests.filter((item) =>
+        item?.orders?.some((order) =>
+          order?.concept?.display.toLowerCase().includes(searchTerm)
+        )
+      );
+      setItems(filteredItems);
+    }
+  }, [searchTerm, initialTests]);
+
+  useEffect(() => {
+    setInitialTests(paginatedLabEntries);
+  }, [paginatedLabEntries]);
 
   const EmailButtonAction: React.FC = () => {
     const launchSendEmailModal = useCallback(() => {
@@ -227,7 +223,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   };
 
   const tableRows = useMemo(() => {
-    return paginatedLabEntries?.map((entry, index) => ({
+    return items?.map((entry, index) => ({
       ...entry,
       id: entry.uuid,
       orderDate: {
@@ -278,7 +274,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
         ),
       },
     }));
-  }, [paginatedLabEntries]);
+  }, [items]);
 
   if (loading) {
     return <DataTableSkeleton role="progressbar" />;
@@ -299,7 +295,14 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
           size={isTablet ? "lg" : "sm"}
           experimentalAutoAlign={true}
         >
-          {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
+          {({
+            rows,
+            headers,
+            getHeaderProps,
+            getTableProps,
+            getRowProps,
+            onInputChange,
+          }) => (
             <TableContainer className={styles.tableContainer}>
               <TableToolbar
                 style={{
@@ -429,7 +432,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                 page={currentPage}
                 pageSize={currentPageSize}
                 pageSizes={pageSizes}
-                totalItems={paginatedLabEntries?.length}
+                totalItems={sortedLabRequests?.length}
                 className={styles.pagination}
                 onChange={({ pageSize, page }) => {
                   if (pageSize !== currentPageSize) {
@@ -446,13 +449,6 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
       </div>
     );
   }
-
-  // return (
-  //   <div>
-  //     {/* <div className={styles.headerBtnContainer}></div> */}
-  //     <EmptyState displayText={"Tests Ordered"} headerTitle={"Tests Ordered"} />
-  //   </div>
-  // );
 };
 
 export default LaboratoryOrder;
