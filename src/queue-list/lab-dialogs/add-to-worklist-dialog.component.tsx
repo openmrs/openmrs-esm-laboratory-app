@@ -22,7 +22,7 @@ import styles from "./add-to-worklist-dialog.scss";
 import {
   navigate,
   showNotification,
-  showToast,
+  showSnackbar,
   useLocations,
   useSession,
 } from "@openmrs/esm-framework";
@@ -121,11 +121,11 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
 
     UpdateOrder(order.uuid, body).then(
       () => {
-        showToast({
-          critical: true,
+        showSnackbar({
+          isLowContrast: true,
           title: t("pickedAnOrder", "Picked an order"),
           kind: "success",
-          description: t(
+          subtitle: t(
             "pickSuccessfully",
             "You have successfully picked an Order"
           ),
@@ -153,11 +153,11 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
     GenerateSpecimenId(order.uuid).then(
       (resp) => {
         setSpecimenID(resp.data.results[0].sampleId);
-        showToast({
-          critical: true,
+        showSnackbar({
+          isLowContrast: true,
           title: t("generatesampleID", "Generate Sample Id"),
           kind: "success",
-          description: t(
+          subtitle: t(
             "generateSuccessfully",
             "You have successfully generated a Sample Id"
           ),

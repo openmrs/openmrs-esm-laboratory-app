@@ -14,7 +14,7 @@ import styles from "../review-list.scss";
 import { GroupMember } from "../../patient-chart/laboratory-order.resource";
 import { useGetConceptById } from "../../patient-chart/results-summary/results-summary.resource";
 import { ApproverOrder } from "./review-item.resource";
-import { showNotification, showToast } from "@openmrs/esm-framework";
+import { showNotification, showSnackbar } from "@openmrs/esm-framework";
 
 interface ReviewItemDialogProps {
   encounterUuid: string;
@@ -80,11 +80,11 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
 
     ApproverOrder(payload).then(
       () => {
-        showToast({
-          critical: true,
+        showSnackbar({
+          isLowContrast: true,
           title: t("approveOrder", "Approve Order"),
           kind: "success",
-          description: t(
+          subtitle: t(
             "successfullyApproved",
             `You have successfully approved Order `
           ),

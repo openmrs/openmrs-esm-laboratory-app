@@ -6,7 +6,7 @@ import { closeOverlay } from "../components/overlay/hook";
 import {
   ExtensionSlot,
   showNotification,
-  showToast,
+  showSnackbar,
   usePatient,
 } from "@openmrs/esm-framework";
 import {
@@ -130,11 +130,11 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       orderDiscontinuationPayload
     ).then(
       () => {
-        showToast({
-          critical: true,
+        showSnackbar({
+          isLowContrast: true,
           title: t("updateEncounter", "Update lab results"),
           kind: "success",
-          description: t(
+          subtitle: t(
             "generateSuccessfully",
             "You have successfully updated test results"
           ),

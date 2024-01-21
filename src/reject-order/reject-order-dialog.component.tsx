@@ -20,7 +20,7 @@ import { useTranslation } from "react-i18next";
 import styles from "./reject-order-dialog.scss";
 import { Result } from "../work-list/work-list.resource";
 import { RejectOrder } from "./reject-order-dialog.resource";
-import { showNotification, showToast } from "@openmrs/esm-framework";
+import { showNotification, showSnackbar } from "@openmrs/esm-framework";
 
 interface RejectOrderDialogProps {
   order: Result;
@@ -44,11 +44,11 @@ const RejectOrderDialog: React.FC<RejectOrderDialogProps> = ({
     };
     RejectOrder(order.uuid, payload).then(
       (resp) => {
-        showToast({
-          critical: true,
+        showSnackbar({
+          isLowContrast: true,
           title: t("rejectOrder", "Rejected Order"),
           kind: "success",
-          description: t(
+          subtitle: t(
             "successfullyrejected",
             `You have successfully rejected an Order with OrderNumber ${order.orderNumber} `
           ),
