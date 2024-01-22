@@ -28,7 +28,7 @@ const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
       if (isError) return <span>Error</span>;
 
       return (
-        <span style={{ marginLeft: "10px" }}>{concept?.units ?? "N/A"}</span>
+        <span style={{ marginLeft: "10px" }}>{concept?.units ?? "N"}</span>
       );
     };
 
@@ -93,18 +93,42 @@ const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
       </table>
       <table>
         <tbody>
-          {Object.keys(groupedResults).map((test) => (
-            <tr key={test} style={{ margin: "10px" }}>
-              <span
-                style={{ margin: "10px", fontSize: "8px", fontWeight: "bold" }}
-              >
-                {test}
-              </span>
-              <table style={{ margin: "10px" }}>
-                <RowTest groupMembers={groupedResults[test].groupMembers} />
-              </table>
-            </tr>
-          ))}
+          {Object.keys(groupedResults).map((test) => {
+            const { uuid, groupMembers } = groupedResults[test];
+            const isGrouped = uuid && groupMembers?.length > 0;
+            return (
+              <tr key={test} style={{ margin: "10px" }}>
+                <span
+                  style={{
+                    margin: "10px",
+                    fontSize: "8px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {test}
+                </span>
+                <table style={{ margin: "10px" }}>
+                  {isGrouped && <RowTest groupMembers={groupMembers} />}
+                  {!isGrouped && (
+                    <tr>
+                      <td>
+                        <span>{groupedResults[test]?.order?.display}</span>
+                      </td>
+                      <td>
+                        <span>{groupedResults[test]?.value?.display}</span>
+                      </td>
+                      <td>
+                        <span>{"N/A"}</span>
+                      </td>
+                      <td>
+                        <span>{"N/A"}</span>
+                      </td>
+                    </tr>
+                  )}{" "}
+                </table>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </section>
@@ -112,3 +136,6 @@ const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
 };
 
 export default PrintResultsTable;
+
+{
+}
