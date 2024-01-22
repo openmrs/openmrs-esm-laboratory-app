@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { MappedQueueEntry } from "../../types";
+import { mutate } from "swr";
 import {
   Button,
   ContentSwitcher,
@@ -123,6 +124,14 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
             "You have successfully picked an Order"
           ),
         });
+
+        mutate(
+          (key) =>
+            typeof key === "string" &&
+            key.startsWith("/ws/rest/v1/order?orderTypes="),
+          undefined,
+          { revalidate: true }
+        );
         closeModal();
       },
       (error) => {
