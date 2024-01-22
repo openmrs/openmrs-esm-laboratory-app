@@ -15,6 +15,7 @@ import { EmptyState } from "@openmrs/esm-patient-common-lib";
 import WorkList from "../work-list/work-list.component";
 import ReviewList from "../review-list/review-list.component";
 import CompletedList from "../completed-list/completed-list.component";
+import { ComponentContext } from "@openmrs/esm-framework/src/internal";
 
 enum TabTypes {
   STARRED,
@@ -23,6 +24,10 @@ enum TabTypes {
   ALL,
 }
 
+// The lab-panels-slot will not be visible in the implementer tools UI when used below
+// in the value for ComponentContext.Provider as the UI viewer depends on the div that
+// cannot be added because of how the Carbon components work. Implementers can add more
+// tab extensions to this slot via the routes.js file configuration
 const labPanelSlot = "lab-panels-slot";
 
 const LaboratoryQueueTabs: React.FC = () => {
@@ -31,48 +36,6 @@ const LaboratoryQueueTabs: React.FC = () => {
   const tabExtensions = useConnectedExtensions(
     labPanelSlot
   ) as AssignedExtension[];
-
-  const [derivedSlots, setDerivedSlots] = useState<
-    { slot: string; extension: string }[]
-  >([]);
-
-  const extraPanels = useMemo(() => {
-    const filteredExtensions = tabExtensions.filter(
-      (extension) => Object.keys(extension.meta).length > 0
-    );
-    const derivedSlotsBuffer = [];
-    return filteredExtensions.map((extension, index) => {
-      const slotName = `${labPanelSlot}-${index}`;
-      derivedSlotsBuffer.push({
-        slot: slotName,
-        extension: extension.name,
-      });
-      if (filteredExtensions.length === index + 1) {
-        setDerivedSlots(derivedSlotsBuffer);
-      }
-
-      return (
-        <TabPanel key={extension.meta.name} style={{ padding: 0 }}>
-          <div>
-            <div className={styles.headerBtnContainer}></div>
-            <ExtensionSlot name={slotName} />
-          </div>
-        </TabPanel>
-      );
-    });
-  }, [tabExtensions?.length]);
-
-  useEffect(() => {
-    derivedSlots.forEach(({ slot, extension }) => {
-      attach(slot, extension);
-    });
-
-    return () => {
-      derivedSlots.forEach(({ slot }) => {
-        detachAll(slot);
-      });
-    };
-  }, [derivedSlots]);
 
   return (
     <main className={`omrs-main-content`}>
@@ -118,7 +81,27 @@ const LaboratoryQueueTabs: React.FC = () => {
                 <LaboratoryPatientList />
               </div>
             </TabPanel>
-            {extraPanels}
+            {tabExtensions
+              .filter((extension) => Object.keys(extension.meta).length > 0)
+              .map((extension, index) => {
+                return (
+                  <TabPanel key={`${extension.meta.title}-tab-${index}`}>
+                    <ComponentContext.Provider
+                      key={extension.id}
+                      value={{
+                        moduleName: extension.moduleName,
+                        extension: {
+                          extensionId: extension.id,
+                          extensionSlotName: labPanelSlot,
+                          extensionSlotModuleName: extension.moduleName,
+                        },
+                      }}
+                    >
+                      <Extension />
+                    </ComponentContext.Provider>
+                  </TabPanel>
+                );
+              })}
           </TabPanels>
         </Tabs>
       </section>
