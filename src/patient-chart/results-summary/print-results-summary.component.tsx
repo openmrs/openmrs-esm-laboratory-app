@@ -1,39 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./print-results-summary.scss";
-import TestsPrintResults from "./test-print-results-table.component";
 import { EncounterResponse } from "../laboratory-item/view-laboratory-item.resource";
-import {
-  formatDate,
-  interpolateUrl,
-  parseDate,
-  useConfig,
-} from "@openmrs/esm-framework";
-import {
-  DataTable,
-  DataTableSkeleton,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableHeader,
-  TableRow,
-  Tile,
-  TableExpandHeader,
-  TableExpandRow,
-  TableExpandedRow,
-} from "@carbon/react";
+import { formatDate, parseDate } from "@openmrs/esm-framework";
 import logoImg from "../../../assets/logo/moh_logo_without_word.png";
-import {
-  Identifier,
-  IdentifierType,
-  PatientResource,
-  useGetPatientByUuid,
-} from "../../utils/functions";
+import { Identifier, PatientResource } from "../../utils/functions";
 import { useTranslation } from "react-i18next";
-import TestResultsChildren from "./test-children-results.component";
 import PrintResultsTable from "./print-results-table.component";
-import { GetPatientByUuid } from "./results-summary.resource";
 
 interface PrintResultsSummaryProps {
   encounterResponse: EncounterResponse;
@@ -179,22 +151,6 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
           }}
         ></div>
       </section>
-      {/* <section className={styles.section}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            margin: "10px",
-          }}
-        >
-          <div>
-            <span style={{ fontSize: "16px", fontWeight: "bold" }}>
-              Test Results
-            </span>
-          </div>
-        </div>
-      </section> */}
       <section className={styles.section}>
         {Object.keys(results).length > 0 && (
           <PrintResultsTable groupedResults={results} />

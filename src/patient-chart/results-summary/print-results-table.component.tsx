@@ -2,15 +2,7 @@ import React from "react";
 import styles from "./print-results-summary.scss";
 import { GroupMember } from "../laboratory-order.resource";
 import { useGetConceptById } from "./results-summary.resource";
-import {
-  Button,
-  Form,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  InlineLoading,
-  Checkbox,
-} from "@carbon/react";
+import { InlineLoading } from "@carbon/react";
 
 interface PrintResultsTableProps {
   groupedResults: any[];
