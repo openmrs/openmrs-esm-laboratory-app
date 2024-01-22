@@ -209,6 +209,8 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
                       type="text"
                       id="specimentID"
                       value={specimenID}
+                      readOnly={preferred}
+                      hideReadOnly={preferred}
                     />
                   </div>
                   <div style={{ width: "50px" }}>
@@ -216,6 +218,7 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
                       hasIconOnly
                       onClick={(e) => generateId(e)}
                       renderIcon={(props) => <Renew size={16} {...props} />}
+                      disabled={preferred}
                     />
                   </div>
                 </div>
