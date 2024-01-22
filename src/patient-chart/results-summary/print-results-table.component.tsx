@@ -22,33 +22,28 @@ const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
   const RowTest: React.FC<ResultsRowProps> = ({ groupMembers }) => {
     // get Units
     const ValueUnits: React.FC<ValueUnitsProps> = ({ conceptUuid }) => {
-      const {
-        concept: concept,
-        isLoading,
-        isError,
-      } = useGetConceptById(conceptUuid);
-      if (isLoading) {
-        return <InlineLoading status="active" />;
-      }
-      if (isError) {
-        return <span>Error</span>;
-      }
-      return <span style={{ marginLeft: "10px" }}>{concept?.units}</span>;
+      const { concept, isLoading, isError } = useGetConceptById(conceptUuid);
+
+      if (isLoading) return <InlineLoading status="active" />;
+      if (isError) return <span>Error</span>;
+
+      return (
+        <span style={{ marginLeft: "10px" }}>{concept?.units ?? "N/A"}</span>
+      );
     };
 
     // get Reference Range
     const ReferenceRange: React.FC<ValueUnitsProps> = ({ conceptUuid }) => {
-      const {
-        concept: concept,
-        isLoading,
-        isError,
-      } = useGetConceptById(conceptUuid);
-      if (isLoading) {
-        return <InlineLoading status="active" />;
-      }
-      if (isError) {
-        return <span>Error</span>;
-      }
+      const { concept, isLoading, isError } = useGetConceptById(conceptUuid);
+
+      if (isLoading) return <InlineLoading status="active" />;
+      if (isError) return <span>Error</span>;
+
+      const lowNormal =
+        concept?.lowNormal !== undefined ? concept.lowNormal : "--";
+      const hiNormal =
+        concept?.hiNormal !== undefined ? concept.hiNormal : "--";
+
       return (
         <>
           {concept?.hiNormal === undefined ||
@@ -56,67 +51,31 @@ const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
             "N/A"
           ) : (
             <div>
-              <span>{concept?.lowNormal ? concept?.lowNormal : "--"}</span> :{" "}
-              <span>{concept?.hiNormal ? concept?.hiNormal : "--"}</span>
+              <span>{lowNormal}</span> : <span>{hiNormal}</span>
             </div>
           )}
         </>
       );
     };
+
     return (
       <>
-        {groupMembers?.map((element, index) => {
-          return (
-            <tr key={index}>
-              {typeof element.value === "number" ? (
-                <>
-                  <td>{element?.concept.display}</td>
-
-                  <td>{element?.value}</td>
-
-                  <td>
-                    {
-                      <ReferenceRange
-                        conceptUuid={groupMembers[index].concept.uuid}
-                      />
-                    }
-                  </td>
-
-                  <td>
-                    {
-                      <ValueUnits
-                        conceptUuid={groupMembers[index].concept.uuid}
-                      />
-                    }
-                  </td>
-                </>
-              ) : typeof element.value === "object" ? (
-                <>
-                  <td>{element?.concept.display}</td>
-
-                  <td>{element?.value.display}</td>
-                  <td>
-                    {
-                      <ReferenceRange
-                        conceptUuid={groupMembers[index].concept.uuid}
-                      />
-                    }
-                  </td>
-
-                  <td>
-                    {
-                      <ValueUnits
-                        conceptUuid={groupMembers[index].concept.uuid}
-                      />
-                    }
-                  </td>
-                </>
-              ) : (
-                <td>{element?.display}</td>
-              )}
-            </tr>
-          );
-        })}
+        {groupMembers?.map((element, index) => (
+          <tr key={index}>
+            <td>{element?.concept.display}</td>
+            <td>
+              {typeof element.value === "object"
+                ? element.value.display
+                : element.value}
+            </td>
+            <td>
+              <ReferenceRange conceptUuid={element.concept.uuid} />
+            </td>
+            <td>
+              <ValueUnits conceptUuid={element.concept.uuid} />
+            </td>
+          </tr>
+        ))}
       </>
     );
   };
