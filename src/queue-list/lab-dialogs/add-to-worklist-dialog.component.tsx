@@ -279,30 +279,83 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
                 />
               </div>
               {preferred && (
-                <div style={{ width: "500px" }}>
-                  <section className={styles.section}>
-                    <Select
-                      labelText={t("location", "Location ")}
-                      id="nextQueueLocation"
-                      name="nextQueueLocation"
-                      invalidText="Required"
-                      value={selectedNextQueueLocation}
-                      onChange={(event) =>
-                        setSelectedNextQueueLocation(event.target.value)
-                      }
-                    >
-                      {filteredlocations.map((location) => (
-                        <SelectItem
-                          key={location.uuid}
-                          text={location.display}
-                          value={location.uuid}
-                        >
-                          {location.display}
-                        </SelectItem>
-                      ))}
-                    </Select>
-                  </section>
-                </div>
+                <>
+                  <div style={{ width: "500px" }}>
+                    <section className={styles.section}>
+                      <Select
+                        labelText={t("location", "Location ")}
+                        id="nextQueueLocation"
+                        name="nextQueueLocation"
+                        invalidText="Required"
+                        value={selectedNextQueueLocation}
+                        onChange={(event) =>
+                          setSelectedNextQueueLocation(event.target.value)
+                        }
+                      >
+                        {filteredlocations.map((location) => (
+                          <SelectItem
+                            key={location.uuid}
+                            text={location.display}
+                            value={location.uuid}
+                          >
+                            {location.display}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </section>
+
+                    <section className={styles.section}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          alignContent: "stretch",
+                        }}
+                      >
+                        <div className={styles.sectionTitle}>
+                          {t("locationName", "Enter Name")}
+                        </div>
+
+                        <div style={{ width: "430px" }}>
+                          <TextInput type="text" id="locationName" />
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          alignContent: "stretch",
+                        }}
+                      >
+                        <div className={styles.sectionTitle}>
+                          {t("barcode", "Enter Barcode")}
+                        </div>
+
+                        <div style={{ width: "430px" }}>
+                          <TextInput type="text" id="enterBarcode" />
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          alignContent: "stretch",
+                        }}
+                      >
+                        <div className={styles.sectionTitle}>
+                          {t("confirmBarcode", "Confirm Barcode")}
+                        </div>
+
+                        <div style={{ width: "430px" }}>
+                          <TextInput type="text" id="confirmBarcode" />
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </>
               )}
             </section>
           </div>
