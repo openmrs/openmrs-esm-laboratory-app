@@ -316,28 +316,12 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
                           alignContent: "stretch",
                         }}
                       >
-                        <div className={styles.sectionTitle}>
-                          {t("locationName", "Enter Name")}
-                        </div>
-
-                        <div style={{ width: "430px" }}>
-                          <TextInput type="text" id="locationName" />
-                        </div>
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          alignContent: "stretch",
-                        }}
-                      >
-                        <div className={styles.sectionTitle}>
-                          {t("barcode", "Enter Barcode")}
-                        </div>
-
-                        <div style={{ width: "430px" }}>
-                          <TextInput type="text" id="enterBarcode" />
+                        <div style={{ width: "500px" }}>
+                          <TextInput
+                            type="text"
+                            id="locationName"
+                            labelText={"Enter Name"}
+                          />
                         </div>
                       </div>
                       <div
@@ -348,12 +332,28 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
                           alignContent: "stretch",
                         }}
                       >
-                        <div className={styles.sectionTitle}>
-                          {t("confirmBarcode", "Confirm Barcode")}
+                        <div style={{ width: "500px" }}>
+                          <TextInput
+                            type="text"
+                            id="enterBarcode"
+                            labelText={"Enter Barcode"}
+                          />
                         </div>
-
-                        <div style={{ width: "430px" }}>
-                          <TextInput type="text" id="confirmBarcode" />
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          alignContent: "stretch",
+                        }}
+                      >
+                        <div style={{ width: "500px" }}>
+                          <TextInput
+                            type="text"
+                            id="confirmBarcode"
+                            labelText={"Confirm Barcode"}
+                          />
                         </div>
                       </div>
                     </section>
