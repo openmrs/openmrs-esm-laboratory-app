@@ -8,7 +8,10 @@ import {
   useSession,
   attach,
   detachAll,
+  Extension,
 } from "@openmrs/esm-framework";
+import { ComponentContext } from "@openmrs/esm-framework/src/internal";
+import SummaryTile from "./summary-tile.component";
 
 const LaboratorySummaryTiles: React.FC = () => {
   const { t } = useTranslation();
@@ -21,42 +24,29 @@ const LaboratorySummaryTiles: React.FC = () => {
     labTileSlot
   ) as AssignedExtension[];
 
-  const [derivedSlots, setDerivedSlots] = useState<
-    { slot: string; extension: string }[]
-  >([]);
-
-  const extraTiles = useMemo(() => {
-    const filteredExtensions = tilesExtensions.filter(
-      (extension) => Object.keys(extension.meta).length > 0
-    );
-    const derivedSlotsBuffer = [];
-    return filteredExtensions.map((extension, index) => {
-      const slotName = `${labTileSlot}-${index}`;
-      derivedSlotsBuffer.push({
-        slot: slotName,
-        extension: extension.name,
-      });
-      if (filteredExtensions.length === index + 1) {
-        setDerivedSlots(derivedSlotsBuffer);
-      }
-
-      return <ExtensionSlot name={slotName} />;
-    });
-  }, [tilesExtensions]);
-
-  useEffect(() => {
-    derivedSlots.forEach(({ slot, extension }) => {
-      attach(slot, extension);
-    });
-
-    return () => {
-      derivedSlots.forEach(({ slot }) => {
-        detachAll(slot);
-      });
-    };
-  }, [derivedSlots]);
-
-  return <div className={styles.cardContainer}>{extraTiles}</div>;
+  return (
+    <div className={styles.cardContainer}>
+      {tilesExtensions
+        .filter((extension) => Object.keys(extension.meta).length > 0)
+        .map((extension, index) => {
+          return (
+            <ComponentContext.Provider
+              key={extension.id}
+              value={{
+                moduleName: extension.moduleName,
+                extension: {
+                  extensionId: extension.id,
+                  extensionSlotName: labTileSlot,
+                  extensionSlotModuleName: extension.moduleName,
+                },
+              }}
+            >
+              <Extension />
+            </ComponentContext.Provider>
+          );
+        })}
+    </div>
+  );
 };
 
 export default LaboratorySummaryTiles;
