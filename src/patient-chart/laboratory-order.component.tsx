@@ -238,8 +238,9 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
       orders: {
         content: (
           <>
-            {entry.orders.map((order) => {
-              if (order?.type === "testorder") {
+            {entry.orders
+              .filter((order) => order?.type === "testorder")
+              .map((order) => {
                 return (
                   <Tag
                     style={{
@@ -254,8 +255,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                     {order?.concept?.display}
                   </Tag>
                 );
-              }
-            })}
+              })}
           </>
         ),
       },

@@ -2,7 +2,6 @@ import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   DataTable,
-  DataTableSkeleton,
   Table,
   TableBody,
   TableCell,

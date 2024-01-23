@@ -16,9 +16,6 @@ import {
   TableExpandedRow,
 } from "@carbon/react";
 import styles from "./results-summary.scss";
-import RescendTestResultActionMenu from "./test-results-rescend-action-menu.component";
-import { Order } from "../laboratory-order.resource";
-import DeleteTestResultActionMenu from "./test-results-delete-action-menu.component";
 import { Ob } from "../laboratory-item/view-laboratory-item.resource";
 import TestResultsChildren from "./test-children-results.component";
 

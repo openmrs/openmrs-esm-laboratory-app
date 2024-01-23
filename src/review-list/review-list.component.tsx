@@ -170,9 +170,6 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
               <TableToolbar
                 style={{
                   position: "static",
-                  height: "3rem",
-                  overflow: "visible",
-                  backgroundColor: "color",
                 }}
               >
                 <TableToolbarContent>

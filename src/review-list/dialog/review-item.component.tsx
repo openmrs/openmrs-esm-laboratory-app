@@ -47,6 +47,7 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
     testsOrder?.forEach((element) => {
       groupedResults[element.order.display] = element;
     });
+
     return groupedResults;
   }, [testsOrder]);
 
@@ -61,8 +62,6 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
       },
     }));
   };
-
-  console.info(checkedItems);
 
   // handle approve
   const approveOrder = async (e) => {
@@ -104,106 +103,59 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
 
   // get Units
   const ValueUnits: React.FC<ValueUnitsProps> = ({ conceptUuid }) => {
-    const {
-      concept: concept,
-      isLoading,
-      isError,
-    } = useGetConceptById(conceptUuid);
-    if (isLoading) {
-      return <InlineLoading status="active" />;
-    }
-    if (isError) {
-      return <span>Error</span>;
-    }
-    return <span style={{ marginLeft: "10px" }}>{concept?.units}</span>;
+    const { concept, isLoading, isError } = useGetConceptById(conceptUuid);
+
+    if (isLoading) return <InlineLoading status="active" />;
+    if (isError) return <span>Error</span>;
+
+    return (
+      <span className={styles.valueWidget}>{concept?.units ?? "N/A"}</span>
+    );
   };
 
   // get Reference Range
   const ReferenceRange: React.FC<ValueUnitsProps> = ({ conceptUuid }) => {
-    const {
-      concept: concept,
-      isLoading,
-      isError,
-    } = useGetConceptById(conceptUuid);
-    if (isLoading) {
-      return <InlineLoading status="active" />;
-    }
-    if (isError) {
-      return <span>Error</span>;
-    }
+    const { concept, isLoading, isError } = useGetConceptById(conceptUuid);
+
+    if (isLoading) return <InlineLoading status="active" />;
+    if (isError) return <span>Error</span>;
+
+    const lowNormal = concept?.lowNormal || "--";
+    const hiNormal = concept?.hiNormal || "--";
+
     return (
       <>
         {concept?.hiNormal === undefined || concept?.lowNormal === undefined ? (
           "N/A"
         ) : (
           <div>
-            <span>{concept?.lowNormal ? concept?.lowNormal : "--"}</span> :{" "}
-            <span>{concept?.hiNormal ? concept?.hiNormal : "--"}</span>
+            <span>{lowNormal}</span> : <span>{hiNormal}</span>
           </div>
         )}
       </>
     );
   };
 
-  const RowTest: React.FC<ResultsRowProps> = ({ groupMembers }) => {
-    return (
-      <>
-        {groupMembers?.map((element, index) => {
-          return (
-            <tr key={index}>
-              {typeof element.value === "number" ? (
-                <>
-                  <td>{element?.concept.display}</td>
-
-                  <td>{element?.value}</td>
-
-                  <td>
-                    {
-                      <ReferenceRange
-                        conceptUuid={groupMembers[index].concept.uuid}
-                      />
-                    }
-                  </td>
-
-                  <td>
-                    {
-                      <ValueUnits
-                        conceptUuid={groupMembers[index].concept.uuid}
-                      />
-                    }
-                  </td>
-                </>
-              ) : typeof element.value === "object" ? (
-                <>
-                  <td>{element?.concept.display}</td>
-
-                  <td>{element?.value.display}</td>
-
-                  <td>
-                    {
-                      <ReferenceRange
-                        conceptUuid={groupMembers[index].concept.uuid}
-                      />
-                    }
-                  </td>
-
-                  <td>
-                    {
-                      <ValueUnits
-                        conceptUuid={groupMembers[index].concept.uuid}
-                      />
-                    }
-                  </td>
-                </>
-              ) : (
-                <td>{element?.display}</td>
-              )}
-            </tr>
-          );
-        })}
-      </>
-    );
-  };
+  const RowGroupMembers: React.FC<ResultsRowProps> = ({ groupMembers }) => (
+    <>
+      {groupMembers?.map((element, index) => (
+        <tr key={index}>
+          <td>{element?.concept.display}</td>
+          <td>
+            {typeof element.value === "object"
+              ? element.value.display
+              : element.value}
+          </td>
+          <td>
+            <ReferenceRange conceptUuid={element.concept.uuid} />
+          </td>
+          <td>
+            <ValueUnits conceptUuid={element.concept.uuid} />
+          </td>
+        </tr>
+      ))}
+    </>
+  );
 
   return (
     <div>
@@ -224,46 +176,70 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
           <section className={styles.section}>
             <table>
               <tbody>
-                {Object.keys(filteredGroupedResults).map((test, index) => (
-                  <tr key={test} style={{ margin: "10px" }}>
-                    <Checkbox
-                      key={index}
-                      style={{
-                        margin: "10px",
-                        fontSize: "15px",
-                        fontWeight: "bold",
-                      }}
-                      onChange={() =>
-                        handleCheckboxChange(
-                          test,
-                          filteredGroupedResults[test].groupMembers,
-                          filteredGroupedResults[test].uuid
-                        )
-                      }
-                      labelText={test}
-                      id={`test-${test}`}
-                      checked={checkedItems[test] || false}
-                    />
+                {Object.keys(filteredGroupedResults).length > 0
+                  ? Object.keys(filteredGroupedResults).map((test, index) => {
+                      const { uuid, groupMembers } =
+                        filteredGroupedResults[test];
+                      const isGrouped = uuid && groupMembers?.length > 0;
 
-                    <table style={{ margin: "10px" }}>
-                      <thead>
-                        <tr>
-                          <th>Tests</th>
-                          <th>Result</th>
-                          <th>Reference Range</th>
-                          <th>Units</th>
+                      return (
+                        <tr key={test} style={{ margin: "10px" }}>
+                          <Checkbox
+                            key={index}
+                            className={styles.checkbox}
+                            onChange={() =>
+                              handleCheckboxChange(test, groupMembers, uuid)
+                            }
+                            labelText={test}
+                            id={`test-${test}`}
+                            checked={checkedItems[test] || false}
+                          />
+
+                          <table style={{ margin: "10px" }}>
+                            <thead>
+                              <tr>
+                                <th>Tests</th>
+                                <th>Result</th>
+                                <th>Reference Range</th>
+                                <th>Units</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {isGrouped && (
+                                <RowGroupMembers groupMembers={groupMembers} />
+                              )}
+                              {!isGrouped && (
+                                <tr>
+                                  <td>
+                                    <span>
+                                      {
+                                        filteredGroupedResults[test]?.order
+                                          ?.display
+                                      }
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <span>
+                                      {
+                                        filteredGroupedResults[test]?.value
+                                          ?.display
+                                      }
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <span>{"N/A"}</span>
+                                  </td>
+                                  <td>
+                                    <span>{"N/A"}</span>
+                                  </td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
                         </tr>
-                      </thead>
-                      <tbody>
-                        <RowTest
-                          groupMembers={
-                            filteredGroupedResults[test].groupMembers
-                          }
-                        />
-                      </tbody>
-                    </table>
-                  </tr>
-                ))}
+                      );
+                    })
+                  : "No tests were added"}
               </tbody>
             </table>
           </section>
