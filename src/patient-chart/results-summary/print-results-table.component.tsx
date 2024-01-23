@@ -136,6 +136,3 @@ const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
 };
 
 export default PrintResultsTable;
-
-{
-}
