@@ -109,7 +109,7 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
     if (isError) return <span>Error</span>;
 
     return (
-      <span style={{ marginLeft: "10px" }}>{concept?.units ?? "N/A"}</span>
+      <span className={styles.valueWidget}>{concept?.units ?? "N/A"}</span>
     );
   };
 
@@ -186,11 +186,7 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
                         <tr key={test} style={{ margin: "10px" }}>
                           <Checkbox
                             key={index}
-                            style={{
-                              margin: "10px",
-                              fontSize: "15px",
-                              fontWeight: "bold",
-                            }}
+                            className={styles.checkbox}
                             onChange={() =>
                               handleCheckboxChange(test, groupMembers, uuid)
                             }
