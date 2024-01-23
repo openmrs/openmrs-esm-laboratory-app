@@ -30,6 +30,7 @@ import {
   Layer,
   Tag,
   Tile,
+  Tooltip,
   Pagination,
   TableExpandHeader,
   TableExpandRow,
@@ -183,12 +184,14 @@ const LaboratoryPastTestOrderResults: React.FC<
             patient={patient}
           />
         </div>
-        <Button
-          kind="ghost"
-          size="sm"
-          onClick={handlePrint}
-          renderIcon={(props) => <Printer size={16} {...props} />}
-        />
+        <Tooltip align="bottom" label="Print out results">
+          <Button
+            kind="ghost"
+            size="sm"
+            onClick={handlePrint}
+            renderIcon={(props) => <Printer size={16} {...props} />}
+          />
+        </Tooltip>
       </div>
     );
   };
@@ -246,13 +249,13 @@ const LaboratoryPastTestOrderResults: React.FC<
         actions: {
           content: (
             <div>
-              <PrintButtonAction encounter={laboratoryOrders[index]} />
+              <PrintButtonAction encounter={entry} />
               {/* <EmailButtonAction /> */}
             </div>
           ),
         },
       }));
-  }, [laboratoryOrders, twentyFourHoursAgo]);
+  }, [laboratoryOrders]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
@@ -271,6 +274,15 @@ const LaboratoryPastTestOrderResults: React.FC<
               <InlineLoading />
             </span>
           ) : null}
+          <div className={styles.buttons}>
+            <Button
+              kind="ghost"
+              renderIcon={(props) => <Add size={16} {...props} />}
+              iconDescription="Launch lab Request"
+            >
+              {t("add", "Add")}
+            </Button>
+          </div>
         </CardHeader>
         <DataTable rows={tableRows} headers={tableHeaders} useZebraStyles>
           {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (

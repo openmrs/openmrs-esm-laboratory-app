@@ -30,6 +30,7 @@ import {
   Layer,
   Tag,
   Tile,
+  Tooltip,
   Pagination,
   TableExpandHeader,
   TableExpandRow,
@@ -182,12 +183,14 @@ const LaboratoryActiveTestOrderResults: React.FC<
             patient={patient}
           />
         </div>
-        <Button
-          kind="ghost"
-          size="sm"
-          onClick={handlePrint}
-          renderIcon={(props) => <Printer size={16} {...props} />}
-        />
+        <Tooltip align="bottom" label="Print out results">
+          <Button
+            kind="ghost"
+            size="sm"
+            onClick={handlePrint}
+            renderIcon={(props) => <Printer size={16} {...props} />}
+          />
+        </Tooltip>
       </div>
     );
   };
@@ -246,7 +249,7 @@ const LaboratoryActiveTestOrderResults: React.FC<
         actions: {
           content: (
             <div>
-              <PrintButtonAction encounter={laboratoryOrders[index]} />
+              <PrintButtonAction encounter={entry} />
               {/* <EmailButtonAction /> */}
             </div>
           ),
@@ -265,22 +268,24 @@ const LaboratoryActiveTestOrderResults: React.FC<
   if (items?.length >= 0) {
     return (
       <div className={styles.widgetCard}>
-        <CardHeader title={displayText}>
-          {isLoading ? (
-            <span>
-              <InlineLoading />
-            </span>
-          ) : null}
-          <div className={styles.buttons}>
-            <Button
-              kind="ghost"
-              renderIcon={(props) => <Add size={16} {...props} />}
-              iconDescription="Launch lab Request"
-            >
-              {t("add", "Add")}
-            </Button>
-          </div>
-        </CardHeader>
+        <div className={styles.cardHeaderDiv}>
+          <CardHeader title={displayText}>
+            {isLoading ? (
+              <span>
+                <InlineLoading />
+              </span>
+            ) : null}
+            <div className={styles.buttons}>
+              <Button
+                kind="ghost"
+                renderIcon={(props) => <Add size={16} {...props} />}
+                iconDescription="Launch lab Request"
+              >
+                {t("add", "Add")}
+              </Button>
+            </div>
+          </CardHeader>
+        </div>
 
         <DataTable rows={tableRows} headers={tableHeaders} useZebraStyles>
           {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (

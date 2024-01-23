@@ -39,7 +39,7 @@ import {
   InlineLoading,
 } from "@carbon/react";
 
-import { Printer, MailAll, Add, Edit } from "@carbon/react/icons";
+import { Printer, MailAll, Add } from "@carbon/react/icons";
 
 import TestsResults from "../results-summary/test-results-table.component";
 import { useReactToPrint } from "react-to-print";
@@ -52,6 +52,7 @@ import {
 } from "../patient-laboratory-order-results.resource";
 import { useLaboratoryOrderResultsPages } from "../patient-laboratory-order-results-table.resource";
 import { CardHeader } from "@openmrs/esm-patient-common-lib";
+import EditActionsMenu from "./edit-actions-menu.component";
 
 interface LaboratoryOrderReferalResultsProps {
   patientUuid: string;
@@ -67,8 +68,8 @@ const LaboratoryOrderReferalResults: React.FC<
   const { t } = useTranslation();
 
   const displayText = t(
-    "referalLaboratoryTestsDisplayTextTitle",
-    "Laboratory Referal Tests"
+    "referralLaboratoryTestsDisplayTextTitle",
+    "Laboratory Referral Tests"
   );
 
   const {
@@ -135,16 +136,6 @@ const LaboratoryOrderReferalResults: React.FC<
         size="sm"
         onClick={(e) => launchSendEmailModal()}
         renderIcon={(props) => <MailAll size={16} {...props} />}
-      />
-    );
-  };
-
-  const EditReferalTestButton: React.FC = () => {
-    return (
-      <Button
-        kind="ghost"
-        size="sm"
-        renderIcon={(props) => <Edit size={16} {...props} />}
       />
     );
   };
@@ -247,10 +238,11 @@ const LaboratoryOrderReferalResults: React.FC<
       },
       actions: {
         content: (
-          <>
+          <div style={{ display: "flex" }}>
+            <EditActionsMenu />
             <PrintButtonAction encounter={entry} />
-            <EditReferalTestButton />
-          </>
+            {/* <EditReferalTestButton /> */}
+          </div>
         ),
       },
     }));
@@ -267,15 +259,24 @@ const LaboratoryOrderReferalResults: React.FC<
   if (items?.length >= 0) {
     return (
       <div className={styles.widgetCard}>
-        <CardHeader title={displayText}>
-          {isLoading ? (
-            <span>
-              <InlineLoading />
-            </span>
-          ) : null}
-        </CardHeader>
+        <div className={styles.cardHeaderDiv}>
+          <CardHeader title={displayText}>
+            {isLoading ? (
+              <span>
+                <InlineLoading />
+              </span>
+            ) : null}
+          </CardHeader>
+        </div>
         <DataTable rows={tableRows} headers={tableHeaders} useZebraStyles>
-          {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
+          {({
+            rows,
+            headers,
+            getHeaderProps,
+            getTableProps,
+            getRowProps,
+            onInputChange,
+          }) => (
             <TableContainer className={styles.tableContainer}>
               <TableToolbar
                 style={{
