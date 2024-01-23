@@ -24,10 +24,6 @@ enum TabTypes {
   ALL,
 }
 
-// The lab-panels-slot will not be visible in the implementer tools UI when used below
-// in the value for ComponentContext.Provider as the UI viewer depends on the div that
-// cannot be added because of how the Carbon components work. Implementers can add more
-// tab extensions to this slot via the routes.js file configuration.
 const labPanelSlot = "lab-panels-slot";
 
 const LaboratoryQueueTabs: React.FC = () => {
