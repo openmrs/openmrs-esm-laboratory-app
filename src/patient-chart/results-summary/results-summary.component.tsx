@@ -14,7 +14,7 @@ import { EncounterResponse } from "../laboratory-item/view-laboratory-item.resou
 import PrintResultsSummary from "./print-results-summary.component";
 import { formatDate, parseDate, showModal } from "@openmrs/esm-framework";
 import { useTranslation } from "react-i18next";
-import { Order } from "../laboratory-order.resource";
+import { Order } from "../patient-laboratory-order-results.resource";
 
 interface ResultsSummaryProps {
   encounter: EncounterResponse;

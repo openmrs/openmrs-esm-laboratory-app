@@ -1,5 +1,8 @@
 import React, { AnchorHTMLAttributes, useMemo } from "react";
-import { GroupMember, Value } from "../laboratory-order.resource";
+import {
+  GroupMember,
+  Value,
+} from "../patient-laboratory-order-results.resource";
 import { useTranslation } from "react-i18next";
 import {
   DataTable,

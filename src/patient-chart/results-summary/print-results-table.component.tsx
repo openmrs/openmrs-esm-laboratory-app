@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./print-results-summary.scss";
-import { GroupMember } from "../laboratory-order.resource";
+import { GroupMember } from "../patient-laboratory-order-results.resource";
 import { useGetConceptById } from "./results-summary.resource";
 import { InlineLoading } from "@carbon/react";
 

@@ -6,16 +6,11 @@ import React, {
   useState,
 } from "react";
 import { useTranslation } from "react-i18next";
-import { EmptyState } from "@ohri/openmrs-esm-ohri-commons-lib";
-import styles from "./laboratory-order.scss";
+import styles from "./laboratory-past-test-order-results.scss";
 import {
-  usePagination,
-  useSession,
   formatDate,
-  openmrsFetch,
   parseDate,
   ErrorState,
-  useLayoutType,
   showModal,
 } from "@openmrs/esm-framework";
 
@@ -34,26 +29,30 @@ import {
   TableToolbarSearch,
   Layer,
   Tag,
-  DataTableHeader,
   Tile,
   Pagination,
   TableExpandHeader,
   TableExpandRow,
   TableExpandedRow,
   Button,
+  IconButton,
+  InlineLoading,
 } from "@carbon/react";
-import { Printer, MailAll, Edit } from "@carbon/react/icons";
+import { Printer, MailAll, Add } from "@carbon/react/icons";
 
-import ViewLaboratoryItemActionMenu from "./laboratory-item/view-laboratory-item.component";
-import { getOrderColor, useLabOrders } from "./laboratory-order.resource";
-import TestsResults from "./results-summary/test-results-table.component";
+import TestsResults from "../results-summary/test-results-table.component";
 import { useReactToPrint } from "react-to-print";
-import SendEmailDialog from "./results-summary/send-email-dialog.component";
-import PrintResultsSummary from "./results-summary/print-results-summary.component";
-import { EncounterResponse } from "./laboratory-item/view-laboratory-item.resource";
-import { useGetPatientByUuid } from "../utils/functions";
+import PrintResultsSummary from "../results-summary/print-results-summary.component";
+import { EncounterResponse } from "../laboratory-item/view-laboratory-item.resource";
+import { useGetPatientByUuid } from "../../utils/functions";
+import {
+  ResourceRepresentation,
+  getOrderColor,
+} from "../patient-laboratory-order-results.resource";
+import { useLaboratoryOrderResultsPages } from "../patient-laboratory-order-results-table.resource";
+import { CardHeader } from "../../components/cards";
 
-interface LaboratoryOrderOverviewProps {
+interface LaboratoryPastTestOrderResultsProps {
   patientUuid: string;
 }
 
@@ -61,60 +60,43 @@ interface PrintProps {
   encounter: EncounterResponse;
 }
 
-type FilterProps = {
-  rowIds: Array<string>;
-  headers: any;
-  cellsById: any;
-  inputValue: string;
-  getCellId: (row, key) => string;
-};
-
-const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
-  patientUuid,
-}) => {
+const LaboratoryPastTestOrderResults: React.FC<
+  LaboratoryPastTestOrderResultsProps
+> = ({ patientUuid }) => {
   const { t } = useTranslation();
 
-  const isTablet = useLayoutType() === "tablet";
-
+  const displayText = t(
+    "pastLaboratoryTestsDisplayTextTitle",
+    "Past Laboratory Tests"
+  );
   const {
-    labRequests,
-    isLoading: loading,
+    items,
+    tableHeaders,
+    currentPage,
+    pageSizes,
+    totalItems,
+    goTo,
+    currentPageSize,
+    setPageSize,
+    isLoading,
     isError,
-  } = useLabOrders(patientUuid);
-
-  const pageSizes = [10, 20, 30, 40, 50];
-  const [page, setPage] = useState(1);
-  const [currentPageSize, setPageSize] = useState(10);
-  const [nextOffSet, setNextOffSet] = useState(0);
+  } = useLaboratoryOrderResultsPages({
+    v: ResourceRepresentation.Full,
+    totalCount: true,
+    patientUuid: patientUuid,
+  });
 
   const sortedLabRequests = useMemo(() => {
-    return [...labRequests].sort((a, b) => {
+    return [...items].sort((a, b) => {
       const dateA = new Date(a.encounterDatetime);
       const dateB = new Date(b.encounterDatetime);
       return dateB.getTime() - dateA.getTime();
     });
-  }, [labRequests]);
-  const {
-    goTo,
-    results: paginatedLabEntries,
-    currentPage,
-  } = usePagination(sortedLabRequests, currentPageSize);
-
-  let columns = [
-    {
-      id: 0,
-      header: t("orderDate", "Test Date"),
-      key: "orderDate",
-    },
-    { id: 1, header: t("tests", "Tests"), key: "orders" },
-    { id: 2, header: t("location", "Location"), key: "location" },
-    { id: 3, header: t("status", "Status"), key: "status" },
-    { id: 4, header: t("actions", "Action"), key: "actions" },
-  ];
+  }, [items]);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [items, setItems] = useState(paginatedLabEntries);
-  const [initialTests, setInitialTests] = useState(paginatedLabEntries);
+  const [laboratoryOrders, setLaboratoryOrders] = useState(sortedLabRequests);
+  const [initialTests, setInitialTests] = useState(sortedLabRequests);
 
   const handleChange = useCallback((event) => {
     const searchText = event?.target?.value?.trim().toLowerCase();
@@ -123,20 +105,23 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
 
   useEffect(() => {
     if (!searchTerm) {
-      setItems(initialTests);
+      setLaboratoryOrders(initialTests);
     } else {
       const filteredItems = initialTests.filter((item) =>
         item?.orders?.some((order) =>
           order?.concept?.display.toLowerCase().includes(searchTerm)
         )
       );
-      setItems(filteredItems);
+      setLaboratoryOrders(filteredItems);
     }
   }, [searchTerm, initialTests]);
 
   useEffect(() => {
-    setInitialTests(paginatedLabEntries);
-  }, [paginatedLabEntries]);
+    setInitialTests(sortedLabRequests);
+  }, [sortedLabRequests]);
+
+  const oneDayBeforeDate = new Date();
+  oneDayBeforeDate.setDate(oneDayBeforeDate.getDate() - 1);
 
   const EmailButtonAction: React.FC = () => {
     const launchSendEmailModal = useCallback(() => {
@@ -155,6 +140,13 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
     );
   };
 
+  const LaunchLabRequestForm: React.FC = () => {
+    return (
+      <IconButton label="Add">
+        <Add />
+      </IconButton>
+    );
+  };
   const PrintButtonAction: React.FC<PrintProps> = ({ encounter }) => {
     const { patient } = useGetPatientByUuid(encounter.patient.uuid);
 
@@ -200,83 +192,69 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
       </div>
     );
   };
-  const handleFilter = ({
-    rowIds,
-    headers,
-    cellsById,
-    inputValue,
-    getCellId,
-  }: FilterProps): Array<string> => {
-    return rowIds.filter((rowId) =>
-      headers.some(({ key }) => {
-        const cellId = getCellId(rowId, key);
-        const filterableValue = cellsById[cellId].value;
-        const filterTerm = inputValue.toLowerCase();
 
-        if (typeof filterableValue === "boolean") {
-          return false;
-        }
-
-        return ("" + filterableValue).toLowerCase().includes(filterTerm);
-      })
-    );
-  };
-
+  const currentDateTime = new Date().getTime();
+  const twentyFourHoursAgo = currentDateTime - 24 * 60 * 60 * 1000;
   const tableRows = useMemo(() => {
-    return items?.map((entry, index) => ({
-      ...entry,
-      id: entry.uuid,
-      orderDate: {
-        content: (
-          <span>
-            {formatDate(parseDate(entry.encounterDatetime), {
-              time: false,
-            })}
-          </span>
-        ),
-      },
-      orders: {
-        content: (
-          <>
-            {entry.orders
-              .filter((order) => order?.type === "testorder")
-              .map((order) => {
-                return (
-                  <Tag
-                    style={{
-                      background: `${getOrderColor(
-                        order.dateActivated,
-                        order.dateStopped
-                      )}`,
-                      color: "white",
-                    }}
-                    role="tooltip"
-                  >
-                    {order?.concept?.display}
-                  </Tag>
-                );
+    return laboratoryOrders
+      ?.filter((entry) => {
+        const entryDate = new Date(entry.encounterDatetime).getTime();
+        return entryDate >= twentyFourHoursAgo;
+      })
+      .map((entry, index) => ({
+        ...entry,
+        id: entry.uuid,
+        orderDate: {
+          content: (
+            <span>
+              {formatDate(parseDate(entry.encounterDatetime), {
+                time: false,
               })}
-          </>
-        ),
-      },
-      location: {
-        content: <span>{entry?.location?.display}</span>,
-      },
-      status: {
-        content: <span>--</span>,
-      },
-      actions: {
-        content: (
-          <div>
-            <PrintButtonAction encounter={entry} />
-            {/* <EmailButtonAction /> */}
-          </div>
-        ),
-      },
-    }));
-  }, [items]);
+            </span>
+          ),
+        },
+        orders: {
+          content: (
+            <>
+              {entry.orders.map((order) => {
+                if (order?.type === "testorder") {
+                  return (
+                    <Tag
+                      style={{
+                        background: `${getOrderColor(
+                          order.dateActivated,
+                          order.dateStopped
+                        )}`,
+                        color: "white",
+                      }}
+                      role="tooltip"
+                    >
+                      {order?.concept?.display}
+                    </Tag>
+                  );
+                }
+              })}
+            </>
+          ),
+        },
+        location: {
+          content: <span>{entry.location.display}</span>,
+        },
+        status: {
+          content: <span>--</span>,
+        },
+        actions: {
+          content: (
+            <div>
+              <PrintButtonAction encounter={entry} />
+              {/* <EmailButtonAction /> */}
+            </div>
+          ),
+        },
+      }));
+  }, [laboratoryOrders]);
 
-  if (loading) {
+  if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
   }
 
@@ -284,25 +262,27 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
     return <ErrorState error={isError} headerTitle={"Error"} />;
   }
 
-  if (paginatedLabEntries?.length >= 0) {
+  if (items?.length >= 0) {
     return (
-      <div>
-        <DataTable
-          rows={tableRows}
-          headers={columns}
-          useZebraStyles
-          filterRows={handleFilter}
-          size={isTablet ? "lg" : "sm"}
-          experimentalAutoAlign={true}
-        >
-          {({
-            rows,
-            headers,
-            getHeaderProps,
-            getTableProps,
-            getRowProps,
-            onInputChange,
-          }) => (
+      <div className={styles.widgetCard}>
+        <CardHeader title={displayText}>
+          {isLoading ? (
+            <span>
+              <InlineLoading />
+            </span>
+          ) : null}
+          <div className={styles.buttons}>
+            <Button
+              kind="ghost"
+              renderIcon={(props) => <Add size={16} {...props} />}
+              iconDescription="Launch lab Request"
+            >
+              {t("add", "Add")}
+            </Button>
+          </div>
+        </CardHeader>
+        <DataTable rows={tableRows} headers={tableHeaders} useZebraStyles>
+          {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
             <TableContainer className={styles.tableContainer}>
               <TableToolbar
                 style={{
@@ -421,19 +401,17 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                       <p className={styles.helper}>
                         {t("checkFilters", "Check the filters above")}
                       </p>
+                      <p className={styles.separator}>{t("or", "or")}</p>
+                      <LaunchLabRequestForm />
                     </div>
-                    <p className={styles.separator}>{t("or", "or")}</p>
                   </Tile>
                 </div>
               ) : null}
               <Pagination
-                forwardText="Next page"
-                backwardText="Previous page"
                 page={currentPage}
                 pageSize={currentPageSize}
                 pageSizes={pageSizes}
-                totalItems={sortedLabRequests?.length}
-                className={styles.pagination}
+                totalItems={totalItems}
                 onChange={({ pageSize, page }) => {
                   if (pageSize !== currentPageSize) {
                     setPageSize(pageSize);
@@ -442,6 +420,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                     goTo(page);
                   }
                 }}
+                className={styles.paginationOverride}
               />
             </TableContainer>
           )}
@@ -451,4 +430,4 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   }
 };
 
-export default LaboratoryOrder;
+export default LaboratoryPastTestOrderResults;

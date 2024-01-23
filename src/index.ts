@@ -51,7 +51,7 @@ export const laboratoryOrderDashboardLink = getSyncLifecycle(
   options
 );
 export const laboratoryOrderComponent = getAsyncLifecycle(
-  () => import("./patient-chart/laboratory-order.component"),
+  () => import("./patient-chart/patient-laboratory-order-results.component"),
   options
 );
 

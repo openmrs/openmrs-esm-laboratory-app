@@ -11,7 +11,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useGetEncounterById } from "../../patient-chart/laboratory-item/view-laboratory-item.resource";
 import styles from "../review-list.scss";
-import { GroupMember } from "../../patient-chart/laboratory-order.resource";
+import { GroupMember } from "../../patient-chart/patient-laboratory-order-results.resource";
 import { useGetConceptById } from "../../patient-chart/results-summary/results-summary.resource";
 import { ApproverOrder } from "./review-item.resource";
 import { showNotification, showSnackbar } from "@openmrs/esm-framework";

@@ -419,18 +419,56 @@ export const formatWaitTime = (waitTime: string) => {
   return rminutes;
 };
 
-export function useLabOrders(patientUuid: string) {
+export enum ResourceRepresentation {
+  Default = "default",
+  Full = "full",
+  REF = "ref",
+}
+
+export interface ResourceFilterCriteria {
+  v?: ResourceRepresentation | null;
+  q?: string | null;
+  totalCount?: boolean | null;
+  limit?: number | null;
+}
+
+export interface LaboratoryOrderFilter extends ResourceFilterCriteria {
+  patientUuid?: string | null | undefined;
+  laboratoryEncounterTypeUuid?: string | null;
+}
+
+export function toQueryParams<T extends ResourceFilterCriteria>(
+  filterCriteria?: T | null,
+  skipEmptyString = true
+): string {
+  if (!filterCriteria) return "";
+  const queryParams: string = Object.keys(filterCriteria)
+    ?.map((key) => {
+      const value = filterCriteria[key];
+      return (skipEmptyString &&
+        (value === false || value === true ? true : value)) ||
+        (!skipEmptyString &&
+          (value === "" || (value === false || value === true ? true : value)))
+        ? `${encodeURIComponent(key)}=${encodeURIComponent(value.toString())}`
+        : null;
+    })
+    .filter((o) => o != null)
+    .join("&");
+  return queryParams.length > 0 ? "?" + queryParams : "";
+}
+
+export function usePatientLaboratoryOrders(filter: LaboratoryOrderFilter) {
   const config = useConfig();
   const { laboratoryEncounterTypeUuid } = config;
 
-  const apiUrl = `/ws/rest/v1/encounter?patient=${patientUuid}&encounterType=${laboratoryEncounterTypeUuid}&v=full`;
+  const apiUrl = `/ws/rest/v1/encounter?patient=${filter.patientUuid}&encounterType=${laboratoryEncounterTypeUuid}&v=${filter.v}&totalCount=true`;
   const { data, error, isLoading } = useSWR<
     { data: LaboratoryResponse },
     Error
   >(apiUrl, openmrsFetch, { refreshInterval: 3000 });
 
   return {
-    labRequests: data?.data ? data?.data?.results : [],
+    items: data?.data ? data?.data?.results : [],
     isLoading,
     isError: error,
   };
