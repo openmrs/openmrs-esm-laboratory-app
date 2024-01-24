@@ -346,7 +346,7 @@ export async function UpdateOrderResult(
     }
   );
 
-  if (updateResults.status === 201) {
+  if (updateResults.status === 201 || updateResults.status === 200) {
     return await openmrsFetch(`/ws/rest/v1/order`, {
       method: "POST",
       headers: {
