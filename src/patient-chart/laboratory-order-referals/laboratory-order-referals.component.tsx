@@ -39,7 +39,7 @@ import {
   InlineLoading,
 } from "@carbon/react";
 
-import { Printer, MailAll, Add } from "@carbon/react/icons";
+import { Printer, MailAll, Add, Edit } from "@carbon/react/icons";
 
 import TestsResults from "../results-summary/test-results-table.component";
 import { useReactToPrint } from "react-to-print";
@@ -135,6 +135,16 @@ const LaboratoryOrderReferalResults: React.FC<
         size="sm"
         onClick={(e) => launchSendEmailModal()}
         renderIcon={(props) => <MailAll size={16} {...props} />}
+      />
+    );
+  };
+
+  const EditReferalTestButton: React.FC = () => {
+    return (
+      <Button
+        kind="ghost"
+        size="sm"
+        renderIcon={(props) => <Edit size={16} {...props} />}
       />
     );
   };
@@ -237,10 +247,10 @@ const LaboratoryOrderReferalResults: React.FC<
       },
       actions: {
         content: (
-          <div>
+          <>
             <PrintButtonAction encounter={entry} />
-            {/* <EmailButtonAction /> */}
-          </div>
+            <EditReferalTestButton />
+          </>
         ),
       },
     }));
@@ -263,25 +273,9 @@ const LaboratoryOrderReferalResults: React.FC<
               <InlineLoading />
             </span>
           ) : null}
-          <div className={styles.buttons}>
-            <Button
-              kind="ghost"
-              renderIcon={(props) => <Add size={16} {...props} />}
-              iconDescription="Launch lab Request"
-            >
-              {t("add", "Add")}
-            </Button>
-          </div>
         </CardHeader>
         <DataTable rows={tableRows} headers={tableHeaders} useZebraStyles>
-          {({
-            rows,
-            headers,
-            getHeaderProps,
-            getTableProps,
-            getRowProps,
-            onInputChange,
-          }) => (
+          {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
             <TableContainer className={styles.tableContainer}>
               <TableToolbar
                 style={{

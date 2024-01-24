@@ -113,7 +113,7 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
                             colSpan={headers.length + 2}
                           >
                             <TestResultsChildren
-                              members={obsList[index].groupMembers}
+                              members={obsList[index]?.groupMembers}
                             />
                           </TableExpandedRow>
                         ) : (

@@ -25,8 +25,8 @@ const TestsChildrenDetail: React.FC<TestsChildrenDetailProps> = ({
   return (
     <>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <span style={{ fontSize: "16px" }}>{concept.display}</span>
-        <span>Unit : {concept.units}</span>
+        <span style={{ fontSize: "16px" }}>{concept?.display}</span>
+        <span>Unit : {concept?.units}</span>
       </div>
 
       <div

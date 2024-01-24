@@ -42,7 +42,7 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounter }) => {
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <span style={{ margin: "5px" }}>
                   Date :{" "}
-                  {formatDate(parseDate(encounter.encounterDatetime), {
+                  {formatDate(parseDate(encounter?.encounterDatetime), {
                     time: true,
                   })}
                 </span>

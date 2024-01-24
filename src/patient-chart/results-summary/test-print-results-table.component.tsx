@@ -82,7 +82,7 @@ const TestsPrintResults: React.FC<TestOrdersProps> = ({ obs }) => {
                         <TableExpandRow {...getRowProps({ row })}>
                           {row.cells.map((cell) => (
                             <TableCell key={cell.id}>
-                              {cell.value?.content ?? cell.value}
+                              {cell.value?.content ?? cell?.value}
                             </TableCell>
                           ))}
                         </TableExpandRow>
@@ -92,7 +92,7 @@ const TestsPrintResults: React.FC<TestOrdersProps> = ({ obs }) => {
                             colSpan={headers.length + 2}
                           >
                             <TestResultsChildren
-                              members={filteredItems[index].groupMembers}
+                              members={filteredItems[index]?.groupMembers}
                             />
                           </TableExpandedRow>
                         ) : (

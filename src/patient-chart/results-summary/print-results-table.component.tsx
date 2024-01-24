@@ -28,7 +28,7 @@ const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
       if (isError) return <span>Error</span>;
 
       return (
-        <span style={{ marginLeft: "10px" }}>{concept?.units ?? "N"}</span>
+        <span style={{ marginLeft: "10px" }}>{concept?.units ?? "N/A"}</span>
       );
     };
 
