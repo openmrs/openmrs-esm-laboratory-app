@@ -246,7 +246,7 @@ const LaboratoryActiveTestOrderResults: React.FC<
         actions: {
           content: (
             <div>
-              <PrintButtonAction encounter={entry} />
+              <PrintButtonAction encounter={laboratoryOrders[index]} />
               {/* <EmailButtonAction /> */}
             </div>
           ),

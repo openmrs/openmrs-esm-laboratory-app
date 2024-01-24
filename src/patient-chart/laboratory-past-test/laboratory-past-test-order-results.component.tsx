@@ -246,13 +246,13 @@ const LaboratoryPastTestOrderResults: React.FC<
         actions: {
           content: (
             <div>
-              <PrintButtonAction encounter={entry} />
+              <PrintButtonAction encounter={laboratoryOrders[index]} />
               {/* <EmailButtonAction /> */}
             </div>
           ),
         },
       }));
-  }, [laboratoryOrders]);
+  }, [laboratoryOrders, twentyFourHoursAgo]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
@@ -271,15 +271,6 @@ const LaboratoryPastTestOrderResults: React.FC<
               <InlineLoading />
             </span>
           ) : null}
-          <div className={styles.buttons}>
-            <Button
-              kind="ghost"
-              renderIcon={(props) => <Add size={16} {...props} />}
-              iconDescription="Launch lab Request"
-            >
-              {t("add", "Add")}
-            </Button>
-          </div>
         </CardHeader>
         <DataTable rows={tableRows} headers={tableHeaders} useZebraStyles>
           {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
