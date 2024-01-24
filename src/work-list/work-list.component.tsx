@@ -39,6 +39,7 @@ import {
 import { Result, useGetOrdersWorklist } from "./work-list.resource";
 import styles from "./work-list.scss";
 import {
+  ConfigurableLink,
   formatDate,
   parseDate,
   showModal,
@@ -147,9 +148,14 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
         },
         patient: {
           content: (
-            <>
-              <span>{entry.patient.display.split("-")[1]}</span>
-            </>
+            // <>
+            //   <span>{entry.patient.display.split("-")[1]}</span>
+            // </>
+            <ConfigurableLink
+              to={`\${openmrsSpaBase}/patient/${entry.patient.uuid}/chart/laboratory-orders`}
+            >
+              {entry.patient.display.split("-")[1]}
+            </ConfigurableLink>
           ),
         },
         orderNumber: { content: <span>{entry.orderNumber}</span> },
