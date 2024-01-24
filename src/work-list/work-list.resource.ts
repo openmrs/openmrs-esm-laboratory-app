@@ -8,7 +8,7 @@ export interface Result {
   patient: Patient;
   concept: Concept;
   action: string;
-  careSetting: CareSetting;
+  careSetting: any;
   previousOrder: PreviousOrder;
   dateActivated: string;
   scheduledDate: any;
@@ -23,9 +23,9 @@ export interface Result {
   instructions: any;
   commentToFulfiller: any;
   display: string;
-  auditInfo: AuditInfo;
-  fulfillerStatus: string;
-  fulfillerComment: any;
+  auditInfo?: AuditInfo;
+  fulfillerStatus?: string;
+  fulfillerComment?: any;
   specimenSource: SpecimenSource;
   laterality: any;
   clinicalHistory: any;

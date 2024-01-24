@@ -152,11 +152,12 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
     { id: 8, header: t("urgency", "Urgency"), key: "urgency" },
   ];
 
-  const tableRows = useMemo(() => {
-    return paginatedWorkListEntries?.map((entry, index) => (
-      <CustomTableRow key={index} entry={entry} />
-    ));
-  }, [paginatedWorkListEntries]);
+  const tableRows = [];
+  // const tableRows = useMemo(() => {
+  //   return paginatedWorkListEntries?.map((entry, index) => (
+  //     <CustomTableRow key={index} entry={entry} />
+  //   ));
+  // }, [paginatedWorkListEntries]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;

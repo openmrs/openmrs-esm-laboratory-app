@@ -42,7 +42,7 @@ import {
   TableExpandedRow,
   Button,
 } from "@carbon/react";
-import { Printer, MailAll, Edit } from "@carbon/react/icons";
+import { Printer, MailAll, Edit, Microscope } from "@carbon/react/icons";
 
 import ViewLaboratoryItemActionMenu from "./laboratory-item/view-laboratory-item.component";
 import { getOrderColor, useLabOrders } from "./laboratory-order.resource";
@@ -52,6 +52,9 @@ import SendEmailDialog from "./results-summary/send-email-dialog.component";
 import PrintResultsSummary from "./results-summary/print-results-summary.component";
 import { EncounterResponse } from "./laboratory-item/view-laboratory-item.resource";
 import { useGetPatientByUuid } from "../utils/functions";
+import ResultForm from "../results/result-form.component";
+import { launchOverlay } from "../components/overlay/hook";
+import Overlay from "../components/overlay/overlay.component";
 
 interface LaboratoryOrderOverviewProps {
   patientUuid: string;
@@ -257,7 +260,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
         ),
       },
       location: {
-        content: <span>{entry.location.display}</span>,
+        content: <span>{entry?.location?.display}</span>,
       },
       status: {
         content: <span>--</span>,
@@ -265,13 +268,31 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
       actions: {
         content: (
           <div>
-            <PrintButtonAction encounter={entry} />
+            {entry?.orders?.[0]?.dateStopped === null &&
+            entry?.orders?.[0]?.action === "NEW" ? (
+              <Button
+                kind="ghost"
+                onClick={() => {
+                  launchOverlay(
+                    t("resultForm", "Lab results form"),
+                    <ResultForm
+                      patientUuid={patientUuid}
+                      order={entry?.orders?.[0]}
+                    />
+                  );
+                }}
+                renderIcon={(props) => <Microscope size={16} {...props} />}
+              />
+            ) : (
+              <PrintButtonAction encounter={entry} />
+            )}
+
             {/* <EmailButtonAction /> */}
           </div>
         ),
       },
     }));
-  }, [paginatedLabEntries]);
+  }, [paginatedLabEntries, patientUuid, t]);
 
   if (loading) {
     return <DataTableSkeleton role="progressbar" />;
@@ -283,162 +304,171 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
 
   if (items?.length >= 0) {
     return (
-      <div>
-        <DataTable
-          rows={tableRows}
-          headers={columns}
-          useZebraStyles
-          filterRows={handleFilter}
-          size={isTablet ? "lg" : "sm"}
-          experimentalAutoAlign={true}
-        >
-          {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
-            <TableContainer className={styles.tableContainer}>
-              <TableToolbar
-                style={{
-                  position: "static",
-                  height: "3rem",
-                  overflow: "visible",
-                  backgroundColor: "color",
-                }}
-              >
-                <TableToolbarContent>
-                  <div
-                    style={{
-                      fontSize: "10px",
-                      margin: "5px",
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
-                    Key:
-                    <Tag
-                      size="sm"
+      <>
+        <div>
+          <DataTable
+            rows={tableRows}
+            headers={columns}
+            useZebraStyles
+            filterRows={handleFilter}
+            size={isTablet ? "lg" : "sm"}
+            experimentalAutoAlign={true}
+          >
+            {({
+              rows,
+              headers,
+              getHeaderProps,
+              getTableProps,
+              getRowProps,
+            }) => (
+              <TableContainer className={styles.tableContainer}>
+                <TableToolbar
+                  style={{
+                    position: "static",
+                    height: "3rem",
+                    overflow: "visible",
+                    backgroundColor: "color",
+                  }}
+                >
+                  <TableToolbarContent>
+                    <div
                       style={{
-                        background: "#6F6F6F",
-                        color: "white",
+                        fontSize: "10px",
+                        margin: "5px",
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
                       }}
-                      title="Result Requested"
                     >
-                      {"Requested"}
-                    </Tag>
-                    <Tag
-                      size="sm"
-                      style={{
-                        background: "green",
-                        color: "white",
-                      }}
-                      title="Result Complete"
-                    >
-                      {"Completed"}
-                    </Tag>
-                    <Tag
-                      size="sm"
-                      style={{
-                        background: "red",
-                        color: "white",
-                      }}
-                      title="Result Rejected"
-                    >
-                      {"Rejected"}
-                    </Tag>
-                  </div>
-                  <Layer>
-                    <TableToolbarSearch
-                      expanded={true}
-                      value={searchTerm}
-                      onChange={handleChange}
-                      placeholder={t("searchThisList", "Search this list")}
-                      size="sm"
-                    />
-                  </Layer>
-                </TableToolbarContent>
-              </TableToolbar>
-              <Table
-                {...getTableProps()}
-                className={styles.activePatientsTable}
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableExpandHeader />
-                    {headers.map((header) => (
-                      <TableHeader {...getHeaderProps({ header })}>
-                        {header.header}
-                      </TableHeader>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.map((row, index) => {
-                    return (
-                      <React.Fragment key={row.id}>
-                        <TableExpandRow {...getRowProps({ row })}>
-                          {row.cells.map((cell) => (
-                            <TableCell key={cell.id}>
-                              {cell.value?.content ?? cell.value}
-                            </TableCell>
-                          ))}
-                        </TableExpandRow>
-                        {row.isExpanded ? (
-                          <TableExpandedRow
-                            className={styles.expandedActiveVisitRow}
-                            colSpan={headers.length + 2}
-                          >
-                            <TestsResults
-                              obs={paginatedLabEntries[index].obs}
-                            />
-                          </TableExpandedRow>
-                        ) : (
-                          <TableExpandedRow
-                            className={styles.hiddenRow}
-                            colSpan={headers.length + 2}
-                          />
-                        )}
-                      </React.Fragment>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-              {rows.length === 0 ? (
-                <div className={styles.tileContainer}>
-                  <Tile className={styles.tile}>
-                    <div className={styles.tileContent}>
-                      <p className={styles.content}>
-                        {t(
-                          "noTestOrdersToDisplay",
-                          "No test orders to display"
-                        )}
-                      </p>
-                      <p className={styles.helper}>
-                        {t("checkFilters", "Check the filters above")}
-                      </p>
+                      Key:
+                      <Tag
+                        size="sm"
+                        style={{
+                          background: "#6F6F6F",
+                          color: "white",
+                        }}
+                        title="Result Requested"
+                      >
+                        {"Requested"}
+                      </Tag>
+                      <Tag
+                        size="sm"
+                        style={{
+                          background: "green",
+                          color: "white",
+                        }}
+                        title="Result Complete"
+                      >
+                        {"Completed"}
+                      </Tag>
+                      <Tag
+                        size="sm"
+                        style={{
+                          background: "red",
+                          color: "white",
+                        }}
+                        title="Result Rejected"
+                      >
+                        {"Rejected"}
+                      </Tag>
                     </div>
-                    <p className={styles.separator}>{t("or", "or")}</p>
-                  </Tile>
-                </div>
-              ) : null}
-              <Pagination
-                forwardText="Next page"
-                backwardText="Previous page"
-                page={currentPage}
-                pageSize={currentPageSize}
-                pageSizes={pageSizes}
-                totalItems={paginatedLabEntries?.length}
-                className={styles.pagination}
-                onChange={({ pageSize, page }) => {
-                  if (pageSize !== currentPageSize) {
-                    setPageSize(pageSize);
-                  }
-                  if (page !== currentPage) {
-                    goTo(page);
-                  }
-                }}
-              />
-            </TableContainer>
-          )}
-        </DataTable>
-      </div>
+                    <Layer>
+                      <TableToolbarSearch
+                        expanded={true}
+                        value={searchTerm}
+                        onChange={handleChange}
+                        placeholder={t("searchThisList", "Search this list")}
+                        size="sm"
+                      />
+                    </Layer>
+                  </TableToolbarContent>
+                </TableToolbar>
+                <Table
+                  {...getTableProps()}
+                  className={styles.activePatientsTable}
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableExpandHeader />
+                      {headers.map((header) => (
+                        <TableHeader {...getHeaderProps({ header })}>
+                          {header.header}
+                        </TableHeader>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {rows.map((row, index) => {
+                      return (
+                        <React.Fragment key={row.id}>
+                          <TableExpandRow {...getRowProps({ row })}>
+                            {row.cells.map((cell) => (
+                              <TableCell key={cell.id}>
+                                {cell.value?.content ?? cell.value}
+                              </TableCell>
+                            ))}
+                          </TableExpandRow>
+                          {row.isExpanded ? (
+                            <TableExpandedRow
+                              className={styles.expandedActiveVisitRow}
+                              colSpan={headers.length + 2}
+                            >
+                              <TestsResults
+                                obs={paginatedLabEntries[index].obs}
+                              />
+                            </TableExpandedRow>
+                          ) : (
+                            <TableExpandedRow
+                              className={styles.hiddenRow}
+                              colSpan={headers.length + 2}
+                            />
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+                {rows.length === 0 ? (
+                  <div className={styles.tileContainer}>
+                    <Tile className={styles.tile}>
+                      <div className={styles.tileContent}>
+                        <p className={styles.content}>
+                          {t(
+                            "noTestOrdersToDisplay",
+                            "No test orders to display"
+                          )}
+                        </p>
+                        <p className={styles.helper}>
+                          {t("checkFilters", "Check the filters above")}
+                        </p>
+                      </div>
+                      <p className={styles.separator}>{t("or", "or")}</p>
+                    </Tile>
+                  </div>
+                ) : null}
+                <Pagination
+                  forwardText="Next page"
+                  backwardText="Previous page"
+                  page={currentPage}
+                  pageSize={currentPageSize}
+                  pageSizes={pageSizes}
+                  totalItems={paginatedLabEntries?.length}
+                  className={styles.pagination}
+                  onChange={({ pageSize, page }) => {
+                    if (pageSize !== currentPageSize) {
+                      setPageSize(pageSize);
+                    }
+                    if (page !== currentPage) {
+                      goTo(page);
+                    }
+                  }}
+                />
+              </TableContainer>
+            )}
+          </DataTable>
+        </div>
+        <Overlay />
+      </>
     );
   }
 

@@ -89,7 +89,7 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
               <span
                 style={{ fontSize: "10px", fontWeight: "bold", margin: "5px" }}
               >
-                {encounterResponse.visit.location.display}
+                {encounterResponse?.visit?.location?.display}
               </span>
             </div>
             <div
