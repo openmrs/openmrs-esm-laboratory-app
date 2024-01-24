@@ -334,25 +334,26 @@ export async function UpdateOrderResult(
   orderPayload: any
 ) {
   const abortController = new AbortController();
-  const updateOrderCall = await openmrsFetch(`/ws/rest/v1/order`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    signal: abortController.signal,
-    body: orderPayload,
-  });
-
-  if (updateOrderCall.status === 201) {
-    return await openmrsFetch(`/ws/rest/v1/encounter/${encounterUuid}`, {
+  const updateResults = await openmrsFetch(
+    `/ws/rest/v1/encounter/${encounterUuid}`,
+    {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       signal: abortController.signal,
       body: obsPayload,
+    }
+  );
+
+  if (updateResults.status === 201) {
+    return await openmrsFetch(`/ws/rest/v1/order`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      signal: abortController.signal,
+      body: orderPayload,
     });
-  } else {
-    // handle errors
   }
 }

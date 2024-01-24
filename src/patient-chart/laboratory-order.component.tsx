@@ -239,7 +239,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
         content: (
           <>
             {entry.orders.map((order) => {
-              if (order?.type === "testorder") {
+              if (order?.type === "testorder" && order?.action === "NEW") {
                 return (
                   <Tag
                     style={{
@@ -286,8 +286,6 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
             ) : (
               <PrintButtonAction encounter={entry} />
             )}
-
-            {/* <EmailButtonAction /> */}
           </div>
         ),
       },
@@ -408,7 +406,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                               </TableCell>
                             ))}
                           </TableExpandRow>
-                          {row.isExpanded ? (
+                          {!row.isExpanded ? (
                             <TableExpandedRow
                               className={styles.expandedActiveVisitRow}
                               colSpan={headers.length + 2}
