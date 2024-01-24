@@ -60,7 +60,7 @@ const LaboratoryQueueTabs: React.FC = () => {
         </TabPanel>
       );
     });
-  }, [tabExtensions?.length]);
+  }, [tabExtensions]);
 
   useEffect(() => {
     derivedSlots.forEach(({ slot, extension }) => {

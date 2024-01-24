@@ -39,6 +39,7 @@ import {
 import { Result, useGetOrdersWorklist } from "./work-list.resource";
 import styles from "./work-list.scss";
 import {
+  ConfigurableLink,
   formatDate,
   parseDate,
   showModal,
@@ -109,32 +110,30 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
       key: "accessionNumber",
     },
     { id: 4, header: t("test", "Test"), key: "test" },
-    { id: 5, header: t("action", "Action"), key: "action" },
     { id: 6, header: t("status", "Status"), key: "status" },
     { id: 8, header: t("orderer", "Orderer"), key: "orderer" },
     { id: 9, header: t("urgency", "Urgency"), key: "urgency" },
     { id: 10, header: t("actions", "Actions"), key: "actions" },
   ];
 
-  const ResultsOrder: React.FC<ResultsOrderProps> = ({
-    order,
-    patientUuid,
-  }) => {
-    return (
-      <Button
-        kind="ghost"
-        onClick={() => {
-          launchOverlay(
-            t("resultForm", "Lab results form"),
-            <ResultForm patientUuid={patientUuid} order={order} />
-          );
-        }}
-        renderIcon={(props) => <Microscope size={16} {...props} />}
-      />
-    );
-  };
-
   const tableRows = useMemo(() => {
+    const ResultsOrder: React.FC<ResultsOrderProps> = ({
+      order,
+      patientUuid,
+    }) => {
+      return (
+        <Button
+          kind="ghost"
+          onClick={() => {
+            launchOverlay(
+              t("resultForm", "Lab results form"),
+              <ResultForm patientUuid={patientUuid} order={order} />
+            );
+          }}
+          renderIcon={(props) => <Microscope size={16} {...props} />}
+        />
+      );
+    };
     return paginatedWorkListEntries
       ?.filter((item) => item.fulfillerStatus === "IN_PROGRESS")
       .map((entry, index) => ({
@@ -149,9 +148,14 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
         },
         patient: {
           content: (
-            <>
-              <span>{entry.patient.display.split("-")[1]}</span>
-            </>
+            // <>
+            //   <span>{entry.patient.display.split("-")[1]}</span>
+            // </>
+            <ConfigurableLink
+              to={`\${openmrsSpaBase}/patient/${entry.patient.uuid}/chart/laboratory-orders`}
+            >
+              {entry.patient.display.split("-")[1]}
+            </ConfigurableLink>
           ),
         },
         orderNumber: { content: <span>{entry.orderNumber}</span> },
@@ -187,7 +191,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
           ),
         },
       }));
-  }, [ResultsOrder, paginatedWorkListEntries]);
+  }, [paginatedWorkListEntries, t]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
