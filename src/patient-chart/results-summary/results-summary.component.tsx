@@ -22,20 +22,6 @@ interface ResultsSummaryProps {
 
 const ResultsSummary: React.FC<ResultsSummaryProps> = ({ encounter }) => {
   const { t } = useTranslation();
-  // get encouter details
-  // const { encounter, isLoading, isError } = useGetEncounterById(encounterUuid);
-
-  // print button
-
-  // email button
-
-  // if (encounter) {
-  //   return <DataTableSkeleton role="progressbar" />;
-  // }
-  // if (isError) {
-  //   return <ErrorState error={isError} headerTitle={"Error"} />;
-  // }
-
   const obsData = encounter.obs.filter((ob) => ob?.order?.type === "testorder");
 
   if (encounter) {

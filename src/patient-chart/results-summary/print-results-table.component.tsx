@@ -2,15 +2,7 @@ import React from "react";
 import styles from "./print-results-summary.scss";
 import { GroupMember } from "../laboratory-order.resource";
 import { useGetConceptById } from "./results-summary.resource";
-import {
-  Button,
-  Form,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  InlineLoading,
-  Checkbox,
-} from "@carbon/react";
+import { InlineLoading } from "@carbon/react";
 
 interface PrintResultsTableProps {
   groupedResults: any[];
@@ -30,33 +22,28 @@ const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
   const RowTest: React.FC<ResultsRowProps> = ({ groupMembers }) => {
     // get Units
     const ValueUnits: React.FC<ValueUnitsProps> = ({ conceptUuid }) => {
-      const {
-        concept: concept,
-        isLoading,
-        isError,
-      } = useGetConceptById(conceptUuid);
-      if (isLoading) {
-        return <InlineLoading status="active" />;
-      }
-      if (isError) {
-        return <span>Error</span>;
-      }
-      return <span style={{ marginLeft: "10px" }}>{concept?.units}</span>;
+      const { concept, isLoading, isError } = useGetConceptById(conceptUuid);
+
+      if (isLoading) return <InlineLoading status="active" />;
+      if (isError) return <span>Error</span>;
+
+      return (
+        <span style={{ marginLeft: "10px" }}>{concept?.units ?? "N"}</span>
+      );
     };
 
     // get Reference Range
     const ReferenceRange: React.FC<ValueUnitsProps> = ({ conceptUuid }) => {
-      const {
-        concept: concept,
-        isLoading,
-        isError,
-      } = useGetConceptById(conceptUuid);
-      if (isLoading) {
-        return <InlineLoading status="active" />;
-      }
-      if (isError) {
-        return <span>Error</span>;
-      }
+      const { concept, isLoading, isError } = useGetConceptById(conceptUuid);
+
+      if (isLoading) return <InlineLoading status="active" />;
+      if (isError) return <span>Error</span>;
+
+      const lowNormal =
+        concept?.lowNormal !== undefined ? concept.lowNormal : "--";
+      const hiNormal =
+        concept?.hiNormal !== undefined ? concept.hiNormal : "--";
+
       return (
         <>
           {concept?.hiNormal === undefined ||
@@ -64,67 +51,31 @@ const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
             "N/A"
           ) : (
             <div>
-              <span>{concept?.lowNormal ? concept?.lowNormal : "--"}</span> :{" "}
-              <span>{concept?.hiNormal ? concept?.hiNormal : "--"}</span>
+              <span>{lowNormal}</span> : <span>{hiNormal}</span>
             </div>
           )}
         </>
       );
     };
+
     return (
       <>
-        {groupMembers?.map((element, index) => {
-          return (
-            <tr key={index}>
-              {typeof element.value === "number" ? (
-                <>
-                  <td>{element?.concept.display}</td>
-
-                  <td>{element?.value}</td>
-
-                  <td>
-                    {
-                      <ReferenceRange
-                        conceptUuid={groupMembers[index].concept.uuid}
-                      />
-                    }
-                  </td>
-
-                  <td>
-                    {
-                      <ValueUnits
-                        conceptUuid={groupMembers[index].concept.uuid}
-                      />
-                    }
-                  </td>
-                </>
-              ) : typeof element.value === "object" ? (
-                <>
-                  <td>{element?.concept.display}</td>
-
-                  <td>{element?.value.display}</td>
-                  <td>
-                    {
-                      <ReferenceRange
-                        conceptUuid={groupMembers[index].concept.uuid}
-                      />
-                    }
-                  </td>
-
-                  <td>
-                    {
-                      <ValueUnits
-                        conceptUuid={groupMembers[index].concept.uuid}
-                      />
-                    }
-                  </td>
-                </>
-              ) : (
-                <td>{element?.display}</td>
-              )}
-            </tr>
-          );
-        })}
+        {groupMembers?.map((element, index) => (
+          <tr key={index}>
+            <td>{element?.concept.display}</td>
+            <td>
+              {typeof element.value === "object"
+                ? element.value.display
+                : element.value}
+            </td>
+            <td>
+              <ReferenceRange conceptUuid={element.concept.uuid} />
+            </td>
+            <td>
+              <ValueUnits conceptUuid={element.concept.uuid} />
+            </td>
+          </tr>
+        ))}
       </>
     );
   };
@@ -142,18 +93,42 @@ const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
       </table>
       <table>
         <tbody>
-          {Object.keys(groupedResults).map((test) => (
-            <tr key={test} style={{ margin: "10px" }}>
-              <span
-                style={{ margin: "10px", fontSize: "8px", fontWeight: "bold" }}
-              >
-                {test}
-              </span>
-              <table style={{ margin: "10px" }}>
-                <RowTest groupMembers={groupedResults[test].groupMembers} />
-              </table>
-            </tr>
-          ))}
+          {Object.keys(groupedResults).map((test) => {
+            const { uuid, groupMembers } = groupedResults[test];
+            const isGrouped = uuid && groupMembers?.length > 0;
+            return (
+              <tr key={test} style={{ margin: "10px" }}>
+                <span
+                  style={{
+                    margin: "10px",
+                    fontSize: "8px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {test}
+                </span>
+                <table style={{ margin: "10px" }}>
+                  {isGrouped && <RowTest groupMembers={groupMembers} />}
+                  {!isGrouped && (
+                    <tr>
+                      <td>
+                        <span>{groupedResults[test]?.order?.display}</span>
+                      </td>
+                      <td>
+                        <span>{groupedResults[test]?.value?.display}</span>
+                      </td>
+                      <td>
+                        <span>{"N/A"}</span>
+                      </td>
+                      <td>
+                        <span>{"N/A"}</span>
+                      </td>
+                    </tr>
+                  )}{" "}
+                </table>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </section>
