@@ -30,7 +30,7 @@ const LaboratoryResultsTabs: React.FC<LaboratoryResultsTabsProps> = ({
             contained
           >
             <Tab>{t("pending", "Routine Tests")}</Tab>
-            <Tab>{t("referals", "Referals")}</Tab>
+            <Tab>{t("referals", "Referrals")}</Tab>
           </TabList>
           <TabPanels>
             <TabPanel style={{ padding: 0 }}>

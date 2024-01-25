@@ -5,24 +5,30 @@ import {
   ModalFooter,
   ModalHeader,
   TextInput,
-  FileUploader,
+  InlineLoading,
 } from "@carbon/react";
 import React, { useState } from "react";
-// import nodemailer from "nodemailer";
 import { useTranslation } from "react-i18next";
-// import hbs from "nodemailer-express-handlebars";
-import path from "path";
-import { showNotification, showToast } from "@openmrs/esm-framework";
+import { usePatient } from "@openmrs/esm-framework";
+import styles from "./results-summary.scss";
 
 interface SendEmailDialogProps {
+  patientUuid: string;
   closeModal: () => void;
 }
 
-const SendEmailDialog: React.FC<SendEmailDialogProps> = ({ closeModal }) => {
+const SendEmailDialog: React.FC<SendEmailDialogProps> = ({
+  patientUuid,
+  closeModal,
+}) => {
   const { t } = useTranslation();
 
   const [email, setEmail] = useState();
   const [file, setFile] = useState();
+
+  const { patient, isLoading } = usePatient(patientUuid);
+
+  // setEmail()
 
   // generate pdf
 
@@ -84,7 +90,15 @@ const SendEmailDialog: React.FC<SendEmailDialogProps> = ({ closeModal }) => {
           title={t("sendResults", "Send Results")}
         />
         <ModalBody>
-          <>
+          {isLoading && (
+            <InlineLoading
+              className={styles.bannerLoading}
+              iconDescription="Loading"
+              description="Loading banner"
+              status="active"
+            />
+          )}
+          {patient?.address ? (
             <div>
               <TextInput
                 id="text-input-email"
@@ -95,7 +109,9 @@ const SendEmailDialog: React.FC<SendEmailDialogProps> = ({ closeModal }) => {
                 type="email"
               />
             </div>
-          </>
+          ) : (
+            "Patient doesn't have an email address"
+          )}
         </ModalBody>
         <ModalFooter>
           <Button kind="secondary" onClick={closeModal}>

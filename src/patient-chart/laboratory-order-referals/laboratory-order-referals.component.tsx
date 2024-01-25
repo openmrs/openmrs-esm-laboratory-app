@@ -193,6 +193,22 @@ const LaboratoryOrderReferalResults: React.FC<
     );
   };
 
+  const tableReferralHeaders = useMemo(
+    () => [
+      {
+        id: 0,
+        header: t("orderDate", "Test Date"),
+        key: "orderDate",
+      },
+      { id: 1, header: t("tests", "Tests"), key: "orders" },
+      { id: 2, header: t("location", "Location"), key: "location" },
+      { id: 3, header: t("status", "Status"), key: "status" },
+      { id: 4, header: t("referral", "Referral"), key: "referral" },
+      { id: 5, header: t("actions", "Action"), key: "actions" },
+    ],
+    [t]
+  );
+
   const tableRows = useMemo(() => {
     return laboratoryOrders.map((entry, index) => ({
       ...entry,
@@ -236,12 +252,15 @@ const LaboratoryOrderReferalResults: React.FC<
       status: {
         content: <span>--</span>,
       },
+      referral: {
+        content: <span>--</span>,
+      },
       actions: {
         content: (
           <div style={{ display: "flex" }}>
             <EditActionsMenu />
             <PrintButtonAction encounter={entry} />
-            {/* <EditReferalTestButton /> */}
+            <EmailButtonAction />
           </div>
         ),
       },
@@ -268,7 +287,11 @@ const LaboratoryOrderReferalResults: React.FC<
             ) : null}
           </CardHeader>
         </div>
-        <DataTable rows={tableRows} headers={tableHeaders} useZebraStyles>
+        <DataTable
+          rows={tableRows}
+          headers={tableReferralHeaders}
+          useZebraStyles
+        >
           {({
             rows,
             headers,

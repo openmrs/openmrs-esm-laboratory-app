@@ -250,12 +250,12 @@ const LaboratoryPastTestOrderResults: React.FC<
           content: (
             <div>
               <PrintButtonAction encounter={entry} />
-              {/* <EmailButtonAction /> */}
+              <EmailButtonAction />
             </div>
           ),
         },
       }));
-  }, [laboratoryOrders]);
+  }, [laboratoryOrders, twentyFourHoursAgo]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;

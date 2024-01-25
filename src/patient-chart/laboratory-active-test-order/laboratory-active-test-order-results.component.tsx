@@ -267,9 +267,9 @@ const LaboratoryActiveTestOrderResults: React.FC<
         },
         actions: {
           content: (
-            <div>
+            <div style={{ display: "flex" }}>
               <PrintButtonAction encounter={entry} />
-              {/* <EmailButtonAction /> */}
+              <EmailButtonAction />
             </div>
           ),
         },
