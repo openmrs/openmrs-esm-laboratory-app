@@ -102,6 +102,22 @@ export function useQueueRoomLocations(currentQueueLocation: string) {
   };
 }
 
+// get referral locations
+export function useReferralLocations() {
+  const config = useConfig();
+  const { laboratoryReferalDestinationUuid } = config;
+  const apiUrl = `/ws/rest/v1/concept/${laboratoryReferalDestinationUuid}`;
+  const { data, error, isLoading } = useSWRImmutable<FetchResponse>(
+    apiUrl,
+    openmrsFetch
+  );
+
+  return {
+    referrals: data ? data?.data?.answers : [],
+    isLoading,
+  };
+}
+
 // get specimen types
 export function useSpecimenTypes() {
   const config = useConfig();
@@ -114,7 +130,7 @@ export function useSpecimenTypes() {
   );
 
   return {
-    specimenTypes: data ? data?.data?.answers : [],
+    specimenTypes: data ? data?.data?.setMembers : [],
     isLoading,
   };
 }

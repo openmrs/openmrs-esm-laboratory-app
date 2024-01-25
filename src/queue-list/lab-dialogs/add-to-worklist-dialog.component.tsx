@@ -32,82 +32,41 @@ import {
   GetOrderByUuid,
   UpdateOrder,
   useQueueRoomLocations,
+  useReferralLocations,
   useSpecimenTypes,
 } from "./add-to-worklist-dialog.resource";
 import { Encounter, Order } from "../../types/patient-queues";
 
 interface AddToWorklistDialogProps {
   queueId;
-  encounter: Encounter;
   order: Order;
   closeModal: () => void;
 }
 
 const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
   queueId,
-  encounter,
   order,
   closeModal,
 }) => {
   const { t } = useTranslation();
 
-  const locations = useLocations();
-
-  const sessionUser = useSession();
-
-  const [selectedLocation, setSelectedLocation] = useState("");
-
   const [preferred, setPreferred] = useState(false);
 
-  const [specimenID, setSpecimenID] = useState();
+  const [specimenID, setSpecimenID] = useState("");
 
   const { specimenTypes } = useSpecimenTypes();
 
-  const [orderer, setOrderer] = useState("");
-
-  const [concept, setConcept] = useState("");
-
-  const [patient, setPatient] = useState("");
-
-  const [encounterUuid, setEncounterUuid] = useState("");
-
-  const { queueRoomLocations } = useQueueRoomLocations(
-    sessionUser?.sessionLocation?.uuid
-  );
+  const { referrals } = useReferralLocations();
 
   const [specimenType, setSpecimenType] = useState();
 
-  const [selectedNextQueueLocation, setSelectedNextQueueLocation] = useState(
-    queueRoomLocations[0]?.uuid
-  );
+  const [selectedReferral, setSelectedReferral] = useState("");
 
-  const filteredlocations = queueRoomLocations?.filter(
-    (location) => location.uuid != selectedLocation
-  );
+  const [barcode, setBarcode] = useState("");
 
-  useEffect(() => {
-    if (locations?.length && sessionUser) {
-      setSelectedLocation(sessionUser?.sessionLocation?.uuid);
-    }
-  }, [locations, sessionUser]);
+  const [confirmBarcode, setConfirmBarcode] = useState("");
 
-  // GetOrderByUuid
-  GetOrderByUuid(order.uuid).then(
-    (resp) => {
-      setOrderer(resp.data?.orderer?.uuid);
-      setConcept(resp.data?.concept?.uuid);
-      setPatient(resp.data?.patient?.uuid);
-      setEncounterUuid(resp.data?.encounter.uuid);
-    },
-    (err) => {
-      showNotification({
-        title: t(`errorGettingOrder', 'Error Getting Order Id`),
-        kind: "error",
-        critical: true,
-        description: err?.message,
-      });
-    }
-  );
+  const [externalReferralName, setExternalReferralName] = useState("");
 
   const pickLabRequestQueue = async (event) => {
     event.preventDefault();
@@ -174,6 +133,12 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
     );
   };
 
+  useEffect(() => {
+    if (barcode !== "" && confirmBarcode !== "" && barcode == confirmBarcode) {
+      setSpecimenID(barcode);
+    }
+  }, [barcode, confirmBarcode]);
+
   return (
     <div>
       <Form onSubmit={pickLabRequestQueue}>
@@ -193,7 +158,9 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
                 }}
               >
                 <div className={styles.sectionTitle}>
-                  {t("specimenID", "Specimen ID")}
+                  {preferred
+                    ? t("barcode", "Barcode")
+                    : t("specimenID", "Specimen ID")}
                 </div>
 
                 <div
@@ -209,6 +176,8 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
                       type="text"
                       id="specimentID"
                       value={specimenID}
+                      readOnly={preferred}
+                      hideReadOnly={preferred}
                     />
                   </div>
                   <div style={{ width: "50px" }}>
@@ -216,6 +185,7 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
                       hasIconOnly
                       onClick={(e) => generateId(e)}
                       renderIcon={(props) => <Renew size={16} {...props} />}
+                      disabled={preferred}
                     />
                   </div>
                 </div>
@@ -282,25 +252,88 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
                 <div style={{ width: "500px" }}>
                   <section className={styles.section}>
                     <Select
-                      labelText={t("location", "Location ")}
+                      labelText={t("locationReferral", "Referral Location ")}
                       id="nextQueueLocation"
                       name="nextQueueLocation"
                       invalidText="Required"
-                      value={selectedNextQueueLocation}
+                      value={selectedReferral}
                       onChange={(event) =>
-                        setSelectedNextQueueLocation(event.target.value)
+                        setSelectedReferral(event.target.value)
                       }
                     >
-                      {filteredlocations.map((location) => (
+                      {referrals.map((referral) => (
                         <SelectItem
-                          key={location.uuid}
-                          text={location.display}
-                          value={location.uuid}
+                          key={referral.uuid}
+                          text={referral.display}
+                          value={referral.uuid}
                         >
-                          {location.display}
+                          {referral.display}
                         </SelectItem>
                       ))}
                     </Select>
+                  </section>
+
+                  <section className={styles.section}>
+                    {selectedReferral ===
+                      "3476fd97-71da-4e9c-bf57-2b6318dc0c9f" && (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <div style={{ width: "500px" }}>
+                          <TextInput
+                            type="text"
+                            id="locationName"
+                            labelText={"Enter Name"}
+                            value={externalReferralName}
+                            required={true}
+                            onChange={(e) =>
+                              setExternalReferralName(e.target.value)
+                            }
+                          />
+                        </div>
+                      </div>
+                    )}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <div style={{ width: "500px" }}>
+                        <TextInput
+                          type="text"
+                          id="enterBarcode"
+                          labelText={"Enter Barcode"}
+                          value={barcode}
+                          required={true}
+                          onChange={(e) => {
+                            setBarcode(e.target.value);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <div style={{ width: "500px" }}>
+                        <TextInput
+                          type="text"
+                          id="confirmBarcode"
+                          labelText={"Confirm Barcode"}
+                          value={confirmBarcode}
+                          required={true}
+                          onChange={(e) => {
+                            setConfirmBarcode(e.target.value);
+                          }}
+                        />
+                      </div>
+                    </div>
                   </section>
                 </div>
               )}
