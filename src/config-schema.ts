@@ -13,7 +13,7 @@ export const configSchema = {
   },
   laboratorySpecimenTypeConcept: {
     _type: Type.ConceptUuid,
-    _default: "159959AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    _default: "162476AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
     _description: "Concept UUID for laboratory specimen types",
   },
   laboratoryEncounterTypeUuid: {
@@ -25,6 +25,11 @@ export const configSchema = {
     _type: Type.String,
     _default: "52a447d3-a64a-11e3-9aeb-50e549534c5e",
     _description: "Uuid for orderType",
+  },
+  laboratoryReferalDestinationUuid: {
+    _type: Type.String,
+    _default: "b1f8b6c8-c255-4518-89f5-4236ab76025b",
+    _description: "Concept uuid for laboratory referals destinations",
   },
 };
 
