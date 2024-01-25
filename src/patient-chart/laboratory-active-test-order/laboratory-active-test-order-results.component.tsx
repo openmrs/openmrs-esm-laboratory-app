@@ -52,7 +52,10 @@ import {
   getOrderColor,
 } from "../patient-laboratory-order-results.resource";
 import { useLaboratoryOrderResultsPages } from "../patient-laboratory-order-results-table.resource";
-import { CardHeader } from "@openmrs/esm-patient-common-lib";
+import {
+  CardHeader,
+  launchPatientWorkspace,
+} from "@openmrs/esm-patient-common-lib";
 
 interface LaboratoryActiveTestOrderResultsProps {
   patientUuid: string;
@@ -138,6 +141,22 @@ const LaboratoryActiveTestOrderResults: React.FC<
         renderIcon={(props) => <MailAll size={16} {...props} />}
       />
     );
+  };
+
+  // const handleLabRequest = () => {
+  //   launchPatientWorkspace("patient-form-entry-workspace", {
+  //     workspaceTitle: "Lab Request Form",
+  //     formInfo: {
+  //       formUuid: "c6f3b5ad-b7eb-44ad-b212-fb26456e155b",
+  //     },
+  //   });
+  // };
+
+  const launchLabRequestForm = () => {
+    launchPatientWorkspace("clinical-forms-workspace", {
+      workspaceTitle: `Laboratory Request Form`,
+      formUuid: "c6f3b5ad-b7eb-44ad-b212-fb26456e155b",
+    });
   };
 
   const LaunchLabRequestForm: React.FC = () => {
@@ -268,24 +287,23 @@ const LaboratoryActiveTestOrderResults: React.FC<
   if (items?.length >= 0) {
     return (
       <div className={styles.widgetCard}>
-        <div className={styles.cardHeaderDiv}>
-          <CardHeader title={displayText}>
-            {isLoading ? (
-              <span>
-                <InlineLoading />
-              </span>
-            ) : null}
-            <div className={styles.buttons}>
-              <Button
-                kind="ghost"
-                renderIcon={(props) => <Add size={16} {...props} />}
-                iconDescription="Launch lab Request"
-              >
-                {t("add", "Add")}
-              </Button>
-            </div>
-          </CardHeader>
-        </div>
+        <CardHeader title={displayText}>
+          {isLoading ? (
+            <span>
+              <InlineLoading />
+            </span>
+          ) : null}
+          <div className={styles.buttons}>
+            <Button
+              kind="ghost"
+              renderIcon={(props) => <Add size={16} {...props} />}
+              iconDescription="Launch lab Request"
+              onClick={launchLabRequestForm}
+            >
+              {t("add", "Add")}
+            </Button>
+          </div>
+        </CardHeader>
 
         <DataTable rows={tableRows} headers={tableHeaders} useZebraStyles>
           {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
