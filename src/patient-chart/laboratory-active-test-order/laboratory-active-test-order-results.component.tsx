@@ -13,7 +13,7 @@ import {
   ErrorState,
   showModal,
 } from "@openmrs/esm-framework";
-
+import { mutate } from "swr";
 import {
   DataTable,
   DataTableSkeleton,
@@ -40,7 +40,14 @@ import {
   InlineLoading,
 } from "@carbon/react";
 
-import { Printer, MailAll, Add } from "@carbon/react/icons";
+import {
+  Printer,
+  MailAll,
+  Add,
+  Checkmark,
+  SendAlt,
+  NotSent,
+} from "@carbon/react/icons";
 
 import TestsResults from "../results-summary/test-results-table.component";
 import { useReactToPrint } from "react-to-print";
@@ -143,26 +150,25 @@ const LaboratoryActiveTestOrderResults: React.FC<
     );
   };
 
-  // const handleLabRequest = () => {
-  //   launchPatientWorkspace("patient-form-entry-workspace", {
-  //     workspaceTitle: "Lab Request Form",
-  //     formInfo: {
-  //       formUuid: "c6f3b5ad-b7eb-44ad-b212-fb26456e155b",
-  //     },
-  //   });
-  // };
-
   const launchLabRequestForm = () => {
-    launchPatientWorkspace("clinical-forms-workspace", {
-      workspaceTitle: `Laboratory Request Form`,
-      formUuid: "c6f3b5ad-b7eb-44ad-b212-fb26456e155b",
+    launchPatientWorkspace("patient-form-entry-workspace", {
+      workspaceTitle: "Lab Request Form",
+      mutateForm: () => {
+        mutate((key) => true, undefined, {
+          revalidate: true,
+        });
+      },
+      formInfo: {
+        encounterUuid: "",
+        formUuid: "c6f3b5ad-b7eb-44ad-b212-fb26456e155b",
+      },
     });
   };
 
   const LaunchLabRequestForm: React.FC = () => {
     return (
       <IconButton label="Add">
-        <Add />
+        <Add onClick={launchLabRequestForm} />
       </IconButton>
     );
   };
@@ -221,7 +227,7 @@ const LaboratoryActiveTestOrderResults: React.FC<
     return laboratoryOrders
       ?.filter((entry) => {
         const entryDate = new Date(entry.encounterDatetime).getTime();
-        return entryDate <= twentyFourHoursAgo;
+        return entryDate >= twentyFourHoursAgo && entryDate <= currentDateTime;
       })
       ?.map((entry, index) => ({
         ...entry,
@@ -230,7 +236,8 @@ const LaboratoryActiveTestOrderResults: React.FC<
           content: (
             <span>
               {formatDate(parseDate(entry.encounterDatetime), {
-                time: false,
+                time: true,
+                mode: "standard",
               })}
             </span>
           ),
@@ -238,8 +245,11 @@ const LaboratoryActiveTestOrderResults: React.FC<
         orders: {
           content: (
             <>
-              {entry.orders.map((order) => {
-                if (order?.type === "testorder") {
+              {entry?.orders
+                ?.filter((order) => {
+                  order?.type === "testorder" && order?.action === "NEW";
+                })
+                .map((order) => {
                   return (
                     <Tag
                       style={{
@@ -254,8 +264,7 @@ const LaboratoryActiveTestOrderResults: React.FC<
                       {order?.concept?.display}
                     </Tag>
                   );
-                }
-              })}
+                })}
             </>
           ),
         },
@@ -274,7 +283,7 @@ const LaboratoryActiveTestOrderResults: React.FC<
           ),
         },
       }));
-  }, [laboratoryOrders, twentyFourHoursAgo]);
+  }, [currentDateTime, laboratoryOrders, twentyFourHoursAgo]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
@@ -334,6 +343,7 @@ const LaboratoryActiveTestOrderResults: React.FC<
                         color: "white",
                       }}
                       title="Result Requested"
+                      renderIcon={() => <SendAlt />}
                     >
                       {"Requested"}
                     </Tag>
@@ -344,6 +354,7 @@ const LaboratoryActiveTestOrderResults: React.FC<
                         color: "white",
                       }}
                       title="Result Complete"
+                      renderIcon={() => <Checkmark />}
                     >
                       {"Completed"}
                     </Tag>
@@ -354,6 +365,7 @@ const LaboratoryActiveTestOrderResults: React.FC<
                         color: "white",
                       }}
                       title="Result Rejected"
+                      renderIcon={() => <NotSent />}
                     >
                       {"Rejected"}
                     </Tag>

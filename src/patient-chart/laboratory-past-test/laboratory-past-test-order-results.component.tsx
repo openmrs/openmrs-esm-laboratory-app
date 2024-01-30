@@ -39,7 +39,15 @@ import {
   IconButton,
   InlineLoading,
 } from "@carbon/react";
-import { Printer, MailAll, Add } from "@carbon/react/icons";
+
+import {
+  Printer,
+  MailAll,
+  Add,
+  Checkmark,
+  SendAlt,
+  NotSent,
+} from "@carbon/react/icons";
 
 import TestsResults from "../results-summary/test-results-table.component";
 import { useReactToPrint } from "react-to-print";
@@ -198,20 +206,22 @@ const LaboratoryPastTestOrderResults: React.FC<
 
   const currentDateTime = new Date().getTime();
   const twentyFourHoursAgo = currentDateTime - 24 * 60 * 60 * 1000;
+
   const tableRows = useMemo(() => {
     return laboratoryOrders
       ?.filter((entry) => {
         const entryDate = new Date(entry.encounterDatetime).getTime();
-        return entryDate >= twentyFourHoursAgo;
+        return entryDate < twentyFourHoursAgo;
       })
-      .map((entry, index) => ({
+      ?.map((entry, index) => ({
         ...entry,
         id: entry.uuid,
         orderDate: {
           content: (
             <span>
               {formatDate(parseDate(entry.encounterDatetime), {
-                time: false,
+                time: true,
+                mode: "standard",
               })}
             </span>
           ),
@@ -219,8 +229,12 @@ const LaboratoryPastTestOrderResults: React.FC<
         orders: {
           content: (
             <>
-              {entry.orders.map((order) => {
-                if (order?.type === "testorder") {
+              {entry?.orders
+                ?.filter(
+                  (order) =>
+                    order?.type === "testorder" || order.action === "REVISE"
+                )
+                .map((order) => {
                   return (
                     <Tag
                       style={{
@@ -235,8 +249,7 @@ const LaboratoryPastTestOrderResults: React.FC<
                       {order?.concept?.display}
                     </Tag>
                   );
-                }
-              })}
+                })}
             </>
           ),
         },
@@ -248,7 +261,7 @@ const LaboratoryPastTestOrderResults: React.FC<
         },
         actions: {
           content: (
-            <div>
+            <div style={{ display: "flex" }}>
               <PrintButtonAction encounter={entry} />
               <EmailButtonAction />
             </div>
@@ -313,6 +326,7 @@ const LaboratoryPastTestOrderResults: React.FC<
                         color: "white",
                       }}
                       title="Result Requested"
+                      renderIcon={() => <SendAlt />}
                     >
                       {"Requested"}
                     </Tag>
@@ -323,6 +337,7 @@ const LaboratoryPastTestOrderResults: React.FC<
                         color: "white",
                       }}
                       title="Result Complete"
+                      renderIcon={() => <Checkmark />}
                     >
                       {"Completed"}
                     </Tag>
@@ -333,6 +348,7 @@ const LaboratoryPastTestOrderResults: React.FC<
                         color: "white",
                       }}
                       title="Result Rejected"
+                      renderIcon={() => <NotSent />}
                     >
                       {"Rejected"}
                     </Tag>

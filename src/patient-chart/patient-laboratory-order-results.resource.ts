@@ -403,7 +403,7 @@ export const getOrderColor = (activated: string, stopped: string) => {
     testStopped = 0;
   }
 
-  if (numAct >= 0 && testStopped == 0) {
+  if (numAct >= 0 && testStopped === 0) {
     return "#6F6F6F"; // #6F6F6F
   } else {
     return "green"; // green
