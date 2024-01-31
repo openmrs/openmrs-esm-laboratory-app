@@ -4,6 +4,7 @@
         "fhir2": "^1.2.0",
         "webservices.rest": "^2.24.0"
     },
+
     "pages": [{
         "component": "root",
         "route": "laboratory"
@@ -101,6 +102,42 @@
                 "title": "Approved"
             }
         },
+                    {
+      "name": "tests-ordered-tile-component",
+      "slot": "lab-tiles-slot",
+      "component": "testOrderedTileComponent",
+      "meta": {
+        "name": "testsOrderedTileSlot",
+        "title": "Ordered tests"
+      }
+    },
+    {
+      "name": "completed-tile-component",
+      "slot": "lab-tiles-slot",
+      "component": "completedTileComponent",
+      "meta": {
+        "name": "completedTileSlot",
+        "title": "Completed"
+      }
+    },
+    {
+      "name": "worklist-tile-component",
+      "slot": "lab-tiles-slot",
+      "component": "worklistTileComponent",
+      "meta": {
+        "name": "worklisTileSlot",
+        "title": "Worklist"
+      }
+    },
+    {
+      "name": "referred-tile-component",
+      "slot": "lab-tiles-slot",
+      "component": "referredTileComponent",
+      "meta": {
+        "name": "referredTileSlot",
+        "title": "Referred tests"
+      }
+    },
         {
             "name": "pick-lab-request-button",
             "component": "pickLabRequestButton",
@@ -113,3 +150,4 @@
         }
     ]
 }
+

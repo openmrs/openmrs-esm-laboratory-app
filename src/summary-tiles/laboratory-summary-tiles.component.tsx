@@ -1,52 +1,51 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLabTestsStats, useMetrics } from "./laboratory-summary.resource";
-import SummaryTile from "./summary-tile.component";
 import styles from "./laboratory-summary-tiles.scss";
-import { useSession } from "@openmrs/esm-framework";
-import { usePatientQueuesList } from "../queue-list/laboratory-patient-list.resource";
+import {
+  AssignedExtension,
+  ExtensionSlot,
+  useConnectedExtensions,
+  useSession,
+  attach,
+  detachAll,
+  Extension,
+} from "@openmrs/esm-framework";
+import { ComponentContext } from "@openmrs/esm-framework/src/internal";
+import SummaryTile from "./summary-tile.component";
 
 const LaboratorySummaryTiles: React.FC = () => {
   const { t } = useTranslation();
 
   const session = useSession();
 
-  // get tests ordered
-  const { count: testOrderedCount } = useLabTestsStats("");
+  const labTileSlot = "lab-tiles-slot";
 
-  // get worklists
-  const { count: worklistCount } = useLabTestsStats("IN_PROGRESS");
-
-  // get refered lists
-
-  // get approved
-  const { count: completedCount } = useLabTestsStats("COMPLETED");
+  const tilesExtensions = useConnectedExtensions(
+    labTileSlot
+  ) as AssignedExtension[];
 
   return (
-    <>
-      <div className={styles.cardContainer}>
-        <SummaryTile
-          label={t("orders", "Orders")}
-          value={testOrderedCount}
-          headerLabel={t("testsOrdered", "Tests ordered")}
-        />
-        <SummaryTile
-          label={t("inProgress", "In progress")}
-          value={worklistCount}
-          headerLabel={t("worklist", "Worklist")}
-        />
-        <SummaryTile
-          label={t("transferred", "Transferred")}
-          value={0}
-          headerLabel={t("referredTests", "Referred tests")}
-        />
-        <SummaryTile
-          label={t("completed", "Completed")}
-          value={completedCount}
-          headerLabel={t("results", "Results")}
-        />
-      </div>
-    </>
+    <div className={styles.cardContainer}>
+      {tilesExtensions
+        .filter((extension) => Object.keys(extension.meta).length > 0)
+        .map((extension, index) => {
+          return (
+            <ComponentContext.Provider
+              key={extension.id}
+              value={{
+                moduleName: extension.moduleName,
+                extension: {
+                  extensionId: extension.id,
+                  extensionSlotName: labTileSlot,
+                  extensionSlotModuleName: extension.moduleName,
+                },
+              }}
+            >
+              <Extension />
+            </ComponentContext.Provider>
+          );
+        })}
+    </div>
   );
 };
 

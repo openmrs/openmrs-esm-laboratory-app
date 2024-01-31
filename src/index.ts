@@ -118,6 +118,26 @@ export const rejectOrderButton = getAsyncLifecycle(
   options
 );
 
+export const worklistTileComponent = getAsyncLifecycle(
+  () => import("./lab-tiles/worklist-tile.component"),
+  options
+);
+
+export const referredTileComponent = getAsyncLifecycle(
+  () => import("./lab-tiles/referred-tile.component"),
+  options
+);
+
+export const completedTileComponent = getAsyncLifecycle(
+  () => import("./lab-tiles/completed-tile.component"),
+  options
+);
+
+export const testOrderedTileComponent = getAsyncLifecycle(
+  () => import("./lab-tiles/tests-ordered-tile.component"),
+  options
+);
+
 export function startupApp() {
   defineConfigSchema(moduleName, configSchema);
 }

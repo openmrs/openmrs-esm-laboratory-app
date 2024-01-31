@@ -17,6 +17,9 @@ Implementers can add or remove laboratory tab panels via extension configuration
 
 <img src="https://raw.githubusercontent.com/openmrs/openmrs-esm-laboratory/main/assets/screenshots/labs_enter_results.png" />
 
+### Adding or removing summary tiles
+Implementers can add or remove summary tiles via extension configuration in the [routes.js](https://github.com/openmrs/openmrs-esm-laboratory/blob/main/src/routes.json) json file 
+
 # Getting Started
 
 ```sh
