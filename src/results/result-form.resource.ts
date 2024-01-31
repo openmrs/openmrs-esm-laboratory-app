@@ -19,12 +19,13 @@ export interface ConceptResponse {
   attributes: any[];
   links: Link18[];
   resourceVersion: string;
-  hiNormal: number;
-  hiAbsolute: number;
-  hiCritical: number;
-  lowNormal: number;
-  lowAbsolute: number;
-  lowCritical: number;
+  hiNormal?: number;
+  hiAbsolute?: number;
+  hiCritical?: number;
+  lowNormal?: number;
+  lowAbsolute?: number;
+  lowCritical?: number;
+  units?: string;
 }
 
 export interface Name {
@@ -165,12 +166,12 @@ export interface ConceptReference {
   attributes: any[];
   links: Link15[];
   resourceVersion: string;
-  hiNormal: number;
-  hiAbsolute: number;
-  hiCritical: number;
-  lowNormal: number;
-  lowAbsolute: number;
-  lowCritical: number;
+  hiNormal?: number;
+  hiAbsolute?: number;
+  hiCritical?: number;
+  lowNormal?: number;
+  lowAbsolute?: number;
+  lowCritical?: number;
   units?: string;
 }
 

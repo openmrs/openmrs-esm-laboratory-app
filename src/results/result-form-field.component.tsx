@@ -25,25 +25,22 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
   const isPanel = (concept) => concept.setMembers?.length > 0;
 
   const printValueRange = (concept: ConceptReference) => {
-    let maxVal;
-    let minVal;
-    let rangeString = "";
     if (concept?.datatype?.display === "Numeric") {
-      maxVal = Math.max(
+      const maxVal = Math.max(
         concept?.hiAbsolute,
         concept?.hiCritical,
         concept?.hiNormal
       );
-      minVal = Math.min(
+      const minVal = Math.min(
         concept?.lowAbsolute,
         concept?.lowCritical,
         concept?.lowNormal
       );
-      rangeString = ` (${minVal ?? 0} - ${maxVal ?? 0} ${
+      return ` (${minVal ?? 0} - ${maxVal > 0 ? maxVal : "--"} ${
         concept?.units ?? ""
       })`;
     }
-    return rangeString;
+    return "";
   };
 
   return (
