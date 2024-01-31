@@ -50,7 +50,13 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
   const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState("");
 
   const [filter, setFilter] = useState<
-    "All" | "EXCEPTION" | "RECEIVED" | "COMPLETED" | "IN_PROGRESS"
+    | "All"
+    | "EXCEPTION"
+    | "RECEIVED"
+    | "COMPLETED"
+    | "IN_PROGRESS"
+    | "ON_HOLD"
+    | "DECLINED"
   >("All");
 
   const { workListEntries, isLoading } = useGetOrdersWorklist(
@@ -219,6 +225,8 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
                         "IN_PROGRESS",
                         "COMPLETED",
                         "EXCEPTION",
+                        "ON_HOLD",
+                        "DECLINED",
                       ]}
                       onChange={handleOrderStatusChange}
                     />
