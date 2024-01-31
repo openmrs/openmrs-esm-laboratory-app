@@ -260,7 +260,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
         ),
       },
       location: {
-        content: <span>{entry.location.display}</span>,
+        content: <span>{entry?.location?.display}</span>,
       },
       status: {
         content: <span>--</span>,
