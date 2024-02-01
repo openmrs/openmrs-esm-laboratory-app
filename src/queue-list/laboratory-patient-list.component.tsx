@@ -7,20 +7,16 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableExpandHeader,
-  TableExpandRow,
-  OverflowMenuItem,
-  OverflowMenu,
   TableHead,
   TableHeader,
   TableRow,
+  Dropdown,
   TabPanel,
   TableToolbar,
   TableToolbarContent,
   TableToolbarSearch,
   Layer,
   Tag,
-  TableExpandedRow,
   Tile,
   Button,
   DatePicker,
@@ -35,9 +31,7 @@ import {
   formatDate,
   formatDatetime,
   parseDate,
-  showModal,
   usePagination,
-  useSession,
 } from "@openmrs/esm-framework";
 import styles from "./laboratory-queue.scss";
 import { getStatusColor } from "../utils/functions";
@@ -53,12 +47,46 @@ interface RejectOrderProps {
 const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
   const { t } = useTranslation();
 
+  const OrderStatuses = [
+    "All",
+    "RECEIVED",
+    "IN_PROGRESS",
+    "COMPLETED",
+    "EXCEPTION",
+    "ON_HOLD",
+    "DECLINED",
+  ];
+
   const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState("");
+
+  const [filter, setFilter] = useState<
+    | "All"
+    | "EXCEPTION"
+    | "RECEIVED"
+    | "COMPLETED"
+    | "IN_PROGRESS"
+    | "ON_HOLD"
+    | "DECLINED"
+  >("All");
 
   const { workListEntries, isLoading } = useGetOrdersWorklist(
     activatedOnOrAfterDate,
     ""
   );
+
+  const filteredStatus = useMemo(() => {
+    if (!filter || filter == "All") {
+      return workListEntries;
+    }
+
+    if (filter) {
+      return workListEntries?.filter(
+        (order) => order.fulfillerStatus === filter
+      );
+    }
+
+    return workListEntries;
+  }, [filter, workListEntries]);
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
@@ -67,7 +95,7 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     goTo,
     results: paginatedWorklistQueueEntries,
     currentPage,
-  } = usePagination(workListEntries, currentPageSize);
+  } = usePagination(filteredStatus, currentPageSize);
   // get picked orders
   let columns = [
     { id: 0, header: t("date", "Date"), key: "date" },
@@ -87,6 +115,8 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     { id: 9, header: t("urgency", "Urgency"), key: "urgency" },
     { id: 10, header: t("actions", "Actions"), key: "actions" },
   ];
+
+  const handleOrderStatusChange = ({ selectedItem }) => setFilter(selectedItem);
 
   const tableRows = useMemo(() => {
     return paginatedWorklistQueueEntries
@@ -188,6 +218,21 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
               >
                 <TableToolbarContent>
                   <Layer style={{ margin: "5px" }}>
+                    <Dropdown
+                      id="orderStatus"
+                      initialSelectedItem={"All"}
+                      label=""
+                      titleText={
+                        t("filterOrdersByStatus", "Filter Orders by status") +
+                        ":"
+                      }
+                      type="inline"
+                      items={OrderStatuses}
+                      onChange={handleOrderStatusChange}
+                    />
+                  </Layer>
+
+                  <Layer style={{ margin: "5px" }}>
                     <DatePicker dateFormat="Y-m-d" datePickerType="single">
                       <DatePickerInput
                         labelText={""}
@@ -200,13 +245,6 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
                         value={activatedOnOrAfterDate}
                       />
                     </DatePicker>
-                  </Layer>
-                  <Layer>
-                    <TableToolbarSearch
-                      onChange={onInputChange}
-                      placeholder={t("searchThisList", "Search this list")}
-                      size="sm"
-                    />
                   </Layer>
                 </TableToolbarContent>
               </TableToolbar>
