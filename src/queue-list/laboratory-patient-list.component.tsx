@@ -48,13 +48,13 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
   const { t } = useTranslation();
 
   const OrderStatuses = [
-    t("all", "All"),
-    t("received", "RECEIVED"),
-    t("inProgressOrder", "IN_PROGRESS"),
-    t("completedOrder", "COMPLETED"),
-    t("exception", "EXCEPTION"),
-    t("on_hold", "ON_HOLD"),
-    t("decline", "DECLINED"),
+    "All",
+    "RECEIVED",
+    "IN_PROGRESS",
+    "COMPLETED",
+    "EXCEPTION",
+    "ON_HOLD",
+    "DECLINED",
   ];
 
   const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState("");
