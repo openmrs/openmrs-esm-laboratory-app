@@ -47,6 +47,16 @@ interface RejectOrderProps {
 const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
   const { t } = useTranslation();
 
+  const OrderStatuses = [
+    t("all", "All"),
+    t("received", "RECEIVED"),
+    t("inProgressOrder", "IN_PROGRESS"),
+    t("completedOrder", "COMPLETED"),
+    t("exception", "EXCEPTION"),
+    t("on_hold", "ON_HOLD"),
+    t("decline", "DECLINED"),
+  ];
+
   const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState("");
 
   const [filter, setFilter] = useState<
@@ -213,21 +223,11 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
                       initialSelectedItem={"All"}
                       label=""
                       titleText={
-                        t(
-                          "filter_orders_by_status",
-                          "Filter Orders by status"
-                        ) + ":"
+                        t("filterOrdersByStatus", "Filter Orders by status") +
+                        ":"
                       }
                       type="inline"
-                      items={[
-                        "All",
-                        "RECEIVED",
-                        "IN_PROGRESS",
-                        "COMPLETED",
-                        "EXCEPTION",
-                        "ON_HOLD",
-                        "DECLINED",
-                      ]}
+                      items={OrderStatuses}
                       onChange={handleOrderStatusChange}
                     />
                   </Layer>

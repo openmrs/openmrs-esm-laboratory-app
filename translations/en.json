@@ -15,5 +15,12 @@
   "worklist": "Worklist",
   "rejectOrder": "Reject Order",
   "pickLabRequest": "Pick Lab Request",
-  "filter_orders_by_status": "Filter Orders by status"
+  "filterOrdersByStatus": "Filter Orders by status",
+  "inProgressOrder": "IN_PROGRESS",
+  "received": "RECEIVED",
+  "all": "All",
+  "completedOrder": "COMPLETED",
+  "exception": "EXCEPTION",
+  "onHold": "ON_HOLD",
+  "decline": "DECLINED"
 }
