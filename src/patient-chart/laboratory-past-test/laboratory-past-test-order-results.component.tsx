@@ -286,15 +286,6 @@ const LaboratoryPastTestOrderResults: React.FC<
               <InlineLoading />
             </span>
           ) : null}
-          <div className={styles.buttons}>
-            <Button
-              kind="ghost"
-              renderIcon={(props) => <Add size={16} {...props} />}
-              iconDescription="Launch lab Request"
-            >
-              {t("add", "Add")}
-            </Button>
-          </div>
         </CardHeader>
         <DataTable rows={tableRows} headers={tableHeaders} useZebraStyles>
           {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (

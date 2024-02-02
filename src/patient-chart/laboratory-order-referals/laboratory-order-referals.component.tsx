@@ -39,8 +39,15 @@ import {
   InlineLoading,
 } from "@carbon/react";
 
-import { Printer, MailAll, Add } from "@carbon/react/icons";
-
+import {
+  Printer,
+  MailAll,
+  Add,
+  Checkmark,
+  SendAlt,
+  NotSent,
+  Edit,
+} from "@carbon/react/icons";
 import TestsResults from "../results-summary/test-results-table.component";
 import { useReactToPrint } from "react-to-print";
 import PrintResultsSummary from "../results-summary/print-results-summary.component";
@@ -51,11 +58,19 @@ import {
   getOrderColor,
 } from "../patient-laboratory-order-results.resource";
 import { useLaboratoryOrderResultsPages } from "../patient-laboratory-order-results-table.resource";
-import { CardHeader } from "@openmrs/esm-patient-common-lib";
-// import EditActionsMenu from "./edit-actions-menu.component";
+import {
+  CardHeader,
+  launchPatientWorkspace,
+} from "@openmrs/esm-patient-common-lib";
+import { mutate } from "swr";
 
 interface LaboratoryOrderReferalResultsProps {
   patientUuid: string;
+}
+
+interface EditReferralActionProps {
+  formUuid: string;
+  encounterUuid: string;
 }
 
 interface PrintProps {
@@ -140,6 +155,35 @@ const LaboratoryOrderReferalResults: React.FC<
     );
   };
 
+  const EditReferralAction: React.FC<EditReferralActionProps> = ({
+    formUuid,
+    encounterUuid,
+  }) => {
+    const launchForm = () => {
+      launchPatientWorkspace("patient-laboratory-referral-workspace", {
+        workspaceTitle: "Edit Referral Form",
+        mutateForm: () => {
+          mutate((key) => true, undefined, {
+            revalidate: true,
+          });
+        },
+        formInfo: {
+          encounterUuid: encounterUuid,
+          formUuid: formUuid,
+        },
+      });
+    };
+
+    return (
+      <Button
+        kind="ghost"
+        size="sm"
+        onClick={launchForm}
+        renderIcon={(props) => <Edit size={16} {...props} />}
+      />
+    );
+  };
+
   const LaunchLabRequestForm: React.FC = () => {
     return (
       <IconButton label="Add">
@@ -217,7 +261,8 @@ const LaboratoryOrderReferalResults: React.FC<
         content: (
           <span>
             {formatDate(parseDate(entry.encounterDatetime), {
-              time: false,
+              time: true,
+              mode: "standard",
             })}
           </span>
         ),
@@ -260,7 +305,10 @@ const LaboratoryOrderReferalResults: React.FC<
       actions: {
         content: (
           <div style={{ display: "flex" }}>
-            {/* <EditActionsMenu /> */}
+            <EditReferralAction
+              formUuid={entry[index]?.form?.uuid}
+              encounterUuid={entry[index]?.uuid}
+            />
             <PrintButtonAction encounter={entry} />
             <EmailButtonAction />
           </div>
@@ -329,6 +377,7 @@ const LaboratoryOrderReferalResults: React.FC<
                         color: "white",
                       }}
                       title="Result Requested"
+                      renderIcon={() => <SendAlt />}
                     >
                       {"Requested"}
                     </Tag>
@@ -339,6 +388,7 @@ const LaboratoryOrderReferalResults: React.FC<
                         color: "white",
                       }}
                       title="Result Complete"
+                      renderIcon={() => <Checkmark />}
                     >
                       {"Completed"}
                     </Tag>
@@ -349,6 +399,7 @@ const LaboratoryOrderReferalResults: React.FC<
                         color: "white",
                       }}
                       title="Result Rejected"
+                      renderIcon={() => <NotSent />}
                     >
                       {"Rejected"}
                     </Tag>

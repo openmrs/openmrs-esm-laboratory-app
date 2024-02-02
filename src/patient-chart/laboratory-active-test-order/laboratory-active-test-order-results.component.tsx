@@ -151,7 +151,7 @@ const LaboratoryActiveTestOrderResults: React.FC<
   };
 
   const launchLabRequestForm = () => {
-    launchPatientWorkspace("patient-form-entry-workspace", {
+    launchPatientWorkspace("patient-laboratory-referral-workspace", {
       workspaceTitle: "Lab Request Form",
       mutateForm: () => {
         mutate((key) => true, undefined, {
