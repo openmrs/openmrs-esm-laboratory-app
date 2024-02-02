@@ -19,6 +19,12 @@ export interface ConceptResponse {
   attributes: any[];
   links: Link18[];
   resourceVersion: string;
+  hiNormal: number;
+  hiAbsolute: number;
+  hiCritical: number;
+  lowNormal: number;
+  lowAbsolute: number;
+  lowCritical: number;
 }
 
 export interface Name {
@@ -159,6 +165,13 @@ export interface ConceptReference {
   attributes: any[];
   links: Link15[];
   resourceVersion: string;
+  hiNormal: number;
+  hiAbsolute: number;
+  hiCritical: number;
+  lowNormal: number;
+  lowAbsolute: number;
+  lowCritical: number;
+  units?: string;
 }
 
 export interface Name3 {
@@ -300,7 +313,8 @@ export async function GetOrderConceptByUuid(uuid: string) {
 }
 
 export function useGetOrderConceptByUuid(uuid: string) {
-  const apiUrl = `/ws/rest/v1/concept/${uuid}?v=full`;
+  const apiUrl = `/ws/rest/v1/concept/${uuid}?v=custom:(uuid,display,name,datatype,set,answers,hiNormal,hiAbsolute,hiCritical,lowNormal,lowAbsolute,lowCritical,units,setMembers:(uuid,display,answers,datatype,hiNormal,hiAbsolute,hiCritical,lowNormal,lowAbsolute,lowCritical,units))`;
+
   const { data, error, isLoading, isValidating, mutate } = useSWR<
     { data: ConceptResponse },
     Error
@@ -314,7 +328,6 @@ export function useGetOrderConceptByUuid(uuid: string) {
   };
 }
 
-// create observation
 export async function UpdateEncounter(uuid: string, payload: any) {
   const abortController = new AbortController();
   return openmrsFetch(`/ws/rest/v1/encounter/${uuid}`, {

@@ -4,6 +4,7 @@ import { TextInput, Select, SelectItem } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import { ConceptReference } from "./result-form.resource";
 import { Controller } from "react-hook-form";
+import { min } from "rxjs/operators";
 
 interface ResultFormFieldProps {
   concept: ConceptReference;
@@ -23,6 +24,28 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
   const isCoded = (concept) => concept.datatype?.display === "Coded";
   const isPanel = (concept) => concept.setMembers?.length > 0;
 
+  const printValueRange = (concept: ConceptReference) => {
+    let maxVal;
+    let minVal;
+    let rangeString = "";
+    if (concept?.datatype?.display === "Numeric") {
+      maxVal = Math.max(
+        concept?.hiAbsolute,
+        concept?.hiCritical,
+        concept?.hiNormal
+      );
+      minVal = Math.min(
+        concept?.lowAbsolute,
+        concept?.lowCritical,
+        concept?.lowNormal
+      );
+      rangeString = ` (${minVal ?? 0} - ${maxVal ?? 0} ${
+        concept?.units ?? ""
+      })`;
+    }
+    return rangeString;
+  };
+
   return (
     <>
       {Object.keys(errors).length > 0 && (
@@ -41,7 +64,12 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
               className={styles.textInput}
               {...field}
               type={concept.datatype.display === "Numeric" ? "number" : "text"}
-              labelText={concept?.display}
+              labelText={
+                concept?.display +
+                (concept.datatype.display === "Numeric"
+                  ? printValueRange(concept) ?? ""
+                  : "")
+              }
               autoFocus
             />
           )}
@@ -98,7 +126,12 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
                     type={
                       member.datatype.display === "Numeric" ? "number" : "text"
                     }
-                    labelText={member?.display}
+                    labelText={
+                      member?.display +
+                      (member.datatype.display === "Numeric"
+                        ? printValueRange(member) ?? ""
+                        : "")
+                    }
                     autoFocus={index === 0}
                   />
                 )}
