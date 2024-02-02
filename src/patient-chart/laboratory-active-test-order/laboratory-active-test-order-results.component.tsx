@@ -246,28 +246,29 @@ const LaboratoryActiveTestOrderResults: React.FC<
           content: (
             <>
               {entry?.orders
-                ?.filter((order) => {
-                  order?.type === "testorder" && order?.action === "NEW";
-                })
-                .map((order) => {
-                  return (
-                    <Tag
-                      style={{
-                        background: `${getOrderColor(
-                          order.dateActivated,
-                          order.dateStopped
-                        )}`,
-                        color: "white",
-                      }}
-                      role="tooltip"
-                    >
-                      {order?.concept?.display}
-                    </Tag>
-                  );
-                })}
+                ?.filter(
+                  (order) =>
+                    order?.type === "testorder" && order?.action === "NEW"
+                )
+                .map((order) => (
+                  <Tag
+                    style={{
+                      background: `${getOrderColor(
+                        order.dateActivated,
+                        order.dateStopped
+                      )}`,
+                      color: "white",
+                    }}
+                    role="tooltip"
+                    key={order.uuid} // Add a unique key for each Tag
+                  >
+                    {order?.concept?.display}
+                  </Tag>
+                ))}
             </>
           ),
         },
+
         location: {
           content: <span>{entry.location.display}</span>,
         },

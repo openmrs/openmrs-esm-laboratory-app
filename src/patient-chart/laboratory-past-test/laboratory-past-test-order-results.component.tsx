@@ -232,24 +232,23 @@ const LaboratoryPastTestOrderResults: React.FC<
               {entry?.orders
                 ?.filter(
                   (order) =>
-                    order?.type === "testorder" || order.action === "REVISE"
+                    order?.type === "testorder" && order?.action === "NEW"
                 )
-                .map((order) => {
-                  return (
-                    <Tag
-                      style={{
-                        background: `${getOrderColor(
-                          order.dateActivated,
-                          order.dateStopped
-                        )}`,
-                        color: "white",
-                      }}
-                      role="tooltip"
-                    >
-                      {order?.concept?.display}
-                    </Tag>
-                  );
-                })}
+                .map((order) => (
+                  <Tag
+                    style={{
+                      background: `${getOrderColor(
+                        order.dateActivated,
+                        order.dateStopped
+                      )}`,
+                      color: "white",
+                    }}
+                    role="tooltip"
+                    key={order.uuid} // Add a unique key for each Tag
+                  >
+                    {order?.concept?.display}
+                  </Tag>
+                ))}
             </>
           ),
         },

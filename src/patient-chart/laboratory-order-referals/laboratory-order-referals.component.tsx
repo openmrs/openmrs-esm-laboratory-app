@@ -52,7 +52,7 @@ import {
 } from "../patient-laboratory-order-results.resource";
 import { useLaboratoryOrderResultsPages } from "../patient-laboratory-order-results-table.resource";
 import { CardHeader } from "@openmrs/esm-patient-common-lib";
-import EditActionsMenu from "./edit-actions-menu.component";
+// import EditActionsMenu from "./edit-actions-menu.component";
 
 interface LaboratoryOrderReferalResultsProps {
   patientUuid: string;
@@ -225,24 +225,26 @@ const LaboratoryOrderReferalResults: React.FC<
       orders: {
         content: (
           <>
-            {entry.orders
-              .filter((order) => order?.type === "testorder")
-              .map((order) => {
-                return (
-                  <Tag
-                    style={{
-                      background: `${getOrderColor(
-                        order.dateActivated,
-                        order.dateStopped
-                      )}`,
-                      color: "white",
-                    }}
-                    role="tooltip"
-                  >
-                    {order?.concept?.display}
-                  </Tag>
-                );
-              })}
+            {entry?.orders
+              ?.filter(
+                (order) =>
+                  order?.type === "testorder" && order?.action === "NEW"
+              )
+              .map((order) => (
+                <Tag
+                  style={{
+                    background: `${getOrderColor(
+                      order.dateActivated,
+                      order.dateStopped
+                    )}`,
+                    color: "white",
+                  }}
+                  role="tooltip"
+                  key={order.uuid} // Add a unique key for each Tag
+                >
+                  {order?.concept?.display}
+                </Tag>
+              ))}
           </>
         ),
       },
@@ -258,7 +260,7 @@ const LaboratoryOrderReferalResults: React.FC<
       actions: {
         content: (
           <div style={{ display: "flex" }}>
-            <EditActionsMenu />
+            {/* <EditActionsMenu /> */}
             <PrintButtonAction encounter={entry} />
             <EmailButtonAction />
           </div>
