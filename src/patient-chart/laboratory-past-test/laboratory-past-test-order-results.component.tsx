@@ -60,7 +60,7 @@ import {
   getOrderColor,
 } from "../patient-laboratory-order-results.resource";
 import { useLaboratoryOrderResultsPages } from "../patient-laboratory-order-results-table.resource";
-import { CardHeader } from "../../components/cards";
+import { CardHeader } from "@openmrs/esm-patient-common-lib";
 
 interface LaboratoryPastTestOrderResultsProps {
   patientUuid: string;
@@ -270,7 +270,7 @@ const LaboratoryPastTestOrderResults: React.FC<
           ),
         },
       }));
-  }, [laboratoryOrders, twentyFourHoursAgo]);
+  }, [enableSendingLabTestsByEmail, laboratoryOrders, twentyFourHoursAgo]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
