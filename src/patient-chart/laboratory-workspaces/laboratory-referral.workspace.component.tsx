@@ -8,7 +8,7 @@ export const LaboratoryWorkspace: React.FC<DefaultWorkspaceProps> = ({
 }) => {
   return (
     <>
-      <span>Testing</span>
+      <span>Coming Soon...</span>
     </>
   );
 };
