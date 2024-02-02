@@ -31,6 +31,12 @@ export const configSchema = {
     _default: "b1f8b6c8-c255-4518-89f5-4236ab76025b",
     _description: "Concept uuid for laboratory referals destinations",
   },
+
+  enableSendingLabTestsByEmail: {
+    _type: Type.Boolean,
+    _default: false,
+    _description: "This enables sending results to patient via email",
+  },
 };
 
 export type Config = {

@@ -12,6 +12,7 @@ import {
   parseDate,
   ErrorState,
   showModal,
+  useConfig,
 } from "@openmrs/esm-framework";
 
 import {
@@ -73,6 +74,8 @@ const LaboratoryPastTestOrderResults: React.FC<
   LaboratoryPastTestOrderResultsProps
 > = ({ patientUuid }) => {
   const { t } = useTranslation();
+
+  const { enableSendingLabTestsByEmail } = useConfig();
 
   const displayText = t(
     "pastLaboratoryTestsDisplayTextTitle",
@@ -262,7 +265,7 @@ const LaboratoryPastTestOrderResults: React.FC<
           content: (
             <div style={{ display: "flex" }}>
               <PrintButtonAction encounter={entry} />
-              <EmailButtonAction />
+              {enableSendingLabTestsByEmail && <EmailButtonAction />}
             </div>
           ),
         },

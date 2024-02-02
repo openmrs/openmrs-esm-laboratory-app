@@ -12,6 +12,7 @@ import {
   parseDate,
   ErrorState,
   showModal,
+  useConfig,
 } from "@openmrs/esm-framework";
 
 import {
@@ -81,6 +82,8 @@ const LaboratoryOrderReferalResults: React.FC<
   LaboratoryOrderReferalResultsProps
 > = ({ patientUuid }) => {
   const { t } = useTranslation();
+
+  const { enableSendingLabTestsByEmail } = useConfig();
 
   const displayText = t(
     "referralLaboratoryTestsDisplayTextTitle",
@@ -310,7 +313,7 @@ const LaboratoryOrderReferalResults: React.FC<
               encounterUuid={entry[index]?.uuid}
             />
             <PrintButtonAction encounter={entry} />
-            <EmailButtonAction />
+            {enableSendingLabTestsByEmail && <EmailButtonAction />}
           </div>
         ),
       },
