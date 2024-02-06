@@ -5,7 +5,6 @@ import styles from "../queue-list/laboratory-queue.scss";
 const ApprovedComponent = () => {
   return (
     <div>
-      <div className={styles.headerBtnContainer}></div>
       <CompletedList fulfillerStatus={"COMPLETED"} />
     </div>
   );

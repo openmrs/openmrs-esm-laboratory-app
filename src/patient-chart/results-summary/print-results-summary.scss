@@ -20,12 +20,6 @@
     margin: 5px;
   }
 
-  .headerBtnContainer {
-    background-color: $ui-background;
-    padding: spacing.$spacing-05;
-    text-align: right;
-  }
-
   .tileContainer {
     background-color: $ui-02;
     border-top: 1px solid $ui-03;
@@ -89,7 +83,7 @@
     border-collapse: collapse;
     width: 100%;
   }
-  
+
   td, th {
     border: 1px solid #000;
     text-align: left;
@@ -97,9 +91,8 @@
     padding: 8px;
     width: 80px;
   }
-  
+
   th {
     background-color: #f2f2f2;
   }
-
 }

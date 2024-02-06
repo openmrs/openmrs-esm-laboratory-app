@@ -5,8 +5,6 @@ import styles from "../queue-list/laboratory-queue.scss";
 const ReferredComponent = () => {
   return (
     <div>
-      <div className={styles.headerBtnContainer}></div>
-
       <EmptyState
         displayText={"referred tests"}
         headerTitle={"Referred tests"}

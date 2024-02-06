@@ -163,12 +163,7 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
   }
 
   if (paginatedWorkListEntries?.length > 0) {
-    return (
-      <div>
-        <div className={styles.headerBtnContainer}></div>
-        <DataTable rows={tableRows} headers={tableColumns} useZebraStyles />
-      </div>
-    );
+    return <DataTable rows={tableRows} headers={tableColumns} useZebraStyles />;
   } else {
     return (
       <div className={styles.tileContainer}>
