@@ -1,5 +1,8 @@
 import React, { AnchorHTMLAttributes, useMemo } from "react";
-import { GroupMember, Value } from "../laboratory-order.resource";
+import {
+  GroupMember,
+  Value,
+} from "../patient-laboratory-order-results.resource";
 import { useTranslation } from "react-i18next";
 import {
   DataTable,
@@ -59,7 +62,9 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
       value: {
         content: (
           <span>
-            {typeof member?.value === "number" ? member.value : member.display}
+            {typeof member?.value === "number"
+              ? member?.value
+              : member?.display}
           </span>
         ),
       },
@@ -114,10 +119,10 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
       return <TableCell>{<span>Error</span>}</TableCell>;
     }
 
-    if (concept?.datatype.display === "coded") {
+    if (concept?.datatype?.display === "coded") {
       return (
         <TableCell>
-          {typeof value === "object" ? value.display : value}
+          {typeof value === "object" ? value?.display : value}
         </TableCell>
       );
     }
@@ -171,18 +176,18 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
                           {row.cells.map((cell) =>
                             cell.info.header === "range" ? (
                               <ReferenceRange
-                                conceptUuid={members[index].concept.uuid}
+                                conceptUuid={members[index]?.concept?.uuid}
                               >
                                 {cell.value?.content}
                               </ReferenceRange>
                             ) : cell.info.header === "value" ? (
                               <ColorRangeIndicator
-                                conceptUuid={members[index].concept.uuid}
-                                value={members[index].value}
+                                conceptUuid={members[index]?.concept.uuid}
+                                value={members[index]?.value}
                               />
                             ) : (
                               <TableCell key={cell.id}>
-                                {cell.value?.content ?? cell.value}
+                                {cell.value?.content ?? cell?.value}
                               </TableCell>
                             )
                           )}

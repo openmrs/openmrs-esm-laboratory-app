@@ -26,7 +26,7 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
     let groupedResults = [];
 
     filteredItems.forEach((element) => {
-      groupedResults[element.order.display] = element;
+      groupedResults[element?.order?.display] = element;
     });
     return groupedResults;
   }, [filteredItems]);
@@ -108,10 +108,10 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
           </span>
           <span style={{ margin: "5px", fontSize: "10px" }}>
             HIV Clinic No. :
-            {patient?.identifiers.length
-              ? patient?.identifiers.find((identifier: Identifier) => {
+            {patient?.identifiers?.length
+              ? patient?.identifiers?.find((identifier: Identifier) => {
                   return (
-                    identifier.identifierType.uuid ===
+                    identifier?.identifierType.uuid ===
                     "e1731641-30ab-102d-86b0-7a5022ba4115"
                   );
                 })?.identifier
@@ -119,10 +119,10 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
           </span>
           <span style={{ margin: "5px", fontSize: "10px" }}>
             Patient Unique Code (UIC). :
-            {patient?.identifiers.length > 0
-              ? patient?.identifiers.find((identifier: Identifier) => {
+            {patient?.identifiers?.length > 0
+              ? patient?.identifiers?.find((identifier: Identifier) => {
                   return (
-                    identifier.identifierType.uuid ===
+                    identifier?.identifierType?.uuid ===
                     "877169c4-92c6-4cc9-bf45-1ab95faea242"
                   );
                 })?.identifier
@@ -136,7 +136,7 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
           </span>
           <span style={{ margin: "5px", fontSize: "10px" }}>
             Date Requested :
-            {formatDate(parseDate(encounterResponse.encounterDatetime), {
+            {formatDate(parseDate(encounterResponse?.encounterDatetime), {
               time: false,
             })}
           </span>
@@ -152,7 +152,7 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
         ></div>
       </section>
       <section className={styles.section}>
-        {Object.keys(results).length > 0 && (
+        {Object.keys(results)?.length > 0 && (
           <PrintResultsTable groupedResults={results} />
         )}
       </section>

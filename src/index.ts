@@ -6,7 +6,12 @@ import {
 import { configSchema } from "./config-schema";
 import { createHomeDashboardLink } from "./components/create-dashboard-link.component";
 
-import { createDashboardLink } from "@openmrs/esm-patient-common-lib";
+import laboratoryReferralWorkspaceComponent from "./patient-chart/laboratory-workspaces/laboratory-referral.workspace.component";
+
+import {
+  createDashboardLink,
+  registerWorkspace,
+} from "@openmrs/esm-patient-common-lib";
 
 const moduleName = "@openmrs/esm-laboratory-app";
 
@@ -51,7 +56,7 @@ export const laboratoryOrderDashboardLink = getSyncLifecycle(
   options
 );
 export const laboratoryOrderComponent = getAsyncLifecycle(
-  () => import("./patient-chart/laboratory-order.component"),
+  () => import("./patient-chart/patient-laboratory-order-results.component"),
   options
 );
 
@@ -140,4 +145,9 @@ export const testOrderedTileComponent = getAsyncLifecycle(
 
 export function startupApp() {
   defineConfigSchema(moduleName, configSchema);
+  registerWorkspace({
+    name: "patient-laboratory-referral-workspace",
+    title: "Laboratory Referral Form",
+    load: getSyncLifecycle(laboratoryReferralWorkspaceComponent, options),
+  });
 }

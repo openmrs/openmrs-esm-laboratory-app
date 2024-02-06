@@ -6,17 +6,13 @@ import React, {
   useState,
 } from "react";
 import { useTranslation } from "react-i18next";
-import { EmptyState } from "@ohri/openmrs-esm-ohri-commons-lib";
-import styles from "./laboratory-order.scss";
+import styles from "./laboratory-order-referals.scss";
 import {
-  usePagination,
-  useSession,
   formatDate,
-  openmrsFetch,
   parseDate,
   ErrorState,
-  useLayoutType,
   showModal,
+  useConfig,
 } from "@openmrs/esm-framework";
 
 import {
@@ -34,87 +30,94 @@ import {
   TableToolbarSearch,
   Layer,
   Tag,
-  DataTableHeader,
   Tile,
   Pagination,
   TableExpandHeader,
   TableExpandRow,
   TableExpandedRow,
   Button,
+  IconButton,
+  InlineLoading,
 } from "@carbon/react";
-import { Printer, MailAll, Edit } from "@carbon/react/icons";
 
-import ViewLaboratoryItemActionMenu from "./laboratory-item/view-laboratory-item.component";
-import { getOrderColor, useLabOrders } from "./laboratory-order.resource";
-import TestsResults from "./results-summary/test-results-table.component";
+import {
+  Printer,
+  MailAll,
+  Add,
+  Checkmark,
+  SendAlt,
+  NotSent,
+  Edit,
+} from "@carbon/react/icons";
+import TestsResults from "../results-summary/test-results-table.component";
 import { useReactToPrint } from "react-to-print";
-import SendEmailDialog from "./results-summary/send-email-dialog.component";
-import PrintResultsSummary from "./results-summary/print-results-summary.component";
-import { EncounterResponse } from "./laboratory-item/view-laboratory-item.resource";
-import { useGetPatientByUuid } from "../utils/functions";
+import PrintResultsSummary from "../results-summary/print-results-summary.component";
+import { EncounterResponse } from "../laboratory-item/view-laboratory-item.resource";
+import { useGetPatientByUuid } from "../../utils/functions";
+import {
+  ResourceRepresentation,
+  getOrderColor,
+} from "../patient-laboratory-order-results.resource";
+import { useLaboratoryOrderResultsPages } from "../patient-laboratory-order-results-table.resource";
+import {
+  CardHeader,
+  launchPatientWorkspace,
+} from "@openmrs/esm-patient-common-lib";
+import { mutate } from "swr";
 
-interface LaboratoryOrderOverviewProps {
+interface LaboratoryOrderReferalResultsProps {
   patientUuid: string;
+}
+
+interface EditReferralActionProps {
+  formUuid: string;
+  encounterUuid: string;
 }
 
 interface PrintProps {
   encounter: EncounterResponse;
 }
 
-type FilterProps = {
-  rowIds: Array<string>;
-  headers: any;
-  cellsById: any;
-  inputValue: string;
-  getCellId: (row, key) => string;
-};
-
-const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
-  patientUuid,
-}) => {
+const LaboratoryOrderReferalResults: React.FC<
+  LaboratoryOrderReferalResultsProps
+> = ({ patientUuid }) => {
   const { t } = useTranslation();
 
-  const isTablet = useLayoutType() === "tablet";
+  const { enableSendingLabTestsByEmail } = useConfig();
+
+  const displayText = t(
+    "referralLaboratoryTestsDisplayTextTitle",
+    "Laboratory Referral Tests"
+  );
 
   const {
-    labRequests,
-    isLoading: loading,
+    items,
+    tableHeaders,
+    currentPage,
+    pageSizes,
+    totalItems,
+    goTo,
+    currentPageSize,
+    setPageSize,
+    isLoading,
     isError,
-  } = useLabOrders(patientUuid);
-
-  const pageSizes = [10, 20, 30, 40, 50];
-  const [page, setPage] = useState(1);
-  const [currentPageSize, setPageSize] = useState(10);
-  const [nextOffSet, setNextOffSet] = useState(0);
+  } = useLaboratoryOrderResultsPages({
+    v: ResourceRepresentation.Full,
+    totalCount: true,
+    patientUuid: patientUuid,
+  });
 
   const sortedLabRequests = useMemo(() => {
-    return [...labRequests].sort((a, b) => {
+    return [...items].sort((a, b) => {
       const dateA = new Date(a.encounterDatetime);
       const dateB = new Date(b.encounterDatetime);
       return dateB.getTime() - dateA.getTime();
     });
-  }, [labRequests]);
-  const {
-    goTo,
-    results: paginatedLabEntries,
-    currentPage,
-  } = usePagination(sortedLabRequests, currentPageSize);
-
-  let columns = [
-    {
-      id: 0,
-      header: t("orderDate", "Test Date"),
-      key: "orderDate",
-    },
-    { id: 1, header: t("tests", "Tests"), key: "orders" },
-    { id: 2, header: t("location", "Location"), key: "location" },
-    { id: 3, header: t("status", "Status"), key: "status" },
-    { id: 4, header: t("actions", "Action"), key: "actions" },
-  ];
+  }, [items]);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [items, setItems] = useState(paginatedLabEntries);
-  const [initialTests, setInitialTests] = useState(paginatedLabEntries);
+  const [laboratoryOrders, setLaboratoryOrders] = useState(sortedLabRequests);
+  const [initialTests, setInitialTests] = useState(sortedLabRequests);
 
   const handleChange = useCallback((event) => {
     const searchText = event?.target?.value?.trim().toLowerCase();
@@ -123,20 +126,20 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
 
   useEffect(() => {
     if (!searchTerm) {
-      setItems(initialTests);
+      setLaboratoryOrders(initialTests);
     } else {
       const filteredItems = initialTests.filter((item) =>
         item?.orders?.some((order) =>
           order?.concept?.display.toLowerCase().includes(searchTerm)
         )
       );
-      setItems(filteredItems);
+      setLaboratoryOrders(filteredItems);
     }
   }, [searchTerm, initialTests]);
 
   useEffect(() => {
-    setInitialTests(paginatedLabEntries);
-  }, [paginatedLabEntries]);
+    setInitialTests(sortedLabRequests);
+  }, [sortedLabRequests]);
 
   const EmailButtonAction: React.FC = () => {
     const launchSendEmailModal = useCallback(() => {
@@ -155,6 +158,42 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
     );
   };
 
+  const EditReferralAction: React.FC<EditReferralActionProps> = ({
+    formUuid,
+    encounterUuid,
+  }) => {
+    const launchForm = () => {
+      launchPatientWorkspace("patient-laboratory-referral-workspace", {
+        workspaceTitle: "Edit Referral Form",
+        mutateForm: () => {
+          mutate((key) => true, undefined, {
+            revalidate: true,
+          });
+        },
+        formInfo: {
+          encounterUuid: encounterUuid,
+          formUuid: formUuid,
+        },
+      });
+    };
+
+    return (
+      <Button
+        kind="ghost"
+        size="sm"
+        onClick={launchForm}
+        renderIcon={(props) => <Edit size={16} {...props} />}
+      />
+    );
+  };
+
+  const LaunchLabRequestForm: React.FC = () => {
+    return (
+      <IconButton label="Add">
+        <Add />
+      </IconButton>
+    );
+  };
   const PrintButtonAction: React.FC<PrintProps> = ({ encounter }) => {
     const { patient } = useGetPatientByUuid(encounter.patient.uuid);
 
@@ -200,37 +239,33 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
       </div>
     );
   };
-  const handleFilter = ({
-    rowIds,
-    headers,
-    cellsById,
-    inputValue,
-    getCellId,
-  }: FilterProps): Array<string> => {
-    return rowIds.filter((rowId) =>
-      headers.some(({ key }) => {
-        const cellId = getCellId(rowId, key);
-        const filterableValue = cellsById[cellId].value;
-        const filterTerm = inputValue.toLowerCase();
 
-        if (typeof filterableValue === "boolean") {
-          return false;
-        }
-
-        return ("" + filterableValue).toLowerCase().includes(filterTerm);
-      })
-    );
-  };
+  const tableReferralHeaders = useMemo(
+    () => [
+      {
+        id: 0,
+        header: t("orderDate", "Test Date"),
+        key: "orderDate",
+      },
+      { id: 1, header: t("tests", "Tests"), key: "orders" },
+      { id: 2, header: t("location", "Location"), key: "location" },
+      { id: 3, header: t("status", "Status"), key: "status" },
+      { id: 4, header: t("referral", "Referral"), key: "referral" },
+      { id: 5, header: t("actions", "Action"), key: "actions" },
+    ],
+    [t]
+  );
 
   const tableRows = useMemo(() => {
-    return items?.map((entry, index) => ({
+    return laboratoryOrders.map((entry, index) => ({
       ...entry,
       id: entry.uuid,
       orderDate: {
         content: (
           <span>
             {formatDate(parseDate(entry.encounterDatetime), {
-              time: false,
+              time: true,
+              mode: "standard",
             })}
           </span>
         ),
@@ -238,24 +273,26 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
       orders: {
         content: (
           <>
-            {entry.orders
-              .filter((order) => order?.type === "testorder")
-              .map((order) => {
-                return (
-                  <Tag
-                    style={{
-                      background: `${getOrderColor(
-                        order.dateActivated,
-                        order.dateStopped
-                      )}`,
-                      color: "white",
-                    }}
-                    role="tooltip"
-                  >
-                    {order?.concept?.display}
-                  </Tag>
-                );
-              })}
+            {entry?.orders
+              ?.filter(
+                (order) =>
+                  order?.type === "testorder" && order?.action === "NEW"
+              )
+              .map((order) => (
+                <Tag
+                  style={{
+                    background: `${getOrderColor(
+                      order.dateActivated,
+                      order.dateStopped
+                    )}`,
+                    color: "white",
+                  }}
+                  role="tooltip"
+                  key={order.uuid} // Add a unique key for each Tag
+                >
+                  {order?.concept?.display}
+                </Tag>
+              ))}
           </>
         ),
       },
@@ -265,18 +302,25 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
       status: {
         content: <span>--</span>,
       },
+      referral: {
+        content: <span>--</span>,
+      },
       actions: {
         content: (
-          <div>
+          <div style={{ display: "flex" }}>
+            <EditReferralAction
+              formUuid={entry[index]?.form?.uuid}
+              encounterUuid={entry[index]?.uuid}
+            />
             <PrintButtonAction encounter={entry} />
-            {/* <EmailButtonAction /> */}
+            {enableSendingLabTestsByEmail && <EmailButtonAction />}
           </div>
         ),
       },
     }));
-  }, [items]);
+  }, [laboratoryOrders]);
 
-  if (loading) {
+  if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
   }
 
@@ -284,16 +328,22 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
     return <ErrorState error={isError} headerTitle={"Error"} />;
   }
 
-  if (paginatedLabEntries?.length >= 0) {
+  if (items?.length >= 0) {
     return (
-      <div>
+      <div className={styles.widgetCard}>
+        <div className={styles.cardHeaderDiv}>
+          <CardHeader title={displayText}>
+            {isLoading ? (
+              <span>
+                <InlineLoading />
+              </span>
+            ) : null}
+          </CardHeader>
+        </div>
         <DataTable
           rows={tableRows}
-          headers={columns}
+          headers={tableReferralHeaders}
           useZebraStyles
-          filterRows={handleFilter}
-          size={isTablet ? "lg" : "sm"}
-          experimentalAutoAlign={true}
         >
           {({
             rows,
@@ -330,6 +380,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                         color: "white",
                       }}
                       title="Result Requested"
+                      renderIcon={() => <SendAlt />}
                     >
                       {"Requested"}
                     </Tag>
@@ -340,6 +391,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                         color: "white",
                       }}
                       title="Result Complete"
+                      renderIcon={() => <Checkmark />}
                     >
                       {"Completed"}
                     </Tag>
@@ -350,6 +402,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                         color: "white",
                       }}
                       title="Result Rejected"
+                      renderIcon={() => <NotSent />}
                     >
                       {"Rejected"}
                     </Tag>
@@ -421,19 +474,17 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                       <p className={styles.helper}>
                         {t("checkFilters", "Check the filters above")}
                       </p>
+                      <p className={styles.separator}>{t("or", "or")}</p>
+                      <LaunchLabRequestForm />
                     </div>
-                    <p className={styles.separator}>{t("or", "or")}</p>
                   </Tile>
                 </div>
               ) : null}
               <Pagination
-                forwardText="Next page"
-                backwardText="Previous page"
                 page={currentPage}
                 pageSize={currentPageSize}
                 pageSizes={pageSizes}
-                totalItems={sortedLabRequests?.length}
-                className={styles.pagination}
+                totalItems={totalItems}
                 onChange={({ pageSize, page }) => {
                   if (pageSize !== currentPageSize) {
                     setPageSize(pageSize);
@@ -442,6 +493,7 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
                     goTo(page);
                   }
                 }}
+                className={styles.paginationOverride}
               />
             </TableContainer>
           )}
@@ -451,4 +503,4 @@ const LaboratoryOrder: React.FC<LaboratoryOrderOverviewProps> = ({
   }
 };
 
-export default LaboratoryOrder;
+export default LaboratoryOrderReferalResults;

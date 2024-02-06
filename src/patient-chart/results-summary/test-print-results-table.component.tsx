@@ -16,6 +16,9 @@ import {
   TableExpandedRow,
 } from "@carbon/react";
 import styles from "./results-summary.scss";
+import RescendTestResultActionMenu from "./test-results-rescend-action-menu.component";
+import { Order } from "../patient-laboratory-order-results.resource";
+import DeleteTestResultActionMenu from "./test-results-delete-action-menu.component";
 import { Ob } from "../laboratory-item/view-laboratory-item.resource";
 import TestResultsChildren from "./test-children-results.component";
 
@@ -79,7 +82,7 @@ const TestsPrintResults: React.FC<TestOrdersProps> = ({ obs }) => {
                         <TableExpandRow {...getRowProps({ row })}>
                           {row.cells.map((cell) => (
                             <TableCell key={cell.id}>
-                              {cell.value?.content ?? cell.value}
+                              {cell.value?.content ?? cell?.value}
                             </TableCell>
                           ))}
                         </TableExpandRow>
@@ -89,7 +92,7 @@ const TestsPrintResults: React.FC<TestOrdersProps> = ({ obs }) => {
                             colSpan={headers.length + 2}
                           >
                             <TestResultsChildren
-                              members={filteredItems[index].groupMembers}
+                              members={filteredItems[index]?.groupMembers}
                             />
                           </TableExpandedRow>
                         ) : (

@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./print-results-summary.scss";
-import { GroupMember } from "../laboratory-order.resource";
+import { GroupMember } from "../patient-laboratory-order-results.resource";
 import { useGetConceptById } from "./results-summary.resource";
 import { InlineLoading } from "@carbon/react";
 
@@ -28,7 +28,7 @@ const PrintResultsTable: React.FC<PrintResultsTableProps> = ({
       if (isError) return <span>Error</span>;
 
       return (
-        <span style={{ marginLeft: "10px" }}>{concept?.units ?? "N"}</span>
+        <span style={{ marginLeft: "10px" }}>{concept?.units ?? "N/A"}</span>
       );
     };
 

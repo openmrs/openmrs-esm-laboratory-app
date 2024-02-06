@@ -11,3 +11,24 @@
 .valueWidget {
     margin-left: "10px"
 }
+
+.section {
+    table {
+        font-family: Arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td,
+    th {
+        border: 1px solid #000;
+        text-align: left;
+        font-size: 8px;
+        padding: 8px;
+        width: 80px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+}
