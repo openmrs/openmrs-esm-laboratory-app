@@ -75,41 +75,38 @@ const LabTests: React.FC<LabTestsProps> = ({ encounter, queueId }) => {
   }
 
   return (
-    <div>
-      <div className={styles.headerBtnContainer}></div>
-      <DataTable rows={tableRows} headers={columns} isSortable useZebraStyles>
-        {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
-          <TableContainer className={styles.tableContainer}>
-            <Table {...getTableProps()} className={styles.activePatientsTable}>
-              <TableHead>
-                <TableRow>
-                  {headers.map((header) => (
-                    <TableHeader {...getHeaderProps({ header })}>
-                      {header.header}
-                    </TableHeader>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row, index) => {
-                  return (
-                    <React.Fragment key={row.id}>
-                      <TableRow {...getRowProps({ row })} key={row.id}>
-                        {row.cells.map((cell) => (
-                          <TableCell key={cell.id}>
-                            {cell.value?.content ?? cell.value}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </React.Fragment>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-      </DataTable>
-    </div>
+    <DataTable rows={tableRows} headers={columns} isSortable useZebraStyles>
+      {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
+        <TableContainer className={styles.tableContainer}>
+          <Table {...getTableProps()} className={styles.activePatientsTable}>
+            <TableHead>
+              <TableRow>
+                {headers.map((header) => (
+                  <TableHeader {...getHeaderProps({ header })}>
+                    {header.header}
+                  </TableHeader>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row, index) => {
+                return (
+                  <React.Fragment key={row.id}>
+                    <TableRow {...getRowProps({ row })} key={row.id}>
+                      {row.cells.map((cell) => (
+                        <TableCell key={cell.id}>
+                          {cell.value?.content ?? cell.value}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </React.Fragment>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+    </DataTable>
   );
 };
 

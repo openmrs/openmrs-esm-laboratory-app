@@ -123,12 +123,6 @@ title {
   }
 }
 
-.headerBtnContainer {
-  background-color: $ui-background;
-  padding: spacing.$spacing-05;
-  text-align: right;
-}
-
 .searchContainer {
   display: flex;
   align-items: center;
@@ -193,7 +187,6 @@ title {
 .tableLayerSearch {
   margin: 5px;
   padding: 10px;
-
 }
 
 .dropDownContainer {
@@ -206,7 +199,6 @@ title {
   padding: 5px;
   margin: 10px;
 }
-
 
 .tileContainer {
   background-color: $ui-02;
@@ -230,4 +222,3 @@ title {
   color: $text-02;
   margin-bottom: 0.5rem;
 }
-

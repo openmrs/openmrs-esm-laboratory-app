@@ -5,7 +5,6 @@ import styles from "../queue-list/laboratory-queue.scss";
 const ReviewComponent = () => {
   return (
     <div>
-      <div className={styles.headerBtnContainer}></div>
       <ReviewList fulfillerStatus={"IN_PROGRESS"} />
     </div>
   );

@@ -72,10 +72,7 @@ const LaboratoryQueueTabs: React.FC = () => {
           </TabList>
           <TabPanels>
             <TabPanel style={{ padding: 0 }}>
-              <div>
-                <div className={styles.headerBtnContainer}></div>
-                <LaboratoryPatientList />
-              </div>
+              <LaboratoryPatientList />
             </TabPanel>
             {tabExtensions
               .filter((extension) => Object.keys(extension.meta).length > 0)
