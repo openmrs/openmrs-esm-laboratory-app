@@ -51,10 +51,6 @@
             "component": "resultsSummaryWorkSpace"
         },
         {
-            "name" :"",
-            "component": ""
-         },
-        {
             "name": "edit-results-dialog",
             "component": "editResultsDialog"
         },
