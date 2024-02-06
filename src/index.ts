@@ -5,13 +5,31 @@ import {
 } from "@openmrs/esm-framework";
 import { configSchema } from "./config-schema";
 import { createHomeDashboardLink } from "./components/create-dashboard-link.component";
-
 import { createDashboardLink } from "@openmrs/esm-patient-common-lib";
+import Root from "./root.component";
+import LaboratoryOrder from "./patient-chart/laboratory-order.component";
+import AddToWorklistDialog from "./queue-list/lab-dialogs/add-to-worklist-dialog.component";
+import SendEmailDialog from "./patient-chart/results-summary/send-email-dialog.component";
+import ResultsSummary from "./patient-chart/results-summary/results-summary.component";
+import EditResultsDialog from "./patient-chart/results-summary/results-dialog/edit-results-dialog.component";
+import ReviewItem from "./review-list/dialog/review-item.component";
+import RejectOrderDialog from "./reject-order/reject-order-dialog.component";
+import ReviewComponent from "./lab-tabs/review-tab.component";
+import ApprovedComponent from "./lab-tabs/approved-tab.component";
+import ReferredComponent from "./lab-tabs/referred-tab.component";
+import WorkListComponent from "./lab-tabs/work-list-tab.component";
+import PickLabRequestActionMenu from "./order-actions/pick-lab-request-menu.component";
+import RejectOrderOverflowMenuItem from "./order-actions/reject-order-menu.component";
+import WorklistTile from "./lab-tiles/worklist-tile.component";
+import ReferredTile from "./lab-tiles/referred-tile.component";
+import CompletedTile from "./lab-tiles/completed-tile.component";
+import TestOrderedTile from "./lab-tiles/tests-ordered-tile.component";
+import Laboratory from "./laboratory.component";
 
 const moduleName = "@openmrs/esm-laboratory-app";
 
 const options = {
-  featureName: "ugandaemr-laboratory",
+  featureName: "laboratory",
   moduleName,
 };
 
@@ -22,10 +40,7 @@ export const importTranslation = require.context(
   "lazy"
 );
 
-export const root = getAsyncLifecycle(
-  () => import("./root.component"),
-  options
-);
+export const root = getSyncLifecycle(Root, options);
 
 export const laboratoryDashboardLink = getSyncLifecycle(
   createHomeDashboardLink({
@@ -36,10 +51,7 @@ export const laboratoryDashboardLink = getSyncLifecycle(
   options
 );
 
-export const laboratoryComponent = getAsyncLifecycle(
-  () => import("./laboratory.component"),
-  options
-);
+export const laboratoryComponent = getSyncLifecycle(Laboratory, options);
 
 // Patient chart
 export const laboratoryOrderDashboardLink = getSyncLifecycle(
@@ -50,93 +62,58 @@ export const laboratoryOrderDashboardLink = getSyncLifecycle(
   }),
   options
 );
-export const laboratoryOrderComponent = getAsyncLifecycle(
-  () => import("./patient-chart/laboratory-order.component"),
+
+export const laboratoryOrderComponent = getSyncLifecycle(
+  LaboratoryOrder,
   options
 );
 
-export const addToWorklistDialog = getAsyncLifecycle(
-  () => import("./queue-list/lab-dialogs/add-to-worklist-dialog.component"),
+export const addToWorklistDialog = getSyncLifecycle(
+  AddToWorklistDialog,
   options
 );
 
-export const sendEmailDialog = getAsyncLifecycle(
-  () => import("./patient-chart/results-summary/send-email-dialog.component"),
+export const sendEmailDialog = getSyncLifecycle(SendEmailDialog, options);
+
+export const resultsSummaryWorkSpace = getSyncLifecycle(
+  ResultsSummary,
   options
 );
 
-export const resultsSummaryWorkSpace = getAsyncLifecycle(
-  () => import("./patient-chart/results-summary/results-summary.component"),
+export const editResultsDialog = getSyncLifecycle(EditResultsDialog, options);
+
+export const reviewItemDialog = getSyncLifecycle(ReviewItem, options);
+
+export const rejectOrderDialog = getSyncLifecycle(RejectOrderDialog, options);
+
+export const reviewComponent = getSyncLifecycle(ReviewComponent, options);
+
+export const approvedComponent = getSyncLifecycle(ApprovedComponent, options);
+
+export const referredTestComponent = getSyncLifecycle(
+  ReferredComponent,
   options
 );
 
-export const editResultsDialog = getAsyncLifecycle(
-  () =>
-    import(
-      "./patient-chart/results-summary/results-dialog/edit-results-dialog.component"
-    ),
+export const worklistComponent = getSyncLifecycle(WorkListComponent, options);
+
+export const pickLabRequestButton = getSyncLifecycle(
+  PickLabRequestActionMenu,
   options
 );
 
-export const reviewItemDialog = getAsyncLifecycle(
-  () => import("./review-list/dialog/review-item.component"),
+export const rejectOrderButton = getSyncLifecycle(
+  RejectOrderOverflowMenuItem,
   options
 );
 
-export const rejectOrderDialog = getAsyncLifecycle(
-  () => import("./reject-order/reject-order-dialog.component"),
-  options
-);
+export const worklistTile = getSyncLifecycle(WorklistTile, options);
 
-export const reviewComponent = getAsyncLifecycle(
-  () => import("./lab-tabs/review-tab.component"),
-  options
-);
+export const referredTile = getSyncLifecycle(ReferredTile, options);
 
-export const approvedComponent = getAsyncLifecycle(
-  () => import("./lab-tabs/approved-tab.component"),
-  options
-);
+export const completedTile = getSyncLifecycle(CompletedTile, options);
 
-export const referredTestComponent = getAsyncLifecycle(
-  () => import("./lab-tabs/referred-tab.component"),
-  options
-);
-
-export const worklistComponent = getAsyncLifecycle(
-  () => import("./lab-tabs/work-list-tab.component"),
-  options
-);
-
-export const pickLabRequestButton = getAsyncLifecycle(
-  () => import("./queue-list/pick-lab-request-menu.component"),
-  options
-);
-
-export const rejectOrderButton = getAsyncLifecycle(
-  () => import("./order-actions/reject-order.component"),
-  options
-);
-
-export const worklistTileComponent = getAsyncLifecycle(
-  () => import("./lab-tiles/worklist-tile.component"),
-  options
-);
-
-export const referredTileComponent = getAsyncLifecycle(
-  () => import("./lab-tiles/referred-tile.component"),
-  options
-);
-
-export const completedTileComponent = getAsyncLifecycle(
-  () => import("./lab-tiles/completed-tile.component"),
-  options
-);
-
-export const testOrderedTileComponent = getAsyncLifecycle(
-  () => import("./lab-tiles/tests-ordered-tile.component"),
-  options
-);
+export const testOrderedTile = getSyncLifecycle(TestOrderedTile, options);
 
 export function startupApp() {
   defineConfigSchema(moduleName, configSchema);

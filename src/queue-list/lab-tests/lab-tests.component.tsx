@@ -3,30 +3,18 @@ import { useTranslation } from "react-i18next";
 
 import {
   DataTable,
-  DataTableHeader,
-  DataTableSkeleton,
-  Pagination,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableExpandHeader,
-  TableExpandRow,
   TableHead,
   TableHeader,
   TableRow,
-  TabPanel,
-  TableToolbar,
-  TableToolbarContent,
-  TableToolbarSearch,
-  Layer,
-  Tag,
-  TableExpandedRow,
 } from "@carbon/react";
 import { ErrorState } from "@openmrs/esm-framework";
 import { Encounter } from "../../types/patient-queues";
 import styles from "../laboratory-queue.scss";
-import PickLabRequestActionMenu from "../pick-lab-request-menu.component";
+import PickLabRequestActionMenu from "../../order-actions/pick-lab-request-menu.component";
 
 interface LabTestsProps {
   encounter: Encounter;
@@ -35,7 +23,6 @@ interface LabTestsProps {
 
 const LabTests: React.FC<LabTestsProps> = ({ encounter, queueId }) => {
   const { t } = useTranslation();
-  // console.info(encounter);
   let columns = [
     { id: 1, header: t("order", "Order"), key: "order", align: "left" },
     {

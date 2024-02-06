@@ -1,10 +1,8 @@
 import React from "react";
-import CompletedList from "../completed-list/completed-list.component";
-import styles from "../queue-list/laboratory-queue.scss";
 import { useTranslation } from "react-i18next";
 import SummaryTile from "../summary-tiles/summary-tile.component";
 
-const ReferredTileComponent = () => {
+const ReferredTile = () => {
   const { t } = useTranslation();
 
   return (
@@ -16,4 +14,4 @@ const ReferredTileComponent = () => {
   );
 };
 
-export default ReferredTileComponent;
+export default ReferredTile;

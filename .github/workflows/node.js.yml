@@ -94,7 +94,7 @@ jobs:
       - name: Build
         run: yarn turbo build --color --concurrency=5
 
-      - run: git config user.email "<>" && git config user.name "UgandaEMR CI"
+      - run: git config user.email "<>" && git config user.name "Labs CI"
       - run: git add . && git commit -m "Prerelease version" --no-verify
 
       - name: Pre-release
