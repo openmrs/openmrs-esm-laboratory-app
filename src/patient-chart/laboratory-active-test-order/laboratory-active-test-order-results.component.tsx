@@ -13,6 +13,7 @@ import {
   ErrorState,
   showModal,
   useConfig,
+  usePagination,
 } from "@openmrs/esm-framework";
 import { mutate } from "swr";
 import {
@@ -85,22 +86,14 @@ const LaboratoryActiveTestOrderResults: React.FC<
     "Active Laboratory Tests"
   );
 
-  const {
-    items,
-    tableHeaders,
-    currentPage,
-    pageSizes,
-    totalItems,
-    goTo,
-    currentPageSize,
-    setPageSize,
-    isLoading,
-    isError,
-  } = useLaboratoryOrderResultsPages({
-    v: ResourceRepresentation.Full,
-    totalCount: true,
-    patientUuid: patientUuid,
-  });
+  const { items, tableHeaders, isLoading, isError } =
+    useLaboratoryOrderResultsPages({
+      v: ResourceRepresentation.Full,
+      totalCount: true,
+      patientUuid: patientUuid,
+    });
+  const pageSizes = [2, 5, 10];
+  const [currentPageSize, setPageSize] = useState(10);
 
   const sortedLabRequests = useMemo(() => {
     return [...items].sort((a, b) => {
@@ -226,68 +219,76 @@ const LaboratoryActiveTestOrderResults: React.FC<
   const currentDateTime = new Date().getTime();
   const twentyFourHoursAgo = currentDateTime - 24 * 60 * 60 * 1000;
 
-  const tableRows = useMemo(() => {
-    return laboratoryOrders
-      ?.filter((entry) => {
-        const entryDate = new Date(entry.encounterDatetime).getTime();
-        return entryDate >= twentyFourHoursAgo && entryDate <= currentDateTime;
-      })
-      ?.map((entry, index) => ({
-        ...entry,
-        id: entry.uuid,
-        orderDate: {
-          content: (
-            <span>
-              {formatDate(parseDate(entry.encounterDatetime), {
-                time: true,
-                mode: "standard",
-              })}
-            </span>
-          ),
-        },
-        orders: {
-          content: (
-            <>
-              {entry?.orders
-                ?.filter(
-                  (order) =>
-                    order?.type === "testorder" && order?.action === "NEW"
-                )
-                .map((order) => (
-                  <Tag
-                    style={{
-                      background: `${getOrderColor(
-                        order.dateActivated,
-                        order.dateStopped
-                      )}`,
-                      color: "white",
-                    }}
-                    role="tooltip"
-                    key={order.uuid} // Add a unique key for each Tag
-                  >
-                    {order?.concept?.display}
-                  </Tag>
-                ))}
-            </>
-          ),
-        },
-
-        location: {
-          content: <span>{entry.location.display}</span>,
-        },
-        status: {
-          content: <span>--</span>,
-        },
-        actions: {
-          content: (
-            <div style={{ display: "flex" }}>
-              <PrintButtonAction encounter={entry} />
-              {enableSendingLabTestsByEmail && <EmailButtonAction />}
-            </div>
-          ),
-        },
-      }));
+  const filteredActiveTestOrderResults = useMemo(() => {
+    return laboratoryOrders?.filter((entry) => {
+      const entryDate = new Date(entry.encounterDatetime).getTime();
+      return entryDate >= twentyFourHoursAgo && entryDate <= currentDateTime;
+    });
   }, [currentDateTime, laboratoryOrders, twentyFourHoursAgo]);
+
+  const {
+    goTo,
+    results: paginatedActiveTestOrderResults,
+    currentPage,
+  } = usePagination(filteredActiveTestOrderResults, currentPageSize);
+
+  const tableRows = useMemo(() => {
+    return paginatedActiveTestOrderResults?.map((entry, index) => ({
+      ...entry,
+      id: entry.uuid,
+      orderDate: {
+        content: (
+          <span>
+            {formatDate(parseDate(entry.encounterDatetime), {
+              time: true,
+              mode: "standard",
+            })}
+          </span>
+        ),
+      },
+      orders: {
+        content: (
+          <>
+            {entry?.orders
+              ?.filter(
+                (order) =>
+                  order?.type === "testorder" && order?.action === "NEW"
+              )
+              .map((order) => (
+                <Tag
+                  style={{
+                    background: `${getOrderColor(
+                      order.dateActivated,
+                      order.dateStopped
+                    )}`,
+                    color: "white",
+                  }}
+                  role="tooltip"
+                  key={order.uuid} // Add a unique key for each Tag
+                >
+                  {order?.concept?.display}
+                </Tag>
+              ))}
+          </>
+        ),
+      },
+
+      location: {
+        content: <span>{entry.location.display}</span>,
+      },
+      status: {
+        content: <span>--</span>,
+      },
+      actions: {
+        content: (
+          <div style={{ display: "flex" }}>
+            <PrintButtonAction encounter={entry} />
+            {enableSendingLabTestsByEmail && <EmailButtonAction />}
+          </div>
+        ),
+      },
+    }));
+  }, [enableSendingLabTestsByEmail, paginatedActiveTestOrderResults]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
@@ -451,7 +452,7 @@ const LaboratoryActiveTestOrderResults: React.FC<
                 page={currentPage}
                 pageSize={currentPageSize}
                 pageSizes={pageSizes}
-                totalItems={totalItems}
+                totalItems={filteredActiveTestOrderResults?.length}
                 onChange={({ pageSize, page }) => {
                   if (pageSize !== currentPageSize) {
                     setPageSize(pageSize);
