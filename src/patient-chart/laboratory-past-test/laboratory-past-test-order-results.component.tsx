@@ -88,7 +88,7 @@ const LaboratoryPastTestOrderResults: React.FC<
       totalCount: true,
       patientUuid: patientUuid,
     });
-  const pageSizes = [2, 5, 10];
+  const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
 
   const sortedLabRequests = useMemo(() => {
@@ -280,7 +280,7 @@ const LaboratoryPastTestOrderResults: React.FC<
     return <ErrorState error={isError} headerTitle={"Error"} />;
   }
 
-  if (items?.length >= 0) {
+  if (filteredPastTestOrderResults?.length >= 0) {
     return (
       <div className={styles.widgetCard}>
         <CardHeader title={displayText}>

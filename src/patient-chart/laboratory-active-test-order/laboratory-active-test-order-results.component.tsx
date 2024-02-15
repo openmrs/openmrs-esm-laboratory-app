@@ -92,7 +92,7 @@ const LaboratoryActiveTestOrderResults: React.FC<
       totalCount: true,
       patientUuid: patientUuid,
     });
-  const pageSizes = [2, 5, 10];
+  const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
 
   const sortedLabRequests = useMemo(() => {
@@ -297,8 +297,12 @@ const LaboratoryActiveTestOrderResults: React.FC<
   if (isError) {
     return <ErrorState error={isError} headerTitle={"Error"} />;
   }
+  // If no active test order results hide table
+  if (filteredActiveTestOrderResults.length === 0) {
+    return null;
+  }
 
-  if (items?.length >= 0) {
+  if (filteredActiveTestOrderResults?.length >= 0) {
     return (
       <div className={styles.widgetCard}>
         <CardHeader title={displayText}>
