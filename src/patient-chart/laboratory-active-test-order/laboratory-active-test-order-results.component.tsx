@@ -297,10 +297,6 @@ const LaboratoryActiveTestOrderResults: React.FC<
   if (isError) {
     return <ErrorState error={isError} headerTitle={"Error"} />;
   }
-  // If no active test order results hide table
-  if (filteredActiveTestOrderResults.length === 0) {
-    return null;
-  }
 
   if (filteredActiveTestOrderResults?.length >= 0) {
     return (
