@@ -318,7 +318,7 @@ const LaboratoryOrderReferalResults: React.FC<
         ),
       },
     }));
-  }, [laboratoryOrders]);
+  }, [enableSendingLabTestsByEmail, laboratoryOrders]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
