@@ -35,17 +35,19 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { encounter, isLoading, isError } = useGetEncounterById(encounterUuid);
+  const { encounter, isLoading } = useGetEncounterById(encounterUuid);
 
   const testsOrder = useMemo(() => {
-    return encounter?.obs.filter((item) => item?.order?.type === "testorder");
-  }, [encounter?.obs]);
+    return encounter?.orders.filter(
+      (item) => item?.orderType.display === "Test Order"
+    );
+  }, [encounter?.orders]);
 
   const filteredGroupedResults = useMemo(() => {
     let groupedResults = [];
 
     testsOrder?.forEach((element) => {
-      groupedResults[element.order.display] = element;
+      groupedResults[element.display] = element;
     });
 
     return groupedResults;
