@@ -1,3 +1,5 @@
+import { OpenmrsResource } from "@openmrs/esm-framework";
+
 export interface PatientQueue {
   uuid: string;
   creator: {
@@ -174,6 +176,7 @@ export interface Order {
   display: string;
   links: Link[];
   type: string;
+  patient: OpenmrsResource;
 }
 
 export interface Visit {

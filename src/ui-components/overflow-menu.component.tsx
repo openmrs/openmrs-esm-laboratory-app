@@ -77,7 +77,7 @@ const OrderCustomOverflowMenuComponent: React.FC<
             "cds--overflow-menu-options--lg": isTablet,
           })}
         >
-          {children}
+          {showMenu && children}
         </ul>
         <span />
       </div>
