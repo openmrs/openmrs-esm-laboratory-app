@@ -29,9 +29,8 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
 
   const columns = [
     { id: 0, header: t("order", "Order"), key: "order", align: "center" },
-    { id: 1, header: t("date", "Date"), key: "date", align: "center" },
-    { id: 2, header: t("result", "Results"), key: "result", align: "center" },
-    { id: 3, header: t("actions", "Actions"), key: "actions" },
+    { id: 1, header: t("date", "Date"), key: "date" },
+    { id: 2, header: t("result", "Results"), key: "result" },
   ];
 
   const formatDateColumn = (obsDatetime) =>
@@ -46,13 +45,6 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
         order: { content: <span>{ob?.concept?.display}</span> },
         date: { content: <span>{formatDateColumn(ob?.obsDatetime)}</span> },
         result: { content: <span>{ob?.display}</span> },
-        actions: {
-          content: (
-            <>
-              <DeleteTestResultActionMenu closeModal={() => true} />
-            </>
-          ),
-        },
       })),
     [obsList]
   );
