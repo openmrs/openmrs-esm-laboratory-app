@@ -145,3 +145,10 @@ td {
 .high::after {
   content: " ↑";
 }
+
+.cds--data-table--zebra tbody tr[data-parent-row]:nth-child(4n+1) td {
+  background-color: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  border-top: 1px solid #e0e0e0;
+  padding: 0 16px;
+}
