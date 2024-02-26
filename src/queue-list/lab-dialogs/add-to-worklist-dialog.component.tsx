@@ -23,6 +23,7 @@ import {
   navigate,
   showNotification,
   showSnackbar,
+  useConfig,
   useLocations,
   useSession,
 } from "@openmrs/esm-framework";
@@ -67,6 +68,8 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
   const [confirmBarcode, setConfirmBarcode] = useState("");
 
   const [externalReferralName, setExternalReferralName] = useState("");
+
+  const config = useConfig();
 
   const pickLabRequestQueue = async (event) => {
     event.preventDefault();
@@ -174,19 +177,27 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
                   <div style={{ width: "430px" }}>
                     <TextInput
                       type="text"
-                      id="specimentID"
+                      id="specimentId"
                       value={specimenID}
-                      readOnly={preferred}
+                      readOnly={
+                        config.enableSpecimenIdAutoGeneration
+                          ? config.enableSpecimenIdAutoGeneration
+                          : preferred
+                      }
                       hideReadOnly={preferred}
+                      onChange={(e) => setSpecimenID(e.target.value)}
                     />
                   </div>
+
                   <div style={{ width: "50px" }}>
-                    <Button
-                      hasIconOnly
-                      onClick={(e) => generateId(e)}
-                      renderIcon={(props) => <Renew size={16} {...props} />}
-                      disabled={preferred}
-                    />
+                    {config.enableSpecimenIdAutoGeneration && (
+                      <Button
+                        hasIconOnly
+                        onClick={(e) => generateId(e)}
+                        renderIcon={(props) => <Renew size={16} {...props} />}
+                        disabled={preferred}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
