@@ -37,6 +37,12 @@ export const configSchema = {
     _default: false,
     _description: "This enables sending results to patient via email",
   },
+  enableSpecimenIdAutoGeneration: {
+    _type: Type.Boolean,
+    _default: true,
+    _description:
+      "Configuration to enable/disable auto speciment id generation button.",
+  },
 };
 
 export type Config = {

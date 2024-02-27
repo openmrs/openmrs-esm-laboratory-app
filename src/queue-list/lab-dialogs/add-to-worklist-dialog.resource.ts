@@ -129,8 +129,17 @@ export function useSpecimenTypes() {
     openmrsFetch
   );
 
+  let specimenTypes = [];
+  if (data) {
+    if (data?.data?.setMembers?.length) {
+      specimenTypes = data.data.setMembers;
+    } else if (data?.data?.answers?.length) {
+      specimenTypes = data.data.answers;
+    }
+  }
+
   return {
-    specimenTypes: data ? data?.data?.setMembers : [],
+    specimenTypes: specimenTypes,
     isLoading,
   };
 }
