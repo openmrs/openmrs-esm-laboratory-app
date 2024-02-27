@@ -1,4 +1,9 @@
-import { formatDate, openmrsFetch, useConfig } from "@openmrs/esm-framework";
+import {
+  formatDate,
+  openmrsFetch,
+  restBaseUrl,
+  useConfig,
+} from "@openmrs/esm-framework";
 import useSWR from "swr";
 
 export interface LaboratoryResponse {
@@ -461,7 +466,7 @@ export function usePatientLaboratoryOrders(filter: LaboratoryOrderFilter) {
   const config = useConfig();
   const { laboratoryEncounterTypeUuid } = config;
 
-  const apiUrl = `/ws/rest/v1/encounter?patient=${filter.patientUuid}&encounterType=${laboratoryEncounterTypeUuid}&v=${filter.v}&totalCount=true`;
+  const apiUrl = `${restBaseUrl}/encounter?patient=${filter.patientUuid}&encounterType=${laboratoryEncounterTypeUuid}&v=${filter.v}&totalCount=true`;
   const { data, error, isLoading } = useSWR<
     { data: LaboratoryResponse },
     Error

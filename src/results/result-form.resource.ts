@@ -1,4 +1,4 @@
-import { openmrsFetch } from "@openmrs/esm-framework";
+import { openmrsFetch, restBaseUrl } from "@openmrs/esm-framework";
 import useSWR from "swr";
 
 export interface ConceptResponse {
@@ -305,7 +305,7 @@ export interface ObPayload {
 // get order concept
 export async function GetOrderConceptByUuid(uuid: string) {
   const abortController = new AbortController();
-  return openmrsFetch(`/ws/rest/v1/concept/${uuid}?v=full`, {
+  return openmrsFetch(`${restBaseUrl}/concept/${uuid}?v=full`, {
     headers: {
       "Content-Type": "application/json",
     },
@@ -314,7 +314,7 @@ export async function GetOrderConceptByUuid(uuid: string) {
 }
 
 export function useGetOrderConceptByUuid(uuid: string) {
-  const apiUrl = `/ws/rest/v1/concept/${uuid}?v=custom:(uuid,display,name,datatype,set,answers,hiNormal,hiAbsolute,hiCritical,lowNormal,lowAbsolute,lowCritical,units,setMembers:(uuid,display,answers,datatype,hiNormal,hiAbsolute,hiCritical,lowNormal,lowAbsolute,lowCritical,units))`;
+  const apiUrl = `${restBaseUrl}/concept/${uuid}?v=custom:(uuid,display,name,datatype,set,answers,hiNormal,hiAbsolute,hiCritical,lowNormal,lowAbsolute,lowCritical,units,setMembers:(uuid,display,answers,datatype,hiNormal,hiAbsolute,hiCritical,lowNormal,lowAbsolute,lowCritical,units))`;
 
   const { data, error, isLoading, isValidating, mutate } = useSWR<
     { data: ConceptResponse },
@@ -331,7 +331,7 @@ export function useGetOrderConceptByUuid(uuid: string) {
 
 export async function UpdateEncounter(uuid: string, payload: any) {
   const abortController = new AbortController();
-  return openmrsFetch(`/ws/rest/v1/encounter/${uuid}`, {
+  return openmrsFetch(`${restBaseUrl}/encounter/${uuid}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -348,7 +348,7 @@ export async function UpdateOrderResult(
   orderPayload: any
 ) {
   const abortController = new AbortController();
-  const updateOrderCall = await openmrsFetch(`/ws/rest/v1/order`, {
+  const updateOrderCall = await openmrsFetch(`${restBaseUrl}/order`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -358,7 +358,7 @@ export async function UpdateOrderResult(
   });
 
   if (updateOrderCall.status === 201) {
-    return await openmrsFetch(`/ws/rest/v1/encounter/${encounterUuid}`, {
+    return await openmrsFetch(`${restBaseUrl}/encounter/${encounterUuid}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

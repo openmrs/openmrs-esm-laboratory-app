@@ -2,7 +2,12 @@ import { PatientQueue, UuidDisplay } from "../types/patient-queues";
 import dayjs from "dayjs";
 import useSWR from "swr";
 
-import { formatDate, openmrsFetch, parseDate } from "@openmrs/esm-framework";
+import {
+  formatDate,
+  openmrsFetch,
+  parseDate,
+  restBaseUrl,
+} from "@openmrs/esm-framework";
 
 export interface MappedPatientQueueEntry {
   id: string;
@@ -29,7 +34,7 @@ export function usePatientQueuesList(
   currentQueueRoomLocationUuid: string,
   status: string
 ) {
-  const apiUrl = `/ws/rest/v1/patientqueue?v=full&room=${currentQueueRoomLocationUuid}&status=${status}`;
+  const apiUrl = `${restBaseUrl}/patientqueue?v=full&room=${currentQueueRoomLocationUuid}&status=${status}`;
   return usePatientQueueRequest(apiUrl);
 }
 

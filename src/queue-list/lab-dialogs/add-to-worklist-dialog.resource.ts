@@ -1,4 +1,9 @@
-import { FetchResponse, openmrsFetch, useConfig } from "@openmrs/esm-framework";
+import {
+  FetchResponse,
+  openmrsFetch,
+  restBaseUrl,
+  useConfig,
+} from "@openmrs/esm-framework";
 import { useMemo } from "react";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
@@ -83,7 +88,7 @@ export interface ParentLocation {
 
 // get queue rooms
 export function useQueueRoomLocations(currentQueueLocation: string) {
-  const apiUrl = `/ws/rest/v1/location/${currentQueueLocation}?v=full`;
+  const apiUrl = `${restBaseUrl}/location/${currentQueueLocation}?v=full`;
   const { data, error, isLoading } = useSWR<{ data: QueueRoomsResponse }>(
     apiUrl,
     openmrsFetch
@@ -106,7 +111,7 @@ export function useQueueRoomLocations(currentQueueLocation: string) {
 export function useReferralLocations() {
   const config = useConfig();
   const { laboratoryReferalDestinationUuid } = config;
-  const apiUrl = `/ws/rest/v1/concept/${laboratoryReferalDestinationUuid}`;
+  const apiUrl = `${restBaseUrl}/concept/${laboratoryReferalDestinationUuid}`;
   const { data, error, isLoading } = useSWRImmutable<FetchResponse>(
     apiUrl,
     openmrsFetch
@@ -123,7 +128,7 @@ export function useSpecimenTypes() {
   const config = useConfig();
   const { laboratorySpecimenTypeConcept } = config;
 
-  const apiUrl = `/ws/rest/v1/concept/${laboratorySpecimenTypeConcept}`;
+  const apiUrl = `${restBaseUrl}/concept/${laboratorySpecimenTypeConcept}`;
   const { data, error, isLoading } = useSWRImmutable<FetchResponse>(
     apiUrl,
     openmrsFetch
@@ -147,7 +152,7 @@ export function useSpecimenTypes() {
 // generate specimen id
 export async function GenerateSpecimenId(uuid: string) {
   const abortController = new AbortController();
-  return openmrsFetch(`/ws/rest/v1/generatesampleId?uuid=${uuid}`, {
+  return openmrsFetch(`${restBaseUrl}/generatesampleId?uuid=${uuid}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -159,7 +164,7 @@ export async function GenerateSpecimenId(uuid: string) {
 // update Order
 export async function UpdateOrder(uuid: string, body: any) {
   const abortController = new AbortController();
-  return openmrsFetch(`/ws/rest/v1/accessionorder/${uuid}`, {
+  return openmrsFetch(`${restBaseUrl}/accessionorder/${uuid}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -171,7 +176,7 @@ export async function UpdateOrder(uuid: string, body: any) {
 
 export async function GetOrderByUuid(uuid: string) {
   const abortController = new AbortController();
-  return openmrsFetch(`/ws/rest/v1/order/${uuid}`, {
+  return openmrsFetch(`${restBaseUrl}/order/${uuid}`, {
     headers: {
       "Content-Type": "application/json",
     },

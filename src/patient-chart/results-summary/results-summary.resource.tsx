@@ -1,4 +1,4 @@
-import { openmrsFetch } from "@openmrs/esm-framework";
+import { openmrsFetch, restBaseUrl } from "@openmrs/esm-framework";
 import { ObsMetaInfo } from "@openmrs/esm-patient-common-lib";
 
 import useSWR from "swr";
@@ -161,7 +161,7 @@ export function assessValue(
 }
 
 export function useGetConceptById(conceptUuid: string) {
-  const apiUrl = `/ws/rest/v1/concept/${conceptUuid}?v=full`;
+  const apiUrl = `${restBaseUrl}/concept/${conceptUuid}?v=full`;
   const { data, error, isLoading } = useSWR<{ data: ConceptResponse }, Error>(
     apiUrl,
     openmrsFetch
@@ -176,7 +176,7 @@ export function useGetConceptById(conceptUuid: string) {
 export async function GetPatientByUuid(uuid: string) {
   const abortController = new AbortController();
 
-  return openmrsFetch(`/ws/rest/v1/patient/${uuid}`, {
+  return openmrsFetch(`${restBaseUrl}/patient/${uuid}`, {
     headers: {
       "Content-Type": "application/json",
     },
