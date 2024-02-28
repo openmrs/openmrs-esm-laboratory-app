@@ -1,4 +1,4 @@
-import { openmrsFetch } from "@openmrs/esm-framework";
+import { openmrsFetch, restBaseUrl } from "@openmrs/esm-framework";
 import useSWR from "swr";
 
 export interface EncounterResponse {
@@ -276,7 +276,7 @@ export interface Encounter {
 }
 
 export function useGetEncounterById(encounterUuid: string) {
-  const apiUrl = `/ws/rest/v1/encounter/${encounterUuid}?v=full`;
+  const apiUrl = `${restBaseUrl}/encounter/${encounterUuid}?v=full`;
   const { data, error, isLoading } = useSWR<{ data: EncounterResponse }, Error>(
     apiUrl,
     openmrsFetch

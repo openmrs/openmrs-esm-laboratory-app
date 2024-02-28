@@ -1,4 +1,4 @@
-import { openmrsFetch } from "@openmrs/esm-framework";
+import { openmrsFetch, restBaseUrl } from "@openmrs/esm-framework";
 import useSWR from "swr";
 
 export interface Result {
@@ -120,7 +120,7 @@ export function useGetOrdersWorklist(
   activatedOnOrAfterDate: string,
   fulfillerStatus: string
 ) {
-  const apiUrl = `/ws/rest/v1/order?orderTypes=52a447d3-a64a-11e3-9aeb-50e549534c5e&activatedOnOrAfterDate=${activatedOnOrAfterDate}&isStopped=false&fulfillerStatus=${fulfillerStatus}&v=full
+  const apiUrl = `${restBaseUrl}/order?orderTypes=52a447d3-a64a-11e3-9aeb-50e549534c5e&activatedOnOrAfterDate=${activatedOnOrAfterDate}&isStopped=false&fulfillerStatus=${fulfillerStatus}&v=full
 `;
 
   const { data, error, isLoading } = useSWR<

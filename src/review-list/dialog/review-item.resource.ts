@@ -1,9 +1,14 @@
-import { FetchResponse, openmrsFetch, useConfig } from "@openmrs/esm-framework";
+import {
+  FetchResponse,
+  openmrsFetch,
+  restBaseUrl,
+  useConfig,
+} from "@openmrs/esm-framework";
 
 export async function ApproverOrder(body: any) {
   const abortController = new AbortController();
 
-  return openmrsFetch(`/ws/rest/v1/approveorder`, {
+  return openmrsFetch(`${restBaseUrl}/approveorder`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

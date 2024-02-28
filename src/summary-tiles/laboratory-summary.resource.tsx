@@ -1,6 +1,11 @@
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
-import { FetchResponse, openmrsFetch } from "@openmrs/esm-framework";
+import {
+  FetchResponse,
+  openmrsFetch,
+  restBaseUrl,
+} from "@openmrs/esm-framework";
+
 import { Result } from "../work-list/work-list.resource";
 
 export function useMetrics() {
@@ -11,7 +16,7 @@ export function useMetrics() {
     completed: 6,
   };
   const { data, error } = useSWR<{ data: { results: {} } }, Error>(
-    `/ws/rest/v1/queue?`,
+    `${restBaseUrl}/queue?`,
     openmrsFetch
   );
 
@@ -24,7 +29,7 @@ export function useMetrics() {
 
 export function useServices() {
   const serviceConceptSetUuid = "330c0ec6-0ac7-4b86-9c70-29d76f0ae20a";
-  const apiUrl = `/ws/rest/v1/concept/${serviceConceptSetUuid}`;
+  const apiUrl = `${restBaseUrl}/concept/${serviceConceptSetUuid}`;
   const { data } = useSWRImmutable<FetchResponse>(apiUrl, openmrsFetch);
 
   return {
@@ -36,7 +41,7 @@ export function useServices() {
 
 // worklist
 export function useLabTestsStats(fulfillerStatus: string) {
-  const apiUrl = `/ws/rest/v1/order?orderTypes=52a447d3-a64a-11e3-9aeb-50e549534c5e&isStopped=false&fulfillerStatus=${fulfillerStatus}&v=full
+  const apiUrl = `${restBaseUrl}/order?orderTypes=52a447d3-a64a-11e3-9aeb-50e549534c5e&isStopped=false&fulfillerStatus=${fulfillerStatus}&v=full
   `;
   const { data, error, isLoading } = useSWR<
     { data: { results: Array<Result> } },
