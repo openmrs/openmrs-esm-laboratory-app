@@ -278,8 +278,6 @@ const LaboratoryPastTestOrderResults: React.FC<
     }));
   }, [enableSendingLabTestsByEmail, paginatedPastTestOrderResults]);
 
-  console.info("tableRows-->", tableRows);
-
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
   }
