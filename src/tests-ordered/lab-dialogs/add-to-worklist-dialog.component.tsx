@@ -1,42 +1,30 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { MappedQueueEntry } from "../../types";
+import React, { useEffect, useState } from "react";
 import {
   Button,
-  ContentSwitcher,
   Form,
   ModalBody,
   ModalFooter,
   ModalHeader,
   Select,
   SelectItem,
-  Switch,
-  TextArea,
-  Grid,
   Checkbox,
   TextInput,
-  IconButton,
 } from "@carbon/react";
 import { useTranslation } from "react-i18next";
-import { MappedPatientQueueEntry } from "../laboratory-patient-list.resource";
 import styles from "./add-to-worklist-dialog.scss";
 import {
-  navigate,
   showNotification,
   showSnackbar,
   useConfig,
-  useLocations,
-  useSession,
 } from "@openmrs/esm-framework";
 import { Renew } from "@carbon/react/icons";
 import {
   GenerateSpecimenId,
-  GetOrderByUuid,
   UpdateOrder,
-  useQueueRoomLocations,
   useReferralLocations,
   useSpecimenTypes,
 } from "./add-to-worklist-dialog.resource";
-import { Encounter, Order } from "../../types/patient-queues";
+import { Order } from "../../types/patient-queues";
 
 interface AddToWorklistDialogProps {
   queueId;

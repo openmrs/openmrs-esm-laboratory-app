@@ -1,24 +1,15 @@
-import React, {
-  useState,
-  useMemo,
-  AnchorHTMLAttributes,
-  useCallback,
-} from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { EmptyState, ErrorState } from "@openmrs/esm-patient-common-lib";
 import { Microscope, TrashCan } from "@carbon/react/icons";
 
 import {
   DataTable,
-  DataTableHeader,
   DataTableSkeleton,
   Pagination,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableExpandHeader,
-  TableExpandRow,
   TableHead,
   TableHeader,
   TableRow,
@@ -28,13 +19,10 @@ import {
   TableToolbarSearch,
   Layer,
   Tag,
-  TableExpandedRow,
   Button,
   Tile,
   DatePicker,
   DatePickerInput,
-  Select,
-  SelectItem,
 } from "@carbon/react";
 import { Result, useGetOrdersWorklist } from "./work-list.resource";
 import styles from "./work-list.scss";
@@ -72,7 +60,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
     fulfillerStatus
   );
 
-  const pageSizes = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
+  const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
 
   const {

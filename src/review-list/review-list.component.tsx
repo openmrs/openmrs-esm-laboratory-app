@@ -34,8 +34,6 @@ import {
 
 import styles from "./review-list.scss";
 import { Add } from "@carbon/react/icons";
-import { Ob } from "../patient-chart/patient-laboratory-order-results.resource";
-import { Encounter } from "../types";
 import { getStatusColor } from "../utils/functions";
 
 interface ReviewlistProps {
