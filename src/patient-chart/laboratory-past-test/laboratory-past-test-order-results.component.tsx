@@ -421,11 +421,6 @@ const LaboratoryPastTestOrderResults: React.FC<
                           "No test orders to display"
                         )}
                       </p>
-                      <p className={styles.helper}>
-                        {t("checkFilters", "Check the filters above")}
-                      </p>
-                      <p className={styles.separator}>{t("or", "or")}</p>
-                      <LaunchLabRequestForm />
                     </div>
                   </Tile>
                 </div>
