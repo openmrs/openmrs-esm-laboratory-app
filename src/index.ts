@@ -11,8 +11,6 @@ import laboratory from "./laboratory.component";
 import laboratoryOrder from "./patient-chart/patient-laboratory-order-results.component";
 import addToWorklist from "./tests-ordered/lab-dialogs/add-to-worklist-dialog.component";
 import sendEmail from "./patient-chart/results-summary/send-email-dialog.component";
-import resultsSummaryWorkSpaceComponent from "./patient-chart/results-summary/results-summary.component";
-import editResultsDialogComponent from "./patient-chart/results-summary/results-dialog/edit-results-dialog.component";
 import reviewItemDialogComponent from "./review-list/dialog/review-item.component";
 import rejectOrderDialogComponent from "./reject-order/reject-order-dialog.component";
 import approvedTabComponent from "./lab-tabs/approved-tab.component";
@@ -75,16 +73,6 @@ export const laboratoryOrderComponent = getSyncLifecycle(
 export const addToWorklistDialog = getSyncLifecycle(addToWorklist, options);
 
 export const sendEmailDialog = getSyncLifecycle(sendEmail, options);
-
-export const resultsSummaryWorkSpace = getSyncLifecycle(
-  resultsSummaryWorkSpaceComponent,
-  options
-);
-
-export const editResultsDialog = getSyncLifecycle(
-  editResultsDialogComponent,
-  options
-);
 
 export const reviewItemDialog = getSyncLifecycle(
   reviewItemDialogComponent,
