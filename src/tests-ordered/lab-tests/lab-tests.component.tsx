@@ -3,25 +3,13 @@ import { useTranslation } from "react-i18next";
 
 import {
   DataTable,
-  DataTableHeader,
-  DataTableSkeleton,
-  Pagination,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableExpandHeader,
-  TableExpandRow,
   TableHead,
   TableHeader,
   TableRow,
-  TabPanel,
-  TableToolbar,
-  TableToolbarContent,
-  TableToolbarSearch,
-  Layer,
-  Tag,
-  TableExpandedRow,
 } from "@carbon/react";
 import { ErrorState } from "@openmrs/esm-framework";
 import { Encounter } from "../../types/patient-queues";

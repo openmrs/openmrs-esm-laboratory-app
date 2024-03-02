@@ -1,7 +1,7 @@
 import React from "react";
 import { LaboratoryHeader } from "./header/laboratory-header.component";
 import LaboratorySummaryTiles from "./summary-tiles/laboratory-summary-tiles.component";
-import LaboratoryQueueList from "./queue-list/laboratory-tabs.component";
+import LaboratoryOrdersList from "./tests-ordered/laboratory-tabs.component";
 import Overlay from "./components/overlay/overlay.component";
 
 const Laboratory: React.FC = () => {
@@ -9,7 +9,7 @@ const Laboratory: React.FC = () => {
     <div className={`omrs-main-content`}>
       <LaboratoryHeader />
       <LaboratorySummaryTiles />
-      <LaboratoryQueueList />
+      <LaboratoryOrdersList />
       <Overlay />
     </div>
   );

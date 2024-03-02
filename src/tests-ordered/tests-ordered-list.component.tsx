@@ -11,14 +11,11 @@ import {
   TableHeader,
   TableRow,
   Dropdown,
-  TabPanel,
   TableToolbar,
   TableToolbarContent,
-  TableToolbarSearch,
   Layer,
   Tag,
   Tile,
-  Button,
   DatePicker,
   DatePickerInput,
 } from "@carbon/react";
@@ -44,7 +41,7 @@ interface RejectOrderProps {
   order: Result;
 }
 
-const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
+const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
   const { t } = useTranslation();
 
   const OrderStatuses = [
@@ -309,4 +306,4 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
   }
 };
 
-export default LaboratoryPatientList;
+export default TestsOrderedList;

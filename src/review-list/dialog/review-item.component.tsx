@@ -10,7 +10,7 @@ import {
 } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import { useGetEncounterById } from "../../patient-chart/laboratory-item/view-laboratory-item.resource";
-import styles from "../review-list.scss";
+import styles from "../dialog/review-item.scss";
 import { GroupMember } from "../../patient-chart/patient-laboratory-order-results.resource";
 import { useGetConceptById } from "../../patient-chart/results-summary/results-summary.resource";
 import { ApproverOrder } from "./review-item.resource";
@@ -175,7 +175,7 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
               status="active"
             />
           )}
-          <section className={styles.section}>
+          <section>
             <table>
               <tbody>
                 {Object.keys(filteredGroupedResults).length > 0

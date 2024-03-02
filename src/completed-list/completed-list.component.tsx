@@ -2,11 +2,10 @@ import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useGetOrdersWorklist } from "../work-list/work-list.resource";
 import {
-  ErrorState,
   formatDate,
   parseDate,
   usePagination,
-  isDesktop,
+  ConfigurableLink,
 } from "@openmrs/esm-framework";
 import {
   DataTable,
@@ -19,17 +18,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TabPanel,
   TableToolbar,
   TableToolbarContent,
   TableToolbarSearch,
   Layer,
+  Tag,
+  Button,
   Tile,
   DatePicker,
   DatePickerInput,
-  Select,
-  SelectItem,
-  Tag,
-  Dropdown,
 } from "@carbon/react";
 import styles from "./completed-list.scss";
 import { getStatusColor } from "../utils/functions";
@@ -37,83 +35,6 @@ import { getStatusColor } from "../utils/functions";
 interface CompletedListProps {
   fulfillerStatus: string;
 }
-
-interface TableRowProps {
-  entry: {
-    uuid: string;
-    orderNumber: string;
-    accessionNumber: string;
-    concept: { display: string };
-    action: string;
-    fulfillerStatus: string;
-    orderer: { display: string };
-    urgency: string;
-    dateActivated: string;
-    patient: { display: string };
-  };
-}
-
-const StatusTag: React.FC<{ fulfillerStatus: string }> = ({
-  fulfillerStatus,
-}) => {
-  return (
-    <Tag>
-      <span
-        className={styles.statusContainer}
-        style={{ color: `${getStatusColor(fulfillerStatus)}` }}
-      >
-        <span>{fulfillerStatus}</span>
-      </span>
-    </Tag>
-  );
-};
-
-const CustomTableRow: React.FC<TableRowProps> = ({ entry }) => {
-  const {
-    uuid,
-    orderNumber,
-    accessionNumber,
-    concept,
-    action,
-    fulfillerStatus,
-    orderer,
-    urgency,
-    dateActivated,
-    patient,
-  } = entry;
-
-  return (
-    <TableRow key={uuid}>
-      <TableCell>
-        <span>{formatDate(parseDate(dateActivated))}</span>
-      </TableCell>
-      <TableCell>
-        <span>{orderNumber}</span>
-      </TableCell>
-      <TableCell>
-        <span>{patient.display.split("-")[1]}</span>
-      </TableCell>
-      <TableCell>
-        <span>{accessionNumber}</span>
-      </TableCell>
-      <TableCell>
-        <span>{concept.display}</span>
-      </TableCell>
-      <TableCell>
-        <span className="single-line-content">{action}</span>
-      </TableCell>
-      <TableCell>
-        <StatusTag fulfillerStatus={fulfillerStatus} />
-      </TableCell>
-      <TableCell>
-        <span>{orderer.display}</span>
-      </TableCell>
-      <TableCell>
-        <span>{urgency}</span>
-      </TableCell>
-    </TableRow>
-  );
-};
 
 const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
   const { t } = useTranslation();
@@ -125,16 +46,16 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
     fulfillerStatus
   );
 
-  const pageSizes = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
-  const [page, setPage] = useState(1);
-  const [currentPageSize, setPageSize] = useState(5);
-  const [nextOffSet, setNextOffSet] = useState(0);
+  const pageSizes = [10, 20, 30, 40, 50];
+  const [currentPageSize, setPageSize] = useState(10);
 
   const {
     goTo,
     results: paginatedWorkListEntries,
     currentPage,
   } = usePagination(workListEntries, currentPageSize);
+
+  console.info("paginatedWorkListEntries", paginatedWorkListEntries);
 
   const tableColumns = [
     { id: 0, header: t("date", "Date"), key: "date" },
@@ -153,28 +74,156 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
   ];
 
   const tableRows = useMemo(() => {
-    return paginatedWorkListEntries?.map((entry, index) => (
-      <CustomTableRow key={index} entry={entry} />
-    ));
-  }, [paginatedWorkListEntries]);
+    return paginatedWorkListEntries
+      ?.filter((item) => item.fulfillerStatus === fulfillerStatus)
+      .map((entry, index) => ({
+        ...entry,
+        id: entry.uuid,
+        date: {
+          content: (
+            <>
+              <span>{formatDate(parseDate(entry.dateActivated))}</span>
+            </>
+          ),
+        },
+        patient: {
+          content: (
+            <ConfigurableLink
+              to={`\${openmrsSpaBase}/patient/${entry.patient.uuid}/chart/laboratory-orders`}
+            >
+              {entry.patient.display.split("-")[1]}
+            </ConfigurableLink>
+          ),
+        },
+        orderNumber: { content: <span>{entry.orderNumber}</span> },
+        accessionNumber: { content: <span>{entry.accessionNumber}</span> },
+        test: { content: <span>{entry.concept.display}</span> },
+        action: { content: <span>{entry.action}</span> },
+        status: {
+          content: (
+            <>
+              <Tag>
+                <span
+                  className={styles.statusContainer}
+                  style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
+                >
+                  <span>{entry.fulfillerStatus}</span>
+                </span>
+              </Tag>
+            </>
+          ),
+        },
+        orderer: { content: <span>{entry.orderer.display}</span> },
+        orderType: { content: <span>{entry.orderType.display}</span> },
+        urgency: { content: <span>{entry.urgency}</span> },
+      }));
+  }, [fulfillerStatus, paginatedWorkListEntries]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
   }
 
-  if (paginatedWorkListEntries?.length > 0) {
-    return <DataTable rows={tableRows} headers={tableColumns} useZebraStyles />;
-  } else {
+  if (paginatedWorkListEntries?.length >= 0) {
     return (
-      <div className={styles.tileContainer}>
-        <Tile className={styles.tile}>
-          <div className={styles.tileContent}>
-            <p className={styles.content}>
-              {t("noCompletedListToDisplay", "No Completed List to display")}
-            </p>
-          </div>
-        </Tile>
-      </div>
+      <DataTable rows={tableRows} headers={tableColumns} useZebraStyles>
+        {({
+          rows,
+          headers,
+          getHeaderProps,
+          getTableProps,
+          getRowProps,
+          onInputChange,
+        }) => (
+          <TableContainer className={styles.tableContainer}>
+            <TableToolbar
+              style={{
+                position: "static",
+                height: "3rem",
+                overflow: "visible",
+                backgroundColor: "color",
+              }}
+            >
+              <TableToolbarContent>
+                <Layer style={{ margin: "5px" }}>
+                  <DatePicker dateFormat="Y-m-d" datePickerType="single">
+                    <DatePickerInput
+                      labelText={""}
+                      id="activatedOnOrAfterDate"
+                      placeholder="YYYY-MM-DD"
+                      onChange={(event) => {
+                        setActivatedOnOrAfterDate(event.target.value);
+                      }}
+                      type="date"
+                      value={activatedOnOrAfterDate}
+                    />
+                  </DatePicker>
+                </Layer>
+                <Layer>
+                  <TableToolbarSearch
+                    onChange={onInputChange}
+                    placeholder={t("searchThisList", "Search this list")}
+                    size="sm"
+                  />
+                </Layer>
+              </TableToolbarContent>
+            </TableToolbar>
+            <Table {...getTableProps()} className={styles.activePatientsTable}>
+              <TableHead>
+                <TableRow>
+                  {headers.map((header) => (
+                    <TableHeader {...getHeaderProps({ header })}>
+                      {header.header?.content ?? header.header}
+                    </TableHeader>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row, index) => {
+                  return (
+                    <React.Fragment key={row.id}>
+                      <TableRow {...getRowProps({ row })} key={row.id}>
+                        {row.cells.map((cell) => (
+                          <TableCell key={cell.id}>
+                            {cell.value?.content ?? cell.value}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </React.Fragment>
+                  );
+                })}
+              </TableBody>
+            </Table>
+            {rows.length === 0 ? (
+              <div className={styles.tileContainer}>
+                <Tile className={styles.tile}>
+                  <div className={styles.tileContent}>
+                    <p className={styles.content}>
+                      {t("noCompletedList", "No Completed orders to display")}
+                    </p>
+                  </div>
+                </Tile>
+              </div>
+            ) : null}
+            <Pagination
+              forwardText="Next page"
+              backwardText="Previous page"
+              page={currentPage}
+              pageSize={currentPageSize}
+              pageSizes={pageSizes}
+              totalItems={workListEntries?.length}
+              className={styles.pagination}
+              onChange={({ pageSize, page }) => {
+                if (pageSize !== currentPageSize) {
+                  setPageSize(pageSize);
+                }
+                if (page !== currentPage) {
+                  goTo(page);
+                }
+              }}
+            />
+          </TableContainer>
+        )}
+      </DataTable>
     );
   }
 };
