@@ -16,8 +16,6 @@ const PrintResultsSummary: React.FC<PrintResultsSummaryProps> = ({
   encounterResponse,
   patient,
 }) => {
-  const { t } = useTranslation();
-
   const filteredItems = encounterResponse.obs.filter(
     (ob) => ob?.order?.type === "testorder"
   );
