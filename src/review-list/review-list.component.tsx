@@ -77,9 +77,7 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
   );
 
   const pageSizes = [10, 20, 30, 40, 50];
-  const [page, setPage] = useState(1);
   const [currentPageSize, setPageSize] = useState(10);
-  const [nextOffSet, setNextOffSet] = useState(0);
 
   const {
     goTo,
@@ -107,27 +105,15 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
   ];
 
   const tableRows = useMemo(() => {
-    return paginatedWorkListEntries?.map((entry, index) => ({
+    return paginatedWorkListEntries?.map((entry) => ({
       ...entry,
       id: entry.uuid,
-      date: {
-        content: (
-          <>
-            <span>{formatDate(parseDate(entry.dateActivated))}</span>
-          </>
-        ),
-      },
-      patient: {
-        content: (
-          <>
-            <span>{entry.patient.display.split("-")[1]}</span>
-          </>
-        ),
-      },
-      orderNumber: { content: <span>{entry.orderNumber}</span> },
-      accessionNumber: { content: <span>{entry.accessionNumber}</span> },
-      test: { content: <span>{entry.concept.display}</span> },
-      action: { content: <span>{entry.action}</span> },
+      date: <span>{formatDate(parseDate(entry.dateActivated))}</span>,
+      patient: <span>{entry.patient.display.split("-")[1]}</span>,
+      orderNumber: <span>{entry.orderNumber}</span>,
+      accessionNumber: <span>{entry.accessionNumber}</span>,
+      test: <span>{entry.concept.display}</span>,
+      action: <span>{entry.action}</span>,
       status: {
         content: (
           <>
@@ -142,9 +128,9 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
           </>
         ),
       },
-      orderer: { content: <span>{entry.orderer.display}</span> },
-      orderType: { content: <span>{entry.orderType.display}</span> },
-      urgency: { content: <span>{entry.urgency}</span> },
+      orderer: <span>{entry.orderer.display}</span>,
+      orderType: <span>{entry.orderType.display}</span>,
+      urgency: <span>{entry.urgency}</span>,
     }));
   }, [paginatedWorkListEntries]);
 
@@ -185,6 +171,7 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
                 </Layer>
                 <Layer>
                   <TableToolbarSearch
+                    expanded
                     onChange={onInputChange}
                     placeholder={t("searchThisList", "Search this list")}
                     size="sm"

@@ -117,68 +117,50 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
 
   const tableRows = useMemo(() => {
     return paginatedWorklistQueueEntries
-      ?.filter((item) => item.action === "NEW")
+      ?.filter((item) => item.action === "NEW" && item.fulfillerStatus === null)
       .map((entry, index) => ({
         ...entry,
         id: entry.uuid,
-        date: {
-          content: (
-            <>
-              <span className={styles["single-line-display"]}>
-                {formatDate(parseDate(entry.dateActivated))}
-              </span>
-            </>
-          ),
-        },
-        patient: {
-          content: (
-            <>
-              <span>{entry.patient.display.split("-")[1]}</span>
-            </>
-          ),
-        },
-        orderNumber: { content: <span>{entry.orderNumber}</span> },
-        accessionNumber: { content: <span>{entry.accessionNumber}</span> },
-        test: { content: <span>{entry.concept.display}</span> },
-        action: { content: <span>{entry.action}</span> },
-        status: {
-          content: (
-            <>
-              <Tag>
-                <span
-                  className={styles.statusContainer}
-                  style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
-                >
-                  <span>{entry.fulfillerStatus}</span>
-                </span>
-              </Tag>
-            </>
-          ),
-        },
-        orderer: { content: <span>{entry.orderer.display}</span> },
-        urgency: { content: <span>{entry.urgency}</span> },
-        actions: {
-          content: (
-            <>
-              <OrderCustomOverflowMenuComponent
-                menuTitle={
-                  <>
-                    <OverflowMenuVertical
-                      size={16}
-                      style={{ marginLeft: "0.3rem" }}
-                    />
-                  </>
-                }
-              >
-                <ExtensionSlot
-                  className={styles.menuLink}
-                  state={{ order: paginatedWorklistQueueEntries[index] }}
-                  name="order-actions-slot"
+        date: (
+          <span className={styles["single-line-display"]}>
+            {formatDate(parseDate(entry.dateActivated))}
+          </span>
+        ),
+        patient: <span>{entry.patient.display.split("-")[1]}</span>,
+        orderNumber: <span>{entry.orderNumber}</span>,
+        accessionNumber: <span>{entry.accessionNumber}</span>,
+        test: <span>{entry.concept.display}</span>,
+        action: <span>{entry.action}</span>,
+        status: (
+          <Tag>
+            <span
+              className={styles.statusContainer}
+              style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
+            >
+              <span>{entry.fulfillerStatus}</span>
+            </span>
+          </Tag>
+        ),
+        orderer: <span>{entry.orderer.display}</span>,
+        urgency: <span>{entry.urgency}</span>,
+        actions: (
+          <OrderCustomOverflowMenuComponent
+            menuTitle={
+              <>
+                <OverflowMenuVertical
+                  size={16}
+                  style={{ marginLeft: "0.3rem" }}
                 />
-              </OrderCustomOverflowMenuComponent>
-            </>
-          ),
-        },
+              </>
+            }
+          >
+            <ExtensionSlot
+              className={styles.menuLink}
+              state={{ order: paginatedWorklistQueueEntries[index] }}
+              name="order-actions-slot"
+            />
+          </OrderCustomOverflowMenuComponent>
+        ),
       }));
   }, [paginatedWorklistQueueEntries]);
 
@@ -206,9 +188,6 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
             <TableToolbar
               style={{
                 position: "static",
-                height: "3rem",
-                overflow: "visible",
-                backgroundColor: "color",
               }}
             >
               <TableToolbarContent>

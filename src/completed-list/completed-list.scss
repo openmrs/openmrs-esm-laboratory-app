@@ -115,6 +115,9 @@ title {
     height: spacing.$spacing-07;
     margin-bottom: spacing.$spacing-02;
   }
+  .toolbar {
+    position: static;
+  }
 }
 
 .activePatientsTable tr:last-of-type {
@@ -194,10 +197,10 @@ title {
 }
 
 .toolbar {
-  display: flex;
-  align-items: center;
-  padding: 5px;
-  margin: 10px;
+  position: static;
+  height: 3rem;
+  overflow: visible;
+  background-color: color;
 }
 
 .tileContainer {

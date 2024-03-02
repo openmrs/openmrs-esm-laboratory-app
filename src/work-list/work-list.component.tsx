@@ -129,43 +129,31 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
       .map((entry, index) => ({
         ...entry,
         id: entry.uuid,
-        date: {
-          content: (
-            <>
-              <span>{formatDate(parseDate(entry.dateActivated))}</span>
-            </>
-          ),
-        },
-        patient: {
-          content: (
-            <ConfigurableLink
-              to={`\${openmrsSpaBase}/patient/${entry.patient.uuid}/chart/laboratory-orders`}
+        date: <span>{formatDate(parseDate(entry.dateActivated))}</span>,
+        patient: (
+          <ConfigurableLink
+            to={`\${openmrsSpaBase}/patient/${entry.patient.uuid}/chart/laboratory-orders`}
+          >
+            {entry.patient.display.split("-")[1]}
+          </ConfigurableLink>
+        ),
+        orderNumber: <span>{entry.orderNumber}</span>,
+        accessionNumber: <span>{entry.accessionNumber}</span>,
+        test: <span>{entry.concept.display}</span>,
+        action: <span>{entry.action}</span>,
+        status: (
+          <Tag>
+            <span
+              className={styles.statusContainer}
+              style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
             >
-              {entry.patient.display.split("-")[1]}
-            </ConfigurableLink>
-          ),
-        },
-        orderNumber: { content: <span>{entry.orderNumber}</span> },
-        accessionNumber: { content: <span>{entry.accessionNumber}</span> },
-        test: { content: <span>{entry.concept.display}</span> },
-        action: { content: <span>{entry.action}</span> },
-        status: {
-          content: (
-            <>
-              <Tag>
-                <span
-                  className={styles.statusContainer}
-                  style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
-                >
-                  <span>{entry.fulfillerStatus}</span>
-                </span>
-              </Tag>
-            </>
-          ),
-        },
-        orderer: { content: <span>{entry.orderer.display}</span> },
-        orderType: { content: <span>{entry.orderType.display}</span> },
-        urgency: { content: <span>{entry.urgency}</span> },
+              <span>{entry.fulfillerStatus}</span>
+            </span>
+          </Tag>
+        ),
+        orderer: <span>{entry.orderer.display}</span>,
+        orderType: <span>{entry.orderType.display}</span>,
+        urgency: <span>{entry.urgency}</span>,
         actions: {
           content: (
             <>
@@ -199,9 +187,6 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
             <TableToolbar
               style={{
                 position: "static",
-                height: "3rem",
-                overflow: "visible",
-                backgroundColor: "color",
               }}
             >
               <TableToolbarContent>
@@ -221,6 +206,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
                 </Layer>
                 <Layer>
                   <TableToolbarSearch
+                    expanded
                     onChange={onInputChange}
                     placeholder={t("searchThisList", "Search this list")}
                     size="sm"

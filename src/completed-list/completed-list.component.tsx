@@ -55,8 +55,6 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
     currentPage,
   } = usePagination(workListEntries, currentPageSize);
 
-  console.info("paginatedWorkListEntries", paginatedWorkListEntries);
-
   const tableColumns = [
     { id: 0, header: t("date", "Date"), key: "date" },
     { id: 1, header: t("orderNumber", "Order Number"), key: "orderNumber" },
@@ -76,16 +74,11 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
   const tableRows = useMemo(() => {
     return paginatedWorkListEntries
       ?.filter((item) => item.fulfillerStatus === fulfillerStatus)
-      .map((entry, index) => ({
+      .map((entry) => ({
         ...entry,
         id: entry.uuid,
-        date: {
-          content: (
-            <>
-              <span>{formatDate(parseDate(entry.dateActivated))}</span>
-            </>
-          ),
-        },
+        date: <span>{formatDate(parseDate(entry.dateActivated))}</span>,
+
         patient: {
           content: (
             <ConfigurableLink
@@ -95,10 +88,10 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
             </ConfigurableLink>
           ),
         },
-        orderNumber: { content: <span>{entry.orderNumber}</span> },
-        accessionNumber: { content: <span>{entry.accessionNumber}</span> },
-        test: { content: <span>{entry.concept.display}</span> },
-        action: { content: <span>{entry.action}</span> },
+        orderNumber: <span>{entry.orderNumber}</span>,
+        accessionNumber: <span>{entry.accessionNumber}</span>,
+        test: <span>{entry.concept.display}</span>,
+        action: <span>{entry.action}</span>,
         status: {
           content: (
             <>
@@ -113,9 +106,9 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
             </>
           ),
         },
-        orderer: { content: <span>{entry.orderer.display}</span> },
-        orderType: { content: <span>{entry.orderType.display}</span> },
-        urgency: { content: <span>{entry.urgency}</span> },
+        orderer: <span>{entry.orderer.display}</span>,
+        orderType: <span>{entry.orderType.display}</span>,
+        urgency: <span>{entry.urgency}</span>,
       }));
   }, [fulfillerStatus, paginatedWorkListEntries]);
 
@@ -138,9 +131,6 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
             <TableToolbar
               style={{
                 position: "static",
-                height: "3rem",
-                overflow: "visible",
-                backgroundColor: "color",
               }}
             >
               <TableToolbarContent>
@@ -160,6 +150,7 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
                 </Layer>
                 <Layer>
                   <TableToolbarSearch
+                    expanded
                     onChange={onInputChange}
                     placeholder={t("searchThisList", "Search this list")}
                     size="sm"
