@@ -27,8 +27,6 @@ interface TestOrdersProps {
 const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
   const { t } = useTranslation();
 
-  console.info("obs-->", obs);
-
   const columns = [
     { id: 0, header: t("order", "Order"), key: "order", align: "center" },
     { id: 1, header: t("date", "Date"), key: "date" },
@@ -38,15 +36,23 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
   const formatDateColumn = (obsDatetime) =>
     formatDate(parseDate(obsDatetime), { time: false });
 
-  const obsList = obs.filter((ob) => ob?.order?.type === "testorder");
+  const obsList = obs?.filter((ob) => ob?.order?.type === "testorder");
 
   const obsRows = useMemo(
     () =>
-      obsList.map((ob) => ({
+      obsList.map((ob, index) => ({
         id: ob.uuid,
         order: { content: <span>{ob?.concept?.display}</span> },
         date: { content: <span>{formatDateColumn(ob?.obsDatetime)}</span> },
-        result: { content: <span>{ob?.display}</span> },
+        result: {
+          content: (
+            <span>
+              {ob[index]?.groupMembers === null
+                ? ob?.display
+                : ob?.value?.display}
+            </span>
+          ),
+        },
       })),
     [obsList]
   );
