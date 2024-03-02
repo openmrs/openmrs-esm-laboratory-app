@@ -71,10 +71,6 @@ const TestResultsChildren: React.FC<TestsResultsChildrenProps> = ({
     }));
   }, [members]);
 
-  if (members === undefined) {
-    return <span>No Data</span>;
-  }
-
   const ReferenceRange: React.FC<ReferenceRangeProps> = ({ conceptUuid }) => {
     const {
       concept: concept,
