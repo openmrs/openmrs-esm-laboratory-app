@@ -55,8 +55,6 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
     currentPage,
   } = usePagination(workListEntries, currentPageSize);
 
-  console.info("paginatedWorkListEntries", paginatedWorkListEntries);
-
   const tableColumns = [
     { id: 0, header: t("date", "Date"), key: "date" },
     { id: 1, header: t("orderNumber", "Order Number"), key: "orderNumber" },

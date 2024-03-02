@@ -15,5 +15,7 @@
   "worklist": "Worklist",
   "rejectOrder": "Reject Order",
   "pickLabRequest": "Pick Lab Request",
-  "filterOrdersByStatus": "Filter Orders by status"
+  "filterOrdersByStatus": "Filter Orders by status",
+  "noSelection":  "No Selection: ",
+  "pleaseSelectAnOrder": "Please select at least one order to approve."
 }

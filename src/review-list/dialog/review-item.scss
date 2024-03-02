@@ -1,7 +1,6 @@
 @use '@carbon/styles/scss/spacing';
 @use '@carbon/styles/scss/type';
 @import "~@openmrs/esm-styleguide/src/vars";
-
 .checkbox {
     margin: "10px";
     font-size: "15px";
@@ -14,21 +13,21 @@
 
 .section {
     table {
-        font-family: Arial, sans-serif;
+        // font-family: Arial, sans-serif;
+        @include type.type-style("body-compact-01");
         border-collapse: collapse;
         width: 100%;
-
         td,
         th {
             border: 1px solid #000;
             text-align: left;
-            font-size: 8px;
+            font-size: .8rem;
             padding: 8px;
             width: 80px;
+            color: #525252;
         }
-
         th {
-            background-color: #f2f2f2;
+            background-color: $ui-03;
         }
     }
 }

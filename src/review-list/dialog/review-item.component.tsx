@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Button,
   Form,
@@ -56,18 +56,38 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
   const [checkedItems, setCheckedItems] = useState({});
 
   const handleCheckboxChange = (test, groupMembers, uuid) => {
-    setCheckedItems((prevCheckedItems) => ({
-      ...prevCheckedItems,
-      [test]: {
-        groupMembers,
-        uuid,
-      },
-    }));
+    setCheckedItems((previouslyCheckedItems) => {
+      // If the item is already checked, uncheck it by removing it from the object
+      if (previouslyCheckedItems[test]) {
+        const newCheckedItems = { ...previouslyCheckedItems };
+        delete newCheckedItems[test];
+        return newCheckedItems;
+      } else {
+        // And if the item is not checked, check it by adding it to the object
+        return {
+          ...previouslyCheckedItems,
+          [test]: { groupMembers, uuid },
+        };
+      }
+    });
   };
 
   // handle approve
   const approveOrder = async (e) => {
     e.preventDefault();
+
+    if (Object.keys(checkedItems).length === 0) {
+      showNotification({
+        title: t("noSelection", "No Selection: "),
+        kind: "error",
+        critical: true,
+        description: t(
+          "pleaseSelectAnOrder",
+          "Please select at least one order to approve."
+        ),
+      });
+      return;
+    }
 
     let uuids = [];
 
@@ -175,75 +195,64 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
               status="active"
             />
           )}
-          <section>
-            <table>
-              <tbody>
-                {Object.keys(filteredGroupedResults).length > 0
-                  ? Object.keys(filteredGroupedResults).map((test, index) => {
-                      const { uuid, groupMembers } =
-                        filteredGroupedResults[test];
-                      const isGrouped = uuid && groupMembers?.length > 0;
+          <section className={styles.section}>
+            {Object.keys(filteredGroupedResults).length > 0
+              ? Object.keys(filteredGroupedResults).map((test, index) => {
+                  const { uuid, groupMembers } = filteredGroupedResults[test];
+                  const isGrouped = uuid && groupMembers?.length > 0;
 
-                      return (
-                        <tr key={test} style={{ margin: "10px" }}>
-                          <Checkbox
-                            key={index}
-                            className={styles.checkbox}
-                            onChange={() =>
-                              handleCheckboxChange(test, groupMembers, uuid)
-                            }
-                            labelText={test}
-                            id={`test-${test}`}
-                            checked={checkedItems[test] || false}
-                          />
+                  return (
+                    <div key={test} style={{ margin: "10px" }}>
+                      <Checkbox
+                        key={index}
+                        className={styles.checkbox}
+                        onChange={() =>
+                          handleCheckboxChange(test, groupMembers, uuid)
+                        }
+                        labelText={test}
+                        id={`test-${test}`}
+                        checked={checkedItems[test] || false}
+                      />
 
-                          <table style={{ margin: "10px" }}>
-                            <thead>
-                              <tr>
-                                <th>Tests</th>
-                                <th>Result</th>
-                                <th>Reference Range</th>
-                                <th>Units</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {isGrouped && (
-                                <RowGroupMembers groupMembers={groupMembers} />
-                              )}
-                              {!isGrouped && (
-                                <tr>
-                                  <td>
-                                    <span>
-                                      {
-                                        filteredGroupedResults[test]?.order
-                                          ?.display
-                                      }
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <span>
-                                      {
-                                        filteredGroupedResults[test]?.value
-                                          ?.display
-                                      }
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <span>{"N/A"}</span>
-                                  </td>
-                                  <td>
-                                    <span>{"N/A"}</span>
-                                  </td>
-                                </tr>
-                              )}
-                            </tbody>
-                          </table>
-                        </tr>
-                      );
-                    })
-                  : "No tests were added"}
-              </tbody>
-            </table>
+                      <table style={{ margin: "10px" }}>
+                        <thead>
+                          <tr>
+                            <th>Tests</th>
+                            <th>Result</th>
+                            <th>Reference Range</th>
+                            <th>Units</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {isGrouped && (
+                            <RowGroupMembers groupMembers={groupMembers} />
+                          )}
+                          {!isGrouped && (
+                            <tr>
+                              <td>
+                                <span>
+                                  {filteredGroupedResults[test]?.order?.display}
+                                </span>
+                              </td>
+                              <td>
+                                <span>
+                                  {filteredGroupedResults[test]?.value?.display}
+                                </span>
+                              </td>
+                              <td>
+                                <span>{"N/A"}</span>
+                              </td>
+                              <td>
+                                <span>{"N/A"}</span>
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  );
+                })
+              : "No tests were added"}
           </section>
         </ModalBody>
         <ModalFooter>
