@@ -34,7 +34,9 @@ const TestsPrintResults: React.FC<TestOrdersProps> = ({ obs }) => {
     { id: 2, header: t("results", "Results"), key: "result" },
   ];
 
-  const filteredItems = obs.filter((ob) => ob?.order?.type === "testorder");
+  const filteredItems = obs.filter(
+    (ob) => ob?.order?.type === "testorder" && ob?.groupMembers?.length > 0
+  );
 
   const tableRows = useMemo(() => {
     return filteredItems?.map((entry) => ({
@@ -91,9 +93,13 @@ const TestsPrintResults: React.FC<TestOrdersProps> = ({ obs }) => {
                             className={styles.expandedActiveVisitRow}
                             colSpan={headers.length + 2}
                           >
-                            <TestResultsChildren
-                              members={filteredItems[index]?.groupMembers}
-                            />
+                            {filteredItems[index]?.groupMembers !== null &&
+                              filteredItems[index]?.groupMembers?.length >
+                                0 && (
+                                <TestResultsChildren
+                                  members={filteredItems[index]?.groupMembers}
+                                />
+                              )}
                           </TableExpandedRow>
                         ) : (
                           <TableExpandedRow

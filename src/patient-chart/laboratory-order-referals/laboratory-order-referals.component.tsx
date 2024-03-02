@@ -83,7 +83,8 @@ const LaboratoryOrderReferalResults: React.FC<
 > = ({ patientUuid }) => {
   const { t } = useTranslation();
 
-  const { enableSendingLabTestsByEmail } = useConfig();
+  const { enableSendingLabTestsByEmail, laboratoryEncounterTypeUuid } =
+    useConfig();
 
   const displayText = t(
     "referralLaboratoryTestsDisplayTextTitle",
@@ -105,15 +106,20 @@ const LaboratoryOrderReferalResults: React.FC<
     v: ResourceRepresentation.Full,
     totalCount: true,
     patientUuid: patientUuid,
+    laboratoryEncounterTypeUuid: laboratoryEncounterTypeUuid,
   });
 
   const sortedLabRequests = useMemo(() => {
-    return [...items].sort((a, b) => {
-      const dateA = new Date(a.encounterDatetime);
-      const dateB = new Date(b.encounterDatetime);
-      return dateB.getTime() - dateA.getTime();
-    });
-  }, [items]);
+    return [...items]
+      ?.filter(
+        (item) => item?.encounterType?.uuid === laboratoryEncounterTypeUuid
+      )
+      ?.sort((a, b) => {
+        const dateA = new Date(a.encounterDatetime);
+        const dateB = new Date(b.encounterDatetime);
+        return dateB.getTime() - dateA.getTime();
+      });
+  }, [items, laboratoryEncounterTypeUuid]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [laboratoryOrders, setLaboratoryOrders] = useState(sortedLabRequests);
@@ -257,9 +263,9 @@ const LaboratoryOrderReferalResults: React.FC<
   );
 
   const tableRows = useMemo(() => {
-    return laboratoryOrders.map((entry, index) => ({
+    return laboratoryOrders?.map((entry, index) => ({
       ...entry,
-      id: entry.uuid,
+      id: entry?.uuid,
       orderDate: {
         content: (
           <span>
@@ -288,9 +294,9 @@ const LaboratoryOrderReferalResults: React.FC<
                     color: "white",
                   }}
                   role="tooltip"
-                  key={order.uuid} // Add a unique key for each Tag
+                  key={order?.uuid}
                 >
-                  {order?.concept?.display}
+                  {order?.display}
                 </Tag>
               ))}
           </>
@@ -448,7 +454,12 @@ const LaboratoryOrderReferalResults: React.FC<
                             className={styles.expandedActiveVisitRow}
                             colSpan={headers.length + 2}
                           >
-                            <TestsResults obs={sortedLabRequests[index].obs} />
+                            {sortedLabRequests[index]?.obs !== null &&
+                              sortedLabRequests[index]?.obs.length > 0 && (
+                                <TestsResults
+                                  obs={sortedLabRequests[index]?.obs}
+                                />
+                              )}{" "}
                           </TableExpandedRow>
                         ) : (
                           <TableExpandedRow

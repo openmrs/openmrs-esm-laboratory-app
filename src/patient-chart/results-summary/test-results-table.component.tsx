@@ -27,6 +27,8 @@ interface TestOrdersProps {
 const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
   const { t } = useTranslation();
 
+  console.info("obs-->", obs);
+
   const columns = [
     { id: 0, header: t("order", "Order"), key: "order", align: "center" },
     { id: 1, header: t("date", "Date"), key: "date" },
@@ -80,9 +82,12 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
                         className={styles.expandedActiveVisitRow}
                         colSpan={headers.length + 2}
                       >
-                        <TestResultsChildren
-                          members={obsList[index]?.groupMembers}
-                        />
+                        {obsList[index]?.groupMembers !== null &&
+                          obsList[index]?.groupMembers?.length > 0 && (
+                            <TestResultsChildren
+                              members={obsList[index]?.groupMembers}
+                            />
+                          )}
                       </TableExpandedRow>
                     ) : (
                       <TableExpandedRow
