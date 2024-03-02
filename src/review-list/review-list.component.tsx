@@ -107,30 +107,30 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
   const tableRows = useMemo(() => {
     return paginatedWorkListEntries?.map((entry) => ({
       ...entry,
-      id: entry.uuid,
-      date: <span>{formatDate(parseDate(entry.dateActivated))}</span>,
-      patient: <span>{entry.patient.display.split("-")[1]}</span>,
-      orderNumber: <span>{entry.orderNumber}</span>,
-      accessionNumber: <span>{entry.accessionNumber}</span>,
-      test: <span>{entry.concept.display}</span>,
-      action: <span>{entry.action}</span>,
+      id: entry?.uuid,
+      date: <span>{formatDate(parseDate(entry?.dateActivated))}</span>,
+      patient: <span>{entry?.patient?.display.split("-")[1]}</span>,
+      orderNumber: <span>{entry?.orderNumber}</span>,
+      accessionNumber: <span>{entry?.accessionNumber}</span>,
+      test: <span>{entry?.concept?.display}</span>,
+      action: <span>{entry?.action}</span>,
       status: {
         content: (
           <>
             <Tag>
               <span
                 className={styles.statusContainer}
-                style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
+                style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
               >
-                <span>{entry.fulfillerStatus}</span>
+                <span>{entry?.fulfillerStatus}</span>
               </span>
             </Tag>
           </>
         ),
       },
-      orderer: <span>{entry.orderer.display}</span>,
-      orderType: <span>{entry.orderType.display}</span>,
-      urgency: <span>{entry.urgency}</span>,
+      orderer: <span>{entry?.orderer?.display}</span>,
+      orderType: <span>{entry?.orderType?.display}</span>,
+      urgency: <span>{entry?.urgency}</span>,
     }));
   }, [paginatedWorkListEntries]);
 
@@ -202,7 +202,7 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
                         <TableCell className="cds--table-column-menu">
                           <ApproveTestMenu
                             encounterUuid={
-                              paginatedWorkListEntries[index].encounter.uuid
+                              paginatedWorkListEntries[index]?.encounter?.uuid
                             }
                           />
                         </TableCell>

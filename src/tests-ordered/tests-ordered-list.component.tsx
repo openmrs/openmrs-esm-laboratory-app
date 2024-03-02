@@ -117,32 +117,34 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
 
   const tableRows = useMemo(() => {
     return paginatedWorklistQueueEntries
-      ?.filter((item) => item.action === "NEW" && item.fulfillerStatus === null)
+      ?.filter(
+        (item) => item.action === "NEW" && item?.fulfillerStatus === null
+      )
       .map((entry, index) => ({
         ...entry,
-        id: entry.uuid,
+        id: entry?.uuid,
         date: (
           <span className={styles["single-line-display"]}>
-            {formatDate(parseDate(entry.dateActivated))}
+            {formatDate(parseDate(entry?.dateActivated))}
           </span>
         ),
-        patient: <span>{entry.patient.display.split("-")[1]}</span>,
-        orderNumber: <span>{entry.orderNumber}</span>,
-        accessionNumber: <span>{entry.accessionNumber}</span>,
-        test: <span>{entry.concept.display}</span>,
-        action: <span>{entry.action}</span>,
+        patient: <span>{entry?.patient?.display.split("-")[1]}</span>,
+        orderNumber: <span>{entry?.orderNumber}</span>,
+        accessionNumber: <span>{entry?.accessionNumber}</span>,
+        test: <span>{entry?.concept?.display}</span>,
+        action: <span>{entry?.action}</span>,
         status: (
           <Tag>
             <span
               className={styles.statusContainer}
-              style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
+              style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
             >
-              <span>{entry.fulfillerStatus}</span>
+              <span>{entry?.fulfillerStatus}</span>
             </span>
           </Tag>
         ),
-        orderer: <span>{entry.orderer.display}</span>,
-        urgency: <span>{entry.urgency}</span>,
+        orderer: <span>{entry?.orderer?.display}</span>,
+        urgency: <span>{entry?.urgency}</span>,
         actions: (
           <OrderCustomOverflowMenuComponent
             menuTitle={

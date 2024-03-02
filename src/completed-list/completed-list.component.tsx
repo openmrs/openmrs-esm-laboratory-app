@@ -18,13 +18,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TabPanel,
   TableToolbar,
   TableToolbarContent,
   TableToolbarSearch,
   Layer,
   Tag,
-  Button,
   Tile,
   DatePicker,
   DatePickerInput,
@@ -76,39 +74,39 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
       ?.filter((item) => item.fulfillerStatus === fulfillerStatus)
       .map((entry) => ({
         ...entry,
-        id: entry.uuid,
-        date: <span>{formatDate(parseDate(entry.dateActivated))}</span>,
+        id: entry?.uuid,
+        date: <span>{formatDate(parseDate(entry?.dateActivated))}</span>,
 
         patient: {
           content: (
             <ConfigurableLink
-              to={`\${openmrsSpaBase}/patient/${entry.patient.uuid}/chart/laboratory-orders`}
+              to={`\${openmrsSpaBase}/patient/${entry?.patient?.uuid}/chart/laboratory-orders`}
             >
-              {entry.patient.display.split("-")[1]}
+              {entry?.patient?.display.split("-")[1]}
             </ConfigurableLink>
           ),
         },
-        orderNumber: <span>{entry.orderNumber}</span>,
-        accessionNumber: <span>{entry.accessionNumber}</span>,
-        test: <span>{entry.concept.display}</span>,
-        action: <span>{entry.action}</span>,
+        orderNumber: <span>{entry?.orderNumber}</span>,
+        accessionNumber: <span>{entry?.accessionNumber}</span>,
+        test: <span>{entry?.concept?.display}</span>,
+        action: <span>{entry?.action}</span>,
         status: {
           content: (
             <>
               <Tag>
                 <span
                   className={styles.statusContainer}
-                  style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
+                  style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
                 >
-                  <span>{entry.fulfillerStatus}</span>
+                  <span>{entry?.fulfillerStatus}</span>
                 </span>
               </Tag>
             </>
           ),
         },
-        orderer: <span>{entry.orderer.display}</span>,
-        orderType: <span>{entry.orderType.display}</span>,
-        urgency: <span>{entry.urgency}</span>,
+        orderer: <span>{entry?.orderer?.display}</span>,
+        orderType: <span>{entry?.orderType.display}</span>,
+        urgency: <span>{entry?.urgency}</span>,
       }));
   }, [fulfillerStatus, paginatedWorkListEntries]);
 
