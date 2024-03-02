@@ -39,7 +39,9 @@ const LaboratoryOrdersTabs: React.FC = () => {
             aria-label="Laboratory tabs"
             contained
           >
-            <Tab>{t("testedOrders", "Tests ordered")}</Tab>
+            <Tab style={{ width: "150px" }}>
+              {t("testedOrders", "Tests ordered")}
+            </Tab>
             {tabExtensions
               .filter((extension) => Object.keys(extension.meta).length > 0)
               .map((extension, index) => {
@@ -51,6 +53,7 @@ const LaboratoryOrdersTabs: React.FC = () => {
                       key={index}
                       className={styles.tab}
                       id={`${title || index}-tab`}
+                      style={{ width: "150px" }}
                     >
                       {t(title, {
                         ns: extension.moduleName,
