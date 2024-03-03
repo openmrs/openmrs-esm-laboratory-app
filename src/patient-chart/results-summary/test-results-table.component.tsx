@@ -36,15 +36,23 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
   const formatDateColumn = (obsDatetime) =>
     formatDate(parseDate(obsDatetime), { time: false });
 
-  const obsList = obs.filter((ob) => ob?.order?.type === "testorder");
+  const obsList = obs?.filter((ob) => ob?.order?.type === "testorder");
 
   const obsRows = useMemo(
     () =>
-      obsList.map((ob) => ({
+      obsList.map((ob, index) => ({
         id: ob.uuid,
         order: { content: <span>{ob?.concept?.display}</span> },
         date: { content: <span>{formatDateColumn(ob?.obsDatetime)}</span> },
-        result: { content: <span>{ob?.display}</span> },
+        result: {
+          content: (
+            <span>
+              {ob[index]?.groupMembers === null
+                ? ob?.display
+                : ob?.value?.display}
+            </span>
+          ),
+        },
       })),
     [obsList]
   );
@@ -80,9 +88,12 @@ const TestsResults: React.FC<TestOrdersProps> = ({ obs }) => {
                         className={styles.expandedActiveVisitRow}
                         colSpan={headers.length + 2}
                       >
-                        <TestResultsChildren
-                          members={obsList[index]?.groupMembers}
-                        />
+                        {obsList[index]?.groupMembers !== null &&
+                          obsList[index]?.groupMembers?.length > 0 && (
+                            <TestResultsChildren
+                              members={obsList[index]?.groupMembers}
+                            />
+                          )}
                       </TableExpandedRow>
                     ) : (
                       <TableExpandedRow

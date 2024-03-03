@@ -79,7 +79,8 @@ const LaboratoryActiveTestOrderResults: React.FC<
 > = ({ patientUuid }) => {
   const { t } = useTranslation();
 
-  const { enableSendingLabTestsByEmail } = useConfig();
+  const { enableSendingLabTestsByEmail, laboratoryEncounterTypeUuid } =
+    useConfig();
 
   const displayText = t(
     "activelLaboratoryTestsDisplayTextTitle",
@@ -91,17 +92,22 @@ const LaboratoryActiveTestOrderResults: React.FC<
       v: ResourceRepresentation.Full,
       totalCount: true,
       patientUuid: patientUuid,
+      laboratoryEncounterTypeUuid: laboratoryEncounterTypeUuid,
     });
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
 
   const sortedLabRequests = useMemo(() => {
-    return [...items].sort((a, b) => {
-      const dateA = new Date(a.encounterDatetime);
-      const dateB = new Date(b.encounterDatetime);
-      return dateB.getTime() - dateA.getTime();
-    });
-  }, [items]);
+    return [...items]
+      ?.filter(
+        (item) => item?.encounterType?.uuid === laboratoryEncounterTypeUuid
+      )
+      ?.sort((a, b) => {
+        const dateA = new Date(a.encounterDatetime);
+        const dateB = new Date(b.encounterDatetime);
+        return dateB.getTime() - dateA.getTime();
+      });
+  }, [items, laboratoryEncounterTypeUuid]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [laboratoryOrders, setLaboratoryOrders] = useState(sortedLabRequests);
@@ -264,9 +270,9 @@ const LaboratoryActiveTestOrderResults: React.FC<
                     color: "white",
                   }}
                   role="tooltip"
-                  key={order.uuid} // Add a unique key for each Tag
+                  key={order.uuid}
                 >
-                  {order?.concept?.display}
+                  {order?.display}
                 </Tag>
               ))}
           </>
@@ -416,7 +422,12 @@ const LaboratoryActiveTestOrderResults: React.FC<
                             className={styles.expandedActiveVisitRow}
                             colSpan={headers.length + 2}
                           >
-                            <TestsResults obs={sortedLabRequests[index].obs} />
+                            {sortedLabRequests[index]?.obs !== null &&
+                              sortedLabRequests[index]?.obs?.length > 0 && (
+                                <TestsResults
+                                  obs={sortedLabRequests[index]?.obs}
+                                />
+                              )}
                           </TableExpandedRow>
                         ) : (
                           <TableExpandedRow
