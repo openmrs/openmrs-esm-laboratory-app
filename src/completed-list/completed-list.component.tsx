@@ -146,7 +146,7 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
                     />
                   </DatePicker>
                 </Layer>
-                <Layer>
+                <Layer style={{ margin: "5px" }}>
                   <TableToolbarSearch
                     expanded
                     onChange={onInputChange}
@@ -156,6 +156,7 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
                 </Layer>
               </TableToolbarContent>
             </TableToolbar>
+
             <Table {...getTableProps()} className={styles.activePatientsTable}>
               <TableHead>
                 <TableRow>
