@@ -126,7 +126,7 @@ export function useGetOrdersWorklist(
   const { data, error, isLoading } = useSWR<
     { data: { results: Array<Result> } },
     Error
-  >(apiUrl, openmrsFetch);
+  >(apiUrl, openmrsFetch, { refreshInterval: 3000 });
 
   return {
     workListEntries: data?.data ? data.data.results : [],
