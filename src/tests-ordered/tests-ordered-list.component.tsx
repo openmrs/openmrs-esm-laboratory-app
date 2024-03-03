@@ -118,7 +118,9 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
   const tableRows = useMemo(() => {
     return paginatedWorklistQueueEntries
       ?.filter(
-        (item) => item.action === "NEW" && item?.fulfillerStatus === null
+        (item) =>
+          (item?.fulfillerStatus === null || item?.fulfillerStatus === "") &&
+          item?.action === "NEW"
       )
       .map((entry, index) => ({
         ...entry,
