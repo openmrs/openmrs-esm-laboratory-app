@@ -46,28 +46,8 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
   columns,
 }) => {
   const { t } = useTranslation();
-  const OrderStatuses = [
-    "All",
-    "RECEIVED",
-    "IN_PROGRESS",
-    "COMPLETED",
-    "EXCEPTION",
-    "ON_HOLD",
-    "DECLINED",
-  ];
-  const [filter, setFilter] = useState<
-    | "All"
-    | "EXCEPTION"
-    | "RECEIVED"
-    | "COMPLETED"
-    | "IN_PROGRESS"
-    | "ON_HOLD"
-    | "DECLINED"
-  >("All");
 
   const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState("");
-
-  const handleOrderStatusChange = ({ selectedItem }) => setFilter(selectedItem);
 
   return (
     <DataTable rows={rows} headers={columns} useZebraStyles>
