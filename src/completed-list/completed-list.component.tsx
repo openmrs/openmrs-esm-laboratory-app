@@ -7,10 +7,28 @@ import {
   usePagination,
   ConfigurableLink,
 } from "@openmrs/esm-framework";
-import { DataTableSkeleton, Tag } from "@carbon/react";
+import {
+  DataTable,
+  Pagination,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableHeader,
+  TableRow,
+  Tile,
+  TableToolbar,
+  TableToolbarContent,
+  Layer,
+  TableToolbarSearch,
+  DatePicker,
+  DatePickerInput,
+  DataTableSkeleton,
+  Tag,
+} from "@carbon/react";
 import styles from "./completed-list.scss";
 import { getStatusColor } from "../utils/functions";
-import OrdersDataTable from "../utils/orders-table/orders-data-table.component";
 
 interface CompletedListProps {
   fulfillerStatus: string;
@@ -102,18 +120,106 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
 
   if (paginatedWorkListEntries?.length >= 0) {
     return (
-      <OrdersDataTable
-        tabTitle={"Completed"}
-        orders={paginatedWorkListEntries}
-        rows={tableRows}
-        columns={tableColumns}
-        currentPage={currentPage}
-        currentPageSize={currentPageSize}
-        pageSizes={pageSizes}
-        totalItems={paginatedWorkListEntries?.length}
-        setPageSize={setPageSize}
-        goTo={goTo}
-      />
+      <DataTable rows={tableRows} headers={tableColumns} useZebraStyles>
+        {({
+          rows,
+          headers,
+          getHeaderProps,
+          getTableProps,
+          getRowProps,
+          onInputChange,
+        }) => (
+          <TableContainer className={styles.tableContainer}>
+            <TableToolbar
+              style={{
+                position: "static",
+              }}
+            >
+              <TableToolbarContent>
+                <Layer style={{ margin: "5px" }}>
+                  <DatePicker dateFormat="Y-m-d" datePickerType="single">
+                    <DatePickerInput
+                      labelText={""}
+                      id="activatedOnOrAfterDate"
+                      placeholder="YYYY-MM-DD"
+                      onChange={(event) => {
+                        setActivatedOnOrAfterDate(event.target.value);
+                      }}
+                      type="date"
+                      value={activatedOnOrAfterDate}
+                    />
+                  </DatePicker>
+                </Layer>
+                <Layer style={{ margin: "5px" }}>
+                  <TableToolbarSearch
+                    expanded
+                    onChange={onInputChange}
+                    placeholder={t("searchThisList", "Search this list")}
+                    size="sm"
+                  />
+                </Layer>
+              </TableToolbarContent>
+            </TableToolbar>
+            <Table {...getTableProps()} className={styles.activePatientsTable}>
+              <TableHead>
+                <TableRow>
+                  {headers.map((header) => (
+                    <TableHeader {...getHeaderProps({ header })}>
+                      {header.header?.content ?? header.header}
+                    </TableHeader>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row, index) => {
+                  return (
+                    <React.Fragment key={row.id}>
+                      <TableRow {...getRowProps({ row })} key={row.id}>
+                        {row.cells.map((cell) => (
+                          <TableCell key={cell.id}>
+                            {cell.value?.content ?? cell.value}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </React.Fragment>
+                  );
+                })}
+              </TableBody>
+            </Table>
+            {rows.length === 0 ? (
+              <div className={styles.tileContainer}>
+                <Tile className={styles.tile}>
+                  <div className={styles.tileContent}>
+                    <p className={styles.content}>
+                      {t(
+                        "noWorklistsToDisplay",
+                        "No worklists orders to display"
+                      )}
+                    </p>
+                  </div>
+                </Tile>
+              </div>
+            ) : null}
+            <Pagination
+              forwardText="Next page"
+              backwardText="Previous page"
+              page={currentPage}
+              pageSize={currentPageSize}
+              pageSizes={pageSizes}
+              totalItems={workListEntries?.length}
+              className={styles.pagination}
+              onChange={({ pageSize, page }) => {
+                if (pageSize !== currentPageSize) {
+                  setPageSize(pageSize);
+                }
+                if (page !== currentPage) {
+                  goTo(page);
+                }
+              }}
+            />
+          </TableContainer>
+        )}
+      </DataTable>
     );
   }
 };
