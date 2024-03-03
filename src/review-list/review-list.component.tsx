@@ -26,8 +26,6 @@ import {
   Tile,
   DatePicker,
   DatePickerInput,
-  Select,
-  SelectItem,
   Button,
   Tag,
 } from "@carbon/react";

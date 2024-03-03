@@ -38,16 +38,14 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
   const { encounter, isLoading } = useGetEncounterById(encounterUuid);
 
   const testsOrder = useMemo(() => {
-    return encounter?.orders.filter(
-      (item) => item?.orderType.display === "Test Order"
-    );
-  }, [encounter?.orders]);
+    return encounter?.obs.filter((item) => item?.order?.type === "testorder");
+  }, [encounter?.obs]);
 
   const filteredGroupedResults = useMemo(() => {
     let groupedResults = [];
 
     testsOrder?.forEach((element) => {
-      groupedResults[element.display] = element;
+      groupedResults[element?.concept?.display] = element;
     });
 
     return groupedResults;
@@ -56,19 +54,35 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
   const [checkedItems, setCheckedItems] = useState({});
 
   const handleCheckboxChange = (test, groupMembers, uuid) => {
-    setCheckedItems((prevCheckedItems) => ({
-      ...prevCheckedItems,
-      [test]: {
-        groupMembers,
-        uuid,
-      },
-    }));
+    setCheckedItems((previouslyCheckedItems) => {
+      if (previouslyCheckedItems[test]) {
+        const newCheckedItems = { ...previouslyCheckedItems };
+        delete newCheckedItems[test];
+        return newCheckedItems;
+      } else {
+        return {
+          ...previouslyCheckedItems,
+          [test]: { groupMembers, uuid },
+        };
+      }
+    });
   };
 
   // handle approve
   const approveOrder = async (e) => {
     e.preventDefault();
-
+    if (Object.keys(checkedItems).length === 0) {
+      showNotification({
+        title: t("noSelection", "No Selection: "),
+        kind: "error",
+        critical: true,
+        description: t(
+          "pleaseSelectAnOrder",
+          "Please select at least one order to approve."
+        ),
+      });
+      return;
+    }
     let uuids = [];
 
     Object.keys(checkedItems).map((item, index) => {
@@ -175,7 +189,7 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
               status="active"
             />
           )}
-          <section>
+          <section className={styles.section}>
             <table>
               <tbody>
                 {Object.keys(filteredGroupedResults).length > 0
