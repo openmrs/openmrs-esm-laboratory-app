@@ -2,7 +2,7 @@ import { FetchResponse, openmrsFetch, useConfig } from "@openmrs/esm-framework";
 import { useMemo } from "react";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
-import { BLOOD_UUID, bloodEntry } from "../../constants";
+import { additionEntries } from "../../constants";
 
 export interface QueueRoomsResponse {
   uuid: string;
@@ -114,18 +114,17 @@ export function useSpecimenTypes() {
     openmrsFetch
   );
   const existingSpecimenTypes = data?.data?.answers ?? [];
-  const hasBloodEntry = existingSpecimenTypes.some(entry =>
-      entry.uuid === BLOOD_UUID
-  );
-  if (!hasBloodEntry) {
-    bloodEntry
-      existingSpecimenTypes.push(bloodEntry);
-  }
+  additionEntries.forEach((entry) => {
+    const hasEntry = existingSpecimenTypes.some(
+      (existingEntry) => existingEntry.uuid === entry.uuid
+    );
 
-  console.log(existingSpecimenTypes);
-
+    if (!hasEntry) {
+      existingSpecimenTypes.push(entry);
+    }
+  });
   return {
-    specimenTypes: data ? data?.data?.answers : [],
+    specimenTypes: existingSpecimenTypes,
     isLoading,
   };
 }
