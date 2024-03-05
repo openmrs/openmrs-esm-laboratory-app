@@ -9,9 +9,11 @@ import {
   Checkbox,
 } from "@carbon/react";
 import { useTranslation } from "react-i18next";
-import { useGetEncounterById } from "../../patient-chart/laboratory-item/view-laboratory-item.resource";
 import styles from "../dialog/review-item.scss";
-import { GroupMember } from "../../patient-chart/patient-laboratory-order-results.resource";
+import {
+  GroupMember,
+  useGetEncounterById,
+} from "../../patient-chart/patient-laboratory-order-results.resource";
 import { useGetConceptById } from "../../patient-chart/results-summary/results-summary.resource";
 import { ApproverOrder } from "./review-item.resource";
 import { showNotification, showSnackbar } from "@openmrs/esm-framework";

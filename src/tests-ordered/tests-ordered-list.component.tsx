@@ -54,8 +54,6 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
     "DECLINED",
   ];
 
-  const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState("");
-
   const [filter, setFilter] = useState<
     | "All"
     | "EXCEPTION"
@@ -66,10 +64,7 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
     | "DECLINED"
   >("All");
 
-  const { workListEntries, isLoading } = useGetOrdersWorklist(
-    activatedOnOrAfterDate,
-    ""
-  );
+  const { workListEntries, isLoading } = useGetOrdersWorklist("");
 
   const filteredStatus = useMemo(() => {
     if (!filter || filter == "All") {
@@ -130,23 +125,21 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
             {formatDate(parseDate(entry?.dateActivated))}
           </span>
         ),
-        patient: <span>{entry?.patient?.display.split("-")[1]}</span>,
-        orderNumber: <span>{entry?.orderNumber}</span>,
-        accessionNumber: <span>{entry?.accessionNumber}</span>,
-        test: <span>{entry?.concept?.display}</span>,
-        action: <span>{entry?.action}</span>,
+        patient: entry?.patient?.display.split("-")[1],
+        orderNumber: entry?.orderNumber,
+        accessionNumber: entry?.accessionNumber,
+        test: entry?.concept?.display,
+        action: entry?.action,
         status: (
-          <Tag>
-            <span
-              className={styles.statusContainer}
-              style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
-            >
-              <span>{entry?.fulfillerStatus}</span>
-            </span>
-          </Tag>
+          <span
+            className={styles.statusContainer}
+            style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
+          >
+            {entry?.fulfillerStatus}
+          </span>
         ),
-        orderer: <span>{entry?.orderer?.display}</span>,
-        urgency: <span>{entry?.urgency}</span>,
+        orderer: entry?.orderer?.display,
+        urgency: entry?.urgency,
         actions: (
           <OrderCustomOverflowMenuComponent
             menuTitle={
@@ -207,21 +200,6 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
                     items={OrderStatuses}
                     onChange={handleOrderStatusChange}
                   />
-                </Layer>
-
-                <Layer style={{ margin: "5px" }}>
-                  <DatePicker dateFormat="Y-m-d" datePickerType="single">
-                    <DatePickerInput
-                      labelText={""}
-                      id="activatedOnOrAfterDate"
-                      placeholder="YYYY-MM-DD"
-                      onChange={(event) => {
-                        setActivatedOnOrAfterDate(event.target.value);
-                      }}
-                      type="date"
-                      value={activatedOnOrAfterDate}
-                    />
-                  </DatePicker>
                 </Layer>
               </TableToolbarContent>
             </TableToolbar>

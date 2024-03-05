@@ -53,12 +53,7 @@ interface RejectOrderProps {
 const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
   const { t } = useTranslation();
 
-  const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState("");
-
-  const { workListEntries, isLoading } = useGetOrdersWorklist(
-    activatedOnOrAfterDate,
-    fulfillerStatus
-  );
+  const { workListEntries, isLoading } = useGetOrdersWorklist(fulfillerStatus);
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
@@ -129,7 +124,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
       .map((entry, index) => ({
         ...entry,
         id: entry?.uuid,
-        date: <span>{formatDate(parseDate(entry?.dateActivated))}</span>,
+        date: formatDate(parseDate(entry?.dateActivated)),
         patient: (
           <ConfigurableLink
             to={`\${openmrsSpaBase}/patient/${entry?.patient?.uuid}/chart/laboratory-orders`}
@@ -137,23 +132,21 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
             {entry?.patient?.display.split("-")[1]}
           </ConfigurableLink>
         ),
-        orderNumber: <span>{entry?.orderNumber}</span>,
-        accessionNumber: <span>{entry?.accessionNumber}</span>,
-        test: <span>{entry?.concept?.display}</span>,
-        action: <span>{entry?.action}</span>,
+        orderNumber: entry?.orderNumber,
+        accessionNumber: entry?.accessionNumber,
+        test: entry?.concept?.display,
+        action: entry?.action,
         status: (
-          <Tag>
-            <span
-              className={styles.statusContainer}
-              style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
-            >
-              <span>{entry?.fulfillerStatus}</span>
-            </span>
-          </Tag>
+          <span
+            className={styles.statusContainer}
+            style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
+          >
+            {entry?.fulfillerStatus}
+          </span>
         ),
-        orderer: <span>{entry?.orderer?.display}</span>,
-        orderType: <span>{entry?.orderType?.display}</span>,
-        urgency: <span>{entry?.urgency}</span>,
+        orderer: entry?.orderer?.display,
+        orderType: entry?.orderType?.display,
+        urgency: entry?.urgency,
         actions: {
           content: (
             <>
@@ -190,20 +183,6 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
               }}
             >
               <TableToolbarContent>
-                <Layer style={{ margin: "5px" }}>
-                  <DatePicker dateFormat="Y-m-d" datePickerType="single">
-                    <DatePickerInput
-                      labelText={""}
-                      id="activatedOnOrAfterDate"
-                      placeholder="YYYY-MM-DD"
-                      onChange={(event) => {
-                        setActivatedOnOrAfterDate(event.target.value);
-                      }}
-                      type="date"
-                      value={activatedOnOrAfterDate}
-                    />
-                  </DatePicker>
-                </Layer>
                 <Layer>
                   <TableToolbarSearch
                     expanded

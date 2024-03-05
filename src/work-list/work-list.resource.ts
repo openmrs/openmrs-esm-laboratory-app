@@ -1,5 +1,6 @@
-import { openmrsFetch, restBaseUrl } from "@openmrs/esm-framework";
-import useSWR from "swr";
+import { openmrsFetch, restBaseUrl, useConfig } from "@openmrs/esm-framework";
+import { useCallback } from "react";
+import useSWR, { mutate } from "swr";
 
 export interface Result {
   uuid: string;
@@ -116,12 +117,27 @@ export interface SpecimenSource {
   links: Link[];
 }
 
-export function useGetOrdersWorklist(
-  activatedOnOrAfterDate: string,
-  fulfillerStatus: string
-) {
-  const apiUrl = `${restBaseUrl}/order?orderTypes=52a447d3-a64a-11e3-9aeb-50e549534c5e&activatedOnOrAfterDate=${activatedOnOrAfterDate}&isStopped=false&fulfillerStatus=${fulfillerStatus}&v=full
-`;
+export function useGetOrdersWorklist(fulfillerStatus: string) {
+  const { laboratoryOrderTypeUuid } = useConfig();
+
+  const orderTypeQuery =
+    laboratoryOrderTypeUuid !== ""
+      ? `orderType=${laboratoryOrderTypeUuid}&`
+      : "";
+
+  const apiUrl = `${restBaseUrl}/order?${orderTypeQuery}fulfillerStatus=${fulfillerStatus}&v=full`;
+
+  const mutateOrders = useCallback(
+    () =>
+      mutate(
+        (key) =>
+          typeof key === "string" &&
+          key.startsWith(
+            `/ws/rest/v1/order?orderType=${laboratoryOrderTypeUuid}`
+          )
+      ),
+    [laboratoryOrderTypeUuid]
+  );
 
   const { data, error, isLoading } = useSWR<
     { data: { results: Array<Result> } },
@@ -132,5 +148,6 @@ export function useGetOrdersWorklist(
     workListEntries: data?.data ? data.data.results : [],
     isLoading,
     isError: error,
+    mutate: mutateOrders,
   };
 }

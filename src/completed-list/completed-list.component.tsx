@@ -37,12 +37,7 @@ interface CompletedListProps {
 const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
   const { t } = useTranslation();
 
-  const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState("");
-
-  const { workListEntries, isLoading } = useGetOrdersWorklist(
-    activatedOnOrAfterDate,
-    fulfillerStatus
-  );
+  const { workListEntries, isLoading } = useGetOrdersWorklist(fulfillerStatus);
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
@@ -79,38 +74,30 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
       .map((entry) => ({
         ...entry,
         id: entry?.uuid,
-        date: <span>{formatDate(parseDate(entry?.dateActivated))}</span>,
+        date: formatDate(parseDate(entry?.dateActivated)),
 
-        patient: {
-          content: (
-            <ConfigurableLink
-              to={`\${openmrsSpaBase}/patient/${entry?.patient?.uuid}/chart/laboratory-orders`}
-            >
-              {entry?.patient?.display.split("-")[1]}
-            </ConfigurableLink>
-          ),
-        },
-        orderNumber: <span>{entry?.orderNumber}</span>,
-        accessionNumber: <span>{entry?.accessionNumber}</span>,
-        test: <span>{entry?.concept?.display}</span>,
-        action: <span>{entry?.action}</span>,
-        status: {
-          content: (
-            <>
-              <Tag>
-                <span
-                  className={styles.statusContainer}
-                  style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
-                >
-                  <span>{entry?.fulfillerStatus}</span>
-                </span>
-              </Tag>
-            </>
-          ),
-        },
-        orderer: <span>{entry?.orderer?.display}</span>,
-        orderType: <span>{entry?.orderType.display}</span>,
-        urgency: <span>{entry?.urgency}</span>,
+        patient: (
+          <ConfigurableLink
+            to={`\${openmrsSpaBase}/patient/${entry?.patient?.uuid}/chart/laboratory-orders`}
+          >
+            {entry?.patient?.display.split("-")[1]}
+          </ConfigurableLink>
+        ),
+        orderNumber: entry?.orderNumber,
+        accessionNumber: entry?.accessionNumber,
+        test: entry?.concept?.display,
+        action: entry?.action,
+        status: (
+          <span
+            className={styles.statusContainer}
+            style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
+          >
+            {entry?.fulfillerStatus}
+          </span>
+        ),
+        orderer: entry?.orderer?.display,
+        orderType: entry?.orderType.display,
+        urgency: entry?.urgency,
       }));
   }, [fulfillerStatus, paginatedWorkListEntries]);
 
@@ -136,20 +123,6 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
               }}
             >
               <TableToolbarContent>
-                <Layer style={{ margin: "5px" }}>
-                  <DatePicker dateFormat="Y-m-d" datePickerType="single">
-                    <DatePickerInput
-                      labelText={""}
-                      id="activatedOnOrAfterDate"
-                      placeholder="YYYY-MM-DD"
-                      onChange={(event) => {
-                        setActivatedOnOrAfterDate(event.target.value);
-                      }}
-                      type="date"
-                      value={activatedOnOrAfterDate}
-                    />
-                  </DatePicker>
-                </Layer>
                 <Layer style={{ margin: "5px" }}>
                   <TableToolbarSearch
                     expanded

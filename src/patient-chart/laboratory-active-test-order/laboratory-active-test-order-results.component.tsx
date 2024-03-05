@@ -54,10 +54,10 @@ import {
 import TestsResults from "../results-summary/test-results-table.component";
 import { useReactToPrint } from "react-to-print";
 import PrintResultsSummary from "../results-summary/print-results-summary.component";
-import { EncounterResponse } from "../laboratory-item/view-laboratory-item.resource";
 import { useGetPatientByUuid } from "../../utils/functions";
 import {
   ResourceRepresentation,
+  Result,
   getOrderColor,
 } from "../patient-laboratory-order-results.resource";
 import { useLaboratoryOrderResultsPages } from "../patient-laboratory-order-results-table.resource";
@@ -71,7 +71,7 @@ interface LaboratoryActiveTestOrderResultsProps {
 }
 
 interface PrintProps {
-  encounter: EncounterResponse;
+  encounter: Result;
 }
 
 const LaboratoryActiveTestOrderResults: React.FC<

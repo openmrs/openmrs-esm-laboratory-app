@@ -1,12 +1,14 @@
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import useSWRImmutable from "swr/immutable";
 import {
   FetchResponse,
   openmrsFetch,
   restBaseUrl,
+  useConfig,
 } from "@openmrs/esm-framework";
 
 import { Result } from "../work-list/work-list.resource";
+import { useCallback } from "react";
 
 export function useMetrics() {
   const metrics = {
@@ -41,8 +43,27 @@ export function useServices() {
 
 // worklist
 export function useLabTestsStats(fulfillerStatus: string) {
-  const apiUrl = `${restBaseUrl}/order?orderTypes=52a447d3-a64a-11e3-9aeb-50e549534c5e&isStopped=false&fulfillerStatus=${fulfillerStatus}&v=full
-  `;
+  const { laboratoryOrderTypeUuid } = useConfig();
+
+  const orderTypeQuery =
+    laboratoryOrderTypeUuid !== ""
+      ? `orderType=${laboratoryOrderTypeUuid}&`
+      : "";
+
+  const apiUrl = `${restBaseUrl}/order?${orderTypeQuery}fulfillerStatus=${fulfillerStatus}&v=full`;
+
+  const mutateOrders = useCallback(
+    () =>
+      mutate(
+        (key) =>
+          typeof key === "string" &&
+          key.startsWith(
+            `/ws/rest/v1/order?orderType=${laboratoryOrderTypeUuid}`
+          )
+      ),
+    [laboratoryOrderTypeUuid]
+  );
+
   const { data, error, isLoading } = useSWR<
     { data: { results: Array<Result> } },
     Error
@@ -51,5 +72,6 @@ export function useLabTestsStats(fulfillerStatus: string) {
     count: data?.data ? data.data.results.length : 0,
     isLoading,
     isError: error,
+    mutate: mutateOrders,
   };
 }

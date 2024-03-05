@@ -15,8 +15,8 @@ import {
   TableExpandedRow,
 } from "@carbon/react";
 import styles from "./results-summary.scss";
-import { Ob } from "../laboratory-item/view-laboratory-item.resource";
 import TestResultsChildren from "./test-children-results.component";
+import { Ob } from "../patient-laboratory-order-results.resource";
 
 interface TestOrdersProps {
   obs: Ob[];
