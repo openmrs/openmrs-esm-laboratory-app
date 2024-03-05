@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   DataTable,
   DataTableSkeleton,
@@ -14,19 +14,15 @@ import {
   TableToolbar,
   TableToolbarContent,
   Layer,
-  Tag,
   Tile,
-  DatePicker,
-  DatePickerInput,
+  TableToolbarSearch,
 } from "@carbon/react";
 import { TrashCan, OverflowMenuVertical } from "@carbon/react/icons";
 
 import { useTranslation } from "react-i18next";
 import {
   ExtensionSlot,
-  age,
   formatDate,
-  formatDatetime,
   parseDate,
   usePagination,
 } from "@openmrs/esm-framework";
@@ -199,6 +195,14 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
                     type="inline"
                     items={OrderStatuses}
                     onChange={handleOrderStatusChange}
+                  />
+                </Layer>
+                <Layer style={{ margin: "5px" }}>
+                  <TableToolbarSearch
+                    expanded
+                    onChange={onInputChange}
+                    placeholder={t("searchThisList", "Search this list")}
+                    size="sm"
                   />
                 </Layer>
               </TableToolbarContent>
