@@ -16,7 +16,7 @@ import {
 const moduleName = "@openmrs/esm-laboratory-app";
 
 const options = {
-  featureName: "ugandaemr-laboratory",
+  featureName: "openmrs-esm-laboratory",
   moduleName,
 };
 

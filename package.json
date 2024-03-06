@@ -119,5 +119,5 @@
     "resolutions": {
         "@carbon/react": "1.14.0"
     },
-    "packageManager": "yarn@3.6.3"
+    "packageManager": "yarn@4.1.1"
 }
