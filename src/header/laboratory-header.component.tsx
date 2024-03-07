@@ -15,7 +15,6 @@ export const LaboratoryHeader: React.FC = () => {
       <div className={styles["left-justified-items"]}>
         <LaboratoryIllustration />
         <div className={styles["page-labels"]}>
-          {/* <p>{t('laboratory', 'Laboratory')}</p> */}
           <p className={styles["page-name"]}>{t("laboratory", "Laboratory")}</p>
         </div>
       </div>

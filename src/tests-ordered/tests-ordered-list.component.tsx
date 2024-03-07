@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   DataTable,
   DataTableSkeleton,
@@ -11,25 +11,18 @@ import {
   TableHeader,
   TableRow,
   Dropdown,
-  TabPanel,
   TableToolbar,
   TableToolbarContent,
-  TableToolbarSearch,
   Layer,
-  Tag,
   Tile,
-  Button,
-  DatePicker,
-  DatePickerInput,
+  TableToolbarSearch,
 } from "@carbon/react";
 import { TrashCan, OverflowMenuVertical } from "@carbon/react/icons";
 
 import { useTranslation } from "react-i18next";
 import {
   ExtensionSlot,
-  age,
   formatDate,
-  formatDatetime,
   parseDate,
   usePagination,
 } from "@openmrs/esm-framework";
@@ -44,7 +37,7 @@ interface RejectOrderProps {
   order: Result;
 }
 
-const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
+const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
   const { t } = useTranslation();
 
   const OrderStatuses = [
@@ -57,8 +50,6 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     "DECLINED",
   ];
 
-  const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState("");
-
   const [filter, setFilter] = useState<
     | "All"
     | "EXCEPTION"
@@ -69,10 +60,7 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
     | "DECLINED"
   >("All");
 
-  const { workListEntries, isLoading } = useGetOrdersWorklist(
-    activatedOnOrAfterDate,
-    ""
-  );
+  const { workListEntries, isLoading } = useGetOrdersWorklist("");
 
   const filteredStatus = useMemo(() => {
     if (!filter || filter == "All") {
@@ -120,68 +108,52 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
 
   const tableRows = useMemo(() => {
     return paginatedWorklistQueueEntries
-      ?.filter((item) => item.action === "NEW")
+      ?.filter(
+        (item) =>
+          (item?.fulfillerStatus === null || item?.fulfillerStatus === "") &&
+          item?.action === "NEW"
+      )
       .map((entry, index) => ({
         ...entry,
-        id: entry.uuid,
-        date: {
-          content: (
-            <>
-              <span className={styles["single-line-display"]}>
-                {formatDate(parseDate(entry.dateActivated))}
-              </span>
-            </>
-          ),
-        },
-        patient: {
-          content: (
-            <>
-              <span>{entry.patient.display.split("-")[1]}</span>
-            </>
-          ),
-        },
-        orderNumber: { content: <span>{entry.orderNumber}</span> },
-        accessionNumber: { content: <span>{entry.accessionNumber}</span> },
-        test: { content: <span>{entry.concept.display}</span> },
-        action: { content: <span>{entry.action}</span> },
-        status: {
-          content: (
-            <>
-              <Tag>
-                <span
-                  className={styles.statusContainer}
-                  style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
-                >
-                  <span>{entry.fulfillerStatus}</span>
-                </span>
-              </Tag>
-            </>
-          ),
-        },
-        orderer: { content: <span>{entry.orderer.display}</span> },
-        urgency: { content: <span>{entry.urgency}</span> },
-        actions: {
-          content: (
-            <>
-              <OrderCustomOverflowMenuComponent
-                menuTitle={
-                  <>
-                    <OverflowMenuVertical
-                      size={16}
-                      style={{ marginLeft: "0.3rem" }}
-                    />
-                  </>
-                }
-              >
-                <ExtensionSlot
-                  className={styles.menuLink}
-                  state={{ order: paginatedWorklistQueueEntries[index] }}
-                  name="order-actions-slot"
+        id: entry?.uuid,
+        date: (
+          <span className={styles["single-line-display"]}>
+            {formatDate(parseDate(entry?.dateActivated))}
+          </span>
+        ),
+        patient: entry?.patient?.display.split("-")[1],
+        orderNumber: entry?.orderNumber,
+        accessionNumber: entry?.accessionNumber,
+        test: entry?.concept?.display,
+        action: entry?.action,
+        status: (
+          <span
+            className={styles.statusContainer}
+            style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
+          >
+            {entry?.fulfillerStatus}
+          </span>
+        ),
+        orderer: entry?.orderer?.display,
+        urgency: entry?.urgency,
+        actions: (
+          <OrderCustomOverflowMenuComponent
+            menuTitle={
+              <>
+                <OverflowMenuVertical
+                  size={16}
+                  style={{ marginLeft: "0.3rem" }}
                 />
-              </OrderCustomOverflowMenuComponent>
-            </>
-          ),
-        },
+              </>
+            }
+          >
+            <ExtensionSlot
+              className={styles.menuLink}
+              state={{ order: paginatedWorklistQueueEntries[index] }}
+              name="order-actions-slot"
+            />
+          </OrderCustomOverflowMenuComponent>
+        ),
       }));
   }, [paginatedWorklistQueueEntries]);
 
@@ -209,9 +181,6 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
             <TableToolbar
               style={{
                 position: "static",
-                height: "3rem",
-                overflow: "visible",
-                backgroundColor: "color",
               }}
             >
               <TableToolbarContent>
@@ -228,20 +197,13 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
                     onChange={handleOrderStatusChange}
                   />
                 </Layer>
-
                 <Layer style={{ margin: "5px" }}>
-                  <DatePicker dateFormat="Y-m-d" datePickerType="single">
-                    <DatePickerInput
-                      labelText={""}
-                      id="activatedOnOrAfterDate"
-                      placeholder="YYYY-MM-DD"
-                      onChange={(event) => {
-                        setActivatedOnOrAfterDate(event.target.value);
-                      }}
-                      type="date"
-                      value={activatedOnOrAfterDate}
-                    />
-                  </DatePicker>
+                  <TableToolbarSearch
+                    expanded
+                    onChange={onInputChange}
+                    placeholder={t("searchThisList", "Search this list")}
+                    size="sm"
+                  />
                 </Layer>
               </TableToolbarContent>
             </TableToolbar>
@@ -309,4 +271,4 @@ const LaboratoryPatientList: React.FC<LaboratoryPatientListProps> = () => {
   }
 };
 
-export default LaboratoryPatientList;
+export default TestsOrderedList;

@@ -1,24 +1,15 @@
-import React, {
-  useState,
-  useMemo,
-  AnchorHTMLAttributes,
-  useCallback,
-} from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { EmptyState, ErrorState } from "@openmrs/esm-patient-common-lib";
 import { Microscope, TrashCan } from "@carbon/react/icons";
 
 import {
   DataTable,
-  DataTableHeader,
   DataTableSkeleton,
   Pagination,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableExpandHeader,
-  TableExpandRow,
   TableHead,
   TableHeader,
   TableRow,
@@ -28,13 +19,10 @@ import {
   TableToolbarSearch,
   Layer,
   Tag,
-  TableExpandedRow,
   Button,
   Tile,
   DatePicker,
   DatePickerInput,
-  Select,
-  SelectItem,
 } from "@carbon/react";
 import { Result, useGetOrdersWorklist } from "./work-list.resource";
 import styles from "./work-list.scss";
@@ -65,14 +53,9 @@ interface RejectOrderProps {
 const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
   const { t } = useTranslation();
 
-  const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState("");
+  const { workListEntries, isLoading } = useGetOrdersWorklist(fulfillerStatus);
 
-  const { workListEntries, isLoading } = useGetOrdersWorklist(
-    activatedOnOrAfterDate,
-    fulfillerStatus
-  );
-
-  const pageSizes = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
+  const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
 
   const {
@@ -140,49 +123,35 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
       ?.filter((item) => item.fulfillerStatus === "IN_PROGRESS")
       .map((entry, index) => ({
         ...entry,
-        id: entry.uuid,
-        date: {
-          content: (
-            <>
-              <span>{formatDate(parseDate(entry.dateActivated))}</span>
-            </>
-          ),
-        },
-        patient: {
-          content: (
-            <ConfigurableLink
-              to={`\${openmrsSpaBase}/patient/${entry.patient.uuid}/chart/laboratory-orders`}
-            >
-              {entry.patient.display.split("-")[1]}
-            </ConfigurableLink>
-          ),
-        },
-        orderNumber: { content: <span>{entry.orderNumber}</span> },
-        accessionNumber: { content: <span>{entry.accessionNumber}</span> },
-        test: { content: <span>{entry.concept.display}</span> },
-        action: { content: <span>{entry.action}</span> },
-        status: {
-          content: (
-            <>
-              <Tag>
-                <span
-                  className={styles.statusContainer}
-                  style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
-                >
-                  <span>{entry.fulfillerStatus}</span>
-                </span>
-              </Tag>
-            </>
-          ),
-        },
-        orderer: { content: <span>{entry.orderer.display}</span> },
-        orderType: { content: <span>{entry.orderType.display}</span> },
-        urgency: { content: <span>{entry.urgency}</span> },
+        id: entry?.uuid,
+        date: formatDate(parseDate(entry?.dateActivated)),
+        patient: (
+          <ConfigurableLink
+            to={`\${openmrsSpaBase}/patient/${entry?.patient?.uuid}/chart/laboratory-orders`}
+          >
+            {entry?.patient?.display.split("-")[1]}
+          </ConfigurableLink>
+        ),
+        orderNumber: entry?.orderNumber,
+        accessionNumber: entry?.accessionNumber,
+        test: entry?.concept?.display,
+        action: entry?.action,
+        status: (
+          <span
+            className={styles.statusContainer}
+            style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
+          >
+            {entry?.fulfillerStatus}
+          </span>
+        ),
+        orderer: entry?.orderer?.display,
+        orderType: entry?.orderType?.display,
+        urgency: entry?.urgency,
         actions: {
           content: (
             <>
               <ResultsOrder
-                patientUuid={entry.patient.uuid}
+                patientUuid={entry?.patient?.uuid}
                 order={paginatedWorkListEntries[index]}
               />
               <RejectOrder order={paginatedWorkListEntries[index]} />
@@ -211,28 +180,12 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
             <TableToolbar
               style={{
                 position: "static",
-                height: "3rem",
-                overflow: "visible",
-                backgroundColor: "color",
               }}
             >
               <TableToolbarContent>
-                <Layer style={{ margin: "5px" }}>
-                  <DatePicker dateFormat="Y-m-d" datePickerType="single">
-                    <DatePickerInput
-                      labelText={""}
-                      id="activatedOnOrAfterDate"
-                      placeholder="YYYY-MM-DD"
-                      onChange={(event) => {
-                        setActivatedOnOrAfterDate(event.target.value);
-                      }}
-                      type="date"
-                      value={activatedOnOrAfterDate}
-                    />
-                  </DatePicker>
-                </Layer>
                 <Layer>
                   <TableToolbarSearch
+                    expanded
                     onChange={onInputChange}
                     placeholder={t("searchThisList", "Search this list")}
                     size="sm"

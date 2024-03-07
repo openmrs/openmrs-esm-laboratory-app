@@ -26,16 +26,12 @@ import {
   Tile,
   DatePicker,
   DatePickerInput,
-  Select,
-  SelectItem,
   Button,
   Tag,
 } from "@carbon/react";
 
 import styles from "./review-list.scss";
 import { Add } from "@carbon/react/icons";
-import { Ob } from "../patient-chart/patient-laboratory-order-results.resource";
-import { Encounter } from "../types";
 import { getStatusColor } from "../utils/functions";
 
 interface ReviewlistProps {
@@ -73,15 +69,10 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
 
   const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState("");
 
-  const { workListEntries, isLoading } = useGetOrdersWorklist(
-    activatedOnOrAfterDate,
-    fulfillerStatus
-  );
+  const { workListEntries, isLoading } = useGetOrdersWorklist(fulfillerStatus);
 
   const pageSizes = [10, 20, 30, 40, 50];
-  const [page, setPage] = useState(1);
   const [currentPageSize, setPageSize] = useState(10);
-  const [nextOffSet, setNextOffSet] = useState(0);
 
   const {
     goTo,
@@ -109,45 +100,33 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
   ];
 
   const tableRows = useMemo(() => {
-    return paginatedWorkListEntries?.map((entry, index) => ({
-      ...entry,
-      id: entry.uuid,
-      date: {
-        content: (
-          <>
-            <span>{formatDate(parseDate(entry.dateActivated))}</span>
-          </>
+    return paginatedWorkListEntries
+      ?.filter(
+        (item) =>
+          (item.action === "DISCONTINUE" || item.action === "REVISE") &&
+          item.fulfillerStatus === "IN_PROGRESS"
+      )
+      .map((entry) => ({
+        ...entry,
+        id: entry?.uuid,
+        date: formatDate(parseDate(entry?.dateActivated)),
+        patient: entry?.patient?.display.split("-")[1],
+        orderNumber: entry?.orderNumber,
+        accessionNumber: entry?.accessionNumber,
+        test: entry?.concept?.display,
+        action: entry?.action,
+        status: (
+          <span
+            className={styles.statusContainer}
+            style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
+          >
+            {entry?.fulfillerStatus}
+          </span>
         ),
-      },
-      patient: {
-        content: (
-          <>
-            <span>{entry.patient.display.split("-")[1]}</span>
-          </>
-        ),
-      },
-      orderNumber: { content: <span>{entry.orderNumber}</span> },
-      accessionNumber: { content: <span>{entry.accessionNumber}</span> },
-      test: { content: <span>{entry.concept.display}</span> },
-      action: { content: <span>{entry.action}</span> },
-      status: {
-        content: (
-          <>
-            <Tag>
-              <span
-                className={styles.statusContainer}
-                style={{ color: `${getStatusColor(entry.fulfillerStatus)}` }}
-              >
-                <span>{entry.fulfillerStatus}</span>
-              </span>
-            </Tag>
-          </>
-        ),
-      },
-      orderer: { content: <span>{entry.orderer.display}</span> },
-      orderType: { content: <span>{entry.orderType.display}</span> },
-      urgency: { content: <span>{entry.urgency}</span> },
-    }));
+        orderer: entry?.orderer?.display,
+        orderType: entry?.orderType?.display,
+        urgency: entry?.urgency,
+      }));
   }, [paginatedWorkListEntries]);
 
   if (isLoading) {
@@ -171,22 +150,9 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
               }}
             >
               <TableToolbarContent>
-                <Layer style={{ margin: "5px" }}>
-                  <DatePicker dateFormat="Y-m-d" datePickerType="single">
-                    <DatePickerInput
-                      labelText={""}
-                      id="activatedOnOrAfterDate"
-                      placeholder="YYYY-MM-DD"
-                      onChange={(event) => {
-                        setActivatedOnOrAfterDate(event.target.value);
-                      }}
-                      type="date"
-                      value={activatedOnOrAfterDate}
-                    />
-                  </DatePicker>
-                </Layer>
                 <Layer>
                   <TableToolbarSearch
+                    expanded
                     onChange={onInputChange}
                     placeholder={t("searchThisList", "Search this list")}
                     size="sm"
@@ -217,7 +183,7 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
                         <TableCell className="cds--table-column-menu">
                           <ApproveTestMenu
                             encounterUuid={
-                              paginatedWorkListEntries[index].encounter.uuid
+                              paginatedWorkListEntries[index]?.encounter?.uuid
                             }
                           />
                         </TableCell>

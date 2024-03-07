@@ -15,10 +15,9 @@ import {
   TableExpandedRow,
 } from "@carbon/react";
 import styles from "./results-summary.scss";
-import DeleteTestResultActionMenu from "./test-results-delete-action-menu.component";
-import { Ob } from "../laboratory-item/view-laboratory-item.resource";
 import TestResultsChildren from "./test-children-results.component";
 import { formatDate, parseDate } from "@openmrs/esm-framework";
+import { Ob } from "../patient-laboratory-order-results.resource";
 
 interface TestOrdersProps {
   obs: Ob[];

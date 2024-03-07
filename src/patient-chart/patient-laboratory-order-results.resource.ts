@@ -478,3 +478,17 @@ export function usePatientLaboratoryOrders(filter: LaboratoryOrderFilter) {
     isError: error,
   };
 }
+
+export function useGetEncounterById(encounterUuid: string) {
+  const apiUrl = `${restBaseUrl}/encounter/${encounterUuid}?v=full`;
+  const { data, error, isLoading } = useSWR<{ data: Result }, Error>(
+    apiUrl,
+    openmrsFetch
+  );
+
+  return {
+    encounter: data?.data,
+    isLoading,
+    isError: error,
+  };
+}

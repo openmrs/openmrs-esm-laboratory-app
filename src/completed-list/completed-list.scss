@@ -194,10 +194,10 @@ title {
 }
 
 .toolbar {
-  display: flex;
-  align-items: center;
-  padding: 5px;
-  margin: 10px;
+  position: static;
+  height: 3rem;
+  overflow: visible;
+  background-color: color;
 }
 
 .tileContainer {

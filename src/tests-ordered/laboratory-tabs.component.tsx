@@ -1,20 +1,13 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   type AssignedExtension,
   Extension,
-  ExtensionSlot,
   useConnectedExtensions,
-  attach,
-  detachAll,
 } from "@openmrs/esm-framework";
 import { Tab, Tabs, TabList, TabPanels, TabPanel, Search } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import styles from "./laboratory-queue.scss";
-import LaboratoryPatientList from "./laboratory-patient-list.component";
-import { EmptyState } from "@openmrs/esm-patient-common-lib";
-import WorkList from "../work-list/work-list.component";
-import ReviewList from "../review-list/review-list.component";
-import CompletedList from "../completed-list/completed-list.component";
+import TestsOrderedList from "./tests-ordered-list.component";
 import { ComponentContext } from "@openmrs/esm-framework/src/internal";
 
 enum TabTypes {
@@ -26,7 +19,7 @@ enum TabTypes {
 
 const labPanelSlot = "lab-panels-slot";
 
-const LaboratoryQueueTabs: React.FC = () => {
+const LaboratoryOrdersTabs: React.FC = () => {
   const { t } = useTranslation();
   const [selectedTab, setSelectedTab] = useState(0);
   const tabExtensions = useConnectedExtensions(
@@ -46,7 +39,9 @@ const LaboratoryQueueTabs: React.FC = () => {
             aria-label="Laboratory tabs"
             contained
           >
-            <Tab>{t("testedOrders", "Tests ordered")}</Tab>
+            <Tab style={{ width: "150px" }}>
+              {t("testedOrders", "Tests ordered")}
+            </Tab>
             {tabExtensions
               .filter((extension) => Object.keys(extension.meta).length > 0)
               .map((extension, index) => {
@@ -58,6 +53,7 @@ const LaboratoryQueueTabs: React.FC = () => {
                       key={index}
                       className={styles.tab}
                       id={`${title || index}-tab`}
+                      style={{ width: "150px" }}
                     >
                       {t(title, {
                         ns: extension.moduleName,
@@ -72,7 +68,7 @@ const LaboratoryQueueTabs: React.FC = () => {
           </TabList>
           <TabPanels>
             <TabPanel style={{ padding: 0 }}>
-              <LaboratoryPatientList />
+              <TestsOrderedList />
             </TabPanel>
             {tabExtensions
               .filter((extension) => Object.keys(extension.meta).length > 0)
@@ -102,4 +98,4 @@ const LaboratoryQueueTabs: React.FC = () => {
   );
 };
 
-export default LaboratoryQueueTabs;
+export default LaboratoryOrdersTabs;

@@ -1,8 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   DataTable,
-  DataTableSkeleton,
   Table,
   TableBody,
   TableCell,
@@ -16,11 +15,8 @@ import {
   TableExpandedRow,
 } from "@carbon/react";
 import styles from "./results-summary.scss";
-import RescendTestResultActionMenu from "./test-results-rescend-action-menu.component";
-import { Order } from "../patient-laboratory-order-results.resource";
-import DeleteTestResultActionMenu from "./test-results-delete-action-menu.component";
-import { Ob } from "../laboratory-item/view-laboratory-item.resource";
 import TestResultsChildren from "./test-children-results.component";
+import { Ob } from "../patient-laboratory-order-results.resource";
 
 interface TestOrdersProps {
   obs: Ob[];
@@ -126,23 +122,6 @@ const TestsPrintResults: React.FC<TestOrdersProps> = ({ obs }) => {
                   </Tile>
                 </div>
               ) : null}
-              {/* <Pagination
-                forwardText="Next page"
-                backwardText="Previous page"
-                page={currentPage}
-                pageSize={currentPageSize}
-                pageSizes={pageSizes}
-                totalItems={patientQueueEntries?.length}
-                className={styles.pagination}
-                onChange={({ pageSize, page }) => {
-                  if (pageSize !== currentPageSize) {
-                    setPageSize(pageSize);
-                  }
-                  if (page !== currentPage) {
-                    goTo(page);
-                  }
-                }}
-              /> */}
             </TableContainer>
           )}
         </DataTable>

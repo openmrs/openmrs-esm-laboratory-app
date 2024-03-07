@@ -29,8 +29,10 @@ const LaboratoryResultsTabs: React.FC<LaboratoryResultsTabsProps> = ({
             aria-label="laboratory results tabs"
             contained
           >
-            <Tab>{t("pending", "Routine Tests")}</Tab>
-            <Tab>{t("referals", "Referrals")}</Tab>
+            <Tab style={{ width: "150px" }}>
+              {t("pending", "Routine Tests")}
+            </Tab>
+            <Tab style={{ width: "150px" }}>{t("referals", "Referrals")}</Tab>
           </TabList>
           <TabPanels>
             <TabPanel style={{ padding: 0 }}>

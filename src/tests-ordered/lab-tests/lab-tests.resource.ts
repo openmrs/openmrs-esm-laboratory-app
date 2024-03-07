@@ -5,11 +5,11 @@ import {
   useConfig,
 } from "@openmrs/esm-framework";
 import useSWR from "swr";
-import { EncounterResponse } from "../../patient-chart/laboratory-item/view-laboratory-item.resource";
+import { Result } from "../../patient-chart/patient-laboratory-order-results.resource";
 export function useGetLabOrders(encounterUuid: string) {
   const apiUrl = `${restBaseUrl}/encounter/${encounterUuid}?v=full`;
 
-  const { data, error, isLoading } = useSWR<{ data: EncounterResponse }, Error>(
+  const { data, error, isLoading } = useSWR<{ data: Result }, Error>(
     apiUrl,
     openmrsFetch
   );
