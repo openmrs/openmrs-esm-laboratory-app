@@ -23,7 +23,6 @@ interface LabTestsProps {
 
 const LabTests: React.FC<LabTestsProps> = ({ encounter, queueId }) => {
   const { t } = useTranslation();
-  // console.info(encounter);
   let columns = [
     { id: 1, header: t("order", "Order"), key: "order", align: "left" },
     {
@@ -38,18 +37,12 @@ const LabTests: React.FC<LabTestsProps> = ({ encounter, queueId }) => {
   const tableRows = useMemo(() => {
     return encounter?.orders?.map((item) => ({
       ...item,
-      id: item.uuid,
-      order: {
-        content: <span>{item.display}</span>,
-      },
-      orderType: {
-        content: <span>{item.type}</span>,
-      },
-      actions: {
-        content: (
-          <PickLabRequestActionMenu closeModal={() => true} order={item} />
-        ),
-      },
+      id: item?.uuid,
+      order: item?.display,
+      orderType: item?.type,
+      actions: (
+        <PickLabRequestActionMenu closeModal={() => true} order={item} />
+      ),
     }));
   }, [encounter]);
 
