@@ -23,6 +23,7 @@ import worklistTile from "./lab-tiles/worklist-tile.component";
 import referredTile from "./lab-tiles/referred-tile.component";
 import completedTile from "./lab-tiles/completed-tile.component";
 import testsOrdered from "./lab-tiles/tests-ordered-tile.component";
+import laboratoryLink from "./laboratory-link.component";
 
 import {
   createDashboardLink,
@@ -110,6 +111,8 @@ export const rejectOrderButton = getSyncLifecycle(
   rejectOrderButtonComponent,
   options
 );
+
+export const laboratoryMenuLink = getSyncLifecycle(laboratoryLink, options);
 
 export const worklistTileComponent = getSyncLifecycle(worklistTile, options);
 
