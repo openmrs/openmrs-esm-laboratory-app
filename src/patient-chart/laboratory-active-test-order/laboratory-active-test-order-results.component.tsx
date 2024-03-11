@@ -242,57 +242,41 @@ const LaboratoryActiveTestOrderResults: React.FC<
     return paginatedActiveTestOrderResults?.map((entry, index) => ({
       ...entry,
       id: entry.uuid,
-      orderDate: {
-        content: (
-          <span>
-            {formatDate(parseDate(entry.encounterDatetime), {
-              time: true,
-              mode: "standard",
-            })}
-          </span>
-        ),
-      },
-      orders: {
-        content: (
-          <>
-            {entry?.orders
-              ?.filter(
-                (order) =>
-                  order?.type === "testorder" && order?.action === "NEW"
-              )
-              .map((order) => (
-                <Tag
-                  style={{
-                    background: `${getOrderColor(
-                      order.dateActivated,
-                      order.dateStopped
-                    )}`,
-                    color: "white",
-                  }}
-                  role="tooltip"
-                  key={order.uuid}
-                >
-                  {order?.display}
-                </Tag>
-              ))}
-          </>
-        ),
-      },
-
-      location: {
-        content: <span>{entry.location.display}</span>,
-      },
-      status: {
-        content: <span>--</span>,
-      },
-      actions: {
-        content: (
-          <div style={{ display: "flex" }}>
-            <PrintButtonAction encounter={entry} />
-            {enableSendingLabTestsByEmail && <EmailButtonAction />}
-          </div>
-        ),
-      },
+      orderDate: formatDate(parseDate(entry.encounterDatetime), {
+        mode: "standard",
+        time: true,
+      }),
+      orders: (
+        <>
+          {entry?.orders
+            ?.filter(
+              (order) => order?.type === "testorder" && order?.action === "NEW"
+            )
+            .map((order) => (
+              <Tag
+                style={{
+                  background: `${getOrderColor(
+                    order?.dateActivated,
+                    order?.dateStopped
+                  )}`,
+                  color: "white",
+                }}
+                role="tooltip"
+                key={order?.uuid}
+              >
+                {order?.display}
+              </Tag>
+            ))}
+        </>
+      ),
+      location: entry.location.display,
+      status: "--",
+      actions: (
+        <div style={{ display: "flex" }}>
+          <PrintButtonAction encounter={entry} />
+          {enableSendingLabTestsByEmail && <EmailButtonAction />}
+        </div>
+      ),
     }));
   }, [enableSendingLabTestsByEmail, paginatedActiveTestOrderResults]);
 

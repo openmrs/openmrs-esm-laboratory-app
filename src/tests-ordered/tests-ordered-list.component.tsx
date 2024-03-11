@@ -98,10 +98,9 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
     },
     { id: 4, header: t("test", "Test"), key: "test" },
     { id: 5, header: t("action", "Action"), key: "action" },
-    { id: 6, header: t("status", "Status"), key: "status" },
-    { id: 8, header: t("orderer", "Orderer"), key: "orderer" },
-    { id: 9, header: t("urgency", "Urgency"), key: "urgency" },
-    { id: 10, header: t("actions", "Actions"), key: "actions" },
+    { id: 6, header: t("orderer", "Orderer"), key: "orderer" },
+    { id: 7, header: t("urgency", "Urgency"), key: "urgency" },
+    { id: 8, header: t("actions", "Actions"), key: "actions" },
   ];
 
   const handleOrderStatusChange = ({ selectedItem }) => setFilter(selectedItem);
@@ -126,14 +125,6 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
         accessionNumber: entry?.accessionNumber,
         test: entry?.concept?.display,
         action: entry?.action,
-        status: (
-          <span
-            className={styles.statusContainer}
-            style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
-          >
-            {entry?.fulfillerStatus}
-          </span>
-        ),
         orderer: entry?.orderer?.display,
         urgency: entry?.urgency,
         actions: (
