@@ -266,14 +266,10 @@ const LaboratoryOrderReferalResults: React.FC<
     return laboratoryOrders?.map((entry, index) => ({
       ...entry,
       id: entry?.uuid,
-      orderDate: (
-        <span>
-          {formatDate(parseDate(entry.encounterDatetime), {
-            time: true,
-            mode: "standard",
-          })}
-        </span>
-      ),
+      orderDate: formatDate(parseDate(entry.encounterDatetime), {
+        mode: "standard",
+        time: true,
+      }),
       orders: (
         <>
           {entry?.orders
