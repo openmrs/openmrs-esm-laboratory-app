@@ -62,19 +62,21 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
 
   const { workListEntries, isLoading } = useGetOrdersWorklist("");
 
+  const data = workListEntries.filter(
+    (item) => item?.action === "NEW" && item?.dateStopped === null
+  );
+
   const filteredStatus = useMemo(() => {
     if (!filter || filter == "All") {
-      return workListEntries;
+      return data;
     }
 
     if (filter) {
-      return workListEntries?.filter(
-        (order) => order.fulfillerStatus === filter
-      );
+      return data?.filter((order) => order?.fulfillerStatus === filter);
     }
 
-    return workListEntries;
-  }, [filter, workListEntries]);
+    return data;
+  }, [filter, data]);
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
@@ -97,55 +99,48 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
       key: "accessionNumber",
     },
     { id: 4, header: t("test", "Test"), key: "test" },
-    { id: 5, header: t("action", "Action"), key: "action" },
-    { id: 6, header: t("orderer", "Orderer"), key: "orderer" },
-    { id: 7, header: t("urgency", "Urgency"), key: "urgency" },
-    { id: 8, header: t("actions", "Actions"), key: "actions" },
+    { id: 5, header: t("orderer", "Ordered By"), key: "orderer" },
+    { id: 6, header: t("urgency", "Urgency"), key: "urgency" },
+    { id: 7, header: t("actions", "Actions"), key: "actions" },
   ];
 
   const handleOrderStatusChange = ({ selectedItem }) => setFilter(selectedItem);
 
   const tableRows = useMemo(() => {
-    return paginatedWorklistQueueEntries
-      ?.filter(
-        (item) =>
-          (item?.fulfillerStatus === null || item?.fulfillerStatus === "") &&
-          item?.action === "NEW"
-      )
-      .map((entry, index) => ({
-        ...entry,
-        id: entry?.uuid,
-        date: (
-          <span className={styles["single-line-display"]}>
-            {formatDate(parseDate(entry?.dateActivated))}
-          </span>
-        ),
-        patient: entry?.patient?.display.split("-")[1],
-        orderNumber: entry?.orderNumber,
-        accessionNumber: entry?.accessionNumber,
-        test: entry?.concept?.display,
-        action: entry?.action,
-        orderer: entry?.orderer?.display,
-        urgency: entry?.urgency,
-        actions: (
-          <OrderCustomOverflowMenuComponent
-            menuTitle={
-              <>
-                <OverflowMenuVertical
-                  size={16}
-                  style={{ marginLeft: "0.3rem" }}
-                />
-              </>
-            }
-          >
-            <ExtensionSlot
-              className={styles.menuLink}
-              state={{ order: paginatedWorklistQueueEntries[index] }}
-              name="order-actions-slot"
-            />
-          </OrderCustomOverflowMenuComponent>
-        ),
-      }));
+    return paginatedWorklistQueueEntries.map((entry, index) => ({
+      ...entry,
+      id: entry?.uuid,
+      date: (
+        <span className={styles["single-line-display"]}>
+          {formatDate(parseDate(entry?.dateActivated))}
+        </span>
+      ),
+      patient: entry?.patient?.display.split("-")[1],
+      orderNumber: entry?.orderNumber,
+      accessionNumber: entry?.accessionNumber,
+      test: entry?.concept?.display,
+      action: entry?.action,
+      orderer: entry?.orderer?.display,
+      urgency: entry?.urgency,
+      actions: (
+        <OrderCustomOverflowMenuComponent
+          menuTitle={
+            <>
+              <OverflowMenuVertical
+                size={16}
+                style={{ marginLeft: "0.3rem" }}
+              />
+            </>
+          }
+        >
+          <ExtensionSlot
+            className={styles.menuLink}
+            state={{ order: paginatedWorklistQueueEntries[index] }}
+            name="order-actions-slot"
+          />
+        </OrderCustomOverflowMenuComponent>
+      ),
+    }));
   }, [paginatedWorklistQueueEntries]);
 
   if (isLoading) {
@@ -244,7 +239,7 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
               page={currentPage}
               pageSize={currentPageSize}
               pageSizes={pageSizes}
-              totalItems={workListEntries?.length}
+              totalItems={data?.length}
               className={styles.pagination}
               onChange={({ pageSize, page }) => {
                 if (pageSize !== currentPageSize) {

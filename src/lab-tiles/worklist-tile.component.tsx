@@ -6,12 +6,19 @@ import { useLabTestsStats } from "../summary-tiles/laboratory-summary.resource";
 const WorklistTileComponent = () => {
   const { t } = useTranslation();
 
-  const { count: worklistCount } = useLabTestsStats("IN_PROGRESS");
+  const { data } = useLabTestsStats("IN_PROGRESS");
+
+  const count = data?.filter(
+    (item) =>
+      item?.fulfillerStatus === "IN_PROGRESS" &&
+      item?.accessionNumber !== null &&
+      item?.dateStopped === null
+  );
 
   return (
     <SummaryTile
       label={t("inProgress", "In progress")}
-      value={worklistCount}
+      value={count?.length}
       headerLabel={t("worklist", "Ex-Worklist")}
     />
   );

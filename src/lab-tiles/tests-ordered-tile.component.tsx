@@ -6,12 +6,16 @@ import { useLabTestsStats } from "../summary-tiles/laboratory-summary.resource";
 const ReferredTileComponent = () => {
   const { t } = useTranslation();
 
-  const { count: testOrderedCount } = useLabTestsStats("");
+  const { data } = useLabTestsStats("");
+
+  const count = data?.filter(
+    (item) => item?.action === "NEW" && item?.dateStopped === null
+  );
 
   return (
     <SummaryTile
       label={t("orders", "Orders")}
-      value={testOrderedCount}
+      value={count?.length}
       headerLabel={t("testsOrdered", "Tests ordered")}
     />
   );

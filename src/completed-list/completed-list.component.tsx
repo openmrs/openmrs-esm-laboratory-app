@@ -58,18 +58,17 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
       key: "accessionNumber",
     },
     { id: 4, header: t("test", "Test"), key: "test" },
-    { id: 5, header: t("action", "Action"), key: "action" },
-    { id: 6, header: t("status", "Status"), key: "status" },
-    { id: 7, header: t("orderer", "Orderer"), key: "orderer" },
-    { id: 8, header: t("urgency", "Urgency"), key: "urgency" },
+    { id: 5, header: t("status", "Status"), key: "status" },
+    { id: 6, header: t("orderer", "Ordered By"), key: "orderer" },
+    { id: 7, header: t("urgency", "Urgency"), key: "urgency" },
   ];
 
   const tableRows = useMemo(() => {
     return paginatedWorkListEntries
       ?.filter(
         (item) =>
-          (item.action === "DISCONTINUE" || item.action === "REVISE") &&
-          item.fulfillerStatus === fulfillerStatus
+          (item?.action === "DISCONTINUE" || item?.action === "REVISE") &&
+          item?.fulfillerStatus === fulfillerStatus
       )
       .map((entry) => ({
         ...entry,
