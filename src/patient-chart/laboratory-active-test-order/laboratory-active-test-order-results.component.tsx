@@ -54,7 +54,7 @@ import {
 import TestsResults from "../results-summary/test-results-table.component";
 import { useReactToPrint } from "react-to-print";
 import PrintResultsSummary from "../results-summary/print-results-summary.component";
-import { useGetPatientByUuid } from "../../utils/functions";
+import { OrderTagStyle, useGetPatientByUuid } from "../../utils/functions";
 import {
   ResourceRepresentation,
   Result,
@@ -65,7 +65,6 @@ import {
   CardHeader,
   launchPatientWorkspace,
 } from "@openmrs/esm-patient-common-lib";
-import { OrderTag } from "../../utils/order-tag";
 
 interface LaboratoryActiveTestOrderResultsProps {
   patientUuid: string;
@@ -250,7 +249,22 @@ const LaboratoryActiveTestOrderResults: React.FC<
       orders: (
         <>
           {entry?.orders?.map((order) => {
-            return OrderTag(order);
+            if (
+              (order?.action === "NEW" ||
+                order?.action === "REVISE" ||
+                order?.action === "DISCONTINUE") &&
+              order.dateStopped === null
+            ) {
+              return (
+                <Tag
+                  style={OrderTagStyle(order)}
+                  role="tooltip"
+                  key={order?.uuid}
+                >
+                  {order?.display}
+                </Tag>
+              );
+            }
           })}
         </>
       ),
