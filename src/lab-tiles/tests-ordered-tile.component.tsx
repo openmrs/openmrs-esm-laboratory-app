@@ -8,14 +8,14 @@ const ReferredTileComponent = () => {
 
   const { data } = useLabTestsStats("");
 
-  const count = data?.filter(
+  const filteredData = data?.filter(
     (item) => item?.action === "NEW" && item?.dateStopped === null
   );
 
   return (
     <SummaryTile
       label={t("orders", "Orders")}
-      value={count?.length}
+      value={filteredData?.length}
       headerLabel={t("testsOrdered", "Tests ordered")}
     />
   );

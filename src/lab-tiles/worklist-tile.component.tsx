@@ -8,7 +8,7 @@ const WorklistTileComponent = () => {
 
   const { data } = useLabTestsStats("IN_PROGRESS");
 
-  const count = data?.filter(
+  const filteredData = data?.filter(
     (item) =>
       item?.fulfillerStatus === "IN_PROGRESS" &&
       item?.accessionNumber !== null &&
@@ -18,7 +18,7 @@ const WorklistTileComponent = () => {
   return (
     <SummaryTile
       label={t("inProgress", "In progress")}
-      value={count?.length}
+      value={filteredData?.length}
       headerLabel={t("worklist", "Ex-Worklist")}
     />
   );
