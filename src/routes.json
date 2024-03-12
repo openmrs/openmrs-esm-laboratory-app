@@ -78,15 +78,6 @@
             }
         },
         {
-            "name": "referred-panel-component",
-            "slot": "lab-panels-slot",
-            "component": "referredTestComponent",
-            "meta": {
-                "name": "referredPanleSlot",
-                "title": "Referred tests"
-            }
-        },
-        {
             "name": "review-panel-component",
             "slot": "lab-panels-slot",
             "component": "reviewComponent",
@@ -111,6 +102,15 @@
             "meta": {
                 "name": "testsOrderedTileSlot",
                 "title": "Ordered tests"
+            }
+        },
+                {
+            "name": "referred-panel-component",
+            "slot": "lab-panels-slot",
+            "component": "referredTestComponent",
+            "meta": {
+                "name": "referredPanleSlot",
+                "title": "Referred tests"
             }
         },
         {
