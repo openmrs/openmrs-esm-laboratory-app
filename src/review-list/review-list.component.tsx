@@ -71,7 +71,7 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
 
   const filtered = workListEntries?.filter(
     (item) =>
-      (item?.action === "DISCONTINUE" || item?.action === "REVISE") &&
+      item?.action === "REVISE" &&
       item?.fulfillerStatus === "IN_PROGRESS" &&
       item?.dateStopped !== null
   );

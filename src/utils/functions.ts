@@ -48,6 +48,7 @@ export const getStatusColor = (fulfillerStatus: string) => {
     return "red";
   }
 };
+
 export interface PatientResource {
   uuid: string;
   display: string;
