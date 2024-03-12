@@ -62,6 +62,7 @@ import {
 } from "../patient-laboratory-order-results.resource";
 import { useLaboratoryOrderResultsPages } from "../patient-laboratory-order-results-table.resource";
 import { CardHeader } from "@openmrs/esm-patient-common-lib";
+import { OrderTag } from "../../utils/order-tag";
 
 interface LaboratoryPastTestOrderResultsProps {
   patientUuid: string;
@@ -231,25 +232,9 @@ const LaboratoryPastTestOrderResults: React.FC<
       }),
       orders: (
         <>
-          {entry?.orders
-            ?.filter(
-              (order) => order?.type === "testorder" && order?.action === "NEW"
-            )
-            .map((order) => (
-              <Tag
-                style={{
-                  background: `${getOrderColor(
-                    order?.dateActivated,
-                    order?.dateStopped
-                  )}`,
-                  color: "white",
-                }}
-                role="tooltip"
-                key={order?.uuid}
-              >
-                {order?.display}
-              </Tag>
-            ))}
+          {entry?.orders?.map((order) => {
+            return OrderTag(order);
+          })}
         </>
       ),
       location: entry?.location?.display,
