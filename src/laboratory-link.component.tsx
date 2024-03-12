@@ -6,7 +6,7 @@ export default function LaboratoryLink() {
   const { t } = useTranslation();
   return (
     <ConfigurableLink to={`${window.spaBase}/home/laboratory`}>
-      {t("labOrders", "Lab Orders")}
+      {t("laboratory", "Laboratory")}
     </ConfigurableLink>
   );
 }
