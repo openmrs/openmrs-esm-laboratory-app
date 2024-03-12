@@ -58,11 +58,18 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
 
+  const filtered = workListEntries.filter(
+    (item) =>
+      item?.fulfillerStatus === "IN_PROGRESS" &&
+      item?.accessionNumber !== null &&
+      item?.dateStopped === null
+  );
+
   const {
     goTo,
     results: paginatedWorkListEntries,
     currentPage,
-  } = usePagination(workListEntries, currentPageSize);
+  } = usePagination(filtered, currentPageSize);
 
   const RejectOrder: React.FC<RejectOrderProps> = ({ order }) => {
     const launchRejectOrderModal = useCallback(() => {
@@ -119,46 +126,44 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
   };
 
   const tableRows = useMemo(() => {
-    return paginatedWorkListEntries
-      ?.filter((item) => item.fulfillerStatus === "IN_PROGRESS")
-      .map((entry, index) => ({
-        ...entry,
-        id: entry?.uuid,
-        date: formatDate(parseDate(entry?.dateActivated)),
-        patient: (
-          <ConfigurableLink
-            to={`\${openmrsSpaBase}/patient/${entry?.patient?.uuid}/chart/laboratory-orders`}
-          >
-            {entry?.patient?.display.split("-")[1]}
-          </ConfigurableLink>
+    return paginatedWorkListEntries.map((entry, index) => ({
+      ...entry,
+      id: entry?.uuid,
+      date: formatDate(parseDate(entry?.dateActivated)),
+      patient: (
+        <ConfigurableLink
+          to={`\${openmrsSpaBase}/patient/${entry?.patient?.uuid}/chart/laboratory-orders`}
+        >
+          {entry?.patient?.display.split("-")[1]}
+        </ConfigurableLink>
+      ),
+      orderNumber: entry?.orderNumber,
+      accessionNumber: entry?.accessionNumber,
+      test: entry?.concept?.display,
+      action: entry?.action,
+      status: (
+        <span
+          className={styles.statusContainer}
+          style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
+        >
+          {entry?.fulfillerStatus}
+        </span>
+      ),
+      orderer: entry?.orderer?.display,
+      orderType: entry?.orderType?.display,
+      urgency: entry?.urgency,
+      actions: {
+        content: (
+          <>
+            <ResultsOrder
+              patientUuid={entry?.patient?.uuid}
+              order={paginatedWorkListEntries[index]}
+            />
+            <RejectOrder order={paginatedWorkListEntries[index]} />
+          </>
         ),
-        orderNumber: entry?.orderNumber,
-        accessionNumber: entry?.accessionNumber,
-        test: entry?.concept?.display,
-        action: entry?.action,
-        status: (
-          <span
-            className={styles.statusContainer}
-            style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
-          >
-            {entry?.fulfillerStatus}
-          </span>
-        ),
-        orderer: entry?.orderer?.display,
-        orderType: entry?.orderType?.display,
-        urgency: entry?.urgency,
-        actions: {
-          content: (
-            <>
-              <ResultsOrder
-                patientUuid={entry?.patient?.uuid}
-                order={paginatedWorkListEntries[index]}
-              />
-              <RejectOrder order={paginatedWorkListEntries[index]} />
-            </>
-          ),
-        },
-      }));
+      },
+    }));
   }, [ResultsOrder, paginatedWorkListEntries]);
 
   if (isLoading) {
@@ -239,7 +244,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
               page={currentPage}
               pageSize={currentPageSize}
               pageSizes={pageSizes}
-              totalItems={workListEntries?.length}
+              totalItems={filtered?.length}
               className={styles.pagination}
               onChange={({ pageSize, page }) => {
                 if (pageSize !== currentPageSize) {

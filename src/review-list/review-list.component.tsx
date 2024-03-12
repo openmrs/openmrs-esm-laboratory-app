@@ -67,9 +67,14 @@ const ApproveTestMenu: React.FC<ApproveResultMenuProps> = ({
 const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
   const { t } = useTranslation();
 
-  const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState("");
-
   const { workListEntries, isLoading } = useGetOrdersWorklist(fulfillerStatus);
+
+  const filtered = workListEntries?.filter(
+    (item) =>
+      (item?.action === "DISCONTINUE" || item?.action === "REVISE") &&
+      item?.fulfillerStatus === "IN_PROGRESS" &&
+      item?.dateStopped !== null
+  );
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
@@ -78,7 +83,7 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
     goTo,
     results: paginatedWorkListEntries,
     currentPage,
-  } = usePagination(workListEntries, currentPageSize);
+  } = usePagination(filtered, currentPageSize);
 
   // get picked orders
   let columns = [
@@ -100,33 +105,27 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
   ];
 
   const tableRows = useMemo(() => {
-    return paginatedWorkListEntries
-      ?.filter(
-        (item) =>
-          (item.action === "DISCONTINUE" || item.action === "REVISE") &&
-          item.fulfillerStatus === "IN_PROGRESS"
-      )
-      .map((entry) => ({
-        ...entry,
-        id: entry?.uuid,
-        date: formatDate(parseDate(entry?.dateActivated)),
-        patient: entry?.patient?.display.split("-")[1],
-        orderNumber: entry?.orderNumber,
-        accessionNumber: entry?.accessionNumber,
-        test: entry?.concept?.display,
-        action: entry?.action,
-        status: (
-          <span
-            className={styles.statusContainer}
-            style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
-          >
-            {entry?.fulfillerStatus}
-          </span>
-        ),
-        orderer: entry?.orderer?.display,
-        orderType: entry?.orderType?.display,
-        urgency: entry?.urgency,
-      }));
+    return paginatedWorkListEntries.map((entry) => ({
+      ...entry,
+      id: entry?.uuid,
+      date: formatDate(parseDate(entry?.dateActivated)),
+      patient: entry?.patient?.display.split("-")[1],
+      orderNumber: entry?.orderNumber,
+      accessionNumber: entry?.accessionNumber,
+      test: entry?.concept?.display,
+      action: entry?.action,
+      status: (
+        <span
+          className={styles.statusContainer}
+          style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
+        >
+          {entry?.fulfillerStatus}
+        </span>
+      ),
+      orderer: entry?.orderer?.display,
+      orderType: entry?.orderType?.display,
+      urgency: entry?.urgency,
+    }));
   }, [paginatedWorkListEntries]);
 
   if (isLoading) {
@@ -210,7 +209,7 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
               page={currentPage}
               pageSize={currentPageSize}
               pageSizes={pageSizes}
-              totalItems={workListEntries?.length}
+              totalItems={filtered?.length}
               className={styles.pagination}
               onChange={({ pageSize, page }) => {
                 if (pageSize !== currentPageSize) {
