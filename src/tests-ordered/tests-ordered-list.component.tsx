@@ -17,7 +17,7 @@ import {
   Tile,
   TableToolbarSearch,
 } from "@carbon/react";
-import { TrashCan, OverflowMenuVertical } from "@carbon/react/icons";
+import { OverflowMenuVertical } from "@carbon/react/icons";
 
 import { useTranslation } from "react-i18next";
 import {
@@ -27,7 +27,6 @@ import {
   usePagination,
 } from "@openmrs/esm-framework";
 import styles from "./laboratory-queue.scss";
-import { getStatusColor } from "../utils/functions";
 import { Result, useGetOrdersWorklist } from "../work-list/work-list.resource";
 import OrderCustomOverflowMenuComponent from "../ui-components/overflow-menu.component";
 
@@ -60,9 +59,9 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
     | "DECLINED"
   >("All");
 
-  const { workListEntries, isLoading } = useGetOrdersWorklist("");
+  const { data: pickedOrderList, isLoading } = useGetOrdersWorklist("");
 
-  const data = workListEntries.filter(
+  const data = pickedOrderList.filter(
     (item) => item?.action === "NEW" && item?.dateStopped === null
   );
 
@@ -83,7 +82,7 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
 
   const {
     goTo,
-    results: paginatedWorklistQueueEntries,
+    results: paginatedPickedOrderQueueEntries,
     currentPage,
   } = usePagination(filteredStatus, currentPageSize);
   // get picked orders
@@ -107,7 +106,7 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
   const handleOrderStatusChange = ({ selectedItem }) => setFilter(selectedItem);
 
   const tableRows = useMemo(() => {
-    return paginatedWorklistQueueEntries.map((entry, index) => ({
+    return paginatedPickedOrderQueueEntries.map((entry, index) => ({
       ...entry,
       id: entry?.uuid,
       date: (
@@ -135,19 +134,19 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
         >
           <ExtensionSlot
             className={styles.menuLink}
-            state={{ order: paginatedWorklistQueueEntries[index] }}
+            state={{ order: paginatedPickedOrderQueueEntries[index] }}
             name="order-actions-slot"
           />
         </OrderCustomOverflowMenuComponent>
       ),
     }));
-  }, [paginatedWorklistQueueEntries]);
+  }, [paginatedPickedOrderQueueEntries]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
   }
 
-  if (paginatedWorklistQueueEntries?.length >= 0) {
+  if (paginatedPickedOrderQueueEntries?.length >= 0) {
     return (
       <DataTable
         rows={tableRows}

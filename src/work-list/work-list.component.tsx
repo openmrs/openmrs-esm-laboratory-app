@@ -53,12 +53,13 @@ interface RejectOrderProps {
 const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
   const { t } = useTranslation();
 
-  const { workListEntries, isLoading } = useGetOrdersWorklist(fulfillerStatus);
+  const { data: pickedOrderEntries, isLoading } =
+    useGetOrdersWorklist(fulfillerStatus);
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
 
-  const filtered = workListEntries.filter(
+  const filtered = pickedOrderEntries.filter(
     (item) =>
       item?.fulfillerStatus === "IN_PROGRESS" &&
       item?.accessionNumber !== null &&

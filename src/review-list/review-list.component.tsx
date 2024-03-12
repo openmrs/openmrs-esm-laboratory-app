@@ -67,9 +67,10 @@ const ApproveTestMenu: React.FC<ApproveResultMenuProps> = ({
 const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
   const { t } = useTranslation();
 
-  const { workListEntries, isLoading } = useGetOrdersWorklist(fulfillerStatus);
+  const { data: reviewOrderEntries, isLoading } =
+    useGetOrdersWorklist(fulfillerStatus);
 
-  const filtered = workListEntries?.filter(
+  const filtered = reviewOrderEntries?.filter(
     (item) =>
       item?.action === "REVISE" &&
       item?.fulfillerStatus === "IN_PROGRESS" &&
@@ -81,7 +82,7 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
 
   const {
     goTo,
-    results: paginatedWorkListEntries,
+    results: paginatedReviewOrderEntries,
     currentPage,
   } = usePagination(filtered, currentPageSize);
 
@@ -104,7 +105,7 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
   ];
 
   const tableRows = useMemo(() => {
-    return paginatedWorkListEntries.map((entry) => ({
+    return paginatedReviewOrderEntries.map((entry) => ({
       ...entry,
       id: entry?.uuid,
       date: formatDate(parseDate(entry?.dateActivated)),
@@ -127,12 +128,12 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
       orderType: entry?.orderType?.display,
       urgency: entry?.urgency,
     }));
-  }, [paginatedWorkListEntries]);
+  }, [paginatedReviewOrderEntries]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
   }
-  if (paginatedWorkListEntries?.length >= 0) {
+  if (paginatedReviewOrderEntries?.length >= 0) {
     return (
       <DataTable rows={tableRows} headers={columns} useZebraStyles>
         {({
@@ -183,7 +184,8 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
                         <TableCell className="cds--table-column-menu">
                           <ApproveTestMenu
                             encounterUuid={
-                              paginatedWorkListEntries[index]?.encounter?.uuid
+                              paginatedReviewOrderEntries[index]?.encounter
+                                ?.uuid
                             }
                           />
                         </TableCell>
