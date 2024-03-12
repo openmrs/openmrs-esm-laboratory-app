@@ -69,7 +69,6 @@ export function useLabTestsStats(fulfillerStatus: string) {
     Error
   >(apiUrl, openmrsFetch);
   return {
-    count: data?.data ? data.data?.results.length : 0,
     data: data?.data ? data?.data?.results : [],
     isLoading,
     isError: error,
