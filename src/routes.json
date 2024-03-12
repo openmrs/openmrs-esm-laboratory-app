@@ -19,7 +19,8 @@
         {
             "name": "laboratory-menu-link",
             "slot": "app-menu-slot",
-            "component": "laboratoryMenuLink"        },
+            "component": "laboratoryMenuLink"
+        },
         {
             "name": "laboratory-dashboard-link",
             "slot": "homepage-dashboard-slot",
