@@ -145,7 +145,7 @@ export function useGetOrdersWorklist(fulfillerStatus: string) {
   >(apiUrl, openmrsFetch, { refreshInterval: 3000 });
 
   return {
-    workListEntries: data?.data ? data.data.results : [],
+    data: data?.data ? data.data.results : [],
     isLoading,
     isError: error,
     mutate: mutateOrders,

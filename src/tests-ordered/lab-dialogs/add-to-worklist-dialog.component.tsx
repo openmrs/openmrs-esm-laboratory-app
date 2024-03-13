@@ -135,7 +135,7 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
       <Form onSubmit={pickLabRequestQueue}>
         <ModalHeader
           closeModal={closeModal}
-          title={t("pickRequest", "Pick Lab Request")}
+          title={t("pickRequest", `Test : ${order?.display}`)}
         />
         <ModalBody>
           <div className={styles.modalBody}>

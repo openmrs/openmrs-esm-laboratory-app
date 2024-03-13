@@ -52,7 +52,7 @@ import {
 import TestsResults from "../results-summary/test-results-table.component";
 import { useReactToPrint } from "react-to-print";
 import PrintResultsSummary from "../results-summary/print-results-summary.component";
-import { useGetPatientByUuid } from "../../utils/functions";
+import { OrderTagStyle, useGetPatientByUuid } from "../../utils/functions";
 import {
   ResourceRepresentation,
   Result,
@@ -272,25 +272,24 @@ const LaboratoryOrderReferalResults: React.FC<
       }),
       orders: (
         <>
-          {entry?.orders
-            ?.filter(
-              (order) => order?.type === "testorder" && order?.action === "NEW"
-            )
-            .map((order) => (
-              <Tag
-                style={{
-                  background: `${getOrderColor(
-                    order?.dateActivated,
-                    order?.dateStopped
-                  )}`,
-                  color: "white",
-                }}
-                role="tooltip"
-                key={order?.uuid}
-              >
-                {order?.display}
-              </Tag>
-            ))}
+          {entry?.orders?.map((order) => {
+            if (
+              (order?.action === "NEW" ||
+                order?.action === "REVISE" ||
+                order?.action === "DISCONTINUE") &&
+              order.dateStopped === null
+            ) {
+              return (
+                <Tag
+                  style={OrderTagStyle(order)}
+                  role="tooltip"
+                  key={order?.uuid}
+                >
+                  {order?.display}
+                </Tag>
+              );
+            }
+          })}
         </>
       ),
       location: entry?.location?.display,

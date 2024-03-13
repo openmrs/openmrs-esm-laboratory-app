@@ -37,16 +37,17 @@ interface CompletedListProps {
 const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
   const { t } = useTranslation();
 
-  const { workListEntries, isLoading } = useGetOrdersWorklist(fulfillerStatus);
+  const { data: completedOrderList, isLoading } =
+    useGetOrdersWorklist(fulfillerStatus);
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
 
   const {
     goTo,
-    results: paginatedWorkListEntries,
+    results: paginatedCompletedOrderEntries,
     currentPage,
-  } = usePagination(workListEntries, currentPageSize);
+  } = usePagination(completedOrderList, currentPageSize);
 
   const tableColumns = [
     { id: 0, header: t("date", "Date"), key: "date" },
@@ -58,18 +59,17 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
       key: "accessionNumber",
     },
     { id: 4, header: t("test", "Test"), key: "test" },
-    { id: 5, header: t("action", "Action"), key: "action" },
-    { id: 6, header: t("status", "Status"), key: "status" },
-    { id: 7, header: t("orderer", "Orderer"), key: "orderer" },
-    { id: 8, header: t("urgency", "Urgency"), key: "urgency" },
+    { id: 5, header: t("status", "Status"), key: "status" },
+    { id: 6, header: t("orderer", "Ordered By"), key: "orderer" },
+    { id: 7, header: t("urgency", "Urgency"), key: "urgency" },
   ];
 
   const tableRows = useMemo(() => {
-    return paginatedWorkListEntries
+    return paginatedCompletedOrderEntries
       ?.filter(
         (item) =>
-          (item.action === "DISCONTINUE" || item.action === "REVISE") &&
-          item.fulfillerStatus === fulfillerStatus
+          (item?.action === "DISCONTINUE" || item?.action === "REVISE") &&
+          item?.fulfillerStatus === fulfillerStatus
       )
       .map((entry) => ({
         ...entry,
@@ -99,13 +99,13 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
         orderType: entry?.orderType.display,
         urgency: entry?.urgency,
       }));
-  }, [fulfillerStatus, paginatedWorkListEntries]);
+  }, [fulfillerStatus, paginatedCompletedOrderEntries]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
   }
 
-  if (paginatedWorkListEntries?.length >= 0) {
+  if (paginatedCompletedOrderEntries?.length >= 0) {
     return (
       <DataTable rows={tableRows} headers={tableColumns} useZebraStyles>
         {({
@@ -179,7 +179,7 @@ const CompletedList: React.FC<CompletedListProps> = ({ fulfillerStatus }) => {
               page={currentPage}
               pageSize={currentPageSize}
               pageSizes={pageSizes}
-              totalItems={workListEntries?.length}
+              totalItems={completedOrderList?.length}
               className={styles.pagination}
               onChange={({ pageSize, page }) => {
                 if (pageSize !== currentPageSize) {

@@ -6,12 +6,12 @@ import { useLabTestsStats } from "../summary-tiles/laboratory-summary.resource";
 const ReferredTileComponent = () => {
   const { t } = useTranslation();
 
-  const { count: completedCount } = useLabTestsStats("COMPLETED");
+  const { data } = useLabTestsStats("COMPLETED");
 
   return (
     <SummaryTile
       label={t("completed", "Completed")}
-      value={completedCount}
+      value={data.length}
       headerLabel={t("results", "Results")}
     />
   );
