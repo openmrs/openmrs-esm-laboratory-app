@@ -9,17 +9,14 @@ const ReferredTileComponent = () => {
   const { data } = useLabTestsStats("");
 
   const filteredData = data?.filter(
-    (item) =>
-      item?.action === "NEW" &&
-      item?.dateStopped === null &&
-      item?.fulfillerStatus === null
+    (item) => item?.fulfillerStatus === "EXCEPTION"
   );
 
   return (
     <SummaryTile
-      label={t("orders", "Orders")}
+      label={t("orders", "Tests")}
       value={filteredData?.length}
-      headerLabel={t("testsOrdered", "Tests ordered")}
+      headerLabel={t("testsRejected", "Rejected")}
     />
   );
 };

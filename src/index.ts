@@ -1,8 +1,4 @@
-import {
-  getAsyncLifecycle,
-  defineConfigSchema,
-  getSyncLifecycle,
-} from "@openmrs/esm-framework";
+import { defineConfigSchema, getSyncLifecycle } from "@openmrs/esm-framework";
 import { configSchema } from "./config-schema";
 import { createHomeDashboardLink } from "./components/create-dashboard-link.component";
 import rootComponent from "./root.component";
@@ -23,11 +19,13 @@ import worklistTile from "./lab-tiles/worklist-tile.component";
 import referredTile from "./lab-tiles/referred-tile.component";
 import completedTile from "./lab-tiles/completed-tile.component";
 import testsOrdered from "./lab-tiles/tests-ordered-tile.component";
+import rejectedTile from "./lab-tiles/rejected-tile.component";
 
 import {
   createDashboardLink,
   registerWorkspace,
 } from "@openmrs/esm-patient-common-lib";
+import rejectedTabComponent from "./lab-tabs/rejected-tab.component";
 
 const moduleName = "@openmrs/esm-laboratory-app";
 
@@ -91,6 +89,11 @@ export const approvedComponent = getSyncLifecycle(
   options
 );
 
+export const rejectedComponent = getSyncLifecycle(
+  rejectedTabComponent,
+  options
+);
+
 export const referredTestComponent = getSyncLifecycle(
   referredTestTabComponent,
   options
@@ -118,6 +121,8 @@ export const referredTileComponent = getSyncLifecycle(referredTile, options);
 export const completedTileComponent = getSyncLifecycle(completedTile, options);
 
 export const testOrderedTileComponent = getSyncLifecycle(testsOrdered, options);
+
+export const rejectedTileComponent = getSyncLifecycle(rejectedTile, options);
 
 export function startupApp() {
   defineConfigSchema(moduleName, configSchema);
