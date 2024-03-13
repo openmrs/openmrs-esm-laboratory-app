@@ -19,6 +19,7 @@ import worklistTile from "./lab-tiles/worklist-tile.component";
 import referredTile from "./lab-tiles/referred-tile.component";
 import completedTile from "./lab-tiles/completed-tile.component";
 import testsOrdered from "./lab-tiles/tests-ordered-tile.component";
+import rejectedTile from "./lab-tiles/rejected-tile.component";
 
 import {
   createDashboardLink,
@@ -120,6 +121,8 @@ export const referredTileComponent = getSyncLifecycle(referredTile, options);
 export const completedTileComponent = getSyncLifecycle(completedTile, options);
 
 export const testOrderedTileComponent = getSyncLifecycle(testsOrdered, options);
+
+export const rejectedTileComponent = getSyncLifecycle(rejectedTile, options);
 
 export function startupApp() {
   defineConfigSchema(moduleName, configSchema);

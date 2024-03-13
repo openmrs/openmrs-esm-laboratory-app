@@ -141,6 +141,15 @@
             }
         },
         {
+          "name": "rejected-tile-component",
+          "slot": "lab-tiles-slot",
+          "component": "rejectedTileComponent",
+          "meta": {
+            "name": "rejectedTileSlot",
+            "title": "Rejected Tests"
+          }
+        },
+        {
             "name": "referred-tile-component",
             "slot": "lab-tiles-slot",
             "component": "referredTileComponent",
