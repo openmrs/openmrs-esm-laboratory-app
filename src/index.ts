@@ -1,8 +1,4 @@
-import {
-  getAsyncLifecycle,
-  defineConfigSchema,
-  getSyncLifecycle,
-} from "@openmrs/esm-framework";
+import { defineConfigSchema, getSyncLifecycle } from "@openmrs/esm-framework";
 import { configSchema } from "./config-schema";
 import { createHomeDashboardLink } from "./components/create-dashboard-link.component";
 import rootComponent from "./root.component";
@@ -28,6 +24,7 @@ import {
   createDashboardLink,
   registerWorkspace,
 } from "@openmrs/esm-patient-common-lib";
+import rejectedTabComponent from "./lab-tabs/rejected-tab.component";
 
 const moduleName = "@openmrs/esm-laboratory-app";
 
@@ -88,6 +85,11 @@ export const reviewComponent = getSyncLifecycle(reveiwTabComponent, options);
 
 export const approvedComponent = getSyncLifecycle(
   approvedTabComponent,
+  options
+);
+
+export const rejectedComponent = getSyncLifecycle(
+  rejectedTabComponent,
   options
 );
 
