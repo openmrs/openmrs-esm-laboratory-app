@@ -10,7 +10,6 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  Dropdown,
   TableToolbar,
   TableToolbarContent,
   Layer,
@@ -27,55 +26,22 @@ import {
   usePagination,
 } from "@openmrs/esm-framework";
 import styles from "./laboratory-queue.scss";
-import { Result, useGetOrdersWorklist } from "../work-list/work-list.resource";
+import { useGetOrdersWorklist } from "../work-list/work-list.resource";
 import OrderCustomOverflowMenuComponent from "../ui-components/overflow-menu.component";
 
 interface LaboratoryPatientListProps {}
 
-interface RejectOrderProps {
-  order: Result;
-}
-
 const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
   const { t } = useTranslation();
-
-  const OrderStatuses = [
-    "All",
-    "RECEIVED",
-    "IN_PROGRESS",
-    "COMPLETED",
-    "EXCEPTION",
-    "ON_HOLD",
-    "DECLINED",
-  ];
-
-  const [filter, setFilter] = useState<
-    | "All"
-    | "EXCEPTION"
-    | "RECEIVED"
-    | "COMPLETED"
-    | "IN_PROGRESS"
-    | "ON_HOLD"
-    | "DECLINED"
-  >("All");
 
   const { data: pickedOrderList, isLoading } = useGetOrdersWorklist("");
 
   const data = pickedOrderList.filter(
-    (item) => item?.action === "NEW" && item?.dateStopped === null
+    (item) =>
+      item?.action === "NEW" &&
+      item?.dateStopped === null &&
+      item?.fulfillerStatus === null
   );
-
-  const filteredStatus = useMemo(() => {
-    if (!filter || filter == "All") {
-      return data;
-    }
-
-    if (filter) {
-      return data?.filter((order) => order?.fulfillerStatus === filter);
-    }
-
-    return data;
-  }, [filter, data]);
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
@@ -84,26 +50,18 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
     goTo,
     results: paginatedPickedOrderQueueEntries,
     currentPage,
-  } = usePagination(filteredStatus, currentPageSize);
+  } = usePagination(data, currentPageSize);
   // get picked orders
   let columns = [
     { id: 0, header: t("date", "Date"), key: "date" },
 
     { id: 1, header: t("orderNumber", "Order Number"), key: "orderNumber" },
     { id: 2, header: t("patient", "Patient"), key: "patient" },
-
-    {
-      id: 3,
-      header: t("accessionNumber", "Accession Number"),
-      key: "accessionNumber",
-    },
-    { id: 4, header: t("test", "Test"), key: "test" },
-    { id: 5, header: t("orderer", "Ordered By"), key: "orderer" },
-    { id: 6, header: t("urgency", "Urgency"), key: "urgency" },
-    { id: 7, header: t("actions", "Actions"), key: "actions" },
+    { id: 3, header: t("test", "Test"), key: "test" },
+    { id: 4, header: t("orderer", "Ordered By"), key: "orderer" },
+    { id: 5, header: t("urgency", "Urgency"), key: "urgency" },
+    { id: 6, header: t("actions", "Actions"), key: "actions" },
   ];
-
-  const handleOrderStatusChange = ({ selectedItem }) => setFilter(selectedItem);
 
   const tableRows = useMemo(() => {
     return paginatedPickedOrderQueueEntries.map((entry, index) => ({
@@ -170,19 +128,6 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
             >
               <TableToolbarContent>
                 <Layer style={{ margin: "5px" }}>
-                  <Dropdown
-                    id="orderStatus"
-                    initialSelectedItem={"All"}
-                    label=""
-                    titleText={
-                      t("filterOrdersByStatus", "Filter Orders by status") + ":"
-                    }
-                    type="inline"
-                    items={OrderStatuses}
-                    onChange={handleOrderStatusChange}
-                  />
-                </Layer>
-                <Layer style={{ margin: "5px" }}>
                   <TableToolbarSearch
                     expanded
                     onChange={onInputChange}
@@ -203,7 +148,7 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row, index) => {
+                {rows.map((row) => {
                   return (
                     <React.Fragment key={row.id}>
                       <TableRow {...getRowProps({ row })} key={row.id}>
