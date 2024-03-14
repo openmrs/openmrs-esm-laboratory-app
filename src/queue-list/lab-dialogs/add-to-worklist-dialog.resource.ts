@@ -6,6 +6,7 @@ import {
   STOOL_CONCEPT_ID,
   STOOL_DISPLAY,
   additionEntries,
+  laboratoryConcepts,
 } from "../../constants";
 
 export interface QueueRoomsResponse {
@@ -108,32 +109,50 @@ export function useQueueRoomLocations(currentQueueLocation: string) {
 }
 
 // get specimen types
+// export function useSpecimenTypes() {
+//   const config = useConfig();
+//   const { laboratorySpecimenTypeConcept } = config;
+
+//   const apiUrl = `/ws/rest/v1/concept/${laboratorySpecimenTypeConcept}`;
+//   const { data, error, isLoading } = useSWRImmutable<FetchResponse>(
+//     apiUrl,
+//     openmrsFetch
+//   );
+//   const existingSpecimenTypes = data?.data?.answers ?? [];
+//   additionEntries.forEach((entry) => {
+//     const hasEntry = existingSpecimenTypes.some(
+//       (existingEntry) => existingEntry.uuid === entry.uuid
+//     );
+
+//     if (!hasEntry) {
+//       existingSpecimenTypes.push(entry);
+//     }
+//   });
+//   const specimenTypes = existingSpecimenTypes.map((answer) =>
+//     answer.uuid === STOOL_CONCEPT_ID
+//       ? { ...answer, display: STOOL_DISPLAY }
+//       : answer
+//   );
+//   return {
+//     specimenTypes,
+//     isLoading,
+//   };
+// }
+
+
+// New Hard coaded Placeholder of lab orders
 export function useSpecimenTypes() {
   const config = useConfig();
   const { laboratorySpecimenTypeConcept } = config;
-
   const apiUrl = `/ws/rest/v1/concept/${laboratorySpecimenTypeConcept}`;
   const { data, error, isLoading } = useSWRImmutable<FetchResponse>(
     apiUrl,
     openmrsFetch
   );
-  const existingSpecimenTypes = data?.data?.answers ?? [];
-  additionEntries.forEach((entry) => {
-    const hasEntry = existingSpecimenTypes.some(
-      (existingEntry) => existingEntry.uuid === entry.uuid
-    );
 
-    if (!hasEntry) {
-      existingSpecimenTypes.push(entry);
-    }
-  });
-  const specimenTypes = existingSpecimenTypes.map((answer) =>
-    answer.uuid === STOOL_CONCEPT_ID
-      ? { ...answer, display: STOOL_DISPLAY }
-      : answer
-  );
+  const existingSpecimenTypes = laboratoryConcepts ?? [];
   return {
-    specimenTypes,
+    specimenTypes: existingSpecimenTypes,
     isLoading,
   };
 }
