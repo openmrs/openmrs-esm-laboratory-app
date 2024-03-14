@@ -26,29 +26,31 @@ const LaboratoryResultsTabs: React.FC<LaboratoryResultsTabsProps> = ({
           className={styles.tabs}
         >
           <TabList
-            style={{ paddingLeft: "1rem" }}
+            className={styles.tabList}
             aria-label="laboratory results tabs"
             contained
           >
-            <Tab style={{ width: "150px" }}>{t("pending", "Active Tests")}</Tab>
-            <Tab style={{ width: "150px" }}>{t("pending", "Past Tests")}</Tab>
-            <Tab style={{ width: "150px" }}>
+            <Tab className={styles.tabWidth}>
+              {t("pending", "Active Tests")}
+            </Tab>
+            <Tab className={styles.tabWidth}>{t("pending", "Past Tests")}</Tab>
+            <Tab className={styles.tabWidth}>
               {t("referals", "Referred Tests")}
             </Tab>
           </TabList>
           <TabPanels>
-            <TabPanel style={{ padding: 0 }}>
-              <div style={{ margin: "10px" }}>
+            <TabPanel>
+              <div className={styles.panelContainer}>
                 <LaboratoryActiveTestOrderResults patientUuid={patientUuid} />
               </div>
             </TabPanel>
-            <TabPanel style={{ padding: 0 }}>
-              <div style={{ margin: "10px" }}>
+            <TabPanel>
+              <div className={styles.panelContainer}>
                 <LaboratoryPastTestOrderResults patientUuid={patientUuid} />
-              </div>{" "}
+              </div>
             </TabPanel>
-            <TabPanel style={{ padding: 0 }}>
-              <div style={{ margin: "10px" }}>
+            <TabPanel>
+              <div className={styles.panelContainer}>
                 <PatientLaboratoryReferalResults patientUuid={patientUuid} />
               </div>
             </TabPanel>
