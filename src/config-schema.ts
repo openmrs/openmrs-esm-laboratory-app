@@ -23,7 +23,7 @@ export const configSchema = {
   },
   laboratoryOrderTypeUuid: {
     _type: Type.String,
-    _default: "",
+    _default: "52a447d3-a64a-11e3-9aeb-50e549534c5e",
     _description: "Uuid for orderType",
   },
   laboratoryReferalDestinationUuid: {

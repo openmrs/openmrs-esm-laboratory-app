@@ -122,10 +122,10 @@ export function useGetOrdersWorklist(fulfillerStatus: string) {
 
   const orderTypeQuery =
     laboratoryOrderTypeUuid !== ""
-      ? `orderType=${laboratoryOrderTypeUuid}&`
+      ? `orderTypes=${laboratoryOrderTypeUuid}`
       : "";
 
-  const apiUrl = `${restBaseUrl}/order?${orderTypeQuery}fulfillerStatus=${fulfillerStatus}&v=full`;
+  const apiUrl = `${restBaseUrl}/order?${orderTypeQuery}&fulfillerStatus=${fulfillerStatus}&v=full`;
 
   const mutateOrders = useCallback(
     () =>
@@ -133,7 +133,7 @@ export function useGetOrdersWorklist(fulfillerStatus: string) {
         (key) =>
           typeof key === "string" &&
           key.startsWith(
-            `/ws/rest/v1/order?orderType=${laboratoryOrderTypeUuid}`
+            `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}`
           )
       ),
     [laboratoryOrderTypeUuid]
