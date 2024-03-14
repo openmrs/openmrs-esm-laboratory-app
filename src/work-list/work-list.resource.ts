@@ -125,7 +125,7 @@ export function useGetOrdersWorklist(fulfillerStatus: string) {
       ? `orderType=${laboratoryOrderTypeUuid}&`
       : "";
 
-  const apiUrl = `${restBaseUrl}/order?${orderTypeQuery}fulfillerStatus=${fulfillerStatus}&v=full`;
+  const apiUrl = `${restBaseUrl}/order?orderTypes=52a447d3-a64a-11e3-9aeb-50e549534c5e&${orderTypeQuery}fulfillerStatus=${fulfillerStatus}&v=full`;
 
   const mutateOrders = useCallback(
     () =>
