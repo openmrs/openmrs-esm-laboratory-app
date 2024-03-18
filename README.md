@@ -1,4 +1,4 @@
-# OpenMRS 3.x Laboratory ESM
+# OpenMRS 3.x Laboratory ESM  [![node deployement](https://github.com/palladiumkenya/openmrs-esm-laboratory/actions/workflows/node.js.yml/badge.svg)](https://github.com/palladiumkenya/openmrs-esm-laboratory/actions/workflows/node.js.yml)
 
 A frontend module for managing laboratory requests and queues built on OpenMRS 3.x
 
