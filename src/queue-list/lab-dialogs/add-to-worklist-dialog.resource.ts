@@ -139,7 +139,6 @@ export function useQueueRoomLocations(currentQueueLocation: string) {
 //   };
 // }
 
-
 // New Hard coaded Placeholder of lab orders
 export function useSpecimenTypes() {
   const config = useConfig();
