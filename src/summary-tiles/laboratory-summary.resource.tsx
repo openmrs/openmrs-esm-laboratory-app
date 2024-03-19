@@ -8,7 +8,6 @@ import {
 } from "@openmrs/esm-framework";
 
 import { Result } from "../work-list/work-list.resource";
-import { useCallback } from "react";
 
 export function useMetrics() {
   const metrics = {
@@ -47,22 +46,10 @@ export function useLabTestsStats(fulfillerStatus: string) {
 
   const orderTypeQuery =
     laboratoryOrderTypeUuid !== ""
-      ? `orderType=${laboratoryOrderTypeUuid}&`
+      ? `orderTypes=${laboratoryOrderTypeUuid}`
       : "";
 
-  const apiUrl = `${restBaseUrl}/order?${orderTypeQuery}fulfillerStatus=${fulfillerStatus}&v=full`;
-
-  const mutateOrders = useCallback(
-    () =>
-      mutate(
-        (key) =>
-          typeof key === "string" &&
-          key.startsWith(
-            `/ws/rest/v1/order?orderType=${laboratoryOrderTypeUuid}`
-          )
-      ),
-    [laboratoryOrderTypeUuid]
-  );
+  const apiUrl = `${restBaseUrl}/order?${orderTypeQuery}&fulfillerStatus=${fulfillerStatus}&v=full`;
 
   const { data, error, isLoading } = useSWR<
     { data: { results: Array<Result> } },
@@ -72,6 +59,6 @@ export function useLabTestsStats(fulfillerStatus: string) {
     data: data?.data ? data?.data?.results : [],
     isLoading,
     isError: error,
-    mutate: mutateOrders,
+    mutate,
   };
 }

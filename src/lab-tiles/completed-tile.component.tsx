@@ -11,7 +11,7 @@ const ReferredTileComponent = () => {
   return (
     <SummaryTile
       label={t("completed", "Completed")}
-      value={data.length}
+      value={data?.length}
       headerLabel={t("results", "Results")}
     />
   );
