@@ -20,71 +20,14 @@
     margin: 5px;
   }
 
-  .tileContainer {
-    background-color: $ui-02;
-    border-top: 1px solid $ui-03;
-    padding: 5rem 0;
-  }
-
-  .tile {
-    margin: auto;
-    width: fit-content;
-  }
-
-  .tileContent {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .content {
-    @include type.type-style('heading-compact-02');
-    color: $text-02;
-    margin-bottom: 0.5rem;
-  }
-
-  .helper {
-    @include type.type-style('body-compact-01');
-    color: $text-02;
-  }
-
-  .separator {
-    @include type.type-style('body-compact-02');
-    color: $text-02;
-    width: 80%;
-    margin: 1.5rem auto;
-    overflow: hidden;
-    text-align: center;
-
-    &::before,
-    &::after {
-      background-color: $text-03;
-      content: '';
-      display: inline-block;
-      height: 1px;
-      position: relative;
-      vertical-align: middle;
-      width: 50%;
-    }
-
-    &::before {
-      right: 0.5rem;
-      margin-left: -50%;
-    }
-
-    &::after {
-      left: 0.5rem;
-      margin-right: -50%;
-    }
-  }
-
   table {
     font-family: Arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
   }
 
-  td, th {
+  td,
+  th {
     border: 1px solid #000;
     text-align: left;
     font-size: 8px;
@@ -94,5 +37,44 @@
 
   th {
     background-color: #f2f2f2;
+  }
+
+  .headingText {
+    font-size: "10px";
+    font-weight: "bold";
+    margin: "5px"
+  }
+
+  .header {
+    display: "flex";
+    justify-content: "space-around";
+    flex-direction: "row";
+    align-items: "center";
+    margin: " 10px";
+  }
+
+  .facilityContainer {
+    display: "flex";
+    flex-direction: "row";
+    justify-content: "space-between";
+  }
+
+  .patientContainer {
+    display: "flex";
+    flex-direction: "column";
+  }
+
+  .headerSection {
+    display: "flex";
+    flex-direction: "column";
+    justify-content: "center";
+    align-items: "center";
+  }
+
+  .footerSection {
+    margin: "10px";
+    display: "flex";
+    width: "500px";
+    flex-direction: "row";
   }
 }

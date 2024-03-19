@@ -18,3 +18,23 @@ section {
 .modalBody {
   padding-bottom: spacing.$spacing-05;
 }
+
+
+.container {
+  display: "flex";
+  align-items: "center";
+  justify-content: "space-between";
+  align-content: "stretch";
+}
+
+.specimenContainer {
+  display: "flex";
+  align-items: "center";
+  justify-content: "space-between";
+  column-gap: "10px";
+}
+
+.inputText {
+  display: "flex";
+  align-items: "center";
+}

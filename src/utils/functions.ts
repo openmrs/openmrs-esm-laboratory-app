@@ -48,6 +48,7 @@ export const getStatusColor = (fulfillerStatus: string) => {
     return "red";
   }
 };
+
 export interface PatientResource {
   uuid: string;
   display: string;
@@ -243,4 +244,26 @@ export function useGetPatientByUuid(uuid: string) {
     isLoading,
     isError: error,
   };
+}
+
+export function OrderTagStyle(order: any) {
+  switch (order?.action) {
+    case "NEW" || "REVISE":
+      return {
+        background: "#6F6F6F",
+        color: "white",
+      };
+
+    case "DISCONTINUE":
+      return {
+        background: "green",
+        color: "white",
+      };
+
+    default:
+      return {
+        background: "gray",
+        color: "white",
+      };
+  }
 }

@@ -53,16 +53,24 @@ interface RejectOrderProps {
 const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
   const { t } = useTranslation();
 
-  const { workListEntries, isLoading } = useGetOrdersWorklist(fulfillerStatus);
+  const { data: pickedOrderEntries, isLoading } =
+    useGetOrdersWorklist(fulfillerStatus);
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
+
+  const filtered = pickedOrderEntries.filter(
+    (item) =>
+      item?.fulfillerStatus === "IN_PROGRESS" &&
+      item?.accessionNumber !== null &&
+      item?.dateStopped === null
+  );
 
   const {
     goTo,
     results: paginatedWorkListEntries,
     currentPage,
-  } = usePagination(workListEntries, currentPageSize);
+  } = usePagination(filtered, currentPageSize);
 
   const RejectOrder: React.FC<RejectOrderProps> = ({ order }) => {
     const launchRejectOrderModal = useCallback(() => {
@@ -93,11 +101,10 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
       key: "accessionNumber",
     },
     { id: 4, header: t("test", "Test"), key: "test" },
-    { id: 5, header: t("action", "Action"), key: "action" },
-    { id: 6, header: t("status", "Status"), key: "status" },
-    { id: 8, header: t("orderer", "Orderer"), key: "orderer" },
-    { id: 9, header: t("urgency", "Urgency"), key: "urgency" },
-    { id: 10, header: t("actions", "Actions"), key: "actions" },
+    { id: 5, header: t("status", "Status"), key: "status" },
+    { id: 6, header: t("orderer", "Ordered By"), key: "orderer" },
+    { id: 7, header: t("urgency", "Urgency"), key: "urgency" },
+    { id: 8, header: t("actions", "Actions"), key: "actions" },
   ];
 
   const ResultsOrder: React.FC<ResultsOrderProps> = ({
@@ -119,46 +126,44 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
   };
 
   const tableRows = useMemo(() => {
-    return paginatedWorkListEntries
-      ?.filter((item) => item.fulfillerStatus === "IN_PROGRESS")
-      .map((entry, index) => ({
-        ...entry,
-        id: entry?.uuid,
-        date: formatDate(parseDate(entry?.dateActivated)),
-        patient: (
-          <ConfigurableLink
-            to={`\${openmrsSpaBase}/patient/${entry?.patient?.uuid}/chart/laboratory-orders`}
-          >
-            {entry?.patient?.display.split("-")[1]}
-          </ConfigurableLink>
+    return paginatedWorkListEntries.map((entry, index) => ({
+      ...entry,
+      id: entry?.uuid,
+      date: formatDate(parseDate(entry?.dateActivated)),
+      patient: (
+        <ConfigurableLink
+          to={`\${openmrsSpaBase}/patient/${entry?.patient?.uuid}/chart/laboratory-orders`}
+        >
+          {entry?.patient?.display.split("-")[1]}
+        </ConfigurableLink>
+      ),
+      orderNumber: entry?.orderNumber,
+      accessionNumber: entry?.accessionNumber,
+      test: entry?.concept?.display,
+      action: entry?.action,
+      status: (
+        <span
+          className={styles.statusContainer}
+          style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
+        >
+          {entry?.fulfillerStatus}
+        </span>
+      ),
+      orderer: entry?.orderer?.display,
+      orderType: entry?.orderType?.display,
+      urgency: entry?.urgency,
+      actions: {
+        content: (
+          <>
+            <ResultsOrder
+              patientUuid={entry?.patient?.uuid}
+              order={paginatedWorkListEntries[index]}
+            />
+            <RejectOrder order={paginatedWorkListEntries[index]} />
+          </>
         ),
-        orderNumber: entry?.orderNumber,
-        accessionNumber: entry?.accessionNumber,
-        test: entry?.concept?.display,
-        action: entry?.action,
-        status: (
-          <span
-            className={styles.statusContainer}
-            style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
-          >
-            {entry?.fulfillerStatus}
-          </span>
-        ),
-        orderer: entry?.orderer?.display,
-        orderType: entry?.orderType?.display,
-        urgency: entry?.urgency,
-        actions: {
-          content: (
-            <>
-              <ResultsOrder
-                patientUuid={entry?.patient?.uuid}
-                order={paginatedWorkListEntries[index]}
-              />
-              <RejectOrder order={paginatedWorkListEntries[index]} />
-            </>
-          ),
-        },
-      }));
+      },
+    }));
   }, [ResultsOrder, paginatedWorkListEntries]);
 
   if (isLoading) {
@@ -239,7 +244,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
               page={currentPage}
               pageSize={currentPageSize}
               pageSizes={pageSizes}
-              totalItems={workListEntries?.length}
+              totalItems={filtered?.length}
               className={styles.pagination}
               onChange={({ pageSize, page }) => {
                 if (pageSize !== currentPageSize) {

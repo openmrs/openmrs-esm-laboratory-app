@@ -3,6 +3,7 @@
 @import "~@openmrs/esm-styleguide/src/vars";
 @import '../root.scss';
 
+
 title {
   width: 6.938rem;
   height: 1.75rem;
@@ -99,6 +100,10 @@ title {
   margin: 0 spacing.$spacing-05;
   padding: 0;
 
+  :global(.cds--data-table-content) {
+    overflow-x: unset;
+  }
+
   a {
     text-decoration: none;
   }
@@ -173,13 +178,13 @@ title {
   td {
     padding: 0.5rem;
 
-    > div {
+    >div {
       max-height: max-content !important;
       background-color: $ui-02;
     }
   }
 
-  th[colspan] td[colspan] > div:first-child {
+  th[colspan] td[colspan]>div:first-child {
     padding: 0 1rem;
   }
 }
@@ -207,7 +212,6 @@ title {
   margin-bottom: 0.5rem;
 }
 
- .single-line-display {
-    white-space: nowrap;
-  }
-
+.single-line-display {
+  white-space: nowrap;
+}

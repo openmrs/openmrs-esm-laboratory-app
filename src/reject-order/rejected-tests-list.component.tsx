@@ -16,31 +16,19 @@ import {
   Tile,
   TableToolbarSearch,
 } from "@carbon/react";
-import { OverflowMenuVertical } from "@carbon/react/icons";
 
 import { useTranslation } from "react-i18next";
-import {
-  ExtensionSlot,
-  formatDate,
-  parseDate,
-  usePagination,
-} from "@openmrs/esm-framework";
-import styles from "./laboratory-queue.scss";
+import { formatDate, parseDate, usePagination } from "@openmrs/esm-framework";
+import styles from "../tests-ordered/laboratory-queue.scss";
 import { useGetOrdersWorklist } from "../work-list/work-list.resource";
-import OrderCustomOverflowMenuComponent from "../ui-components/overflow-menu.component";
 
-interface LaboratoryPatientListProps {}
-
-const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
+const RejectedTestsList: React.FC = () => {
   const { t } = useTranslation();
 
   const { data: pickedOrderList, isLoading } = useGetOrdersWorklist("");
 
   const data = pickedOrderList.filter(
-    (item) =>
-      item?.action === "NEW" &&
-      item?.dateStopped === null &&
-      item?.fulfillerStatus === null
+    (item) => item?.fulfillerStatus === "EXCEPTION"
   );
 
   const pageSizes = [10, 20, 30, 40, 50];
@@ -51,7 +39,7 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
     results: paginatedPickedOrderQueueEntries,
     currentPage,
   } = usePagination(data, currentPageSize);
-  // get picked orders
+
   let columns = [
     { id: 0, header: t("date", "Date"), key: "date" },
 
@@ -60,11 +48,15 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
     { id: 3, header: t("test", "Test"), key: "test" },
     { id: 4, header: t("orderer", "Ordered By"), key: "orderer" },
     { id: 5, header: t("urgency", "Urgency"), key: "urgency" },
-    { id: 6, header: t("actions", "Actions"), key: "actions" },
+    {
+      id: 6,
+      header: t("fulfillerComment", "Reason for Rejection"),
+      key: "fulfillerComment",
+    },
   ];
 
   const tableRows = useMemo(() => {
-    return paginatedPickedOrderQueueEntries.map((entry, index) => ({
+    return paginatedPickedOrderQueueEntries.map((entry) => ({
       ...entry,
       id: entry?.uuid,
       date: (
@@ -74,28 +66,12 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
       ),
       patient: entry?.patient?.display.split("-")[1],
       orderNumber: entry?.orderNumber,
+      accessionNumber: entry?.accessionNumber,
       test: entry?.concept?.display,
       action: entry?.action,
       orderer: entry?.orderer?.display,
       urgency: entry?.urgency,
-      actions: (
-        <OrderCustomOverflowMenuComponent
-          menuTitle={
-            <>
-              <OverflowMenuVertical
-                size={16}
-                style={{ marginLeft: "0.3rem" }}
-              />
-            </>
-          }
-        >
-          <ExtensionSlot
-            className={styles.menuLink}
-            state={{ order: paginatedPickedOrderQueueEntries[index] }}
-            name="order-actions-slot"
-          />
-        </OrderCustomOverflowMenuComponent>
-      ),
+      fulfillerComment: entry?.fulfillerComment,
     }));
   }, [paginatedPickedOrderQueueEntries]);
 
@@ -168,8 +144,8 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
                   <div className={styles.tileContent}>
                     <p className={styles.content}>
                       {t(
-                        "noWorklistsToDisplay",
-                        "No worklists orders to display"
+                        "noRejectedTestsToDisplay",
+                        "No rejected tests to display"
                       )}
                     </p>
                   </div>
@@ -200,4 +176,4 @@ const TestsOrderedList: React.FC<LaboratoryPatientListProps> = () => {
   }
 };
 
-export default TestsOrderedList;
+export default RejectedTestsList;

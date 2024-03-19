@@ -17,7 +17,6 @@ const PickLabRequestActionMenu: React.FC<PickLabRequestActionMenuProps> = ({
   const launchPickLabRequestModal = useCallback(() => {
     const dispose = showModal("add-to-worklist-dialog", {
       closeModal: () => dispose(),
-
       order,
     });
   }, [order]);

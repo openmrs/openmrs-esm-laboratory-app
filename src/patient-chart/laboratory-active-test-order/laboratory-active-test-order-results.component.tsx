@@ -54,7 +54,7 @@ import {
 import TestsResults from "../results-summary/test-results-table.component";
 import { useReactToPrint } from "react-to-print";
 import PrintResultsSummary from "../results-summary/print-results-summary.component";
-import { useGetPatientByUuid } from "../../utils/functions";
+import { OrderTagStyle, useGetPatientByUuid } from "../../utils/functions";
 import {
   ResourceRepresentation,
   Result,
@@ -242,57 +242,40 @@ const LaboratoryActiveTestOrderResults: React.FC<
     return paginatedActiveTestOrderResults?.map((entry, index) => ({
       ...entry,
       id: entry.uuid,
-      orderDate: {
-        content: (
-          <span>
-            {formatDate(parseDate(entry.encounterDatetime), {
-              time: true,
-              mode: "standard",
-            })}
-          </span>
-        ),
-      },
-      orders: {
-        content: (
-          <>
-            {entry?.orders
-              ?.filter(
-                (order) =>
-                  order?.type === "testorder" && order?.action === "NEW"
-              )
-              .map((order) => (
+      orderDate: formatDate(parseDate(entry.encounterDatetime), {
+        mode: "standard",
+        time: true,
+      }),
+      orders: (
+        <>
+          {entry?.orders?.map((order) => {
+            if (
+              (order?.action === "NEW" ||
+                order?.action === "REVISE" ||
+                order?.action === "DISCONTINUE") &&
+              order.dateStopped === null
+            ) {
+              return (
                 <Tag
-                  style={{
-                    background: `${getOrderColor(
-                      order.dateActivated,
-                      order.dateStopped
-                    )}`,
-                    color: "white",
-                  }}
+                  style={OrderTagStyle(order)}
                   role="tooltip"
-                  key={order.uuid}
+                  key={order?.uuid}
                 >
                   {order?.display}
                 </Tag>
-              ))}
-          </>
-        ),
-      },
-
-      location: {
-        content: <span>{entry.location.display}</span>,
-      },
-      status: {
-        content: <span>--</span>,
-      },
-      actions: {
-        content: (
-          <div style={{ display: "flex" }}>
-            <PrintButtonAction encounter={entry} />
-            {enableSendingLabTestsByEmail && <EmailButtonAction />}
-          </div>
-        ),
-      },
+              );
+            }
+          })}
+        </>
+      ),
+      location: entry.location.display,
+      status: "--",
+      actions: (
+        <div style={{ display: "flex" }}>
+          <PrintButtonAction encounter={entry} />
+          {enableSendingLabTestsByEmail && <EmailButtonAction />}
+        </div>
+      ),
     }));
   }, [enableSendingLabTestsByEmail, paginatedActiveTestOrderResults]);
 

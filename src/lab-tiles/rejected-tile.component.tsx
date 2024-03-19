@@ -6,13 +6,17 @@ import { useLabTestsStats } from "../summary-tiles/laboratory-summary.resource";
 const ReferredTileComponent = () => {
   const { t } = useTranslation();
 
-  const { data } = useLabTestsStats("COMPLETED");
+  const { data } = useLabTestsStats("");
+
+  const filteredData = data?.filter(
+    (item) => item?.fulfillerStatus === "EXCEPTION"
+  );
 
   return (
     <SummaryTile
-      label={t("completed", "Completed")}
-      value={data.length}
-      headerLabel={t("results", "Results")}
+      label={t("orders", "Tests")}
+      value={filteredData?.length}
+      headerLabel={t("testsRejected", "Rejected")}
     />
   );
 };

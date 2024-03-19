@@ -5,8 +5,14 @@
 .cardContainer {
   background-color: $ui-02 ;
   display: flex;
-  justify-content: flex-start;
   padding: 0 spacing.$spacing-05 spacing.$spacing-10 spacing.$spacing-03;
-  flex-flow: row wrap;
-  margin-top: - spacing.$spacing-03;
+}
+
+.cardContainer > div:nth-child(1),
+.cardContainer > div:nth-child(2),
+.cardContainer > div:nth-child(3),
+.cardContainer > div:nth-child(4),
+.cardContainer > div:nth-child(5),
+{
+  width: 20%;
 }
