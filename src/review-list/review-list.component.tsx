@@ -1,8 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useGetOrdersWorklist } from "../work-list/work-list.resource";
+import { Result, useGetOrdersWorklist } from "../work-list/work-list.resource";
 import {
-  ErrorState,
   formatDate,
   parseDate,
   showModal,
@@ -24,10 +23,7 @@ import {
   TableToolbarSearch,
   Layer,
   Tile,
-  DatePicker,
-  DatePickerInput,
   Button,
-  Tag,
 } from "@carbon/react";
 
 import styles from "./review-list.scss";
@@ -39,18 +35,21 @@ interface ReviewlistProps {
 }
 interface ApproveResultMenuProps {
   encounterUuid: string;
+  orderItem: Result;
 }
 
 const ApproveTestMenu: React.FC<ApproveResultMenuProps> = ({
   encounterUuid,
+  orderItem,
 }) => {
   const { t } = useTranslation();
   const launchReviewItemModal = useCallback(() => {
     const dispose = showModal("review-item-dialog", {
       encounterUuid,
+      orderItem,
       closeModal: () => dispose(),
     });
-  }, [encounterUuid]);
+  }, [encounterUuid, orderItem]);
 
   return (
     <Button
@@ -183,6 +182,7 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
                         ))}
                         <TableCell className="cds--table-column-menu">
                           <ApproveTestMenu
+                            orderItem={paginatedReviewOrderEntries[index]}
                             encounterUuid={
                               paginatedReviewOrderEntries[index]?.encounter
                                 ?.uuid

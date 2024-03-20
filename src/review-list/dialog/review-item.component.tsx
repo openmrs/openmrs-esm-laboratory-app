@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import {
   Button,
   Form,
@@ -6,7 +6,6 @@ import {
   ModalFooter,
   ModalHeader,
   InlineLoading,
-  Checkbox,
 } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import styles from "../dialog/review-item.scss";
@@ -17,9 +16,11 @@ import {
 import { useGetConceptById } from "../../patient-chart/results-summary/results-summary.resource";
 import { ApproverOrder } from "./review-item.resource";
 import { showNotification, showSnackbar } from "@openmrs/esm-framework";
+import { Result } from "../../work-list/work-list.resource";
 
 interface ReviewItemDialogProps {
   encounterUuid: string;
+  orderItem: Result;
   closeModal: () => void;
 }
 
@@ -33,6 +34,7 @@ interface ValueUnitsProps {
 
 const ReviewItem: React.FC<ReviewItemDialogProps> = ({
   encounterUuid,
+  orderItem,
   closeModal,
 }) => {
   const { t } = useTranslation();
@@ -40,8 +42,10 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
   const { encounter, isLoading } = useGetEncounterById(encounterUuid);
 
   const testsOrder = useMemo(() => {
-    return encounter?.obs?.filter((item) => item?.order?.type === "testorder");
-  }, [encounter?.obs]);
+    return encounter?.obs?.filter(
+      (item) => item?.order?.display === orderItem?.display
+    );
+  }, [encounter?.obs, orderItem?.display]);
 
   const filteredGroupedResults = useMemo(() => {
     let groupedResults = [];
@@ -53,49 +57,11 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
     return groupedResults;
   }, [testsOrder]);
 
-  const [checkedItems, setCheckedItems] = useState({});
-
-  const handleCheckboxChange = (test, groupMembers, uuid) => {
-    setCheckedItems((previouslyCheckedItems) => {
-      if (previouslyCheckedItems[test]) {
-        const newCheckedItems = { ...previouslyCheckedItems };
-        delete newCheckedItems[test];
-        return newCheckedItems;
-      } else {
-        return {
-          ...previouslyCheckedItems,
-          [test]: { groupMembers, uuid },
-        };
-      }
-    });
-  };
-
   // handle approve
   const approveOrder = async (e) => {
     e.preventDefault();
-    if (Object.keys(checkedItems).length === 0) {
-      showNotification({
-        title: t("noSelection", "No Selection: "),
-        kind: "error",
-        critical: true,
-        description: t(
-          "pleaseSelectAnOrder",
-          "Please select at least one order to approve."
-        ),
-      });
-      return;
-    }
-    let uuids = [];
 
-    Object.keys(checkedItems).map((item, index) => {
-      uuids.push(filteredGroupedResults[item].uuid);
-    });
-
-    const payload = {
-      orders: uuids.join(","),
-    };
-
-    ApproverOrder(payload).then(
+    ApproverOrder({ orders: `${orderItem?.uuid}` }).then(
       () => {
         showSnackbar({
           isLowContrast: true,
@@ -195,23 +161,14 @@ const ReviewItem: React.FC<ReviewItemDialogProps> = ({
             <table>
               <tbody>
                 {Object.keys(filteredGroupedResults).length > 0
-                  ? Object.keys(filteredGroupedResults).map((test, index) => {
+                  ? Object.keys(filteredGroupedResults).map((test) => {
                       const { uuid, groupMembers } =
                         filteredGroupedResults[test];
                       const isGrouped = uuid && groupMembers?.length > 0;
 
                       return (
                         <tr key={test} style={{ margin: "10px" }}>
-                          <Checkbox
-                            key={index}
-                            className={styles.checkbox}
-                            onChange={() =>
-                              handleCheckboxChange(test, groupMembers, uuid)
-                            }
-                            labelText={test}
-                            id={`test-${test}`}
-                            checked={checkedItems[test] || false}
-                          />
+                          {test}
 
                           <table style={{ margin: "10px" }}>
                             <thead>
