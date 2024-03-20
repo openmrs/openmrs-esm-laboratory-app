@@ -122,6 +122,15 @@
                 "title": "Referred Tests"
             }
         },
+      {
+        "name": "worklist-tile-component",
+        "slot": "lab-tiles-slot",
+        "component": "worklistTileComponent",
+        "meta": {
+          "name": "worklisTileSlot",
+          "title": "Worklist"
+        }
+      },
         {
             "name": "completed-tile-component",
             "slot": "lab-tiles-slot",
@@ -129,15 +138,6 @@
             "meta": {
                 "name": "completedTileSlot",
                 "title": "Completed"
-            }
-        },
-        {
-            "name": "worklist-tile-component",
-            "slot": "lab-tiles-slot",
-            "component": "worklistTileComponent",
-            "meta": {
-                "name": "worklisTileSlot",
-                "title": "Worklist"
             }
         },
         {
