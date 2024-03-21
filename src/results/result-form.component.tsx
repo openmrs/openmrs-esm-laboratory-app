@@ -13,13 +13,13 @@ import {
   useGetOrderConceptByUuid,
   UpdateOrderResult,
 } from "./result-form.resource";
-import { Result } from "../work-list/work-list.resource";
 import ResultFormField from "./result-form-field.component";
 import { useForm } from "react-hook-form";
+import { Order } from "@openmrs/esm-patient-common-lib";
 
 interface ResultFormProps {
   patientUuid: string;
-  order: Result;
+  order: Order;
 }
 
 const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {

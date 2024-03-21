@@ -31,7 +31,6 @@ export const configSchema = {
     _default: "b1f8b6c8-c255-4518-89f5-4236ab76025b",
     _description: "Concept uuid for laboratory referals destinations",
   },
-
   enableSendingLabTestsByEmail: {
     _type: Type.Boolean,
     _default: false,
@@ -43,6 +42,12 @@ export const configSchema = {
     _description:
       "Configuration to enable/disable auto speciment id generation button.",
   },
+  targetPatientDashboard: {
+    _type: Type.String,
+    _default: "Results Viewer",
+    _description:
+      "The patient chart dashboard to navigate to from the lab app.",
+  },
 };
 
 export type Config = {
@@ -50,4 +55,5 @@ export type Config = {
   laboratoryLocationTag: string;
   laboratorySpecimenTypeConcept: string;
   laboratoryEncounterTypeUuid: string;
+  targetPatientDashboard: string;
 };

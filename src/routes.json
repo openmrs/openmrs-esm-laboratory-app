@@ -27,26 +27,12 @@
             }
         },
         {
-            "name": "laboratory-patient-chart-link",
-            "slot": "patient-chart-dashboard-slot",
-            "component": "laboratoryOrderDashboardLink",
-            "order": 13,
-            "meta": {
-                "path": "laboratory-orders",
-                "slot": "laboratory-orders-dashboard-slot",
-                "title": "Laboratory",
-                "columns": 1,
-                "layoutMode": "anchored"
-            }
-        },
-        {
-            "name": "laboratory-orders-summary",
-            "slot": "laboratory-orders-dashboard-slot",
-            "component": "laboratoryOrderComponent"
-        },
-        {
             "name": "add-to-worklist-dialog",
             "component": "addToWorklistDialog"
+        },
+        {
+            "name": "pickup-lab-request-modal",
+            "component": "pickupLabRequestModal"
         },
         {
             "name": "results-summary",
@@ -61,48 +47,26 @@
             "component": "sendEmailDialog"
         },
         {
-            "name": "review-item-dialog",
-            "component": "reviewItemDialog"
+            "name": "reject-lab-request-modal",
+            "component": "rejectLabRequestModal"
         },
         {
-            "name": "reject-order-dialog",
-            "component": "rejectOrderDialog"
-        },
-        {
-            "name": "worklist-panel-component",
+            "name": "inprogress-lab-requests-table",
             "slot": "lab-panels-slot",
-            "component": "worklistComponent",
+            "component": "inprogressLabRequestsTable",
             "meta": {
-                "name": "worklistPanelSlot",
-                "title": "Worklist"
+                "name": "inprogressPanel",
+                "title": "In progress"
             }
         },
         {
-            "name": "review-panel-component",
+            "name": "completed-lab-requests-table",
             "slot": "lab-panels-slot",
-            "component": "reviewComponent",
+            "component": "completedLabRequestsTable",
             "meta": {
-                "name": "reviewPanelSlot",
-                "title": "Review"
+                "name": "completedPanel",
+                "title": "Completed"
             }
-        },
-        {
-            "name": "approved-panel-component",
-            "slot": "lab-panels-slot",
-            "component": "approvedComponent",
-            "meta": {
-                "name": "approvedPanelSlot",
-                "title": "Approved"
-            }
-        },
-        {
-          "name": "rejected-panel-component",
-          "slot": "lab-panels-slot",
-          "component": "rejectedComponent",
-          "meta": {
-            "name": "rejectedPanelSlot",
-            "title": "Rejected"
-          }
         },
         {
             "name": "tests-ordered-tile-component",
@@ -150,22 +114,13 @@
           }
         },
         {
-            "name": "referred-tile-component",
-            "slot": "lab-tiles-slot",
-            "component": "referredTileComponent",
-            "meta": {
-                "name": "referredTileSlot",
-                "title": "Referred Tests"
-            }
-        },
-        {
-            "name": "pick-lab-request-button",
-            "component": "pickLabRequestButton",
+            "name": "pick-lab-request-action",
+            "component": "pickupLabRequestAction",
             "slot": "order-actions-slot"
         },
         {
-            "name": "reject-order-button",
-            "component": "rejectOrderButton",
+            "name": "reject-lab-request-action",
+            "component": "rejectLabRequestAction",
             "slot": "order-actions-slot"
         }
     ]
