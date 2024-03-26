@@ -12,6 +12,7 @@ const PickupLabRequestAction: React.FC<PickLabRequestActionMenuProps> = ({
   order,
 }) => {
   const { t } = useTranslation();
+  const unSupportedStatuses = ["IN_PROGRESS", "COMPLETED", "DECLINED"];
 
   const launchModal = useCallback(() => {
     const dispose = showModal("pickup-lab-request-modal", {
@@ -27,6 +28,7 @@ const PickupLabRequestAction: React.FC<PickLabRequestActionMenuProps> = ({
       style={{
         maxWidth: "100vw",
       }}
+      disabled={unSupportedStatuses.includes(order.fulfillerStatus)}
     />
   );
 };

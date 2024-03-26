@@ -32,26 +32,32 @@ export function useLabOrders(
   };
 }
 
-export function setFulfillerStatus(orderId: string, status: FulfillerStatus) {
+export function setFulfillerStatus(
+  orderId: string,
+  status: FulfillerStatus,
+  abortController: AbortController
+) {
   return openmrsFetch(`/ws/rest/v1/order/${orderId}/fulfillerdetails/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    // TODO: Use an AbortController
-    // signal: abortController.signal,
+    signal: abortController.signal,
     body: { fulfillerStatus: status },
   });
 }
 
-export function rejectLabOrder(orderId: string, comment: string) {
+export function rejectLabOrder(
+  orderId: string,
+  comment: string,
+  abortController: AbortController
+) {
   return openmrsFetch(`${restBaseUrl}/order/${orderId}/fulfillerdetails/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    // TODO: Use an AbortController
-    // signal: abortController.signal,
+    signal: abortController.signal,
     body: {
       fulfillerStatus: "DECLINED",
       fulfillerComment: comment,

@@ -4,7 +4,7 @@ import { ArrowLeft, Close } from "@carbon/react/icons";
 import { useLayoutType } from "@openmrs/esm-framework";
 import styles from "./overlay.scss";
 import { useTranslation } from "react-i18next";
-import { closeOverlay, useOverlay } from "./hook";
+import { closeOverlay, useOverlay } from "./store";
 
 const Overlay: React.FC = () => {
   const { header, component, isOverlayOpen } = useOverlay();

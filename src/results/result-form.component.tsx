@@ -1,12 +1,13 @@
 import React, { useMemo } from "react";
 import styles from "./result-form.scss";
-import { Button, InlineLoading, ModalBody, ModalFooter } from "@carbon/react";
+import { Button, Form, Stack, ButtonSet } from "@carbon/react";
 import { useTranslation } from "react-i18next";
-import { closeOverlay } from "../components/overlay/hook";
+import { closeOverlay } from "../components/overlay/store";
 import {
   ExtensionSlot,
   showNotification,
   showSnackbar,
+  useLayoutType,
   usePatient,
 } from "@openmrs/esm-framework";
 import {
@@ -16,6 +17,7 @@ import {
 import ResultFormField from "./result-form-field.component";
 import { useForm } from "react-hook-form";
 import { Order } from "@openmrs/esm-patient-common-lib";
+import Loader from "../components/loader/loader.component";
 
 interface ResultFormProps {
   patientUuid: string;
@@ -33,8 +35,8 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   } = useForm<{ testResult: string }>({
     defaultValues: {},
   });
-
-  const { patient, isLoading } = usePatient(patientUuid);
+  const isTablet = useLayoutType() === "tablet";
+  const { patient, isLoading: isLoadingPatient } = usePatient(patientUuid);
   const { concept, isLoading: isLoadingConcepts } = useGetOrderConceptByUuid(
     order.concept.uuid
   );
@@ -49,14 +51,8 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
     }
   }, [patient, patientUuid]);
 
-  if (isLoadingConcepts) {
-    return <div>Loading test details</div>;
-  }
-
   const onSubmit = (data, e) => {
     e.preventDefault();
-    // assign result to test order
-    const documentedValues = getValues();
     let obsValue = [];
 
     if (concept.set && concept.setMembers.length > 0) {
@@ -153,49 +149,41 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       }
     );
   };
+  if (isLoadingPatient || isLoadingConcepts) {
+    return <Loader />;
+  }
   return (
-    <>
-      <div className="">
-        <ModalBody>
-          {isLoading && (
-            <InlineLoading
-              className={styles.bannerLoading}
-              iconDescription="Loading"
-              description="Loading banner"
-              status="active"
-            />
-          )}
-          {patient && (
-            <ExtensionSlot name="patient-header-slot" state={bannerState} />
-          )}
-          {/* // we need to display test name for test panels */}
+    <Form className={styles.form}>
+      <Stack>
+        <ExtensionSlot name="patient-header-slot" state={bannerState} />
+      </Stack>
+      <Stack className={styles.container}>
+        <section>
           {concept.setMembers.length > 0 && <div>{concept.display}</div>}
           {concept && (
-            <section className={styles.section}>
-              <form>
-                <ResultFormField
-                  register={register}
-                  concept={concept}
-                  control={control}
-                  errors={errors}
-                />
-              </form>
-            </section>
+            <ResultFormField
+              register={register}
+              concept={concept}
+              control={control}
+              errors={errors}
+            />
           )}
-        </ModalBody>
-
-        <ModalFooter>
-          <Button
-            disabled={isSubmitting}
-            onClick={() => closeOverlay()}
-            kind="secondary"
-          >
-            {t("cancel", "Cancel")}
-          </Button>
-          <Button onClick={handleSubmit(onSubmit)}>Save test results</Button>
-        </ModalFooter>
-      </div>
-    </>
+        </section>
+      </Stack>
+      <ButtonSet className={isTablet ? styles.tablet : styles.desktop}>
+        <Button
+          className={styles.button}
+          disabled={isSubmitting}
+          onClick={() => closeOverlay()}
+          kind="secondary"
+        >
+          {t("cancel", "Cancel")}
+        </Button>
+        <Button className={styles.button} onClick={handleSubmit(onSubmit)}>
+          {t("save", "Save")}
+        </Button>
+      </ButtonSet>
+    </Form>
   );
 };
 

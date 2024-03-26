@@ -11,33 +11,37 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  Tile,
   Dropdown,
   TableToolbar,
   TableToolbarContent,
   Layer,
-  Tile,
   TableToolbarSearch,
 } from "@carbon/react";
 import { OverflowMenuVertical } from "@carbon/react/icons";
 import {
+  ConfigurableLink,
+  CustomOverflowMenu,
   ExtensionSlot,
   formatDate,
   parseDate,
+  useConfig,
   usePagination,
 } from "@openmrs/esm-framework";
 import styles from "./tests-ordered-table.component.scss";
 import { getStatusColor } from "../../utils";
 import { FulfillerStatus } from "../../types";
 import { useLabOrders } from "../../laboratory-resource";
-import OverflowMenuComponent from "../../components/overflow-menu/overflow-menu.component";
 
 const TestsOrderedTable: React.FC<{}> = () => {
   const { t } = useTranslation();
-
+  const { targetPatientDashboard } = useConfig();
+  const [filter, setFilter] = useState<FulfillerStatus>(null);
+  const { labOrders, isLoading } = useLabOrders(filter);
   const orderStatuses = [
     {
       value: null,
-      display: t("none", "None"),
+      display: t("all", "All"),
     },
     {
       value: "RECEIVED",
@@ -64,13 +68,8 @@ const TestsOrderedTable: React.FC<{}> = () => {
       display: t("declinedStatus", "DECLINED"),
     },
   ];
-
-  const [filter, setFilter] = useState<FulfillerStatus>(null);
-
-  const { labOrders, isLoading } = useLabOrders(filter);
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
-
   const {
     goTo,
     results: paginatedLabOrders,
@@ -85,15 +84,10 @@ const TestsOrderedTable: React.FC<{}> = () => {
       key: "orderNumber",
     },
     { id: "patient-name", header: t("patient", "Patient"), key: "patient" },
-    {
-      id: "accession-number",
-      header: t("accessionNumber", "Accession Number"),
-      key: "accessionNumber",
-    },
     { id: "test", header: t("test", "Test"), key: "test" },
     { id: "action", header: t("action", "Action"), key: "action" },
     { id: "status", header: t("status", "Status"), key: "status" },
-    { id: "orderer", header: t("orderer", "Orderer"), key: "orderer" },
+    { id: "orderer", header: t("orderedBy", "Ordered By"), key: "orderedBy" },
     { id: "urgency", header: t("urgency", "Urgency"), key: "urgency" },
     { id: "actions", header: t("actions", "Actions"), key: "actions" },
   ];
@@ -102,163 +96,162 @@ const TestsOrderedTable: React.FC<{}> = () => {
     setFilter(selectedItem.value);
 
   const tableRows = useMemo(() => {
-    return paginatedLabOrders.map((entry, index) => ({
-      ...entry,
-      id: entry?.uuid,
+    return paginatedLabOrders.map((order, index) => ({
+      id: order.uuid,
       date: (
         <span className={styles.singleLineDisplay}>
-          {formatDate(parseDate(entry?.dateActivated))}
+          {formatDate(parseDate(order.dateActivated))}
         </span>
       ),
-      patient: entry?.patient?.display.split("-")[1],
-      orderNumber: entry?.orderNumber,
-      accessionNumber: entry?.accessionNumber,
-      test: entry?.concept?.display,
-      action: entry?.action,
+      patient: (
+        <ConfigurableLink
+          to={`\${openmrsSpaBase}/patient/${order.patient?.uuid}/chart/${targetPatientDashboard}`}
+        >
+          {order.patient?.display.split("-")[1]}
+        </ConfigurableLink>
+      ),
+      orderNumber: order.orderNumber,
+      test: order.concept?.display,
+      action: order.action,
       status: (
         <span
           className={styles.statusContainer}
-          style={{ color: `${getStatusColor(entry?.fulfillerStatus)}` }}
+          style={{ color: `${getStatusColor(order.fulfillerStatus)}` }}
         >
-          {entry?.fulfillerStatus}
+          {order.fulfillerStatus}
         </span>
       ),
-      orderer: entry?.orderer?.display,
-      urgency: entry?.urgency,
+      orderedBy: order.orderer.display,
+      urgency: order.urgency,
       actions: (
-        <OverflowMenuComponent
+        <CustomOverflowMenu
           menuTitle={
-            <>
-              <OverflowMenuVertical
-                size={16}
-                style={{ marginLeft: "0.3rem" }}
-              />
-            </>
+            <OverflowMenuVertical size={16} style={{ marginLeft: "0.3rem" }} />
           }
         >
           <ExtensionSlot
             className={styles.menuLink}
             state={{ order: paginatedLabOrders[index] }}
-            name="order-actions-slot"
+            name="tests-ordered-actions-slot"
           />
-        </OverflowMenuComponent>
+        </CustomOverflowMenu>
       ),
     }));
-  }, [paginatedLabOrders]);
+  }, [paginatedLabOrders, targetPatientDashboard]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
   }
-
-  if (paginatedLabOrders?.length >= 0) {
-    return (
-      <DataTable
-        rows={tableRows}
-        headers={columns}
-        useZebraStyles
-        overflowMenuOnHover={true}
-      >
-        {({
-          rows,
-          headers,
-          getHeaderProps,
-          getTableProps,
-          getRowProps,
-          onInputChange,
-        }) => (
-          <TableContainer className={styles.tableContainer}>
-            <TableToolbar
-              style={{
-                position: "static",
-              }}
-            >
-              <TableToolbarContent>
-                <Layer style={{ margin: "5px" }}>
-                  <Dropdown
-                    id="orderStatus"
-                    initialSelectedItem={orderStatuses[0]}
-                    label=""
-                    titleText={
-                      t("filterOrdersByStatus", "Filter Orders by status") + ":"
-                    }
-                    type="inline"
-                    items={orderStatuses}
-                    onChange={handleOrderStatusChange}
-                    itemToString={(item) => item?.display}
-                  />
-                </Layer>
-                <Layer style={{ margin: "5px" }}>
-                  <TableToolbarSearch
-                    expanded
-                    onChange={onInputChange}
-                    placeholder={t("searchThisList", "Search this list")}
-                    size="sm"
-                  />
-                </Layer>
-              </TableToolbarContent>
-            </TableToolbar>
-            <Table {...getTableProps()} className={styles.activePatientsTable}>
-              <TableHead>
-                <TableRow>
-                  {headers.map((header) => (
-                    <TableHeader {...getHeaderProps({ header })}>
-                      {header.header?.content ?? header.header}
-                    </TableHeader>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row, index) => {
-                  return (
-                    <React.Fragment key={row.id}>
-                      <TableRow {...getRowProps({ row })} key={row.id}>
-                        {row.cells.map((cell) => (
-                          <TableCell key={cell.id}>
-                            {cell.value?.content ?? cell.value}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </React.Fragment>
-                  );
-                })}
-              </TableBody>
-            </Table>
-            {rows.length === 0 ? (
-              <div className={styles.tileContainer}>
-                <Tile className={styles.tile}>
-                  <div className={styles.tileContent}>
-                    <p className={styles.content}>
-                      {t(
-                        "noLabRequestsToDisplay",
-                        "No lab requests to display"
-                      )}
-                    </p>
-                  </div>
-                </Tile>
-              </div>
-            ) : null}
-            <Pagination
-              forwardText="Next page"
-              backwardText="Previous page"
-              page={currentPage}
-              pageSize={currentPageSize}
-              pageSizes={pageSizes}
-              totalItems={labOrders?.length}
-              className={styles.pagination}
-              onChange={({ pageSize, page }) => {
-                if (pageSize !== currentPageSize) {
-                  setPageSize(pageSize);
-                }
-                if (page !== currentPage) {
-                  goTo(page);
-                }
-              }}
-            />
-          </TableContainer>
-        )}
-      </DataTable>
-    );
-  }
+  return (
+    <DataTable
+      rows={tableRows}
+      headers={columns}
+      useZebraStyles
+      overflowMenuOnHover={true}
+    >
+      {({
+        rows,
+        headers,
+        getHeaderProps,
+        getTableProps,
+        getRowProps,
+        onInputChange,
+      }) => (
+        <TableContainer className={styles.tableContainer}>
+          <TableToolbar
+            style={{
+              position: "static",
+            }}
+          >
+            <TableToolbarContent>
+              <Layer style={{ margin: "5px" }}>
+                <Dropdown
+                  id="orderStatus"
+                  initialSelectedItem={
+                    filter
+                      ? orderStatuses.find((status) => status.value === filter)
+                      : orderStatuses[0]
+                  }
+                  titleText={
+                    t("filterOrdersByStatus", "Filter orders by status") + ":"
+                  }
+                  type="inline"
+                  items={orderStatuses}
+                  onChange={handleOrderStatusChange}
+                  itemToString={(item) => item?.display}
+                />
+              </Layer>
+              <Layer style={{ margin: "5px" }}>
+                <TableToolbarSearch
+                  expanded
+                  onChange={onInputChange}
+                  placeholder={t("searchThisList", "Search this list")}
+                  size="sm"
+                />
+              </Layer>
+            </TableToolbarContent>
+          </TableToolbar>
+          <Table {...getTableProps()} className={styles.activePatientsTable}>
+            <TableHead>
+              <TableRow>
+                {headers.map((header) => (
+                  <TableHeader {...getHeaderProps({ header })}>
+                    {header.header?.content ?? header.header}
+                  </TableHeader>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row, index) => {
+                return (
+                  <React.Fragment key={row.id}>
+                    <TableRow {...getRowProps({ row })} key={row.id}>
+                      {row.cells.map((cell) => (
+                        <TableCell key={cell.id}>
+                          {cell.value?.content ?? cell.value}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </React.Fragment>
+                );
+              })}
+            </TableBody>
+          </Table>
+          {rows.length === 0 ? (
+            <div className={styles.tileContainer}>
+              <Tile className={styles.tile}>
+                <div className={styles.tileContent}>
+                  <p className={styles.content}>
+                    {t(
+                      "noLabRequestsFoundCheckFilters",
+                      "No lab requests found. Please check your filters and try again."
+                    )}
+                  </p>
+                </div>
+              </Tile>
+            </div>
+          ) : null}
+          <Pagination
+            forwardText="Next page"
+            backwardText="Previous page"
+            page={currentPage}
+            pageSize={currentPageSize}
+            pageSizes={pageSizes}
+            totalItems={labOrders?.length}
+            className={styles.pagination}
+            onChange={({ pageSize, page }) => {
+              if (pageSize !== currentPageSize) {
+                setPageSize(pageSize);
+              }
+              if (page !== currentPage) {
+                goTo(page);
+              }
+            }}
+          />
+        </TableContainer>
+      )}
+    </DataTable>
+  );
 };
 
 export default TestsOrderedTable;

@@ -1,7 +1,6 @@
 {
     "$schema": "https://json.openmrs.org/routes.schema.json",
     "backendDependencies": {
-        "fhir2": ">=1.2",
         "webservices.rest": "^2.24.0"
     },
     "pages": [
@@ -27,24 +26,8 @@
             }
         },
         {
-            "name": "add-to-worklist-dialog",
-            "component": "addToWorklistDialog"
-        },
-        {
             "name": "pickup-lab-request-modal",
             "component": "pickupLabRequestModal"
-        },
-        {
-            "name": "results-summary",
-            "component": "resultsSummaryWorkSpace"
-        },
-        {
-            "name": "edit-results-dialog",
-            "component": "editResultsDialog"
-        },
-        {
-            "name": "send-email-dialog",
-            "component": "sendEmailDialog"
         },
         {
             "name": "reject-lab-request-modal",
@@ -71,57 +54,49 @@
         {
             "name": "tests-ordered-tile-component",
             "slot": "lab-tiles-slot",
-            "component": "testOrderedTileComponent",
+            "component": "testOrderedTile",
             "meta": {
                 "name": "testsOrderedTileSlot",
                 "title": "Ordered tests"
             }
         },
         {
-            "name": "referred-panel-component",
-            "slot": "lab-panels-slot",
-            "component": "referredTestComponent",
+            "name": "completed-tile-component",
+            "slot": "lab-tiles-slot",
+            "component": "completedTile",
             "meta": {
                 "name": "referredPanleSlot",
                 "title": "Referred Tests"
             }
         },
-      {
-        "name": "worklist-tile-component",
-        "slot": "lab-tiles-slot",
-        "component": "worklistTileComponent",
-        "meta": {
-          "name": "worklisTileSlot",
-          "title": "Worklist"
-        }
-      },
         {
-            "name": "completed-tile-component",
+            "name": "worklist-tile-component",
             "slot": "lab-tiles-slot",
-            "component": "completedTileComponent",
+            "component": "worklistTile",
             "meta": {
-                "name": "completedTileSlot",
-                "title": "Completed"
+                "name": "worklisTileSlot",
+                "title": "Worklist"
             }
-        },
-        {
-          "name": "rejected-tile-component",
-          "slot": "lab-tiles-slot",
-          "component": "rejectedTileComponent",
-          "meta": {
-            "name": "rejectedTileSlot",
-            "title": "Rejected Tests"
-          }
         },
         {
             "name": "pick-lab-request-action",
             "component": "pickupLabRequestAction",
-            "slot": "order-actions-slot"
+            "slot": "tests-ordered-actions-slot"
         },
         {
-            "name": "reject-lab-request-action",
+            "name": "reject-lab-request-tests-ordered-action",
             "component": "rejectLabRequestAction",
-            "slot": "order-actions-slot"
+            "slot": "tests-ordered-actions-slot"
+        },
+        {
+            "name": "add-lab-request-results-action",
+            "component": "addLabRequestResultsAction",
+            "slot": "inprogress-tests-actions-slot"
+        },
+        {
+            "name": "reject-lab-request-worklist-action",
+            "component": "rejectLabRequestAction",
+            "slot": "inprogress-tests-actions-slot"
         }
     ]
 }

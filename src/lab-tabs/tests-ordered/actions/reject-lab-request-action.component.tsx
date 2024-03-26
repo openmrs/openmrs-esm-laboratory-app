@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { OverflowMenuItem, OverflowMenu } from "@carbon/react";
+import { OverflowMenuItem } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import { showModal } from "@openmrs/esm-framework";
 import { Order } from "@openmrs/esm-patient-common-lib";

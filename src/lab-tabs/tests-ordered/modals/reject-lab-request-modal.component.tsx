@@ -10,7 +10,11 @@ import {
 } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import styles from "./reject-lab-request-modal.scss";
-import { showNotification, showSnackbar } from "@openmrs/esm-framework";
+import {
+  showNotification,
+  showSnackbar,
+  useAbortController,
+} from "@openmrs/esm-framework";
 import { Order } from "@openmrs/esm-patient-common-lib";
 import { rejectLabOrder } from "../../../laboratory-resource";
 
@@ -25,11 +29,12 @@ const RejectLabRequestModal: React.FC<RejectLabRequestModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const [fulfillerComment, setFulfillerComment] = useState("");
+  const abortController = useAbortController();
 
   const handleRejectOrder = async (event) => {
     event.preventDefault();
 
-    rejectLabOrder(order.uuid, fulfillerComment).then(
+    rejectLabOrder(order.uuid, fulfillerComment, abortController).then(
       (resp) => {
         showSnackbar({
           isLowContrast: true,

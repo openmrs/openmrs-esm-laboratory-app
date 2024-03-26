@@ -1,23 +1,51 @@
 @use '@carbon/styles/scss/spacing';
 @use '@carbon/styles/scss/type';
+@import '~@openmrs/esm-styleguide/src/vars';
 
+.container {
+  margin: spacing.$spacing-05;
 
-section {
-  margin: spacing.$spacing-03;
+  & section {
+    margin-bottom: calc(100vh - 27rem);
+  }
 }
 
-.sectionTitle {
-  margin-bottom: spacing.$spacing-04;
+.button {
+  height: 4rem;
+  display: flex;
+  align-content: flex-start;
+  align-items: baseline;
+  min-width: 50%;
+
+  :global(.cds--inline-loading) {
+    min-height: 1rem !important;
+  }
+
+  :global(.cds--inline-loading__text) {
+    font-size: unset !important;
+  }
 }
 
-.modalBody {
-  padding-bottom: spacing.$spacing-05;
+.tablet {
+  padding: 1.5rem spacing.$spacing-05;
+  background-color: $ui-02;
 }
 
-.textInput {
-  margin: 5px;
+.desktop {
+  padding: 0rem;
 }
 
-.errorDiv {
-  color: red;
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100vh - 6rem);
+}
+
+:global(.omrs-breakpoint-lt-desktop) .form {
+  background-color: #ededed;
+}
+
+:global(.omrs-breakpoint-gt-tablet) .form {
+  background-color: $ui-02;
 }

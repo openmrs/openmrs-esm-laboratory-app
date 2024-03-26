@@ -1,10 +1,11 @@
-import { defineConfigSchema, getSyncLifecycle } from "@openmrs/esm-framework";
+import {
+  defineConfigSchema,
+  getAsyncLifecycle,
+  getSyncLifecycle,
+} from "@openmrs/esm-framework";
 import { configSchema } from "./config-schema";
 import { createHomeDashboardLink } from "./components/create-dashboard-link.component";
 import rootComponent from "./root.component";
-import worklistTile from "./lab-tiles/inprogress-lab-requests-tile.component";
-import completedTile from "./lab-tiles/completed-lab-requests-tile.component";
-import testsOrdered from "./lab-tiles/all-lab-requests-tile.component";
 
 const moduleName = "@openmrs/esm-laboratory-app";
 
@@ -30,6 +31,8 @@ export const laboratoryDashboardLink = getSyncLifecycle(
   }),
   options
 );
+
+// Modals
 
 export const pickupLabRequestModal = getAsyncLifecycle(
   () =>
@@ -60,6 +63,31 @@ export const completedLabRequestsTable = getAsyncLifecycle(
   options
 );
 
+export const worklistTile = getAsyncLifecycle(
+  () => import("./lab-tiles/inprogress-lab-requests-tile.component"),
+  options
+);
+
+export const completedTile = getAsyncLifecycle(
+  () => import("./lab-tiles/completed-lab-requests-tile.component"),
+  options
+);
+
+export const testOrderedTile = getAsyncLifecycle(
+  () => import("./lab-tiles/all-lab-requests-tile.component"),
+  options
+);
+
+// Actions
+
+export const addLabRequestResultsAction = getAsyncLifecycle(
+  () =>
+    import(
+      "./lab-tabs/in-progress/actions/add-lab-request-results-action.component"
+    ),
+  options
+);
+
 export const pickupLabRequestAction = getAsyncLifecycle(
   () =>
     import(
@@ -75,14 +103,6 @@ export const rejectLabRequestAction = getAsyncLifecycle(
     ),
   options
 );
-
-export const worklistTileComponent = getSyncLifecycle(worklistTile, options);
-
-export const completedTileComponent = getSyncLifecycle(completedTile, options);
-
-export const testOrderedTileComponent = getSyncLifecycle(testsOrdered, options);
-
-export const rejectedTileComponent = getSyncLifecycle(rejectedTile, options);
 
 export function startupApp() {
   defineConfigSchema(moduleName, configSchema);
