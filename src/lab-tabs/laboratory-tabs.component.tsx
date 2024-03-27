@@ -7,7 +7,6 @@ import {
 import { Tab, Tabs, TabList, TabPanels, TabPanel } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import styles from "./laboratory-tabs.scss";
-import TestsOrderedTable from "./tests-ordered/tests-ordered-table.component";
 import { ComponentContext } from "@openmrs/esm-framework/src/internal";
 
 const labPanelSlot = "lab-panels-slot";
@@ -32,9 +31,6 @@ const LaboratoryOrdersTabs: React.FC = () => {
             aria-label="Laboratory tabs"
             contained
           >
-            <Tab style={{ width: "150px" }}>
-              {t("testedOrders", "Tests ordered")}
-            </Tab>
             {tabExtensions
               .filter((extension) => Object.keys(extension.meta).length > 0)
               .map((extension, index) => {
@@ -60,10 +56,6 @@ const LaboratoryOrdersTabs: React.FC = () => {
               })}
           </TabList>
           <TabPanels>
-            {/* Should we move to loading this tab as an Extension? */}
-            <TabPanel style={{ padding: 0 }}>
-              <TestsOrderedTable />
-            </TabPanel>
             {tabExtensions
               .filter((extension) => Object.keys(extension.meta).length > 0)
               .map((extension, index) => {

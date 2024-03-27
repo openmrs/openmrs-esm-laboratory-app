@@ -12,7 +12,7 @@ const RejectLabRequestAction: React.FC<RejectLabRequestActionProps> = ({
   order,
 }) => {
   const { t } = useTranslation();
-
+  const unSupportedStatuses = ["COMPLETED", "DECLINED"];
   const launchRejectLabRequestModal = useCallback(() => {
     const dispose = showModal("reject-lab-request-modal", {
       closeModal: () => dispose(),
@@ -28,6 +28,7 @@ const RejectLabRequestAction: React.FC<RejectLabRequestActionProps> = ({
         maxWidth: "100vw",
       }}
       isDelete={true}
+      disabled={unSupportedStatuses.includes(order.fulfillerStatus)}
       hasDivider
     />
   );

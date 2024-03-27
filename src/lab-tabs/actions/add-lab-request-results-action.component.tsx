@@ -1,17 +1,15 @@
 import { Order } from "@openmrs/esm-patient-common-lib";
 import React from "react";
 import { OverflowMenuItem } from "@carbon/react";
-import { launchOverlay } from "../../../components/overlay/store";
-import ResultForm from "../../../results/result-form.component";
+import { launchOverlay } from "../../components/overlay/store";
+import ResultForm from "../../results/result-form.component";
 import { useTranslation } from "react-i18next";
 
 interface AddLabRequestResultsActionProps {
   order: Order;
-  patientUuid: string;
 }
 const AddLabRequestResultsAction: React.FC<AddLabRequestResultsActionProps> = ({
   order,
-  patientUuid,
 }) => {
   const { t } = useTranslation();
 
@@ -21,7 +19,7 @@ const AddLabRequestResultsAction: React.FC<AddLabRequestResultsActionProps> = ({
       onClick={() => {
         launchOverlay(
           t("labResultsForm", "Lab Results Form"),
-          <ResultForm patientUuid={patientUuid} order={order} />
+          <ResultForm patientUuid={order.patient.uuid} order={order} />
         );
       }}
       style={{

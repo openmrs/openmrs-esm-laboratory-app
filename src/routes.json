@@ -34,6 +34,15 @@
             "component": "rejectLabRequestModal"
         },
         {
+            "name": "all-lab-requests-table",
+            "slot": "lab-panels-slot",
+            "component": "allLabRequestsTable",
+            "meta": {
+                "name": "inprogressPanel",
+                "title": "Tests ordered"
+            }
+        },
+        {
             "name": "inprogress-lab-requests-table",
             "slot": "lab-panels-slot",
             "component": "inprogressLabRequestsTable",

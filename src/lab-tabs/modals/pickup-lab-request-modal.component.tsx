@@ -1,7 +1,7 @@
 import { Order } from "@openmrs/esm-patient-common-lib";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { setFulfillerStatus, useLabOrders } from "../../../laboratory-resource";
+import { setFulfillerStatus, useLabOrders } from "../../laboratory-resource";
 import {
   showNotification,
   showSnackbar,

@@ -40,7 +40,6 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   const { concept, isLoading: isLoadingConcepts } = useGetOrderConceptByUuid(
     order.concept.uuid
   );
-
   const bannerState = useMemo(() => {
     if (patient) {
       return {

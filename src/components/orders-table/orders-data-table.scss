@@ -8,6 +8,10 @@
   margin: 0 spacing.$spacing-05;
   padding: 0;
 
+  :global(.cds--data-table-content) {
+    overflow-x: unset;
+  }
+
   a {
     text-decoration: none;
   }
@@ -20,13 +24,29 @@
     background-color: $ui-03;
   }
 
+  :global(.cds--table-toolbar) {
+    position: static;
+  }
+
+  :global(.cds--overflow-menu) {
+    width: 75%;
+  }
+
+  section {
+    margin: 0.5rem;
+  }
+
   .toolbarContent {
     height: spacing.$spacing-07;
     margin-bottom: spacing.$spacing-02;
   }
 }
 
-.activePatientsTable tr:last-of-type {
+.toolbarItem {
+  margin: 5px 10px;
+}
+
+.tableWrapper tr:last-of-type {
   td {
     border-bottom: none;
   }
@@ -54,3 +74,8 @@
   color: $text-02;
   margin-bottom: 0.5rem;
 }
+
+.singleLineDisplay {
+  white-space: nowrap;
+}
+

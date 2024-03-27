@@ -19,10 +19,11 @@ export function useLabOrders(
   url = excludeCanceled
     ? `${url}&excludeCanceledAndExpired=true&excludeDiscontinueOrders=true`
     : url;
-
+  // The usage of SWR's mutator seems to only suffice for cases where we don't apply a status filter
+  const refreshInterval = status ? 5000 : null;
   const { data, error, mutate, isLoading } = useSWR<{
     data: { results: Array<Order> };
-  }>(url, openmrsFetch);
+  }>(url, openmrsFetch, { refreshInterval });
 
   return {
     labOrders: data?.data ? data.data.results : [],

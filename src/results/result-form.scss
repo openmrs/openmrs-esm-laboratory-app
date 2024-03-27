@@ -4,10 +4,6 @@
 
 .container {
   margin: spacing.$spacing-05;
-
-  & section {
-    margin-bottom: calc(100vh - 27rem);
-  }
 }
 
 .button {
@@ -29,10 +25,12 @@
 .tablet {
   padding: 1.5rem spacing.$spacing-05;
   background-color: $ui-02;
+  margin-top: auto;
 }
 
 .desktop {
   padding: 0rem;
+  margin-top: auto;
 }
 
 .form {

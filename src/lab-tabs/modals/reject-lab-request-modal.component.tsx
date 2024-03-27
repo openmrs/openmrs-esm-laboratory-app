@@ -7,6 +7,7 @@ import {
   ModalFooter,
   ModalHeader,
   TextArea,
+  Layer,
 } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import styles from "./reject-lab-request-modal.scss";
@@ -16,7 +17,7 @@ import {
   useAbortController,
 } from "@openmrs/esm-framework";
 import { Order } from "@openmrs/esm-patient-common-lib";
-import { rejectLabOrder } from "../../../laboratory-resource";
+import { rejectLabOrder } from "../../laboratory-resource";
 
 interface RejectLabRequestModalProps {
   order: Order;
@@ -30,12 +31,15 @@ const RejectLabRequestModal: React.FC<RejectLabRequestModalProps> = ({
   const { t } = useTranslation();
   const [fulfillerComment, setFulfillerComment] = useState("");
   const abortController = useAbortController();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleRejectOrder = async (event) => {
     event.preventDefault();
-
+    setIsSubmitting(true);
     rejectLabOrder(order.uuid, fulfillerComment, abortController).then(
       (resp) => {
+        setIsSubmitting(false);
+        closeModal();
         showSnackbar({
           isLowContrast: true,
           title: t("rejectLabRequestTitle", "Lab Request Rejected"),
@@ -45,9 +49,9 @@ const RejectLabRequestModal: React.FC<RejectLabRequestModalProps> = ({
             `You have successfully rejected a lab request with Order Number: ${order.orderNumber}.`
           ),
         });
-        closeModal();
       },
       (err) => {
+        setIsSubmitting(false);
         showNotification({
           title: t(`errorRejectingRequest', 'Error Rejecting a lab request.`),
           kind: "error",
@@ -63,21 +67,19 @@ const RejectLabRequestModal: React.FC<RejectLabRequestModalProps> = ({
       <Form onSubmit={handleRejectOrder}>
         <ModalHeader
           closeModal={closeModal}
-          title={t("rejectLabRequest", "Reject Lab Request")}
+          title={`${t("rejectLabRequest", "Reject Lab Request")} [${
+            order.orderNumber
+          }]`}
         />
         <ModalBody>
           <div className={styles.modalBody}>
-            <section className={styles.section}>
-              <h5 className={styles.section}>
-                {/* What happens if the `accessionNumber` and `fulfillerStatus` are null? */}
-                {order?.accessionNumber} &nbsp; · &nbsp;{order?.fulfillerStatus}{" "}
-                &nbsp; · &nbsp;
-                {order?.orderNumber}
-                &nbsp;
-              </h5>
-            </section>
+            <Layer>
+              <p className={styles.section}>
+                {`${t("testType", "Test Type")}: ${order.concept.display}`}
+              </p>
+            </Layer>
             <br />
-            <section className={styles.section}>
+            <Layer>
               <TextArea
                 labelText={t("fulfillerComment", "Fulfiller Comment")}
                 id="commentField"
@@ -85,14 +87,14 @@ const RejectLabRequestModal: React.FC<RejectLabRequestModalProps> = ({
                 enableCounter
                 onChange={(e) => setFulfillerComment(e.target.value)}
               />
-            </section>
+            </Layer>
           </div>
         </ModalBody>
         <ModalFooter>
           <Button kind="secondary" onClick={closeModal}>
             {t("cancel", "Cancel")}
           </Button>
-          <Button kind="danger" type="submit">
+          <Button kind="danger" type="submit" disabled={isSubmitting}>
             {t("reject", "Reject")}
           </Button>
         </ModalFooter>

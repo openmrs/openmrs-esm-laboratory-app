@@ -28,16 +28,30 @@ import {
   useConfig,
   usePagination,
 } from "@openmrs/esm-framework";
-import styles from "./tests-ordered-table.component.scss";
+import styles from "./orders-data-table.scss";
 import { getStatusColor } from "../../utils";
 import { FulfillerStatus } from "../../types";
 import { useLabOrders } from "../../laboratory-resource";
 
-const TestsOrderedTable: React.FC<{}> = () => {
+interface OrdersDataTableProps {
+  useFilter?: boolean;
+  actionsSlotName?: string;
+  excludeColumns?: string[];
+  fulfillerStatus?: FulfillerStatus;
+}
+
+const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
+  useFilter = false,
+  actionsSlotName,
+  excludeColumns = [],
+  fulfillerStatus,
+}) => {
   const { t } = useTranslation();
   const { targetPatientDashboard } = useConfig();
   const [filter, setFilter] = useState<FulfillerStatus>(null);
-  const { labOrders, isLoading } = useLabOrders(filter);
+  const { labOrders, isLoading } = useLabOrders(
+    useFilter ? filter : fulfillerStatus
+  );
   const orderStatuses = [
     {
       value: null,
@@ -68,6 +82,24 @@ const TestsOrderedTable: React.FC<{}> = () => {
       display: t("declinedStatus", "DECLINED"),
     },
   ];
+
+  const columns = useMemo(() => {
+    return [
+      { key: "date", header: t("date", "Date") },
+      {
+        key: "orderNumber",
+        header: t("orderNumber", "Order Number"),
+      },
+      { key: "patient", header: t("patient", "Patient") },
+      { key: "test", header: t("test", "Test") },
+      { key: "action", header: t("action", "Action") },
+      { key: "status", header: t("status", "Status") },
+      { key: "orderedBy", header: t("orderedBy", "Ordered By") },
+      { key: "urgency", header: t("urgency", "Urgency") },
+      { key: "actions", header: t("actions", "Actions") },
+    ].filter((column) => !excludeColumns.includes(column.key));
+  }, [excludeColumns, t]);
+
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
   const {
@@ -75,22 +107,6 @@ const TestsOrderedTable: React.FC<{}> = () => {
     results: paginatedLabOrders,
     currentPage,
   } = usePagination(labOrders, currentPageSize);
-
-  const columns = [
-    { id: "date", header: t("date", "Date"), key: "date" },
-    {
-      id: "order-number",
-      header: t("orderNumber", "Order Number"),
-      key: "orderNumber",
-    },
-    { id: "patient-name", header: t("patient", "Patient"), key: "patient" },
-    { id: "test", header: t("test", "Test"), key: "test" },
-    { id: "action", header: t("action", "Action"), key: "action" },
-    { id: "status", header: t("status", "Status"), key: "status" },
-    { id: "orderer", header: t("orderedBy", "Ordered By"), key: "orderedBy" },
-    { id: "urgency", header: t("urgency", "Urgency"), key: "urgency" },
-    { id: "actions", header: t("actions", "Actions"), key: "actions" },
-  ];
 
   const handleOrderStatusChange = ({ selectedItem }) =>
     setFilter(selectedItem.value);
@@ -121,23 +137,19 @@ const TestsOrderedTable: React.FC<{}> = () => {
           {order.fulfillerStatus}
         </span>
       ),
-      orderedBy: order.orderer.display,
+      orderedBy: order.orderer.display.split("-")[1],
       urgency: order.urgency,
       actions: (
-        <CustomOverflowMenu
-          menuTitle={
-            <OverflowMenuVertical size={16} style={{ marginLeft: "0.3rem" }} />
-          }
-        >
+        <CustomOverflowMenu menuTitle={<OverflowMenuVertical />}>
           <ExtensionSlot
             className={styles.menuLink}
             state={{ order: paginatedLabOrders[index] }}
-            name="tests-ordered-actions-slot"
+            name={actionsSlotName}
           />
         </CustomOverflowMenu>
       ),
     }));
-  }, [paginatedLabOrders, targetPatientDashboard]);
+  }, [paginatedLabOrders, targetPatientDashboard, actionsSlotName]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
@@ -158,30 +170,30 @@ const TestsOrderedTable: React.FC<{}> = () => {
         onInputChange,
       }) => (
         <TableContainer className={styles.tableContainer}>
-          <TableToolbar
-            style={{
-              position: "static",
-            }}
-          >
+          <TableToolbar>
             <TableToolbarContent>
-              <Layer style={{ margin: "5px" }}>
-                <Dropdown
-                  id="orderStatus"
-                  initialSelectedItem={
-                    filter
-                      ? orderStatuses.find((status) => status.value === filter)
-                      : orderStatuses[0]
-                  }
-                  titleText={
-                    t("filterOrdersByStatus", "Filter orders by status") + ":"
-                  }
-                  type="inline"
-                  items={orderStatuses}
-                  onChange={handleOrderStatusChange}
-                  itemToString={(item) => item?.display}
-                />
-              </Layer>
-              <Layer style={{ margin: "5px" }}>
+              {useFilter && (
+                <Layer className={styles.toolbarItem}>
+                  <Dropdown
+                    id="orderStatusFilter"
+                    initialSelectedItem={
+                      filter
+                        ? orderStatuses.find(
+                            (status) => status.value === filter
+                          )
+                        : orderStatuses[0]
+                    }
+                    titleText={
+                      t("filterOrdersByStatus", "Filter orders by status") + ":"
+                    }
+                    type="inline"
+                    items={orderStatuses}
+                    onChange={handleOrderStatusChange}
+                    itemToString={(item) => item?.display}
+                  />
+                </Layer>
+              )}
+              <Layer className={styles.toolbarItem}>
                 <TableToolbarSearch
                   expanded
                   onChange={onInputChange}
@@ -191,7 +203,7 @@ const TestsOrderedTable: React.FC<{}> = () => {
               </Layer>
             </TableToolbarContent>
           </TableToolbar>
-          <Table {...getTableProps()} className={styles.activePatientsTable}>
+          <Table {...getTableProps()} className={styles.tableWrapper}>
             <TableHead>
               <TableRow>
                 {headers.map((header) => (
@@ -254,4 +266,4 @@ const TestsOrderedTable: React.FC<{}> = () => {
   );
 };
 
-export default TestsOrderedTable;
+export default OrdersDataTable;

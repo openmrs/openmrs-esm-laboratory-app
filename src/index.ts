@@ -35,31 +35,36 @@ export const laboratoryDashboardLink = getSyncLifecycle(
 // Modals
 
 export const pickupLabRequestModal = getAsyncLifecycle(
-  () =>
-    import(
-      "./lab-tabs/tests-ordered/modals/pickup-lab-request-modal.component"
-    ),
+  () => import("./lab-tabs/modals/pickup-lab-request-modal.component"),
   options
 );
 
 export const rejectLabRequestModal = getAsyncLifecycle(
-  () =>
-    import(
-      "./lab-tabs/tests-ordered/modals/reject-lab-request-modal.component"
-    ),
+  () => import("./lab-tabs/modals/reject-lab-request-modal.component"),
   options
 );
 
 // Tables and tiles
 
+export const allLabRequestsTable = getAsyncLifecycle(
+  () =>
+    import("./lab-tabs/data-table-extensions/tests-ordered-table.extension"),
+  options
+);
+
 export const inprogressLabRequestsTable = getAsyncLifecycle(
   () =>
-    import("./lab-tabs/in-progress/in-progress-lab-requests-table.component"),
+    import(
+      "./lab-tabs/data-table-extensions/in-progress-lab-requests-table.extension"
+    ),
   options
 );
 
 export const completedLabRequestsTable = getAsyncLifecycle(
-  () => import("./lab-tabs/completed/completed-lab-requests-table.component"),
+  () =>
+    import(
+      "./lab-tabs/data-table-extensions/completed-lab-requests-table.extension"
+    ),
   options
 );
 
@@ -81,26 +86,17 @@ export const testOrderedTile = getAsyncLifecycle(
 // Actions
 
 export const addLabRequestResultsAction = getAsyncLifecycle(
-  () =>
-    import(
-      "./lab-tabs/in-progress/actions/add-lab-request-results-action.component"
-    ),
+  () => import("./lab-tabs/actions/add-lab-request-results-action.component"),
   options
 );
 
 export const pickupLabRequestAction = getAsyncLifecycle(
-  () =>
-    import(
-      "./lab-tabs/tests-ordered/actions/pickup-lab-request-action.component"
-    ),
+  () => import("./lab-tabs/actions/pickup-lab-request-action.component"),
   options
 );
 
 export const rejectLabRequestAction = getAsyncLifecycle(
-  () =>
-    import(
-      "./lab-tabs/tests-ordered/actions/reject-lab-request-action.component"
-    ),
+  () => import("./lab-tabs/actions/reject-lab-request-action.component"),
   options
 );
 
