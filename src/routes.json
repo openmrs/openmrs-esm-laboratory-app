@@ -70,21 +70,21 @@
             }
         },
         {
-            "name": "completed-tile-component",
-            "slot": "lab-tiles-slot",
-            "component": "completedTile",
-            "meta": {
-                "name": "referredPanleSlot",
-                "title": "Referred Tests"
-            }
-        },
-        {
             "name": "worklist-tile-component",
             "slot": "lab-tiles-slot",
             "component": "worklistTile",
             "meta": {
                 "name": "worklisTileSlot",
                 "title": "Worklist"
+            }
+        },
+        {
+            "name": "completed-tile-component",
+            "slot": "lab-tiles-slot",
+            "component": "completedTile",
+            "meta": {
+                "name": "referredPanleSlot",
+                "title": "Referred Tests"
             }
         },
         {
