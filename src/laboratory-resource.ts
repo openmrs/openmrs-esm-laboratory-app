@@ -38,7 +38,7 @@ export function setFulfillerStatus(
   status: FulfillerStatus,
   abortController: AbortController
 ) {
-  return openmrsFetch(`/ws/rest/v1/order/${orderId}/fulfillerdetails/`, {
+  return openmrsFetch(`{$restBaseUrl}/order/${orderId}/fulfillerdetails/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
