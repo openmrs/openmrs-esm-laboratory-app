@@ -42,7 +42,6 @@ const LaboratoryOrdersTabs: React.FC = () => {
                       key={index}
                       className={styles.tab}
                       id={`${title || index}-tab`}
-                      style={{ width: "150px" }}
                     >
                       {t(title, {
                         ns: extension.moduleName,

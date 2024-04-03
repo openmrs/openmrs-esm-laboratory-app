@@ -244,8 +244,8 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
             </div>
           ) : null}
           <Pagination
-            forwardText="Next page"
-            backwardText="Previous page"
+            forwardText={t("nextPage", "Next page")}
+            backwardText={t("previousPage", "Previous page")}
             page={currentPage}
             pageSize={currentPageSize}
             pageSizes={pageSizes}

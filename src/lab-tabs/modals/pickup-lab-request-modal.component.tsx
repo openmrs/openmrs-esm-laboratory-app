@@ -35,15 +35,15 @@ const PickupLabRequestModal: React.FC<PickupLabRequestModal> = ({
           title: t("pickedAnOrder", "Picked an order"),
           kind: "success",
           subtitle: t(
-            "pickSuccessfully",
-            "You have successfully picked an Order"
+            "orderPickedSuccessfully",
+            "You have successfully picked an order"
           ),
         });
       },
       (error) => {
         setIsSubmitting(false);
         showNotification({
-          title: t(`errorPicking an order', 'Error Picking an Order`),
+          title: t(`errorPickingAnOrder', 'Error picking an order`),
           kind: "error",
           critical: true,
           description: error?.message,

@@ -3,6 +3,7 @@ import { OverflowMenuItem } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import { showModal } from "@openmrs/esm-framework";
 import { Order } from "@openmrs/esm-patient-common-lib";
+import styles from "./actions.scss";
 
 interface RejectLabRequestActionProps {
   order: Order;
@@ -24,9 +25,7 @@ const RejectLabRequestAction: React.FC<RejectLabRequestActionProps> = ({
     <OverflowMenuItem
       itemText={t("rejectLabRequest", "Reject Lab Request")}
       onClick={launchRejectLabRequestModal}
-      style={{
-        maxWidth: "100vw",
-      }}
+      className={styles.menuItem}
       isDelete={true}
       disabled={unSupportedStatuses.includes(order.fulfillerStatus)}
       hasDivider

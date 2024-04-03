@@ -4,6 +4,7 @@ import { OverflowMenuItem } from "@carbon/react";
 import { launchOverlay } from "../../components/overlay/store";
 import ResultForm from "../../results/result-form.component";
 import { useTranslation } from "react-i18next";
+import styles from "./actions.scss";
 
 interface AddLabRequestResultsActionProps {
   order: Order;
@@ -22,9 +23,7 @@ const AddLabRequestResultsAction: React.FC<AddLabRequestResultsActionProps> = ({
           <ResultForm patientUuid={order.patient.uuid} order={order} />
         );
       }}
-      style={{
-        maxWidth: "100vw",
-      }}
+      className={styles.menuItem}
     />
   );
 };

@@ -26,14 +26,11 @@
 
   :global(.cds--table-toolbar) {
     position: static;
+    margin: 0.5rem;
   }
 
   :global(.cds--overflow-menu) {
     width: 75%;
-  }
-
-  section {
-    margin: 0.5rem;
   }
 
   .toolbarContent {
