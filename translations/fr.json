@@ -22,6 +22,7 @@
   "laboratory": "Laboratory",
   "labResultsForm": "Lab Results Form",
   "loading": "Chargement",
+  "newStatus": "NEW",
   "nextPage": "Next page",
   "noLabRequestsFoundCheckFilters": "No lab requests found. Please check your filters and try again.",
   "onHoldStatus": "ON_HOLD",

@@ -38,6 +38,7 @@ interface OrdersDataTableProps {
   actionsSlotName?: string;
   excludeColumns?: string[];
   fulfillerStatus?: FulfillerStatus;
+  excludeCanceledAndDiscontinuedOrders?: boolean;
 }
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
@@ -45,17 +46,23 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
   actionsSlotName,
   excludeColumns = [],
   fulfillerStatus,
+  excludeCanceledAndDiscontinuedOrders = true,
 }) => {
   const { t } = useTranslation();
   const { targetPatientDashboard } = useConfig();
   const [filter, setFilter] = useState<FulfillerStatus>(null);
   const { labOrders, isLoading } = useLabOrders(
-    useFilter ? filter : fulfillerStatus
+    useFilter ? filter : fulfillerStatus,
+    excludeCanceledAndDiscontinuedOrders
   );
   const orderStatuses = [
     {
       value: null,
       display: t("all", "All"),
+    },
+    {
+      value: "NEW",
+      display: t("newStatus", "NEW"),
     },
     {
       value: "RECEIVED",

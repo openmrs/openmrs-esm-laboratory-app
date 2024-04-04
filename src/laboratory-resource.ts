@@ -2,6 +2,7 @@ import { openmrsFetch, restBaseUrl, useConfig } from "@openmrs/esm-framework";
 import { FulfillerStatus } from "./types";
 import { Order } from "@openmrs/esm-patient-common-lib";
 import useSWR from "swr";
+import { useMemo } from "react";
 
 /**
  * Custom hook for retrieving laboratory orders based on the specified status.
@@ -10,12 +11,17 @@ import useSWR from "swr";
  * @param excludeCanceled - Whether to exclude canceled, discontinued and expired orders
  */
 export function useLabOrders(
-  status: FulfillerStatus = null,
+  status: "NEW" | FulfillerStatus = null,
   excludeCanceled = true
 ) {
   const { laboratoryOrderTypeUuid } = useConfig();
+  const fulfillerStatus = useMemo(
+    () => (status === "NEW" ? null : status),
+    [status]
+  );
+  const newOrdersOnly = status === "NEW";
   let url = `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}&v=full`;
-  url = status ? url + `&fulfillerStatus=${status}` : url;
+  url = fulfillerStatus ? url + `&fulfillerStatus=${fulfillerStatus}` : url;
   url = excludeCanceled
     ? `${url}&excludeCanceledAndExpired=true&excludeDiscontinueOrders=true`
     : url;
@@ -25,8 +31,14 @@ export function useLabOrders(
     data: { results: Array<Order> };
   }>(url, openmrsFetch, { refreshInterval });
 
+  const filteredOrders =
+    data?.data &&
+    newOrdersOnly &&
+    data.data.results.filter(
+      (order) => order?.action === "NEW" && order?.fulfillerStatus === null
+    );
   return {
-    labOrders: data?.data ? data.data.results : [],
+    labOrders: filteredOrders || data?.data.results || [],
     isLoading,
     isError: error,
     mutate,

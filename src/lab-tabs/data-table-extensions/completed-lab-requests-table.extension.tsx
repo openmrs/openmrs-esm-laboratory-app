@@ -3,7 +3,11 @@ import OrdersDataTable from "../../components/orders-table/orders-data-table.com
 
 const CompletedLabRequestsTable: React.FC = () => {
   return (
-    <OrdersDataTable fulfillerStatus="COMPLETED" excludeColumns={["actions"]} />
+    <OrdersDataTable
+      fulfillerStatus="COMPLETED"
+      excludeColumns={["actions"]}
+      excludeCanceledAndDiscontinuedOrders={false}
+    />
   );
 };
 
