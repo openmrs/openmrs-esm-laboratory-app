@@ -1,13 +1,11 @@
 import React from "react";
 import { EmptyState } from "@openmrs/esm-patient-common-lib";
+import ReferredOrdersList from "../referred-orders/referred-orders.component";
 
 const ReferredComponent = () => {
   return (
     <div>
-      <EmptyState
-        displayText={"referred tests"}
-        headerTitle={"Referred tests"}
-      />
+      <ReferredOrdersList />
     </div>
   );
 };

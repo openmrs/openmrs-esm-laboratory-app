@@ -22,10 +22,7 @@ import {
   TableToolbarContent,
   Layer,
   TableToolbarSearch,
-  DatePicker,
-  DatePickerInput,
   DataTableSkeleton,
-  Tag,
 } from "@carbon/react";
 import styles from "./completed-list.scss";
 import { getStatusColor } from "../utils/functions";
