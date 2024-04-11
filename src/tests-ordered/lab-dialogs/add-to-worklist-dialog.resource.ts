@@ -183,3 +183,18 @@ export async function GetOrderByUuid(uuid: string) {
     signal: abortController.signal,
   });
 }
+
+export function extractCapitalLetters(statement: string): string {
+  const words = statement.split(" ");
+  let result = "";
+
+  for (const word of words) {
+    for (const char of word) {
+      if (char >= "A" && char <= "Z") {
+        result += char;
+      }
+    }
+  }
+
+  return result;
+}
