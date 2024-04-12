@@ -21,7 +21,7 @@ export interface Result {
   orderReasonNonCoded: any;
   orderType: OrderType;
   urgency: string;
-  instructions: any;
+  instructions: string;
   commentToFulfiller: any;
   display: string;
   auditInfo: AuditInfo;
