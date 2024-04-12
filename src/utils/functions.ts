@@ -260,6 +260,12 @@ export function OrderTagStyle(order: any) {
         color: "white",
       };
 
+    case "DECLINED" || "EXCEPTION":
+      return {
+        background: "red",
+        color: "white",
+      };
+
     default:
       return {
         background: "gray",
