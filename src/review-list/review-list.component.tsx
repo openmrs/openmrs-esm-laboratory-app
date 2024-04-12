@@ -73,7 +73,8 @@ const ReviewList: React.FC<ReviewlistProps> = ({ fulfillerStatus }) => {
     (item) =>
       item?.action === "REVISE" &&
       item?.fulfillerStatus === "IN_PROGRESS" &&
-      item?.dateStopped !== null
+      item?.dateStopped !== null &&
+      item?.instructions === null
   );
 
   const pageSizes = [10, 20, 30, 40, 50];

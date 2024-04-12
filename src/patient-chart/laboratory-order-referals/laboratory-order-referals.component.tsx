@@ -112,7 +112,9 @@ const LaboratoryOrderReferalResults: React.FC<
   const sortedLabRequests = useMemo(() => {
     return [...items]
       ?.filter(
-        (item) => item?.encounterType?.uuid === laboratoryEncounterTypeUuid
+        (item) =>
+          item?.encounterType?.uuid === laboratoryEncounterTypeUuid &&
+          item.orders.filter((item) => item?.instructions !== null)
       )
       ?.sort((a, b) => {
         const dateA = new Date(a.encounterDatetime);
@@ -193,13 +195,6 @@ const LaboratoryOrderReferalResults: React.FC<
     );
   };
 
-  const LaunchLabRequestForm: React.FC = () => {
-    return (
-      <IconButton label="Add">
-        <Add />
-      </IconButton>
-    );
-  };
   const PrintButtonAction: React.FC<PrintProps> = ({ encounter }) => {
     const { patient } = useGetPatientByUuid(encounter.patient.uuid);
 
