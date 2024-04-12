@@ -251,8 +251,7 @@ const LaboratoryOrderReferalResults: React.FC<
       { id: 1, header: t("tests", "Tests"), key: "orders" },
       { id: 2, header: t("location", "Location"), key: "location" },
       { id: 3, header: t("status", "Status"), key: "status" },
-      { id: 4, header: t("referral", "Referral"), key: "referral" },
-      { id: 5, header: t("actions", "Action"), key: "actions" },
+      { id: 4, header: t("actions", "Action"), key: "actions" },
     ],
     [t]
   );
@@ -289,7 +288,6 @@ const LaboratoryOrderReferalResults: React.FC<
       ),
       location: entry?.location?.display,
       status: "--",
-      referral: "--",
       actions: (
         <div style={{ display: "flex" }}>
           <EditReferralAction

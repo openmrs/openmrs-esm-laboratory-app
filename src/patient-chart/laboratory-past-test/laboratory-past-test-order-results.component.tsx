@@ -58,7 +58,6 @@ import { OrderTagStyle, useGetPatientByUuid } from "../../utils/functions";
 import {
   ResourceRepresentation,
   Result,
-  getOrderColor,
 } from "../patient-laboratory-order-results.resource";
 import { useLaboratoryOrderResultsPages } from "../patient-laboratory-order-results-table.resource";
 import { CardHeader } from "@openmrs/esm-patient-common-lib";
@@ -151,13 +150,6 @@ const LaboratoryPastTestOrderResults: React.FC<
     );
   };
 
-  const LaunchLabRequestForm: React.FC = () => {
-    return (
-      <IconButton label="Add">
-        <Add />
-      </IconButton>
-    );
-  };
   const PrintButtonAction: React.FC<PrintProps> = ({ encounter }) => {
     const { patient } = useGetPatientByUuid(encounter.patient.uuid);
 

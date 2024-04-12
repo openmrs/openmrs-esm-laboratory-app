@@ -167,13 +167,6 @@ const LaboratoryActiveTestOrderResults: React.FC<
     });
   };
 
-  const LaunchLabRequestForm: React.FC = () => {
-    return (
-      <IconButton label="Add">
-        <Add onClick={launchLabRequestForm} />
-      </IconButton>
-    );
-  };
   const PrintButtonAction: React.FC<PrintProps> = ({ encounter }) => {
     const { patient } = useGetPatientByUuid(encounter.patient.uuid);
 
