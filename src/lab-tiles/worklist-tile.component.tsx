@@ -12,7 +12,8 @@ const WorklistTileComponent = () => {
     (item) =>
       item?.fulfillerStatus === "IN_PROGRESS" &&
       item?.accessionNumber !== null &&
-      item?.dateStopped === null
+      item?.dateStopped === null &&
+      item?.instructions !== "REFER TO CPHL"
   );
 
   return (

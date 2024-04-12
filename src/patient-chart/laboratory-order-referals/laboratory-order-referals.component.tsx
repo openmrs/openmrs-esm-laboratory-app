@@ -114,7 +114,7 @@ const LaboratoryOrderReferalResults: React.FC<
       ?.filter(
         (item) =>
           item?.encounterType?.uuid === laboratoryEncounterTypeUuid &&
-          item.orders.filter((item) => item?.instructions !== null)
+          item?.orders?.filter((item) => item?.instructions === "REFER TO CPHL")
       )
       ?.sort((a, b) => {
         const dateA = new Date(a.encounterDatetime);
