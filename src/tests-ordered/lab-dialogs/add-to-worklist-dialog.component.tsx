@@ -50,9 +50,7 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
 
   const [specimenType, setSpecimenType] = useState();
 
-  const [selectedReferral, setSelectedReferral] = useState(
-    referrals[0]?.display
-  );
+  const [selectedReferral, setSelectedReferral] = useState("");
 
   const [barcode, setBarcode] = useState("");
 
