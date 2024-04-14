@@ -21,6 +21,11 @@ export const configSchema = {
     _default: "214e27a1-606a-4b1e-a96e-d736c87069d5",
     _description: "Concept uuid for the laboratory tool encounter type.",
   },
+  artCardEncounterTypeUuid: {
+    _type: Type.String,
+    _default: "8d5b2be0-c2cc-11de-8d13-0010c6dffd0f",
+    _description: "Concept uuid for the laboratory tool encounter type.",
+  },
   laboratoryOrderTypeUuid: {
     _type: Type.String,
     _default: "52a447d3-a64a-11e3-9aeb-50e549534c5e",

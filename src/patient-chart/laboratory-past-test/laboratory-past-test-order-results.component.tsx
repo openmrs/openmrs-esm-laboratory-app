@@ -75,8 +75,11 @@ const LaboratoryPastTestOrderResults: React.FC<
 > = ({ patientUuid }) => {
   const { t } = useTranslation();
 
-  const { enableSendingLabTestsByEmail, laboratoryEncounterTypeUuid } =
-    useConfig();
+  const {
+    enableSendingLabTestsByEmail,
+    laboratoryEncounterTypeUuid,
+    artCardEncounterTypeUuid,
+  } = useConfig();
 
   const displayText = t(
     "pastLaboratoryTestsDisplayTextTitle",
@@ -95,14 +98,16 @@ const LaboratoryPastTestOrderResults: React.FC<
   const sortedLabRequests = useMemo(() => {
     return [...items]
       ?.filter(
-        (item) => item?.encounterType?.uuid === laboratoryEncounterTypeUuid
+        (item) =>
+          item?.encounterType?.uuid === laboratoryEncounterTypeUuid ||
+          item?.encounterType?.uuid === artCardEncounterTypeUuid
       )
       ?.sort((a, b) => {
         const dateA = new Date(a.encounterDatetime);
         const dateB = new Date(b.encounterDatetime);
         return dateB.getTime() - dateA.getTime();
       });
-  }, [items, laboratoryEncounterTypeUuid]);
+  }, [artCardEncounterTypeUuid, items, laboratoryEncounterTypeUuid]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [laboratoryOrders, setLaboratoryOrders] = useState(sortedLabRequests);
