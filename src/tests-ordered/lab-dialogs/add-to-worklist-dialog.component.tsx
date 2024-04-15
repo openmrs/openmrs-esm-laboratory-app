@@ -68,7 +68,7 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({
       specimenSourceId: specimenType,
       unProcessedOrders: "",
       patientQueueId: queueId,
-      referenceLab: extractCapitalLetters(selectedReferral),
+      referenceLab: extractCapitalLetters(selectedReferral).toLowerCase(),
     };
 
     UpdateOrder(order.uuid, body).then(
