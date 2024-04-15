@@ -1,0 +1,39 @@
+@use '@carbon/styles/scss/spacing';
+@use '@carbon/styles/scss/type';
+@import "~@openmrs/esm-styleguide/src/vars";
+@import '../root.scss';
+
+.orderTabsContainer {
+  height: 100%;
+  width: 100%;
+
+  :global(.cds--tab-content) {
+    padding: 0 !important;
+  }
+}
+
+.orderTabs {
+  grid-column: 'span 2';
+  padding: 0 spacing.$spacing-05;
+}
+
+.tabsContainer {
+  background-color: $ui-02;
+
+  :global(.cds--tabs__nav-item--selected) {
+    box-shadow: inset 0 2px 0 0 var(--brand-03) !important;
+  }
+
+  :global(.cds--tab--list) button {
+    max-width: 12rem !important;
+  }
+}
+
+.hiddenTabsContent,
+.tabs .hiddenTabsContent {
+  display: none;
+}
+
+.tab {
+  width: 150px;
+}

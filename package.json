@@ -18,12 +18,7 @@
         "verify": "turbo lint typescript test",
         "extract-translations": "i18next 'src/**/*.component.tsx' --config ./i18next-parser.config.js",
         "coverage": "yarn test -- --coverage",
-        "prepare": "husky install"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "pretty-quick --staged && yarn verify"
-        }
+        "postinstall": "husky install"
     },
     "browserslist": [
         "extends browserslist-config-openmrs"
@@ -44,28 +39,24 @@
     "bugs": {
         "url": "https://github.com/openmrs/openmrs-esm-laboratory/issues"
     },
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx}": "eslint --cache --fix"
+    },
     "dependencies": {
         "@carbon/react": "^1.14.0",
-        "@hookform/resolvers": "^3.3.4",
         "lodash-es": "^4.17.21",
-        "react-hook-form": "^7.49.3",
-        "react-to-print": "^2.14.15",
-        "zod": "^3.22.4"
+        "react-hook-form": "^7.49.3"
     },
     "peerDependencies": {
         "@openmrs/esm-framework": "*",
         "dayjs": "1.x",
         "react": "18.x",
         "react-i18next": "11.x",
-        "react-router-dom": "6.x",
-        "rxjs": "6.x"
+        "react-router-dom": "6.x"
     },
     "devDependencies": {
-        "@ohri/openmrs-esm-ohri-commons-lib": "next",
-        "@openmrs/esm-extensions": "next",
         "@openmrs/esm-framework": "next",
         "@openmrs/esm-patient-common-lib": "next",
-        "@openmrs/esm-react-utils": "next",
         "@openmrs/esm-styleguide": "next",
         "@swc/cli": "^0.1.62",
         "@swc/core": "^1.3.62",
@@ -81,35 +72,28 @@
         "@types/react-router-dom": "^5.3.3",
         "@types/webpack-env": "^1.18.1",
         "@typescript-eslint/parser": "^5.59.9",
-        "carbon-components-react": "^8.34.0",
         "concurrently": "^7.6.0",
         "css-loader": "^6.8.1",
-        "dayjs": "^1.11.9",
         "eslint": "^8.42.0",
         "eslint-config-prettier": "^8.8.0",
         "eslint-config-ts-react-important-stuff": "^3.0.0",
         "eslint-plugin-prettier": "^4.2.1",
         "file-saver": "^2.0.5",
         "husky": "^8.0.0",
+        "i18next-parser": "^6.6.0",
         "identity-obj-proxy": "^3.0.0",
         "jest": "^28.1.3",
         "jest-cli": "^28.1.3",
         "jest-environment-jsdom": "^28.1.3",
-        "lerna": "^5.6.1",
+        "lint-staged": "^14.0.1",
         "openmrs": "next",
-        "plotly.js": "^2.24.3",
         "prettier": "^2.8.8",
         "pretty-quick": "^3.1.3",
         "raw-loader": "^4.0.2",
         "react": "^18.2.0",
-        "react-csv": "^2.2.2",
         "react-dom": "^18.2.0",
         "react-i18next": "^11.18.6",
-        "react-pivottable": "^0.11.0",
-        "react-plotly.js": "^2.0.0",
         "react-router-dom": "^6.11.2",
-        "react-table": "^7.8.0",
-        "rxjs": "^6.6.7",
         "swc-loader": "^0.2.3",
         "turbo": "^1.10.12",
         "typescript": "^4.9.5",

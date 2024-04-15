@@ -4,7 +4,6 @@ import { TextInput, Select, SelectItem } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import { ConceptReference } from "./result-form.resource";
 import { Controller } from "react-hook-form";
-import { min } from "rxjs/operators";
 
 interface ResultFormFieldProps {
   concept: ConceptReference;
@@ -46,7 +45,9 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
   return (
     <>
       {Object.keys(errors).length > 0 && (
-        <div className={styles.errorDiv}>All fields are required</div>
+        <div className={styles.errorDiv}>
+          {t("allFieldsRequired", "All fields are required")}
+        </div>
       )}
       {isTextOrNumeric(concept) && (
         <Controller
@@ -89,7 +90,10 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
               labelText={concept?.display}
               rules={{ required: true }}
             >
-              <SelectItem text={t("option", "Choose an Option")} value="" />
+              <SelectItem
+                text={t("chooseOption", "Choose an Option")}
+                value=""
+              />
 
               {concept?.answers?.map((answer) => (
                 <SelectItem

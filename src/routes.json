@@ -1,7 +1,6 @@
 {
     "$schema": "https://json.openmrs.org/routes.schema.json",
     "backendDependencies": {
-        "fhir2": ">=1.2",
         "webservices.rest": "^2.24.0"
     },
     "pages": [
@@ -27,146 +26,86 @@
             }
         },
         {
-            "name": "laboratory-patient-chart-link",
-            "slot": "patient-chart-dashboard-slot",
-            "component": "laboratoryOrderDashboardLink",
-            "order": 13,
-            "meta": {
-                "path": "laboratory-orders",
-                "slot": "laboratory-orders-dashboard-slot",
-                "title": "Laboratory",
-                "columns": 1,
-                "layoutMode": "anchored"
-            }
+            "name": "pickup-lab-request-modal",
+            "component": "pickupLabRequestModal"
         },
         {
-            "name": "laboratory-orders-summary",
-            "slot": "laboratory-orders-dashboard-slot",
-            "component": "laboratoryOrderComponent"
+            "name": "reject-lab-request-modal",
+            "component": "rejectLabRequestModal"
         },
         {
-            "name": "add-to-worklist-dialog",
-            "component": "addToWorklistDialog"
-        },
-        {
-            "name": "results-summary",
-            "component": "resultsSummaryWorkSpace"
-        },
-        {
-            "name": "edit-results-dialog",
-            "component": "editResultsDialog"
-        },
-        {
-            "name": "send-email-dialog",
-            "component": "sendEmailDialog"
-        },
-        {
-            "name": "review-item-dialog",
-            "component": "reviewItemDialog"
-        },
-        {
-            "name": "reject-order-dialog",
-            "component": "rejectOrderDialog"
-        },
-        {
-            "name": "worklist-panel-component",
+            "name": "all-lab-requests-table",
             "slot": "lab-panels-slot",
-            "component": "worklistComponent",
+            "component": "allLabRequestsTable",
             "meta": {
-                "name": "worklistPanelSlot",
-                "title": "Worklist"
+                "name": "inprogressPanel",
+                "title": "Tests ordered"
             }
         },
         {
-            "name": "review-panel-component",
+            "name": "inprogress-lab-requests-table",
             "slot": "lab-panels-slot",
-            "component": "reviewComponent",
+            "component": "inprogressLabRequestsTable",
             "meta": {
-                "name": "reviewPanelSlot",
-                "title": "Review"
+                "name": "inprogressPanel",
+                "title": "In progress"
             }
         },
         {
-            "name": "approved-panel-component",
+            "name": "completed-lab-requests-table",
             "slot": "lab-panels-slot",
-            "component": "approvedComponent",
+            "component": "completedLabRequestsTable",
             "meta": {
-                "name": "approvedPanelSlot",
-                "title": "Approved"
+                "name": "completedPanel",
+                "title": "Completed"
             }
-        },
-        {
-          "name": "rejected-panel-component",
-          "slot": "lab-panels-slot",
-          "component": "rejectedComponent",
-          "meta": {
-            "name": "rejectedPanelSlot",
-            "title": "Rejected"
-          }
         },
         {
             "name": "tests-ordered-tile-component",
             "slot": "lab-tiles-slot",
-            "component": "testOrderedTileComponent",
+            "component": "testOrderedTile",
             "meta": {
                 "name": "testsOrderedTileSlot",
                 "title": "Ordered tests"
             }
         },
         {
-            "name": "referred-panel-component",
-            "slot": "lab-panels-slot",
-            "component": "referredTestComponent",
+            "name": "worklist-tile-component",
+            "slot": "lab-tiles-slot",
+            "component": "worklistTile",
+            "meta": {
+                "name": "worklisTileSlot",
+                "title": "Worklist"
+            }
+        },
+        {
+            "name": "completed-tile-component",
+            "slot": "lab-tiles-slot",
+            "component": "completedTile",
             "meta": {
                 "name": "referredPanleSlot",
                 "title": "Referred Tests"
             }
         },
-      {
-        "name": "worklist-tile-component",
-        "slot": "lab-tiles-slot",
-        "component": "worklistTileComponent",
-        "meta": {
-          "name": "worklisTileSlot",
-          "title": "Worklist"
-        }
-      },
         {
-            "name": "completed-tile-component",
-            "slot": "lab-tiles-slot",
-            "component": "completedTileComponent",
-            "meta": {
-                "name": "completedTileSlot",
-                "title": "Completed"
-            }
+            "name": "pick-lab-request-action",
+            "component": "pickupLabRequestAction",
+            "slot": "tests-ordered-actions-slot"
         },
         {
-          "name": "rejected-tile-component",
-          "slot": "lab-tiles-slot",
-          "component": "rejectedTileComponent",
-          "meta": {
-            "name": "rejectedTileSlot",
-            "title": "Rejected Tests"
-          }
+            "name": "reject-lab-request-tests-ordered-action",
+            "component": "rejectLabRequestAction",
+            "slot": "tests-ordered-actions-slot"
         },
         {
-            "name": "referred-tile-component",
-            "slot": "lab-tiles-slot",
-            "component": "referredTileComponent",
-            "meta": {
-                "name": "referredTileSlot",
-                "title": "Referred Tests"
-            }
+            "name": "add-lab-request-results-action",
+            "component": "addLabRequestResultsAction",
+            "slot": "inprogress-tests-actions-slot"
         },
         {
-            "name": "pick-lab-request-button",
-            "component": "pickLabRequestButton",
-            "slot": "order-actions-slot"
-        },
-        {
-            "name": "reject-order-button",
-            "component": "rejectOrderButton",
-            "slot": "order-actions-slot"
+            "name": "reject-lab-request-worklist-action",
+            "component": "rejectLabRequestAction",
+            "slot": "inprogress-tests-actions-slot"
         }
     ]
 }
