@@ -27,10 +27,10 @@ import {
 } from "@openmrs/esm-patient-common-lib";
 import rejectedTabComponent from "./lab-tabs/rejected-tab.component";
 
-const moduleName = "@openmrs/esm-laboratory-app";
+const moduleName = "@ugandaemr/esm-laboratory-app";
 
 const options = {
-  featureName: "openmrs-esm-laboratory",
+  featureName: "ugandaemr-esm-laboratory",
   moduleName,
 };
 

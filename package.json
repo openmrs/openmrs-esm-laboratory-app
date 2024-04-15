@@ -1,9 +1,9 @@
 {
-    "name": "@openmrs/esm-laboratory-app",
+    "name": "@ugandaemr/esm-laboratory-app",
     "version": "1.0.0",
     "license": "MPL-2.0",
     "description": "Laboratory microfrontend for OpenMRS 3.x",
-    "browser": "dist/openmrs-esm-laboratory-app.js",
+    "browser": "dist/ugandaemr-esm-laboratory-app.js",
     "main": "src/index.ts",
     "source": true,
     "scripts": {
