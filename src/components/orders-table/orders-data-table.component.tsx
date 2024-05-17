@@ -49,7 +49,9 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
   excludeCanceledAndDiscontinuedOrders = true,
 }) => {
   const { t } = useTranslation();
-  const { targetPatientDashboard } = useConfig();
+  const {
+    targetPatientDashboard: { redirectToResultsViewer, redirectToOrders },
+  } = useConfig();
   const [filter, setFilter] = useState<FulfillerStatus>(null);
   const { labOrders, isLoading } = useLabOrders(
     useFilter ? filter : fulfillerStatus,
@@ -128,7 +130,11 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
       ),
       patient: (
         <ConfigurableLink
-          to={`\${openmrsSpaBase}/patient/${order.patient?.uuid}/chart/${targetPatientDashboard}`}
+          to={`\${openmrsSpaBase}/patient/${order.patient?.uuid}/chart/${
+            fulfillerStatus == "COMPLETED"
+              ? redirectToResultsViewer
+              : redirectToOrders
+          }`}
         >
           {order.patient?.display.split("-")[1]}
         </ConfigurableLink>
@@ -156,7 +162,12 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
         </CustomOverflowMenu>
       ),
     }));
-  }, [paginatedLabOrders, targetPatientDashboard, actionsSlotName]);
+  }, [
+    paginatedLabOrders,
+    redirectToResultsViewer,
+    redirectToOrders,
+    actionsSlotName,
+  ]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
