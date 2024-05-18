@@ -10,7 +10,7 @@ import rootComponent from "./root.component";
 const moduleName = "@openmrs/esm-laboratory-app";
 
 const options = {
-  featureName: "openmrs-esm-laboratory",
+  featureName: "laboratory",
   moduleName,
 };
 

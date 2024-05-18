@@ -64,6 +64,7 @@ const LaboratoryOrdersTabs: React.FC = () => {
                       key={extension.id}
                       value={{
                         moduleName: extension.moduleName,
+                        featureName: "laboratory",
                         extension: {
                           extensionId: extension.id,
                           extensionSlotName: labPanelSlot,
