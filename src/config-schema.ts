@@ -7,8 +7,18 @@ export const configSchema = {
     _description: "Uuid for orderType",
   },
   targetPatientDashboard: {
-    _type: Type.String,
-    _default: "Results Viewer",
+    redirectToResultsViewer: {
+      _type: Type.String,
+      _default: "Results Viewer",
+      _description:
+        "Redirects to Results Viewer in patient chart dashboard from lab app.",
+    },
+    redirectToOrders: {
+      _type: Type.String,
+      _default: "Orders",
+      _description:
+        "Redirects to Orders in patient chart dashboard from lab app.",
+    },
     _description:
       "The patient chart dashboard to navigate to from the lab app.",
   },
@@ -16,5 +26,5 @@ export const configSchema = {
 
 export type Config = {
   laboratoryOrderTypeUuid: string;
-  targetPatientDashboard: string;
+  targetPatientDashboard: Object;
 };
