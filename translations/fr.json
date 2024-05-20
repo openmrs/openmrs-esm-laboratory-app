@@ -1,5 +1,4 @@
 {
-  "action": "Action",
   "actions": "Actions",
   "all": "All",
   "allFieldsRequired": "All fields are required",
@@ -22,6 +21,7 @@
   "laboratory": "Laboratory",
   "labResultsForm": "Lab Results Form",
   "loading": "Chargement",
+  "modification": "Modification",
   "newStatus": "NEW",
   "nextPage": "Next page",
   "noLabRequestsFoundCheckFilters": "No lab requests found. Please check your filters and try again.",
