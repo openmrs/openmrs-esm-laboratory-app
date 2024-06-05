@@ -1,10 +1,9 @@
 @use '@carbon/styles/scss/spacing';
 @use '@carbon/styles/scss/type';
-@import "~@openmrs/esm-styleguide/src/vars";
-@import '../../root.scss';
+@use '@carbon/colors';
 
 .tableContainer {
-  background-color: $ui-01;
+  background-color: colors.$gray-10;
   margin: 0 spacing.$spacing-05;
   padding: 0;
 
@@ -17,11 +16,11 @@
   }
 
   th {
-    color: $text-02;
+    color: colors.$gray-70;
   }
 
   :global(.cds--data-table) {
-    background-color: $ui-03;
+    background-color: colors.$gray-20;
   }
 
   :global(.cds--table-toolbar) {
@@ -40,8 +39,18 @@
 }
 
 .toolbarItem {
+  display: flex;
   margin: 5px 10px;
+  align-items: center;
+
+  & p {
+    padding-right: 5px;
+    @include type.type-style('body-01');
+    color: colors.$gray-70;
+  }
 }
+
+
 
 .tableWrapper tr:last-of-type {
   td {
@@ -50,8 +59,8 @@
 }
 
 .tileContainer {
-  background-color: $ui-02;
-  border-top: 1px solid $ui-03;
+  background-color: colors.$white;
+  border-top: 1px solid colors.$gray-20;
   padding: 5rem 0;
 }
 
@@ -68,11 +77,10 @@
 
 .content {
   @include type.type-style('heading-compact-02');
-  color: $text-02;
+  color: colors.$gray-70;
   margin-bottom: 0.5rem;
 }
 
 .singleLineDisplay {
   white-space: nowrap;
 }
-

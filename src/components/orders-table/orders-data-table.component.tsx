@@ -17,6 +17,8 @@ import {
   TableToolbarContent,
   Layer,
   TableToolbarSearch,
+  DatePicker,
+  DatePickerInput,
 } from "@carbon/react";
 import { OverflowMenuVertical } from "@carbon/react/icons";
 import {
@@ -32,6 +34,8 @@ import styles from "./orders-data-table.scss";
 import { getStatusColor } from "../../utils";
 import { FulfillerStatus } from "../../types";
 import { useLabOrders } from "../../laboratory-resource";
+import dayjs from "dayjs";
+import { isoDateTimeString } from "../../constants";
 
 interface OrdersDataTableProps {
   useFilter?: boolean;
@@ -39,6 +43,7 @@ interface OrdersDataTableProps {
   excludeColumns?: string[];
   fulfillerStatus?: FulfillerStatus;
   excludeCanceledAndDiscontinuedOrders?: boolean;
+  useActivatedOnOrAfterDateFilter?: boolean;
 }
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
@@ -47,15 +52,20 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
   excludeColumns = [],
   fulfillerStatus,
   excludeCanceledAndDiscontinuedOrders = true,
+  useActivatedOnOrAfterDateFilter = true,
 }) => {
   const { t } = useTranslation();
   const {
     targetPatientDashboard: { redirectToResultsViewer, redirectToOrders },
   } = useConfig();
   const [filter, setFilter] = useState<FulfillerStatus>(null);
+  const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState<string>(
+    dayjs().startOf("day").format(isoDateTimeString)
+  );
   const { labOrders, isLoading } = useLabOrders(
     useFilter ? filter : fulfillerStatus,
-    excludeCanceledAndDiscontinuedOrders
+    excludeCanceledAndDiscontinuedOrders,
+    activatedOnOrAfterDate
   );
   const orderStatuses = [
     {
@@ -119,6 +129,11 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
 
   const handleOrderStatusChange = ({ selectedItem }) =>
     setFilter(selectedItem.value);
+
+  const handleActivateOnOrAfterDateChange = (date: string) =>
+    setActivatedOnOrAfterDate(
+      dayjs(date).startOf("day").format(isoDateTimeString)
+    );
 
   const tableRows = useMemo(() => {
     return paginatedLabOrders.map((order, index) => ({
@@ -190,27 +205,55 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
         <TableContainer className={styles.tableContainer}>
           <TableToolbar>
             <TableToolbarContent>
-              {useFilter && (
+              {
                 <Layer className={styles.toolbarItem}>
-                  <Dropdown
-                    id="orderStatusFilter"
-                    initialSelectedItem={
-                      filter
-                        ? orderStatuses.find(
-                            (status) => status.value === filter
-                          )
-                        : orderStatuses[0]
-                    }
-                    titleText={
-                      t("filterOrdersByStatus", "Filter orders by status") + ":"
-                    }
-                    type="inline"
-                    items={orderStatuses}
-                    onChange={handleOrderStatusChange}
-                    itemToString={(item) => item?.display}
-                  />
+                  {useFilter && (
+                    <Dropdown
+                      id="orderStatusFilter"
+                      initialSelectedItem={
+                        filter
+                          ? orderStatuses.find(
+                              (status) => status.value === filter
+                            )
+                          : orderStatuses[0]
+                      }
+                      titleText={
+                        t("filterOrdersByStatus", "Filter orders by status") +
+                        ":"
+                      }
+                      type="inline"
+                      items={orderStatuses}
+                      onChange={handleOrderStatusChange}
+                      itemToString={(item) => item?.display}
+                    />
+                  )}
+                  {useActivatedOnOrAfterDateFilter && (
+                    <>
+                      <p>
+                        {t(
+                          "onOrAfterDateFilter",
+                          "Filter orders on or after : "
+                        )}
+                      </p>
+                      <DatePicker
+                        onChange={([date]) =>
+                          handleActivateOnOrAfterDateChange(date)
+                        }
+                        maxDate={new Date()}
+                        datePickerType="single"
+                        value={new Date(activatedOnOrAfterDate).toISOString()}
+                      >
+                        <DatePickerInput
+                          placeholder="mm/dd/yyyy"
+                          labelText=""
+                          id="date-picker-single"
+                          size="md"
+                        />
+                      </DatePicker>
+                    </>
+                  )}
                 </Layer>
-              )}
+              }
               <Layer className={styles.toolbarItem}>
                 <TableToolbarSearch
                   expanded

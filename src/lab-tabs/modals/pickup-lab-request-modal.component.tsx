@@ -1,13 +1,17 @@
 import { Order } from "@openmrs/esm-patient-common-lib";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { setFulfillerStatus, useLabOrders } from "../../laboratory-resource";
+import { setFulfillerStatus } from "../../laboratory-resource";
 import {
+  restBaseUrl,
   showNotification,
   showSnackbar,
   useAbortController,
+  useConfig,
 } from "@openmrs/esm-framework";
 import { Button, ModalBody, ModalFooter, ModalHeader } from "@carbon/react";
+import { mutate } from "swr";
+import { Config } from "../../config-schema";
 
 interface PickupLabRequestModal {
   closeModal: () => void;
@@ -20,14 +24,22 @@ const PickupLabRequestModal: React.FC<PickupLabRequestModal> = ({
 }) => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { mutate } = useLabOrders();
+  const { laboratoryOrderTypeUuid } = useConfig<Config>();
   const abortController = useAbortController();
 
   const handlePickup = () => {
     setIsSubmitting(true);
     setFulfillerStatus(order.uuid, "IN_PROGRESS", abortController).then(
       () => {
-        mutate();
+        mutate(
+          (key) =>
+            typeof key === "string" &&
+            key.startsWith(
+              `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}`
+            ),
+          undefined,
+          { revalidate: true }
+        );
         setIsSubmitting(false);
         closeModal();
         showSnackbar({
