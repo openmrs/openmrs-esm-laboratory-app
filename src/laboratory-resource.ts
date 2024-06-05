@@ -12,7 +12,8 @@ import { useMemo } from "react";
  */
 export function useLabOrders(
   status: "NEW" | FulfillerStatus = null,
-  excludeCanceled = true
+  excludeCanceled = true,
+  activatedOnOrAfterDate?: string
 ) {
   const { laboratoryOrderTypeUuid } = useConfig();
   const fulfillerStatus = useMemo(
@@ -26,10 +27,13 @@ export function useLabOrders(
     ? `${url}&excludeCanceledAndExpired=true&excludeDiscontinueOrders=true`
     : url;
   // The usage of SWR's mutator seems to only suffice for cases where we don't apply a status filter
-  const refreshInterval = status ? 5000 : null;
-  const { data, error, mutate, isLoading } = useSWR<{
+  url = activatedOnOrAfterDate
+    ? `${url}&=&activatedOnOrAfterDate=${activatedOnOrAfterDate}`
+    : url;
+
+  const { data, error, mutate, isLoading, isValidating } = useSWR<{
     data: { results: Array<Order> };
-  }>(url, openmrsFetch, { refreshInterval });
+  }>(`${url}`, openmrsFetch);
 
   const filteredOrders =
     data?.data &&
@@ -42,6 +46,7 @@ export function useLabOrders(
     isLoading,
     isError: error,
     mutate,
+    isValidating,
   };
 }
 

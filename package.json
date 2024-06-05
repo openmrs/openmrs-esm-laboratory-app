@@ -74,6 +74,7 @@
         "@typescript-eslint/parser": "^5.59.9",
         "concurrently": "^7.6.0",
         "css-loader": "^6.8.1",
+        "dayjs": "^1.11.11",
         "eslint": "^8.42.0",
         "eslint-config-prettier": "^8.8.0",
         "eslint-config-ts-react-important-stuff": "^3.0.0",
