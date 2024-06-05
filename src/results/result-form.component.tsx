@@ -5,8 +5,10 @@ import { useTranslation } from "react-i18next";
 import { closeOverlay } from "../components/overlay/store";
 import {
   ExtensionSlot,
+  restBaseUrl,
   showNotification,
   showSnackbar,
+  useConfig,
   useLayoutType,
   usePatient,
 } from "@openmrs/esm-framework";
@@ -18,6 +20,9 @@ import ResultFormField from "./result-form-field.component";
 import { useForm } from "react-hook-form";
 import { Order } from "@openmrs/esm-patient-common-lib";
 import Loader from "../components/loader/loader.component";
+import { setFulfillerStatus } from "../laboratory-resource";
+import { mutate } from "swr";
+import { Config } from "../config-schema";
 
 interface ResultFormProps {
   patientUuid: string;
@@ -26,6 +31,7 @@ interface ResultFormProps {
 
 const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   const { t } = useTranslation();
+  const { laboratoryOrderTypeUuid } = useConfig<Config>();
   const {
     control,
     register,
@@ -123,30 +129,68 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       order.encounter.uuid,
       obsPayload,
       orderDiscontinuationPayload
-    ).then(
-      () => {
-        showSnackbar({
-          isLowContrast: true,
-          title: t("updateEncounter", "Update lab results"),
-          kind: "success",
-          subtitle: t(
-            "generateSuccessfully",
-            "You have successfully updated test results"
-          ),
-        });
-        closeOverlay();
-      },
-      (err) => {
-        showNotification({
-          title: t(
-            `errorUpdatingEncounter', 'Error occurred while updating test results`
-          ),
-          kind: "error",
-          critical: true,
-          description: err?.message,
-        });
-      }
-    );
+    )
+      .then(
+        (resp) => {
+          showSnackbar({
+            isLowContrast: true,
+            title: t("updateEncounter", "Update lab results"),
+            kind: "success",
+            subtitle: t(
+              "generateSuccessfully",
+              "You have successfully updated test results"
+            ),
+          });
+          return resp;
+        },
+        (err) => {
+          showNotification({
+            title: t(
+              `errorUpdatingEncounter', 'Error occurred while updating test results`
+            ),
+            kind: "error",
+            critical: true,
+            description: err?.message,
+          });
+        }
+      )
+      .then((resp) => {
+        const abortController = new AbortController();
+        setFulfillerStatus(order.uuid, "COMPLETED", abortController).then(
+          () => {
+            showSnackbar({
+              isLowContrast: true,
+              title: t("markOrderFulfillStatus", "Test order completed"),
+              kind: "success",
+              subtitle: t(
+                "testOrderCompletedSuccessfully",
+                "You have successfully completed the test order"
+              ),
+            });
+            mutate(
+              (key) =>
+                typeof key === "string" &&
+                key.startsWith(
+                  `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}`
+                ),
+              undefined,
+              { revalidate: true }
+            );
+            closeOverlay();
+          },
+          (err) => {
+            showNotification({
+              title: t(
+                `errorMarkingOrderFulfillStatus`,
+                "Error occurred while marking order fulfill status"
+              ),
+              kind: "error",
+              critical: true,
+              description: err?.message,
+            });
+          }
+        );
+      });
   };
   if (isLoadingPatient || isLoadingConcepts) {
     return <Loader />;
