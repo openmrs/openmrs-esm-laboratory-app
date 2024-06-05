@@ -5,7 +5,7 @@ const CompletedLabRequestsTable: React.FC = () => {
   return (
     <OrdersDataTable
       fulfillerStatus="COMPLETED"
-      excludeColumns={["actions"]}
+      excludeColumns={["actions", "action"]}
       excludeCanceledAndDiscontinuedOrders={false}
     />
   );
