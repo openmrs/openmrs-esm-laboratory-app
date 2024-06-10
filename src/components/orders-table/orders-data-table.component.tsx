@@ -19,6 +19,7 @@ import {
   TableToolbarSearch,
   DatePicker,
   DatePickerInput,
+  NumberInput, // Import NumberInput
 } from "@carbon/react";
 import { OverflowMenuVertical } from "@carbon/react/icons";
 import {
@@ -62,11 +63,15 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
   const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState<string>(
     dayjs().startOf("day").format(isoDateTimeString)
   );
+  const [days, setDays] = useState<number>(30); // State for configurable days
+
   const { labOrders, isLoading } = useLabOrders(
     useFilter ? filter : fulfillerStatus,
     excludeCanceledAndDiscontinuedOrders,
-    activatedOnOrAfterDate
+    activatedOnOrAfterDate,
+    days // Pass days to the hook
   );
+
   const orderStatuses = [
     {
       value: null,
@@ -119,6 +124,8 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
     ].filter((column) => !excludeColumns.includes(column.key));
   }, [excludeColumns, t]);
 
+
+
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
   const {
@@ -134,6 +141,8 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
     setActivatedOnOrAfterDate(
       dayjs(date).startOf("day").format(isoDateTimeString)
     );
+
+  const handleDaysChange = (e) => setDays(e.imaginaryTarget.value);
 
   const tableRows = useMemo(() => {
     return paginatedLabOrders.map((order, index) => ({
@@ -252,6 +261,14 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
                       </DatePicker>
                     </>
                   )}
+                  <NumberInput
+                    id="days-input"
+                    min={1}
+                    max={365}
+                    value={days}
+                    label={t("days", "Days")}
+                    onChange={handleDaysChange}
+                  />
                 </Layer>
               }
               <Layer className={styles.toolbarItem}>
@@ -328,3 +345,4 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
 };
 
 export default OrdersDataTable;
+
