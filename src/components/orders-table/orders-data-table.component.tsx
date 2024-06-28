@@ -111,7 +111,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
       },
       { key: "patient", header: t("patient", "Patient") },
       { key: "test", header: t("test", "Test") },
-      { key: "action", header: t("action", "Action") },
       { key: "status", header: t("status", "Status") },
       { key: "orderedBy", header: t("orderedBy", "Ordered By") },
       { key: "urgency", header: t("urgency", "Urgency") },
@@ -156,7 +155,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
       ),
       orderNumber: order.orderNumber,
       test: order.concept?.display,
-      action: order.action,
       status: (
         <span
           className={styles.statusContainer}
