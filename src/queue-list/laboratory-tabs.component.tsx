@@ -72,7 +72,7 @@ const LaboratoryQueueTabs: React.FC = () => {
         detachAll(slot);
       });
     };
-  }, [derivedSlots]);
+  }, []);
 
   return (
     <main className={`omrs-main-content`}>
