@@ -345,28 +345,51 @@ export async function UpdateEncounter(uuid: string, payload: any) {
 export async function UpdateOrderResult(
   encounterUuid: string,
   obsPayload: any,
-  orderPayload: any
+  orderPayload: any,
+  encounterPostData: any
 ) {
   const abortController = new AbortController();
-  const updateOrderCall = await openmrsFetch(`${restBaseUrl}/order`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    signal: abortController.signal,
-    body: orderPayload,
-  });
 
-  if (updateOrderCall.status === 201) {
-    return await openmrsFetch(`${restBaseUrl}/encounter/${encounterUuid}`, {
+  const createOrderResultEncounterCall = await openmrsFetch(
+    `${restBaseUrl}/encounter`,
+    {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       signal: abortController.signal,
-      body: obsPayload,
+      body: encounterPostData,
+    }
+  );
+
+  if (createOrderResultEncounterCall.status === 201) {
+    const orderResultEncounterUuid = createOrderResultEncounterCall.data.uuid;
+
+    orderPayload.encounter = orderResultEncounterUuid;
+
+    const updateOrderCall = await openmrsFetch(`${restBaseUrl}/order`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      signal: abortController.signal,
+      body: orderPayload,
     });
-  } else {
-    // handle errors
+
+    if (updateOrderCall.status === 201) {
+      return await openmrsFetch(
+        `${restBaseUrl}/encounter/${orderResultEncounterUuid}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          signal: abortController.signal,
+          body: obsPayload,
+        }
+      );
+    } else {
+      // handle errors
+    }
   }
 }

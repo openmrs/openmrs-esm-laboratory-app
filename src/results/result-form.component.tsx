@@ -11,6 +11,7 @@ import {
   useConfig,
   useLayoutType,
   usePatient,
+  useSession,
 } from "@openmrs/esm-framework";
 import {
   useGetOrderConceptByUuid,
@@ -31,7 +32,8 @@ interface ResultFormProps {
 
 const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   const { t } = useTranslation();
-  const { laboratoryOrderTypeUuid } = useConfig<Config>();
+  const { laboratoryOrderTypeUuid, laboratoryResultEncounterTypeUuid } =
+    useConfig<Config>();
   const {
     control,
     register,
@@ -46,6 +48,8 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   const { concept, isLoading: isLoadingConcepts } = useGetOrderConceptByUuid(
     order.concept.uuid
   );
+  const userSession = useSession();
+  const userLocation = userSession?.sessionLocation?.uuid;
   const bannerState = useMemo(() => {
     if (patient) {
       return {
@@ -124,11 +128,22 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       concept: order.concept.uuid,
       orderer: order.orderer,
     };
-
+    const orders: Array<any> = [];
+    orders.push(order);
+    const encounterPostData = {
+      patient: patientUuid,
+      location: userLocation,
+      encounterType: laboratoryResultEncounterTypeUuid,
+      //visit: order.encounter activeVisit?.uuid,
+      obs: [],
+      //orders,
+    };
     UpdateOrderResult(
-      order.encounter.uuid,
+      //order.encounter.uuid,
+      laboratoryResultEncounterTypeUuid,
       obsPayload,
-      orderDiscontinuationPayload
+      orderDiscontinuationPayload,
+      encounterPostData
     )
       .then(
         (resp) => {
