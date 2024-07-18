@@ -128,19 +128,14 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       concept: order.concept.uuid,
       orderer: order.orderer,
     };
-    const orders: Array<any> = [];
-    orders.push(order);
+
     const encounterPostData = {
       patient: patientUuid,
       location: userLocation,
       encounterType: laboratoryResultEncounterTypeUuid,
-      //visit: order.encounter activeVisit?.uuid,
       obs: [],
-      //orders,
     };
     UpdateOrderResult(
-      //order.encounter.uuid,
-      laboratoryResultEncounterTypeUuid,
       obsPayload,
       orderDiscontinuationPayload,
       encounterPostData

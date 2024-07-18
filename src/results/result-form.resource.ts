@@ -343,12 +343,42 @@ export async function UpdateEncounter(uuid: string, payload: any) {
 
 //TODO: the calls to update order and observations for results should be transactional to allow for rollback
 export async function UpdateOrderResult(
-  encounterUuid: string,
   obsPayload: any,
   orderPayload: any,
   encounterPostData: any
 ) {
   const abortController = new AbortController();
+
+  const patientVisits = await openmrsFetch(
+    `${restBaseUrl}/visit?patient=${orderPayload.patient}&v=custom:(uuid,encounters:(uuid))`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      signal: abortController.signal,
+    }
+  );
+
+  function findVisitUuidByOrderEncounterUuid(visits, orderEncounterUuid) {
+    for (const visit of visits) {
+      if (
+        visit.encounters.some(
+          (encounter) => encounter.uuid === orderEncounterUuid
+        )
+      ) {
+        return visit.uuid;
+      }
+    }
+    return null;
+  }
+
+  const visitUuid = findVisitUuidByOrderEncounterUuid(
+    patientVisits.data.results,
+    orderPayload.encounter
+  );
+
+  encounterPostData.visit = visitUuid;
 
   const createOrderResultEncounterCall = await openmrsFetch(
     `${restBaseUrl}/encounter`,
