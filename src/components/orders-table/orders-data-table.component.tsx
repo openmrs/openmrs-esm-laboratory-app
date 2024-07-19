@@ -37,7 +37,6 @@ import { FulfillerStatus } from "../../types";
 import { useLabOrders } from "../../laboratory-resource";
 import dayjs from "dayjs";
 import { isoDateTimeString } from "../../constants";
-import { Order } from "@openmrs/esm-patient-common-lib";
 import useSearchResults from "./orders-data-table.resource";
 interface OrdersDataTableProps {
   useFilter?: boolean;
