@@ -28,6 +28,7 @@ import {
   formatDate,
   parseDate,
   useConfig,
+  useDebounce,
   usePagination,
 } from "@openmrs/esm-framework";
 import styles from "./orders-data-table.scss";
@@ -36,7 +37,7 @@ import { FulfillerStatus } from "../../types";
 import { useLabOrders } from "../../laboratory-resource";
 import dayjs from "dayjs";
 import { isoDateTimeString } from "../../constants";
-
+import useSearchResults from "./orders-data-table.resource";
 interface OrdersDataTableProps {
   useFilter?: boolean;
   actionsSlotName?: string;
@@ -58,15 +59,39 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
   const {
     targetPatientDashboard: { redirectToResultsViewer, redirectToOrders },
   } = useConfig();
+
   const [filter, setFilter] = useState<FulfillerStatus>(null);
   const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState<string>(
     dayjs().startOf("day").format(isoDateTimeString)
   );
+  const [searchString, setSearchString] = useState<string>("");
+
   const { labOrders, isLoading } = useLabOrders(
     useFilter ? filter : fulfillerStatus,
     excludeCanceledAndDiscontinuedOrders,
     activatedOnOrAfterDate
   );
+
+  const flattenedLabOrders = useMemo(() => {
+    return labOrders.map((eachObject) => {
+      return {
+        ...eachObject,
+        dateActivated: formatDate(parseDate(eachObject.dateActivated)),
+        patient: eachObject.patient?.display.split("-")[1],
+        patientUuid: eachObject.patient?.uuid,
+        status: eachObject.fulfillerStatus ?? "--",
+        orderer: eachObject.orderer?.display.split("-")[1],
+      };
+    });
+  }, [labOrders]);
+
+  const debouncedSearchString = useDebounce(searchString);
+
+  const searchResults = useSearchResults(
+    flattenedLabOrders,
+    debouncedSearchString
+  );
+
   const orderStatuses = [
     {
       value: null,
@@ -124,7 +149,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
     goTo,
     results: paginatedLabOrders,
     currentPage,
-  } = usePagination(labOrders, currentPageSize);
+  } = usePagination(searchResults, currentPageSize);
 
   const handleOrderStatusChange = ({ selectedItem }) =>
     setFilter(selectedItem.value);
@@ -138,19 +163,17 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
     return paginatedLabOrders.map((order, index) => ({
       id: order.uuid,
       date: (
-        <span className={styles.singleLineDisplay}>
-          {formatDate(parseDate(order.dateActivated))}
-        </span>
+        <span className={styles.singleLineDisplay}>{order.dateActivated}</span>
       ),
       patient: (
         <ConfigurableLink
-          to={`\${openmrsSpaBase}/patient/${order.patient?.uuid}/chart/${
+          to={`\${openmrsSpaBase}/patient/${order?.patientUuid}/chart/${
             fulfillerStatus == "COMPLETED"
               ? redirectToResultsViewer
               : redirectToOrders
           }`}
         >
-          {order.patient?.display.split("-")[1]}
+          {order.patient}
         </ConfigurableLink>
       ),
       orderNumber: order.orderNumber,
@@ -163,7 +186,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
           {order.fulfillerStatus}
         </span>
       ),
-      orderedBy: order.orderer.display.split("-")[1],
+      orderedBy: order.orderer,
       urgency: order.urgency,
       actions: (
         <CustomOverflowMenu menuTitle={<OverflowMenuVertical />}>
@@ -192,14 +215,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
       useZebraStyles
       overflowMenuOnHover={true}
     >
-      {({
-        rows,
-        headers,
-        getHeaderProps,
-        getTableProps,
-        getRowProps,
-        onInputChange,
-      }) => (
+      {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
         <TableContainer className={styles.tableContainer}>
           <TableToolbar>
             <TableToolbarContent>
@@ -255,7 +271,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
               <Layer className={styles.toolbarItem}>
                 <TableToolbarSearch
                   expanded
-                  onChange={onInputChange}
+                  onChange={(e) => setSearchString(e.target.value)}
                   placeholder={t("searchThisList", "Search this list")}
                   size="sm"
                 />
