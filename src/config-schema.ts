@@ -9,7 +9,7 @@ export const configSchema = {
   encounterTypeUuid: {
     _type: Type.String,
     _default: "39da3525-afe4-45ff-8977-c53b7b359158",
-    _description: "Uuid for the encounter type",
+    _description: "Orders encounter type uuid",
   },
   targetPatientDashboard: {
     redirectToResultsViewer: {
