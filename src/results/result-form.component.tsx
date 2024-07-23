@@ -134,54 +134,56 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
     };
 
     UpdateOrderResult(encounterPayload, orderDiscontinuationPayload).then(
-      (resp) => {
-        showSnackbar({
-          isLowContrast: true,
-          title: t("updateEncounter", "Update lab results"),
-          kind: "success",
-          subtitle: t(
-            "generateSuccessfully",
-            "You have successfully updated test results"
-          ),
-        });
+      (response) => {
+        if (response.ok) {
+          showSnackbar({
+            isLowContrast: true,
+            title: t("updateEncounter", "Update lab results"),
+            kind: "success",
+            subtitle: t(
+              "generateSuccessfully",
+              "You have successfully updated test results"
+            ),
+          });
 
-        const abortController = new AbortController();
-        setFulfillerStatus(order.uuid, "COMPLETED", abortController).then(
-          () => {
-            showSnackbar({
-              isLowContrast: true,
-              title: t("markOrderFulfillStatus", "Test order completed"),
-              kind: "success",
-              subtitle: t(
-                "testOrderCompletedSuccessfully",
-                "You have successfully completed the test order"
-              ),
-            });
-            mutate(
-              (key) =>
-                typeof key === "string" &&
-                key.startsWith(
-                  `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}`
+          const abortController = new AbortController();
+          setFulfillerStatus(order.uuid, "COMPLETED", abortController).then(
+            () => {
+              showSnackbar({
+                isLowContrast: true,
+                title: t("markOrderFulfillStatus", "Test order completed"),
+                kind: "success",
+                subtitle: t(
+                  "testOrderCompletedSuccessfully",
+                  "You have successfully completed the test order"
                 ),
-              undefined,
-              { revalidate: true }
-            );
-            closeOverlay();
-          },
-          (err) => {
-            showNotification({
-              title: t(
-                `errorMarkingOrderFulfillStatus`,
-                "Error occurred while marking order fulfill status"
-              ),
-              kind: "error",
-              critical: true,
-              description: err?.message,
-            });
-          }
-        );
+              });
+              mutate(
+                (key) =>
+                  typeof key === "string" &&
+                  key.startsWith(
+                    `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}`
+                  ),
+                undefined,
+                { revalidate: true }
+              );
+              closeOverlay();
+            },
+            (err) => {
+              showNotification({
+                title: t(
+                  `errorMarkingOrderFulfillStatus`,
+                  "Error occurred while marking order fulfill status"
+                ),
+                kind: "error",
+                critical: true,
+                description: err?.message,
+              });
+            }
+          );
 
-        return resp;
+          return response;
+        }
       },
       (err) => {
         showNotification({

@@ -1,4 +1,5 @@
 import {
+  FetchResponse,
   openmrsFetch,
   restBaseUrl,
   showNotification,
@@ -349,34 +350,40 @@ export async function UpdateEncounter(uuid: string, payload: any) {
 export async function UpdateOrderResult(
   encounterPayload: any,
   orderPayload: any
-) {
+): Promise<FetchResponse<any>> {
   const abortController = new AbortController();
-  return openmrsFetch(`${restBaseUrl}/order`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    signal: abortController.signal,
-    body: orderPayload,
-  })
-    .then((response) => {
-      if (response.status === 201) {
-        return openmrsFetch(`${restBaseUrl}/encounter`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          signal: abortController.signal,
-          body: encounterPayload,
-        });
-      }
-    })
-    .catch((error) => {
-      showNotification({
-        title: "Error",
-        kind: "error",
-        critical: true,
-        description: error?.message,
-      });
+
+  try {
+    const orderResponse = await openmrsFetch(`${restBaseUrl}/order`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      signal: abortController.signal,
+      body: orderPayload,
     });
+
+    if (orderResponse.status === 201) {
+      const encounterResponse = await openmrsFetch(`${restBaseUrl}/encounter`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        signal: abortController.signal,
+        body: encounterPayload,
+      });
+
+      return encounterResponse;
+    } else
+      throw new Error(
+        `Order update failed with status ${orderResponse.status}`
+      );
+  } catch (error) {
+    showNotification({
+      title: "Error",
+      kind: "error",
+      critical: true,
+      description: error?.message,
+    });
+  }
 }
