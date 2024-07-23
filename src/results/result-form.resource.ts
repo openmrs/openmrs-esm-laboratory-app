@@ -1,4 +1,8 @@
-import { openmrsFetch, restBaseUrl } from "@openmrs/esm-framework";
+import {
+  openmrsFetch,
+  restBaseUrl,
+  showNotification,
+} from "@openmrs/esm-framework";
 import useSWR from "swr";
 
 export interface ConceptResponse {
@@ -343,30 +347,36 @@ export async function UpdateEncounter(uuid: string, payload: any) {
 
 //TODO: the calls to update order and observations for results should be transactional to allow for rollback
 export async function UpdateOrderResult(
-  encounterUuid: string,
-  obsPayload: any,
+  encounterPayload: any,
   orderPayload: any
 ) {
   const abortController = new AbortController();
-  const updateOrderCall = await openmrsFetch(`${restBaseUrl}/order`, {
+  return openmrsFetch(`${restBaseUrl}/order`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     signal: abortController.signal,
     body: orderPayload,
-  });
-
-  if (updateOrderCall.status === 201) {
-    return await openmrsFetch(`${restBaseUrl}/encounter/${encounterUuid}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      signal: abortController.signal,
-      body: obsPayload,
+  })
+    .then((response) => {
+      if (response.status === 201) {
+        return openmrsFetch(`${restBaseUrl}/encounter`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          signal: abortController.signal,
+          body: encounterPayload,
+        });
+      }
+    })
+    .catch((error) => {
+      showNotification({
+        title: "Error",
+        kind: "error",
+        critical: true,
+        description: error?.message,
+      });
     });
-  } else {
-    // handle errors
-  }
 }
