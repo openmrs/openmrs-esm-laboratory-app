@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import styles from "./result-form.scss";
 import { Button, Form, Stack, ButtonSet } from "@carbon/react";
 import { useTranslation } from "react-i18next";
@@ -58,10 +58,24 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
     }
   }, [patient, patientUuid]);
 
+  const [showErrorNotification, setShowErrorNotification] = useState(false);
+
   const onSubmit = (data, e) => {
     e.preventDefault();
-    let obsValue = [];
 
+    const formValues = getValues();
+    const isEmptyForm = Object.values(formValues).every(
+      (value) => value === "" || value === null
+    );
+
+    if (isEmptyForm) {
+      setShowErrorNotification(true);
+      return;
+    }
+
+    setShowErrorNotification(false);
+
+    let obsValue = [];
     const submissionDatetime = new Date().toISOString();
 
     if (concept.set && concept.setMembers.length > 0) {
@@ -114,6 +128,7 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
         obsDatetime: submissionDatetime,
       });
     }
+
     const encounterPayload = {
       encounterDatetime: submissionDatetime,
       patient: patientUuid,
@@ -172,7 +187,7 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
             (err) => {
               showNotification({
                 title: t(
-                  `errorMarkingOrderFulfillStatus`,
+                  "errorMarkingOrderFulfillStatus",
                   "Error occurred while marking order fulfill status"
                 ),
                 kind: "error",
@@ -188,7 +203,8 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       (err) => {
         showNotification({
           title: t(
-            `errorUpdatingEncounter', 'Error occurred while updating test results`
+            "errorUpdatingEncounter",
+            "Error occurred while updating test results"
           ),
           kind: "error",
           critical: true,
@@ -197,9 +213,11 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       }
     );
   };
+
   if (isLoadingPatient || isLoadingConcepts) {
     return <Loader />;
   }
+
   return (
     <Form className={styles.form}>
       <Stack>
@@ -218,6 +236,11 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
           )}
         </section>
       </Stack>
+      {showErrorNotification && (
+        <div className={styles.errorNotification}>
+          {t("errorEmptyForm", "Please fill in all required fields")}
+        </div>
+      )}
       <ButtonSet className={isTablet ? styles.tablet : styles.desktop}>
         <Button
           className={styles.button}

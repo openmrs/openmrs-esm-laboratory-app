@@ -1,6 +1,11 @@
 import React from "react";
 import styles from "./result-form.scss";
-import { TextInput, Select, SelectItem } from "@carbon/react";
+import {
+  TextInput,
+  Select,
+  SelectItem,
+  InlineNotification,
+} from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import { ConceptReference } from "./result-form.resource";
 import { Controller } from "react-hook-form";
@@ -11,12 +16,14 @@ interface ResultFormFieldProps {
   register: any;
   errors: any;
 }
+
 const ResultFormField: React.FC<ResultFormFieldProps> = ({
   concept,
   control,
   errors,
 }) => {
   const { t } = useTranslation();
+
   const isTextOrNumeric = (concept) =>
     concept.datatype?.display === "Text" ||
     concept.datatype?.display === "Numeric";
@@ -45,9 +52,15 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
   return (
     <>
       {Object.keys(errors).length > 0 && (
-        <div className={styles.errorDiv}>
-          {t("allFieldsRequired", "All fields are required")}
-        </div>
+        <InlineNotification
+          className={styles.emptyFormError}
+          lowContrast
+          title={t("error", "Error")}
+          subtitle={
+            t("pleaseFillField", "Please fill at least one field") + "."
+          }
+          hideCloseButton
+        />
       )}
       {isTextOrNumeric(concept) && (
         <Controller
@@ -88,7 +101,6 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
               {...field}
               type="text"
               labelText={concept?.display}
-              rules={{ required: true }}
             >
               <SelectItem
                 text={t("chooseOption", "Choose an Option")}
