@@ -6,6 +6,11 @@ export const configSchema = {
     _default: "52a447d3-a64a-11e3-9aeb-50e549534c5e",
     _description: "Uuid for orderType",
   },
+  laboratoryResultEncounterTypeUuid: {
+    _type: Type.String,
+    _default: "3596fafb-6f6f-4396-8c87-6e63a0f1bd71",
+    _description: "Uuid for lab resulting encounter type",
+  },
   targetPatientDashboard: {
     redirectToResultsViewer: {
       _type: Type.String,
@@ -26,5 +31,6 @@ export const configSchema = {
 
 export type Config = {
   laboratoryOrderTypeUuid: string;
+  laboratoryResultEncounterTypeUuid: string;
   targetPatientDashboard: Object;
 };
