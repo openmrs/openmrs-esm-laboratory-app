@@ -1,4 +1,9 @@
-import { openmrsFetch, restBaseUrl } from "@openmrs/esm-framework";
+import {
+  FetchResponse,
+  openmrsFetch,
+  restBaseUrl,
+  showNotification,
+} from "@openmrs/esm-framework";
 import useSWR from "swr";
 
 export interface ConceptResponse {
@@ -343,30 +348,42 @@ export async function UpdateEncounter(uuid: string, payload: any) {
 
 //TODO: the calls to update order and observations for results should be transactional to allow for rollback
 export async function UpdateOrderResult(
-  encounterUuid: string,
-  obsPayload: any,
+  encounterPayload: any,
   orderPayload: any
-) {
+): Promise<FetchResponse<any>> {
   const abortController = new AbortController();
-  const updateOrderCall = await openmrsFetch(`${restBaseUrl}/order`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    signal: abortController.signal,
-    body: orderPayload,
-  });
 
-  if (updateOrderCall.status === 201) {
-    return await openmrsFetch(`${restBaseUrl}/encounter/${encounterUuid}`, {
+  try {
+    const orderResponse = await openmrsFetch(`${restBaseUrl}/order`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       signal: abortController.signal,
-      body: obsPayload,
+      body: orderPayload,
     });
-  } else {
-    // handle errors
+
+    if (orderResponse.status === 201) {
+      const encounterResponse = await openmrsFetch(`${restBaseUrl}/encounter`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        signal: abortController.signal,
+        body: encounterPayload,
+      });
+
+      return encounterResponse;
+    } else
+      throw new Error(
+        `Order update failed with status ${orderResponse.status}`
+      );
+  } catch (error) {
+    showNotification({
+      title: "Error",
+      kind: "error",
+      critical: true,
+      description: error?.message,
+    });
   }
 }

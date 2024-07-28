@@ -11,6 +11,7 @@ import {
   useConfig,
   useLayoutType,
   usePatient,
+  useSession,
 } from "@openmrs/esm-framework";
 import {
   useGetOrderConceptByUuid,
@@ -31,7 +32,8 @@ interface ResultFormProps {
 
 const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   const { t } = useTranslation();
-  const { laboratoryOrderTypeUuid } = useConfig<Config>();
+  const session = useSession();
+  const { laboratoryOrderTypeUuid, encounterTypeUuid } = useConfig<Config>();
   const {
     control,
     register,
@@ -59,6 +61,8 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   const onSubmit = (data, e) => {
     e.preventDefault();
     let obsValue = [];
+
+    const submissionDatetime = new Date().toISOString();
 
     if (concept.set && concept.setMembers.length > 0) {
       let groupMembers = [];
@@ -107,10 +111,14 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
         status: "FINAL",
         order: { uuid: order.uuid },
         value: value,
+        obsDatetime: submissionDatetime,
       });
     }
-
-    const obsPayload = {
+    const encounterPayload = {
+      encounterDatetime: submissionDatetime,
+      patient: patientUuid,
+      encounterType: encounterTypeUuid,
+      location: session.sessionLocation.uuid,
       obs: obsValue,
     };
 
@@ -125,13 +133,9 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       orderer: order.orderer,
     };
 
-    UpdateOrderResult(
-      order.encounter.uuid,
-      obsPayload,
-      orderDiscontinuationPayload
-    )
-      .then(
-        (resp) => {
+    UpdateOrderResult(encounterPayload, orderDiscontinuationPayload).then(
+      (response) => {
+        if (response.ok) {
           showSnackbar({
             isLowContrast: true,
             title: t("updateEncounter", "Update lab results"),
@@ -141,56 +145,57 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
               "You have successfully updated test results"
             ),
           });
-          return resp;
-        },
-        (err) => {
-          showNotification({
-            title: t(
-              `errorUpdatingEncounter', 'Error occurred while updating test results`
-            ),
-            kind: "error",
-            critical: true,
-            description: err?.message,
-          });
-        }
-      )
-      .then((resp) => {
-        const abortController = new AbortController();
-        setFulfillerStatus(order.uuid, "COMPLETED", abortController).then(
-          () => {
-            showSnackbar({
-              isLowContrast: true,
-              title: t("markOrderFulfillStatus", "Test order completed"),
-              kind: "success",
-              subtitle: t(
-                "testOrderCompletedSuccessfully",
-                "You have successfully completed the test order"
-              ),
-            });
-            mutate(
-              (key) =>
-                typeof key === "string" &&
-                key.startsWith(
-                  `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}`
+
+          const abortController = new AbortController();
+          setFulfillerStatus(order.uuid, "COMPLETED", abortController).then(
+            () => {
+              showSnackbar({
+                isLowContrast: true,
+                title: t("markOrderFulfillStatus", "Test order completed"),
+                kind: "success",
+                subtitle: t(
+                  "testOrderCompletedSuccessfully",
+                  "You have successfully completed the test order"
                 ),
-              undefined,
-              { revalidate: true }
-            );
-            closeOverlay();
-          },
-          (err) => {
-            showNotification({
-              title: t(
-                `errorMarkingOrderFulfillStatus`,
-                "Error occurred while marking order fulfill status"
-              ),
-              kind: "error",
-              critical: true,
-              description: err?.message,
-            });
-          }
-        );
-      });
+              });
+              mutate(
+                (key) =>
+                  typeof key === "string" &&
+                  key.startsWith(
+                    `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}`
+                  ),
+                undefined,
+                { revalidate: true }
+              );
+              closeOverlay();
+            },
+            (err) => {
+              showNotification({
+                title: t(
+                  `errorMarkingOrderFulfillStatus`,
+                  "Error occurred while marking order fulfill status"
+                ),
+                kind: "error",
+                critical: true,
+                description: err?.message,
+              });
+            }
+          );
+
+          return response;
+        }
+      },
+      (err) => {
+        showNotification({
+          title: t(
+            `errorUpdatingEncounter', 'Error occurred while updating test results`
+          ),
+          kind: "error",
+          critical: true,
+          description: err?.message,
+        });
+      }
+    );
   };
   if (isLoadingPatient || isLoadingConcepts) {
     return <Loader />;
