@@ -192,7 +192,10 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
         <CustomOverflowMenu menuTitle={<OverflowMenuVertical />}>
           <ExtensionSlot
             className={styles.menuLink}
-            state={{ order: paginatedLabOrders[index] }}
+            state={{
+              order: paginatedLabOrders[index],
+              patientUuid: order.patientUuid,
+            }}
             name={actionsSlotName}
           />
         </CustomOverflowMenu>
