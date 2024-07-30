@@ -22,7 +22,7 @@ const SendBackPatientAction: React.FC<SendBackPatientActionProps> = ({
 
   return (
     <OverflowMenuItem
-      itemText={t("sendBack", "Send Back Patient")}
+      itemText={t("addToQueue", "Add to queue")}
       onClick={launchModal}
       className={styles.menuItem}
     />
