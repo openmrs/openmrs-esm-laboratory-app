@@ -1,5 +1,6 @@
 {
   "actions": "Actions",
+  "addToQueue": "Add to queue",
   "all": "All",
   "allFieldsRequired": "All fields are required",
   "cancel": "Cancel",
@@ -47,7 +48,6 @@
   "results": "Results",
   "save": "Save",
   "searchThisList": "Search this list",
-  "sendBack": "Send Back Patient",
   "status": "Status",
   "tabletOverlay": "Tablet overlay",
   "test": "Test",

@@ -6,7 +6,6 @@ const CompletedLabRequestsTable: React.FC = () => {
     <OrdersDataTable
       fulfillerStatus="COMPLETED"
       excludeCanceledAndDiscontinuedOrders={false}
-      actionsSlotName="send-back-patient-toqueue-actions-slot"
     />
   );
 };

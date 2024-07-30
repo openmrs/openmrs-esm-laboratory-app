@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import styles from "./actions.scss";
 import { showModal } from "@openmrs/esm-framework";
-import { OverflowMenuItem } from "@carbon/react";
+import { Button } from "@carbon/react";
 
 interface SendBackPatientActionProps {
   patientUuid: string;
@@ -21,11 +21,14 @@ const SendBackPatientAction: React.FC<SendBackPatientActionProps> = ({
   };
 
   return (
-    <OverflowMenuItem
-      itemText={t("addToQueue", "Add to queue")}
+    <Button
       onClick={launchModal}
-      className={styles.menuItem}
-    />
+      kind="tertiary"
+      className={styles.smallButton}
+      size="sm"
+    >
+      {t("addToAQueue", "Add to a queue")}
+    </Button>
   );
 };
 
