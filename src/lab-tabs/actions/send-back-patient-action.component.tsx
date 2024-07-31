@@ -24,7 +24,7 @@ const SendBackPatientAction: React.FC<SendBackPatientActionProps> = ({
     <Button
       onClick={launchModal}
       kind="tertiary"
-      className={styles.smallButton}
+      className={styles.addBtn}
       size="sm"
     >
       {t("addToAQueue", "Add to a queue")}
