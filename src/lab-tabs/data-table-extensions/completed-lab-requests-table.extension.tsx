@@ -8,12 +8,7 @@ const CompletedLabRequestsTable: React.FC = () => {
       excludeColumns={[]}
       useActivatedOnOrAfterDateFilter={true}
       excludeCanceledAndDiscontinuedOrders={false}
-      actions={
-        [
-          // { actionName: "labResultsForm", displayPosition: 0 },
-          // { actionName: "rejectLabRequest", displayPosition: 1 },
-        ]
-      }
+      actions={[]}
     />
   );
 };
