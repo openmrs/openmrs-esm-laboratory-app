@@ -24,7 +24,8 @@ import {
   DatePickerInput,
 } from "@carbon/react";
 import {
-  ConfigurableLink,
+  formatDate,
+  parseDate,
   useConfig,
   usePagination,
 } from "@openmrs/esm-framework";
@@ -56,13 +57,26 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     activatedOnOrAfterDate
   );
 
+  const flattenedLabOrders = useMemo(() => {
+    return labOrders.map((eachObject) => {
+      return {
+        ...eachObject,
+        dateActivated: formatDate(parseDate(eachObject.dateActivated)),
+        patientName: eachObject.patient?.display.split("-")[1],
+        patientUuid: eachObject.patient?.uuid,
+        status: eachObject.fulfillerStatus ?? "--",
+        orderer: eachObject.orderer?.display.split("-")[1],
+      };
+    });
+  }, [labOrders]);
+
   function groupOrdersById(orders) {
     if (orders && orders.length > 0) {
       const groupedOrders = orders.reduce((acc, item) => {
-        if (!acc[item.patient.uuid]) {
-          acc[item.patient.uuid] = [];
+        if (!acc[item.patientUuid]) {
+          acc[item.patientUuid] = [];
         }
-        acc[item.patient.uuid].push(item);
+        acc[item.patientUuid].push(item);
         return acc;
       }, {});
 
@@ -75,7 +89,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
       return [];
     }
   }
-  const groupedOrdersByPatient = groupOrdersById(labOrders);
+  const groupedOrdersByPatient = groupOrdersById(flattenedLabOrders);
   const searchResults = useSearchGroupedResults(
     groupedOrdersByPatient,
     searchString
@@ -145,17 +159,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
       patientName: patient.orders[0].patient?.display?.split("-")[1],
       orders: patient.orders,
       totalOrders: patient.orders?.length,
-      patient: (
-        <ConfigurableLink
-          to={`\${openmrsSpaBase}/patient/${patient?.patientId}/chart/${
-            props.fulfillerStatus == "COMPLETED"
-              ? redirectToResultsViewer
-              : redirectToOrders
-          }`}
-        >
-          {patient.orders[0].patient?.display?.split("-")[1]}
-        </ConfigurableLink>
-      ),
     }));
   }, [
     paginatedLabOrders,
@@ -168,12 +171,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     return <DataTableSkeleton role="progressbar" />;
   }
   return (
-    <DataTable
-      rows={tableRows}
-      headers={columns}
-      useZebraStyles
-      overflowMenuOnHover={false}
-    >
+    <DataTable rows={tableRows} headers={columns} useZebraStyles>
       {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
         <TableContainer className={styles.tableContainer}>
           <TableToolbar>
@@ -292,7 +290,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
             page={currentPage}
             pageSize={currentPageSize}
             pageSizes={pageSizes}
-            totalItems={labOrders?.length}
+            totalItems={groupedOrdersByPatient?.length}
             className={styles.pagination}
             onChange={({ pageSize, page }) => {
               if (pageSize !== currentPageSize) {

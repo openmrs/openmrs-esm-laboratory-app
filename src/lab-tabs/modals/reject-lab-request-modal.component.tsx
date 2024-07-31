@@ -75,7 +75,7 @@ const RejectLabRequestModal: React.FC<RejectLabRequestModalProps> = ({
           <div className={styles.modalBody}>
             <Layer>
               <p className={styles.section}>
-                {`${t("testType", "Test Type")}: ${order.concept.display}`}
+                {`${t("testType", "Test Type")}: ${order.concept?.display}`}
               </p>
             </Layer>
             <br />
