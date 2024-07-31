@@ -13,11 +13,10 @@ import ResultForm from "../../results/result-form.component";
 const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
   const orders = props.groupedOrders?.orders;
   const patientId = props.groupedOrders?.patientId;
-
   const { t } = useTranslation();
   return (
     <div className={styles.ordersContainer}>
-      {orders.length > 0 &&
+      {orders &&
         orders.map((row) => (
           <Tile className={styles.orderTile}>
             <div>
