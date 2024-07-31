@@ -10,6 +10,9 @@ import {
   TableContainer,
   TableHead,
   TableHeader,
+  TableExpandHeader,
+  TableExpandRow,
+  TableExpandedRow,
   TableRow,
   Tile,
   Dropdown,
@@ -20,41 +23,22 @@ import {
   DatePicker,
   DatePickerInput,
 } from "@carbon/react";
-import { OverflowMenuVertical } from "@carbon/react/icons";
 import {
   ConfigurableLink,
-  CustomOverflowMenu,
-  ExtensionSlot,
-  formatDate,
-  parseDate,
   useConfig,
-  useDebounce,
   usePagination,
 } from "@openmrs/esm-framework";
 import styles from "./orders-data-table.scss";
-import { getStatusColor } from "../../utils";
-import { FulfillerStatus } from "../../types";
-import { useLabOrders } from "../../laboratory-resource";
+import { FulfillerStatus, OrdersDataTableProps } from "../../types";
+import {
+  useLabOrders,
+  useSearchGroupedResults,
+} from "../../laboratory-resource";
 import dayjs from "dayjs";
 import { isoDateTimeString } from "../../constants";
-import useSearchResults from "./orders-data-table.resource";
-interface OrdersDataTableProps {
-  useFilter?: boolean;
-  actionsSlotName?: string;
-  excludeColumns?: string[];
-  fulfillerStatus?: FulfillerStatus;
-  excludeCanceledAndDiscontinuedOrders?: boolean;
-  useActivatedOnOrAfterDateFilter?: boolean;
-}
+import ListOrderDetails from "./listOrderDetails.component";
 
-const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
-  useFilter = false,
-  actionsSlotName,
-  excludeColumns = [],
-  fulfillerStatus,
-  excludeCanceledAndDiscontinuedOrders = true,
-  useActivatedOnOrAfterDateFilter = true,
-}) => {
+const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
   const {
     targetPatientDashboard: { redirectToResultsViewer, redirectToOrders },
@@ -67,29 +51,34 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
   const [searchString, setSearchString] = useState<string>("");
 
   const { labOrders, isLoading } = useLabOrders(
-    useFilter ? filter : fulfillerStatus,
-    excludeCanceledAndDiscontinuedOrders,
+    props.useFilter ? filter : props.fulfillerStatus,
+    props.excludeCanceledAndDiscontinuedOrders,
     activatedOnOrAfterDate
   );
 
-  const flattenedLabOrders = useMemo(() => {
-    return labOrders.map((eachObject) => {
-      return {
-        ...eachObject,
-        dateActivated: formatDate(parseDate(eachObject.dateActivated)),
-        patient: eachObject.patient?.display.split("-")[1],
-        patientUuid: eachObject.patient?.uuid,
-        status: eachObject.fulfillerStatus ?? "--",
-        orderer: eachObject.orderer?.display.split("-")[1],
-      };
-    });
-  }, [labOrders]);
+  function groupOrdersById(orders) {
+    if (orders && orders.length > 0) {
+      const groupedOrders = orders.reduce((acc, item) => {
+        if (!acc[item.patient.uuid]) {
+          acc[item.patient.uuid] = [];
+        }
+        acc[item.patient.uuid].push(item);
+        return acc;
+      }, {});
 
-  const debouncedSearchString = useDebounce(searchString);
-
-  const searchResults = useSearchResults(
-    flattenedLabOrders,
-    debouncedSearchString
+      // Convert the result to an array of objects with patientId and orders
+      return Object.keys(groupedOrders).map((patientId) => ({
+        patientId: patientId,
+        orders: groupedOrders[patientId],
+      }));
+    } else {
+      return [];
+    }
+  }
+  const groupedOrdersByPatient = groupOrdersById(labOrders);
+  const searchResults = useSearchGroupedResults(
+    groupedOrdersByPatient,
+    searchString
   );
 
   const orderStatuses = [
@@ -129,19 +118,10 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
 
   const columns = useMemo(() => {
     return [
-      { key: "date", header: t("date", "Date") },
-      {
-        key: "orderNumber",
-        header: t("orderNumber", "Order Number"),
-      },
-      { key: "patient", header: t("patient", "Patient") },
-      { key: "test", header: t("test", "Test") },
-      { key: "status", header: t("status", "Status") },
-      { key: "orderedBy", header: t("orderedBy", "Ordered By") },
-      { key: "urgency", header: t("urgency", "Urgency") },
-      { key: "actions", header: t("actions", "Actions") },
-    ].filter((column) => !excludeColumns.includes(column.key));
-  }, [excludeColumns, t]);
+      { id: 0, header: t("patient", "Patient"), key: "patientName" },
+      { id: 1, header: t("totalorders", "Total Orders"), key: "totalOrders" },
+    ];
+  }, [props.excludeColumns, t]);
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
@@ -160,49 +140,28 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
     );
 
   const tableRows = useMemo(() => {
-    return paginatedLabOrders.map((order, index) => ({
-      id: order.uuid,
-      date: (
-        <span className={styles.singleLineDisplay}>{order.dateActivated}</span>
-      ),
+    return paginatedLabOrders.map((patient, index) => ({
+      id: patient.patientId,
+      patientName: patient.orders[0].patient?.display?.split("-")[1],
+      orders: patient.orders,
+      totalOrders: patient.orders?.length,
       patient: (
         <ConfigurableLink
-          to={`\${openmrsSpaBase}/patient/${order?.patientUuid}/chart/${
-            fulfillerStatus == "COMPLETED"
+          to={`\${openmrsSpaBase}/patient/${patient?.patientId}/chart/${
+            props.fulfillerStatus == "COMPLETED"
               ? redirectToResultsViewer
               : redirectToOrders
           }`}
         >
-          {order.patient}
+          {patient.orders[0].patient?.display?.split("-")[1]}
         </ConfigurableLink>
-      ),
-      orderNumber: order.orderNumber,
-      test: order.concept?.display,
-      status: (
-        <span
-          className={styles.statusContainer}
-          style={{ color: `${getStatusColor(order.fulfillerStatus)}` }}
-        >
-          {order.fulfillerStatus}
-        </span>
-      ),
-      orderedBy: order.orderer,
-      urgency: order.urgency,
-      actions: (
-        <CustomOverflowMenu menuTitle={<OverflowMenuVertical />}>
-          <ExtensionSlot
-            className={styles.menuLink}
-            state={{ order: paginatedLabOrders[index] }}
-            name={actionsSlotName}
-          />
-        </CustomOverflowMenu>
       ),
     }));
   }, [
     paginatedLabOrders,
     redirectToResultsViewer,
     redirectToOrders,
-    actionsSlotName,
+    props.actionsSlotName,
   ]);
 
   if (isLoading) {
@@ -213,7 +172,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
       rows={tableRows}
       headers={columns}
       useZebraStyles
-      overflowMenuOnHover={true}
+      overflowMenuOnHover={false}
     >
       {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
         <TableContainer className={styles.tableContainer}>
@@ -221,7 +180,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
             <TableToolbarContent>
               {
                 <Layer className={styles.toolbarItem}>
-                  {useFilter && (
+                  {props.useFilter && (
                     <Dropdown
                       id="orderStatusFilter"
                       initialSelectedItem={
@@ -241,7 +200,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
                       itemToString={(item) => item?.display}
                     />
                   )}
-                  {useActivatedOnOrAfterDateFilter && (
+                  {props.useActivatedOnOrAfterDateFilter && (
                     <>
                       <p>
                         {t(
@@ -281,6 +240,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
           <Table {...getTableProps()} className={styles.tableWrapper}>
             <TableHead>
               <TableRow>
+                <TableExpandHeader />
                 {headers.map((header) => (
                   <TableHeader {...getHeaderProps({ header })}>
                     {header.header?.content ?? header.header}
@@ -292,13 +252,21 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
               {rows.map((row, index) => {
                 return (
                   <React.Fragment key={row.id}>
-                    <TableRow {...getRowProps({ row })} key={row.id}>
+                    <TableExpandRow {...getRowProps({ row })} key={row.id}>
                       {row.cells.map((cell) => (
                         <TableCell key={cell.id}>
                           {cell.value?.content ?? cell.value}
                         </TableCell>
                       ))}
-                    </TableRow>
+                    </TableExpandRow>
+                    <TableExpandedRow colSpan={headers.length + 1}>
+                      <ListOrderDetails
+                        actions={props.actions}
+                        groupedOrders={groupedOrdersByPatient.find(
+                          (item) => item.patientId === row.id
+                        )}
+                      />
+                    </TableExpandedRow>
                   </React.Fragment>
                 );
               })}

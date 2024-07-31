@@ -3,7 +3,15 @@ import OrdersDataTable from "../../components/orders-table/orders-data-table.com
 
 const TestsOrderedTable: React.FC = () => {
   return (
-    <OrdersDataTable actionsSlotName="tests-ordered-actions-slot" useFilter />
+    <OrdersDataTable
+      excludeColumns={[]}
+      actionsSlotName="tests-ordered-actions-slot"
+      useFilter
+      actions={[
+        { actionName: "pickupLabRequest", displayPosition: 0 },
+        { actionName: "rejectLabRequest", displayPosition: 1 },
+      ]}
+    />
   );
 };
 

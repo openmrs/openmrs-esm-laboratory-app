@@ -1,5 +1,5 @@
 import { openmrsFetch, restBaseUrl, useConfig } from "@openmrs/esm-framework";
-import { FulfillerStatus } from "./types";
+import { FulfillerStatus, GroupedOrders } from "./types";
 import { Order } from "@openmrs/esm-patient-common-lib";
 import useSWR from "swr";
 import { useMemo } from "react";
@@ -49,7 +49,28 @@ export function useLabOrders(
     isValidating,
   };
 }
+export function useSearchGroupedResults(
+  data: Array<GroupedOrders>,
+  searchString: string
+) {
+  const searchResults = useMemo(() => {
+    if (searchString && searchString.trim() !== "") {
+      // Normalize the search string to lowercase
+      const lowerSearchString = searchString.toLowerCase();
+      return data.filter((orderGroup) =>
+        orderGroup.orders.some(
+          (order) =>
+            order.orderNumber.toLowerCase().includes(lowerSearchString) ||
+            order.patient.display.toLowerCase().includes(lowerSearchString)
+        )
+      );
+    }
 
+    return data;
+  }, [searchString, data]);
+
+  return searchResults;
+}
 export function setFulfillerStatus(
   orderId: string,
   status: FulfillerStatus,
