@@ -8,8 +8,8 @@ const TestsOrderedTable: React.FC = () => {
       actionsSlotName="tests-ordered-actions-slot"
       useFilter
       actions={[
-        { actionName: "pickupLabRequest", displayPosition: 0 },
-        { actionName: "rejectLabRequest", displayPosition: 1 },
+        { actionName: "pickupLabRequest", order: 0 },
+        { actionName: "rejectLabRequest", order: 1 },
       ]}
     />
   );

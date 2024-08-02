@@ -9,8 +9,8 @@ const InProgressLabRequestsTable: React.FC = () => {
       useActivatedOnOrAfterDateFilter={true}
       fulfillerStatus="IN_PROGRESS"
       actions={[
-        { actionName: "labResultsForm", displayPosition: 0 },
-        { actionName: "rejectLabRequest", displayPosition: 1 },
+        { actionName: "labResultsForm", order: 0 },
+        { actionName: "rejectLabRequest", order: 1 },
       ]}
     />
   );

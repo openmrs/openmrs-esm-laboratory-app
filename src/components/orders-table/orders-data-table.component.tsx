@@ -135,7 +135,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
       { id: 0, header: t("patient", "Patient"), key: "patientName" },
       { id: 1, header: t("totalorders", "Total Orders"), key: "totalOrders" },
     ];
-  }, [props.excludeColumns, t]);
+  }, [t]);
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
