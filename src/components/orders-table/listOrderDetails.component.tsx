@@ -9,7 +9,6 @@ import { ListOrdersDetailsProps } from "../../types";
 import { launchOverlay } from "../overlay/store";
 import ResultForm from "../../results/result-form.component";
 
-// can render orders of a patient
 const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
   const orders = props.groupedOrders?.orders;
   const patientId = props.groupedOrders?.patientId;
