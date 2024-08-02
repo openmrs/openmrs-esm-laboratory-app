@@ -38,7 +38,7 @@ import { useLabOrders } from "../../laboratory-resource";
 import dayjs from "dayjs";
 import { isoDateTimeString } from "../../constants";
 import useSearchResults from "./orders-data-table.resource";
-import SendBackPatientAction from "../../lab-tabs/actions/send-back-patient-action.component";
+
 interface OrdersDataTableProps {
   useFilter?: boolean;
   actionsSlotName?: string;
@@ -191,9 +191,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
       urgency: order.urgency,
       actions: (
         <>
-          {fulfillerStatus === "COMPLETED" && (
-            <SendBackPatientAction patientUuid={order.patientUuid} />
-          )}
           <ExtensionSlot
             className={styles.menuLink}
             state={{
@@ -210,6 +207,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
     redirectToResultsViewer,
     redirectToOrders,
     actionsSlotName,
+    fulfillerStatus,
   ]);
 
   if (isLoading) {
