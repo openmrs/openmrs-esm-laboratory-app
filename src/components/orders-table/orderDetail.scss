@@ -1,0 +1,15 @@
+@use '@carbon/layout';
+@use '@carbon/colors';
+@use '@openmrs/esm-styleguide/src/vars' as *;
+  
+  .bodyLong01 {
+    font-size: 13px !important;
+  }
+  
+  .displayValue {
+    color: #525252;
+    font-weight: bold;
+    width: layout.$spacing-05;
+    height: layout.$spacing-05;
+  }
+  
