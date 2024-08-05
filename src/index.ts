@@ -99,6 +99,10 @@ export const rejectLabRequestAction = getAsyncLifecycle(
   () => import("./lab-tabs/actions/reject-lab-request-action.component"),
   options
 );
+export const addPatientToQueue = getAsyncLifecycle(
+  () => import("./lab-tabs/actions/add-patient-to-queue.component"),
+  options
+);
 
 export function startupApp() {
   defineConfigSchema(moduleName, configSchema);

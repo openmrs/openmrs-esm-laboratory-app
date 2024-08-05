@@ -38,7 +38,6 @@ import { useLabOrders } from "../../laboratory-resource";
 import dayjs from "dayjs";
 import { isoDateTimeString } from "../../constants";
 import useSearchResults from "./orders-data-table.resource";
-
 interface OrdersDataTableProps {
   useFilter?: boolean;
   actionsSlotName?: string;
@@ -207,7 +206,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
     redirectToResultsViewer,
     redirectToOrders,
     actionsSlotName,
-    fulfillerStatus,
   ]);
 
   if (isLoading) {

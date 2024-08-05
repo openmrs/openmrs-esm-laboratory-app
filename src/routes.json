@@ -93,6 +93,11 @@
             "slot": "tests-ordered-actions-slot"
         },
         {
+            "name": "add-patient-to-queue-button",
+            "component": "addPatientToQueue",
+            "slot": "add-patient-to-queue-slot"
+        },
+        {
             "name": "reject-lab-request-tests-ordered-action",
             "component": "rejectLabRequestAction",
             "slot": "tests-ordered-actions-slot"
