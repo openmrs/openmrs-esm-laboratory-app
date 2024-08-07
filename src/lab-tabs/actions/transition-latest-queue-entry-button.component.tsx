@@ -5,13 +5,13 @@ import { showModal } from "@openmrs/esm-framework";
 import { Button } from "@carbon/react";
 import { AirlineManageGates } from "@carbon/react/icons";
 
-interface AddPatientToQueueButtonProps {
+interface TransitionLatestQueueEntryButtonProps {
   patientUuid: string;
 }
 
-const AddPatientToQueueButton: React.FC<AddPatientToQueueButtonProps> = ({
-  patientUuid,
-}) => {
+const TransitionLatestQueueEntryButton: React.FC<
+  TransitionLatestQueueEntryButtonProps
+> = ({ patientUuid }) => {
   const { t } = useTranslation();
 
   const launchModal = () => {
@@ -29,9 +29,9 @@ const AddPatientToQueueButton: React.FC<AddPatientToQueueButtonProps> = ({
       size="sm"
       renderIcon={() => <AirlineManageGates size={18} />}
     >
-      {t("addToAQueue", "Add to a queue")}
+      {t("transition", "Transition")}
     </Button>
   );
 };
 
-export default AddPatientToQueueButton;
+export default TransitionLatestQueueEntryButton;
