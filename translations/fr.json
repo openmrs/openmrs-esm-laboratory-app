@@ -1,6 +1,5 @@
 {
   "actions": "Actions",
-  "addToAQueue": "Add to a queue",
   "all": "All",
   "allFieldsRequired": "All fields are required",
   "cancel": "Cancel",
@@ -54,6 +53,7 @@
   "testOrderCompletedSuccessfully": "You have successfully completed the test order",
   "testsOrdered": "Tests ordered",
   "testType": "Test Type",
+  "transition": "Transition",
   "updateEncounter": "Update lab results",
   "urgency": "Urgency",
   "view": "View ",
