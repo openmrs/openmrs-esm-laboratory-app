@@ -99,6 +99,11 @@ export const rejectLabRequestAction = getAsyncLifecycle(
   () => import("./lab-tabs/actions/reject-lab-request-action.component"),
   options
 );
+export const trasitionPatientToLatestQueue = getAsyncLifecycle(
+  () =>
+    import("./lab-tabs/actions/transition-latest-queue-entry-button.component"),
+  options
+);
 
 export function startupApp() {
   defineConfigSchema(moduleName, configSchema);

@@ -53,6 +53,7 @@
   "testOrderCompletedSuccessfully": "You have successfully completed the test order",
   "testsOrdered": "Tests ordered",
   "testType": "Test Type",
+  "transition": "Transition",
   "totalorders": "Total Orders",
   "updateEncounter": "Update lab results",
   "urgency": "Urgency",

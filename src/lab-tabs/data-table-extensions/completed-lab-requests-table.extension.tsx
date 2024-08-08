@@ -5,10 +5,8 @@ const CompletedLabRequestsTable: React.FC = () => {
   return (
     <OrdersDataTable
       fulfillerStatus="COMPLETED"
-      excludeColumns={[]}
-      useActivatedOnOrAfterDateFilter={true}
       excludeCanceledAndDiscontinuedOrders={false}
-      actions={[]}
+      actionsSlotName="transition-patient-to-latest-queue-button-slot"
     />
   );
 };
