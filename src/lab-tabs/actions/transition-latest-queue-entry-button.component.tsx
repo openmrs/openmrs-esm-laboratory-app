@@ -15,7 +15,7 @@ const TransitionLatestQueueEntryButton: React.FC<
   const { t } = useTranslation();
 
   const launchModal = () => {
-    const dispose = showModal("add-patient-to-queue-entry-modal", {
+    const dispose = showModal("transition-patient-to-latest-queue-modal", {
       closeModal: () => dispose(),
       patientUuid,
     });
