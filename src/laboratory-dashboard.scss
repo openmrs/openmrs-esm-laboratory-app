@@ -1,0 +1,8 @@
+@use '@carbon/layout';
+@use '~@openmrs/esm-styleguide/src/vars' as *;
+
+.pageHeader {
+    border: 1px solid $ui-03;
+    border-left: 0px;
+    margin-bottom: layout.$spacing-07;
+}
