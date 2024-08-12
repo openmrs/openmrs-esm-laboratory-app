@@ -1,9 +1,9 @@
-@use '@carbon/styles/scss/spacing';
-@use '@carbon/styles/scss/type';
+@use '@carbon/layout';
+@use '@carbon/type';
 @import '~@openmrs/esm-styleguide/src/vars';
 
 .container {
-  margin: spacing.$spacing-05;
+  margin: layout.$spacing-05;
 }
 
 .button {
@@ -23,7 +23,7 @@
 }
 
 .tablet {
-  padding: 1.5rem spacing.$spacing-05;
+  padding: 1.5rem layout.$spacing-05;
   background-color: $ui-02;
   margin-top: auto;
 }
@@ -31,6 +31,10 @@
 .desktop {
   padding: 0rem;
   margin-top: auto;
+}
+
+.emptyFormError {
+  margin: 0.625rem 0;
 }
 
 .form {

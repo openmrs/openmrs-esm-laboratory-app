@@ -1,8 +1,15 @@
-import React, { useMemo } from "react";
-import styles from "./result-form.scss";
-import { Button, Form, Stack, ButtonSet } from "@carbon/react";
+import React, { useMemo, useState } from "react";
+import { mutate } from "swr";
+import {
+  Button,
+  ButtonSet,
+  Form,
+  InlineNotification,
+  Stack,
+} from "@carbon/react";
 import { useTranslation } from "react-i18next";
-import { closeOverlay } from "../components/overlay/store";
+import { useForm } from "react-hook-form";
+import { Order } from "@openmrs/esm-patient-common-lib";
 import {
   ExtensionSlot,
   restBaseUrl,
@@ -17,13 +24,12 @@ import {
   useGetOrderConceptByUuid,
   updateOrderResult,
 } from "./result-form.resource";
-import ResultFormField from "./result-form-field.component";
-import { useForm } from "react-hook-form";
-import { Order } from "@openmrs/esm-patient-common-lib";
-import Loader from "../components/loader/loader.component";
-import { setFulfillerStatus } from "../laboratory-resource";
-import { mutate } from "swr";
 import { Config } from "../config-schema";
+import { closeOverlay } from "../components/overlay/store";
+import { setFulfillerStatus } from "../laboratory-resource";
+import Loader from "../components/loader/loader.component";
+import ResultFormField from "./result-form-field.component";
+import styles from "./result-form.scss";
 
 interface ResultFormProps {
   patientUuid: string;
@@ -34,34 +40,47 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
   const { t } = useTranslation();
   const session = useSession();
   const { laboratoryOrderTypeUuid, encounterTypeUuid } = useConfig<Config>();
+  const [showEmptyFormErrorNotification, setShowEmptyFormErrorNotification] =
+    useState(false);
+
   const {
     control,
     register,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting },
     getValues,
     handleSubmit,
   } = useForm<{ testResult: string }>({
     defaultValues: {},
   });
+
   const isTablet = useLayoutType() === "tablet";
   const { patient, isLoading: isLoadingPatient } = usePatient(patientUuid);
   const { concept, isLoading: isLoadingConcepts } = useGetOrderConceptByUuid(
     order.concept.uuid
   );
-  const bannerState = useMemo(() => {
-    if (patient) {
-      return {
-        patient,
-        patientUuid,
-        hideActionsOverflow: true,
-      };
+
+  const bannerState = useMemo(
+    () => ({
+      patient,
+      patientUuid,
+      hideActionsOverflow: true,
+    }),
+    [patient, patientUuid]
+  );
+
+  const onSubmit = () => {
+    const formValues = getValues();
+
+    const isEmptyForm = Object.values(formValues).every(
+      (value) => value === "" || value === null || value === undefined
+    );
+
+    if (isEmptyForm) {
+      setShowEmptyFormErrorNotification(true);
+      return;
     }
-  }, [patient, patientUuid]);
 
-  const onSubmit = (data, e) => {
-    e.preventDefault();
     let obsValue = [];
-
     const submissionDatetime = new Date().toISOString();
 
     if (concept.set && concept.setMembers.length > 0) {
@@ -72,10 +91,10 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
           member.datatype.display === "Numeric" ||
           member.datatype.display === "Text"
         ) {
-          value = getValues()[`${member.uuid}`];
+          value = getValues()[member.uuid];
         } else if (member.datatype.display === "Coded") {
           value = {
-            uuid: getValues()[`${member.uuid}`],
+            uuid: getValues()[member.uuid],
           };
         }
         const groupMember = {
@@ -99,10 +118,10 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
         concept.datatype.display === "Numeric" ||
         concept.datatype.display === "Text"
       ) {
-        value = getValues()[`${concept.uuid}`];
+        value = getValues()[concept.uuid];
       } else if (concept.datatype.display === "Coded") {
         value = {
-          uuid: getValues()[`${concept.uuid}`],
+          uuid: getValues()[concept.uuid],
         };
       }
 
@@ -113,7 +132,10 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
         value: value,
         obsDatetime: submissionDatetime,
       });
+
+      setShowEmptyFormErrorNotification(false);
     }
+
     const encounterPayload = {
       encounterDatetime: submissionDatetime,
       patient: patientUuid,
@@ -172,7 +194,7 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
             (err) => {
               showNotification({
                 title: t(
-                  `errorMarkingOrderFulfillStatus`,
+                  "errorMarkingOrderFulfillStatus",
                   "Error occurred while marking order fulfill status"
                 ),
                 kind: "error",
@@ -194,27 +216,36 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
         });
       }
     );
+
+    setShowEmptyFormErrorNotification(false);
   };
+
   if (isLoadingPatient || isLoadingConcepts) {
     return <Loader />;
   }
+
   return (
     <Form className={styles.form}>
-      <Stack>
-        <ExtensionSlot name="patient-header-slot" state={bannerState} />
-      </Stack>
-      <Stack className={styles.container}>
-        <section>
-          {concept.setMembers.length > 0 && <div>{concept.display}</div>}
-          {concept && (
-            <ResultFormField
-              register={register}
-              concept={concept}
-              control={control}
-              errors={errors}
-            />
-          )}
-        </section>
+      <ExtensionSlot name="patient-header-slot" state={bannerState} />
+      <Stack className={styles.container} gap={5}>
+        {concept.setMembers.length > 0 && <div>{concept.display}</div>}
+        {concept && (
+          <ResultFormField
+            register={register}
+            concept={concept}
+            control={control}
+          />
+        )}
+        {showEmptyFormErrorNotification && (
+          <InlineNotification
+            className={styles.emptyFormError}
+            lowContrast
+            title={t("error", "Error")}
+            subtitle={
+              t("pleaseFillField", "Please fill at least one field") + "."
+            }
+          />
+        )}
       </Stack>
       <ButtonSet className={isTablet ? styles.tablet : styles.desktop}>
         <Button
