@@ -4,6 +4,7 @@ import {
   Button,
   ButtonSet,
   Form,
+  InlineLoading,
   InlineNotification,
   Stack,
 } from "@carbon/react";
@@ -45,11 +46,13 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
 
   const {
     control,
-    register,
     formState: { isSubmitting },
     getValues,
     handleSubmit,
-  } = useForm<{ testResult: string }>({
+    register,
+  } = useForm<{
+    testResult: string;
+  }>({
     defaultValues: {},
   });
 
@@ -70,7 +73,6 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
 
   const onSubmit = () => {
     const formValues = getValues();
-
     const isEmptyForm = Object.values(formValues).every(
       (value) => value === "" || value === null || value === undefined
     );
@@ -114,6 +116,7 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       });
     } else if (!concept.set && concept.setMembers.length === 0) {
       let value;
+
       if (
         concept.datatype.display === "Numeric" ||
         concept.datatype.display === "Text"
@@ -152,12 +155,12 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       encounter: order.encounter.uuid,
       patient: order.patient.uuid,
       concept: order.concept.uuid,
-      orderer: order.orderer,
+      orderer: order.orderer?.uuid,
     };
 
-    updateOrderResult(encounterPayload, orderDiscontinuationPayload).then(
-      (response) => {
-        if (response.ok) {
+    updateOrderResult(encounterPayload, orderDiscontinuationPayload)
+      .then(
+        (res) => {
           showSnackbar({
             isLowContrast: true,
             title: t("updateEncounter", "Update lab results"),
@@ -180,6 +183,7 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
                   "You have successfully completed the test order"
                 ),
               });
+
               mutate(
                 (key) =>
                   typeof key === "string" &&
@@ -189,7 +193,6 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
                 undefined,
                 { revalidate: true }
               );
-              closeOverlay();
             },
             (err) => {
               showNotification({
@@ -204,18 +207,20 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
             }
           );
 
-          return response;
+          return res;
+        },
+        (err) => {
+          showNotification({
+            title: t("errorUpdatingEncounter", "Error updating test results"),
+            kind: "error",
+            critical: true,
+            description: err?.message,
+          });
         }
-      },
-      (err) => {
-        showNotification({
-          title: t("errorUpdatingEncounter", "Error updating test results"),
-          kind: "error",
-          critical: true,
-          description: err?.message,
-        });
-      }
-    );
+      )
+      .finally(() => {
+        closeOverlay();
+      });
 
     setShowEmptyFormErrorNotification(false);
   };
@@ -250,14 +255,19 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       <ButtonSet className={isTablet ? styles.tablet : styles.desktop}>
         <Button
           className={styles.button}
-          disabled={isSubmitting}
-          onClick={() => closeOverlay()}
+          onClick={closeOverlay}
           kind="secondary"
         >
           {t("cancel", "Cancel")}
         </Button>
         <Button className={styles.button} onClick={handleSubmit(onSubmit)}>
-          {t("save", "Save")}
+          {/* TODO: Consider simulating an artifical delay in the submission process to get
+          this loading state to show */}
+          {isSubmitting ? (
+            <InlineLoading description={t("saving", "Saving") + "..."} />
+          ) : (
+            <span>{t("save", "Save")}</span>
+          )}
         </Button>
       </ButtonSet>
     </Form>

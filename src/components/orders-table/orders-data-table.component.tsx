@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import {
   DataTable,
@@ -23,7 +24,6 @@ import {
   TableToolbarSearch,
   Tile,
 } from "@carbon/react";
-import dayjs from "dayjs";
 import {
   formatDate,
   parseDate,
@@ -57,18 +57,18 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     activatedOnOrAfterDate
   );
 
-  const flattenedLabOrders = useMemo(() => {
-    return labOrders.map((eachObject) => {
-      return {
-        ...eachObject,
-        dateActivated: formatDate(parseDate(eachObject.dateActivated)),
-        patientName: eachObject.patient?.display.split("-")[1],
-        patientUuid: eachObject.patient?.uuid,
-        status: eachObject.fulfillerStatus ?? "--",
-        orderer: eachObject.orderer?.display.split("-")[1],
-      };
-    });
-  }, [labOrders]);
+  const flattenedLabOrders = useMemo(
+    () =>
+      labOrders.map((labOrder) => ({
+        ...labOrder,
+        dateActivated: formatDate(parseDate(labOrder.dateActivated)),
+        patientName: labOrder.patient?.display.split("-")[1],
+        patientUuid: labOrder.patient?.uuid,
+        status: labOrder.fulfillerStatus ?? "--",
+        orderer: labOrder.orderer,
+      })),
+    [labOrders]
+  );
 
   function groupOrdersById(orders) {
     if (orders && orders.length > 0) {

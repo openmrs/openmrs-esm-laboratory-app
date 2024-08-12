@@ -9,9 +9,10 @@ import ResultForm from "../../results/result-form.component";
 import styles from "./list-order-details.scss";
 
 const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
+  const { t } = useTranslation();
   const orders = props.groupedOrders?.orders;
   const patientId = props.groupedOrders?.patientId;
-  const { t } = useTranslation();
+
   return (
     <div className={styles.ordersContainer}>
       {orders &&
@@ -31,6 +32,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                       return (
                         <Button
                           kind="primary"
+                          key={`${action.actionName}-${row.uuid}`}
                           onClick={() => {
                             const dispose = showModal(
                               "pickup-lab-request-modal",
@@ -48,6 +50,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                     if (action.actionName === "labResultsForm") {
                       return (
                         <Button
+                          key={`${action.actionName}-${row.uuid}`}
                           kind="primary"
                           onClick={() => {
                             launchOverlay(
@@ -63,6 +66,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                     if (action.actionName === "rejectLabRequest") {
                       return (
                         <Button
+                          key={`${action.actionName}-${row.uuid}`}
                           kind="danger"
                           onClick={() => {
                             const dispose = showModal(
@@ -82,7 +86,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
               </div>
               <div>
                 <OrderDetail
-                  label={t("date", "DATE").toUpperCase()}
+                  label={t("date", "Date").toUpperCase()}
                   value={row.dateActivated}
                 />
                 <OrderDetail
@@ -90,21 +94,20 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                   value={row.orderNumber}
                 />
                 <OrderDetail
-                  label={t("procedure", "procedure").toUpperCase()}
+                  label={t("procedure", "Procedure").toUpperCase()}
                   value={row.display}
                 />
-
                 <OrderDetail
                   label={t("status", "Status").toUpperCase()}
                   value={row.fulfillerStatus}
                 />
                 <OrderDetail
-                  label={t("urgency", "urgency").toUpperCase()}
+                  label={t("urgency", "Urgency").toUpperCase()}
                   value={row.urgency}
                 />
                 <OrderDetail
-                  label={t("orderer", "orderer").toUpperCase()}
-                  value={row.orderer}
+                  label={t("orderer", "Orderer").toUpperCase()}
+                  value={row.orderer?.display}
                 />
                 <OrderDetail
                   label={t("instructions", "Instructions").toUpperCase()}

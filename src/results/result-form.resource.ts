@@ -308,7 +308,7 @@ export interface ObPayload {
 }
 
 // get order concept
-export async function GetOrderConceptByUuid(uuid: string) {
+export async function getOrderConceptByUuid(uuid: string) {
   const abortController = new AbortController();
   return openmrsFetch(`${restBaseUrl}/concept/${uuid}?v=full`, {
     headers: {
