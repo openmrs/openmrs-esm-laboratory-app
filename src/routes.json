@@ -51,6 +51,16 @@
                 "title": "In progress"
             }
         },
+
+        {
+            "name": "declined-lab-requests-table",
+            "slot": "lab-panels-slot",
+            "component": "declinedLabRequestsTable",
+            "meta": {
+                "name": "declinedPanel",
+                "title": "Declined"
+            }
+        },
         {
             "name": "completed-lab-requests-table",
             "slot": "lab-panels-slot",

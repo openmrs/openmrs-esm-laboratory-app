@@ -68,6 +68,14 @@ export const completedLabRequestsTable = getAsyncLifecycle(
   options
 );
 
+export const declinedLabRequestsTable = getAsyncLifecycle(
+  () =>
+    import(
+      "./lab-tabs/data-table-extensions/declined-lab-requests-table.extension"
+    ),
+  options
+);
+
 export const worklistTile = getAsyncLifecycle(
   () => import("./lab-tiles/inprogress-lab-requests-tile.component"),
   options
