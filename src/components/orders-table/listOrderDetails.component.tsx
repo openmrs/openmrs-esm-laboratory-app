@@ -28,7 +28,10 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                     return 0;
                   })
                   .map((action) => {
-                    if (action.actionName === "pickupLabRequest") {
+                    if (
+                      action.actionName === "pickupLabRequest" &&
+                      row.fulfillerStatus !== "DECLINED"
+                    ) {
                       return (
                         <Button
                           kind="primary"
@@ -61,7 +64,10 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                         </Button>
                       );
                     }
-                    if (action.actionName === "rejectLabRequest") {
+                    if (
+                      action.actionName === "rejectLabRequest" &&
+                      row.fulfillerStatus !== "DECLINED"
+                    ) {
                       return (
                         <Button
                           kind="danger"
