@@ -1,9 +1,9 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Tile, Button } from "@carbon/react";
-import { ArrowRight } from "@carbon/react/icons";
-import styles from "./lab-summary-tile.scss";
-import { ConfigurableLink } from "@openmrs/esm-framework";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Tile, Button } from '@carbon/react';
+import { ArrowRight } from '@carbon/react/icons';
+import styles from './lab-summary-tile.scss';
+import { ConfigurableLink } from '@openmrs/esm-framework';
 
 interface LabSummaryTileProps {
   label: string;
@@ -12,12 +12,7 @@ interface LabSummaryTileProps {
   children?: React.ReactNode;
 }
 
-const LabSummaryTile: React.FC<LabSummaryTileProps> = ({
-  label,
-  value,
-  headerLabel,
-  children,
-}) => {
+const LabSummaryTile: React.FC<LabSummaryTileProps> = ({ label, value, headerLabel, children }) => {
   const { t } = useTranslation();
 
   return (

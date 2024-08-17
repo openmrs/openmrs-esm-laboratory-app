@@ -1,22 +1,16 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Tab, Tabs, TabList, TabPanels, TabPanel } from "@carbon/react";
-import {
-  type AssignedExtension,
-  Extension,
-  useConnectedExtensions,
-} from "@openmrs/esm-framework";
-import { ComponentContext } from "@openmrs/esm-framework/src/internal";
-import styles from "./laboratory-tabs.scss";
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Tab, Tabs, TabList, TabPanels, TabPanel } from '@carbon/react';
+import { type AssignedExtension, Extension, useConnectedExtensions } from '@openmrs/esm-framework';
+import { ComponentContext } from '@openmrs/esm-framework/src/internal';
+import styles from './laboratory-tabs.scss';
 
-const labPanelSlot = "lab-panels-slot";
+const labPanelSlot = 'lab-panels-slot';
 
 const LaboratoryOrdersTabs: React.FC = () => {
   const { t } = useTranslation();
   const [selectedTab, setSelectedTab] = useState(0);
-  const tabExtensions = useConnectedExtensions(
-    labPanelSlot
-  ) as AssignedExtension[];
+  const tabExtensions = useConnectedExtensions(labPanelSlot) as AssignedExtension[];
 
   return (
     <main className={`omrs-main-content`}>
@@ -26,11 +20,7 @@ const LaboratoryOrdersTabs: React.FC = () => {
           onChange={({ selectedIndex }) => setSelectedTab(selectedIndex)}
           className={styles.tabs}
         >
-          <TabList
-            style={{ paddingLeft: "1rem" }}
-            aria-label="Laboratory tabs"
-            contained
-          >
+          <TabList style={{ paddingLeft: '1rem' }} aria-label="Laboratory tabs" contained>
             {tabExtensions
               .filter((extension) => Object.keys(extension.meta).length > 0)
               .map((extension, index) => {
@@ -38,11 +28,7 @@ const LaboratoryOrdersTabs: React.FC = () => {
 
                 if (name && title) {
                   return (
-                    <Tab
-                      key={index}
-                      className={styles.tab}
-                      id={`${title || index}-tab`}
-                    >
+                    <Tab key={index} className={styles.tab} id={`${title || index}-tab`}>
                       {t(title, {
                         ns: extension.moduleName,
                         defaultValue: title,
@@ -64,7 +50,7 @@ const LaboratoryOrdersTabs: React.FC = () => {
                       key={extension.id}
                       value={{
                         moduleName: extension.moduleName,
-                        featureName: "laboratory",
+                        featureName: 'laboratory',
                         extension: {
                           extensionId: extension.id,
                           extensionSlotName: labPanelSlot,

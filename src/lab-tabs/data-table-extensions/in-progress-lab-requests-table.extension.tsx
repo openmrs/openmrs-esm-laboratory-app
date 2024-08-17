@@ -1,5 +1,5 @@
-import React from "react";
-import OrdersDataTable from "../../components/orders-table/orders-data-table.component";
+import React from 'react';
+import OrdersDataTable from '../../components/orders-table/orders-data-table.component';
 
 const InProgressLabRequestsTable: React.FC = () => {
   return (
@@ -9,8 +9,8 @@ const InProgressLabRequestsTable: React.FC = () => {
       useActivatedOnOrAfterDateFilter
       fulfillerStatus="IN_PROGRESS"
       actions={[
-        { actionName: "labResultsForm", order: 0 },
-        { actionName: "rejectLabRequest", order: 1 },
+        { actionName: 'labResultsForm', order: 0 },
+        { actionName: 'rejectLabRequest', order: 1 },
       ]}
     />
   );
