@@ -72,7 +72,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                             });
                           }}
                         >
-                          {t('rejectLabRequest', 'Reject Lab Request')}
+                          {t('rejectLabRequest', 'Reject lab request')}
                         </Button>
                       );
                     }

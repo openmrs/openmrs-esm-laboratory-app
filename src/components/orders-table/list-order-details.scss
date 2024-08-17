@@ -10,6 +10,7 @@
   border-left: 4px solid var(--brand-03);
   color: $text-02;
   margin-bottom: 1rem !important;
+
   &:hover {
     background-color: colors.$white-hover;
   }
@@ -49,7 +50,12 @@
 }
 
 .actionBtns {
-  float: right;
+  display: flex;
+  justify-content: flex-end;
   margin-left: layout.$spacing-05;
   margin-top: layout.$spacing-07;
+
+  > * + * {
+    margin-left: layout.$spacing-03;
+  }
 }
