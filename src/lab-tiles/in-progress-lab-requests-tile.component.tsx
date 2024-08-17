@@ -5,7 +5,6 @@ import LabSummaryTile from "../components/summary-tile/lab-summary-tile.componen
 
 const InProgressLabRequestsTile = () => {
   const { t } = useTranslation();
-
   const { labOrders } = useLabOrders("IN_PROGRESS");
 
   return (

@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./orderDetail.scss";
+import styles from "./order-detail.scss";
 
 export const OrderDetail: React.FC<{ label: string; value: string | any }> = ({
   label,

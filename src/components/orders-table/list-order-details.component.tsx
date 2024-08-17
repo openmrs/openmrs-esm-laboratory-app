@@ -1,13 +1,12 @@
 import React from "react";
-import styles from "./listOrderDetails.scss";
-
 import { useTranslation } from "react-i18next";
-import { showModal } from "@openmrs/esm-framework";
 import { Button, Tile } from "@carbon/react";
-import { OrderDetail } from "./orderDetail.component";
-import { ListOrdersDetailsProps } from "../../types";
+import { showModal } from "@openmrs/esm-framework";
 import { launchOverlay } from "../overlay/store";
+import { ListOrdersDetailsProps } from "../../types";
+import { OrderDetail } from "./order-detail.component";
 import ResultForm from "../../results/result-form.component";
+import styles from "./list-order-details.scss";
 
 const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
   const orders = props.groupedOrders?.orders;
@@ -42,7 +41,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                             );
                           }}
                         >
-                          {t("pickupLabRequest", "PickUp Lab Request")}
+                          {t("pickupLabRequest", "Pick up lab request")}
                         </Button>
                       );
                     }
@@ -52,12 +51,12 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                           kind="primary"
                           onClick={() => {
                             launchOverlay(
-                              t("labResultsForm", "Lab Results form"),
+                              t("labResultsForm", "Lab results form"),
                               <ResultForm patientUuid={patientId} order={row} />
                             );
                           }}
                         >
-                          {t("labResultsForm", "Lab Results Form")}
+                          {t("labResultsForm", "Lab results form")}
                         </Button>
                       );
                     }
@@ -87,7 +86,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                   value={row.dateActivated}
                 />
                 <OrderDetail
-                  label={t("orderNumber", "Order Number").toUpperCase()}
+                  label={t("orderNumber", "Order number").toUpperCase()}
                   value={row.orderNumber}
                 />
                 <OrderDetail

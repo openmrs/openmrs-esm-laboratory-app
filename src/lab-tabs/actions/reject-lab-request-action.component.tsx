@@ -23,12 +23,12 @@ const RejectLabRequestAction: React.FC<RejectLabRequestActionProps> = ({
 
   return (
     <OverflowMenuItem
-      itemText={t("rejectLabRequest", "Reject Lab Request")}
-      onClick={launchRejectLabRequestModal}
       className={styles.menuItem}
-      isDelete={true}
       disabled={unSupportedStatuses.includes(order.fulfillerStatus)}
       hasDivider
+      isDelete
+      itemText={t("rejectLabRequest", "Reject lab request")}
+      onClick={launchRejectLabRequestModal}
     />
   );
 };

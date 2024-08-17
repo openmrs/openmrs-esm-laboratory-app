@@ -1,10 +1,10 @@
 import React from "react";
 import { Button, Header } from "@carbon/react";
 import { ArrowLeft, Close } from "@carbon/react/icons";
-import { useLayoutType } from "@openmrs/esm-framework";
-import styles from "./overlay.scss";
 import { useTranslation } from "react-i18next";
+import { useLayoutType } from "@openmrs/esm-framework";
 import { closeOverlay, useOverlay } from "./store";
+import styles from "./overlay.scss";
 
 const Overlay: React.FC = () => {
   const { header, component, isOverlayOpen } = useOverlay();

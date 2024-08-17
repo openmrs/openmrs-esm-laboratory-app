@@ -15,7 +15,7 @@ import {
 } from "@openmrs/esm-framework";
 import {
   useGetOrderConceptByUuid,
-  UpdateOrderResult,
+  updateOrderResult,
 } from "./result-form.resource";
 import ResultFormField from "./result-form-field.component";
 import { useForm } from "react-hook-form";
@@ -133,7 +133,7 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       orderer: order.orderer,
     };
 
-    UpdateOrderResult(encounterPayload, orderDiscontinuationPayload).then(
+    updateOrderResult(encounterPayload, orderDiscontinuationPayload).then(
       (response) => {
         if (response.ok) {
           showSnackbar({
@@ -141,8 +141,8 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
             title: t("updateEncounter", "Update lab results"),
             kind: "success",
             subtitle: t(
-              "generateSuccessfully",
-              "You have successfully updated test results"
+              "labResultsUpdatedSuccessfully",
+              "Lab test results updated successfully"
             ),
           });
 
@@ -187,9 +187,7 @@ const ResultForm: React.FC<ResultFormProps> = ({ order, patientUuid }) => {
       },
       (err) => {
         showNotification({
-          title: t(
-            `errorUpdatingEncounter', 'Error occurred while updating test results`
-          ),
+          title: t("errorUpdatingEncounter", "Error updating test results"),
           kind: "error",
           critical: true,
           description: err?.message,

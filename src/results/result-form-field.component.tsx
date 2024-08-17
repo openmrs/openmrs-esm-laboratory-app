@@ -91,7 +91,7 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
               rules={{ required: true }}
             >
               <SelectItem
-                text={t("chooseOption", "Choose an Option")}
+                text={t("chooseOption", "Choose an option")}
                 value=""
               />
 
@@ -158,7 +158,7 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
                     autoFocus={index === 0}
                   >
                     <SelectItem
-                      text={t("option", "Choose an Option")}
+                      text={t("option", "Choose an option")}
                       value=""
                     />
 

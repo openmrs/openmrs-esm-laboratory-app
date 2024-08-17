@@ -1,8 +1,8 @@
+import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { OverflowMenuItem } from "@carbon/react";
 import { showModal } from "@openmrs/esm-framework";
 import { Order } from "@openmrs/esm-patient-common-lib";
-import React, { useCallback } from "react";
-import { useTranslation } from "react-i18next";
 import styles from "./actions.scss";
 
 interface PickLabRequestActionMenuProps {
@@ -24,7 +24,7 @@ const PickupLabRequestAction: React.FC<PickLabRequestActionMenuProps> = ({
 
   return (
     <OverflowMenuItem
-      itemText={t("pickupLabRequest", "Pickup Lab Request")}
+      itemText={t("pickupLabRequest", "Pick up lab request")}
       onClick={launchModal}
       disabled={unSupportedStatuses.includes(order.fulfillerStatus)}
       className={styles.menuItem}

@@ -3,8 +3,9 @@
 @use '@carbon/colors';
 
 .tableContainer {
+  border: 1px solid colors.$gray-20;
   background-color: colors.$gray-10;
-  margin: 0 spacing.$spacing-05;
+  margin: spacing.$spacing-05;
   padding: 0;
 
   :global(.cds--data-table-content) {
@@ -32,10 +33,18 @@
     width: 75%;
   }
 
+  :global(.cds--pagination) {
+    border-top: none;
+  }
+
   .toolbarContent {
     height: spacing.$spacing-07;
     margin-bottom: spacing.$spacing-02;
   }
+}
+
+.loader {
+  margin: spacing.$spacing-05;
 }
 
 .toolbarItem {
@@ -84,3 +93,12 @@
 .singleLineDisplay {
   white-space: nowrap;
 }
+
+.emptyStateHelperText {
+  @include type.type-style('helper-text-02');
+}
+
+.hiddenRow {
+  display: none;
+}
+

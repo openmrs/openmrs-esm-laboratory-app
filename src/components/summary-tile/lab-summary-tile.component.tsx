@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Tile, Button } from "@carbon/react";
 import { ArrowRight } from "@carbon/react/icons";
 import styles from "./lab-summary-tile.scss";
+import { ConfigurableLink } from "@openmrs/esm-framework";
 
 interface LabSummaryTileProps {
   label: string;
@@ -20,23 +21,18 @@ const LabSummaryTile: React.FC<LabSummaryTileProps> = ({
   const { t } = useTranslation();
 
   return (
-    <Tile className={styles.tileContainer} light={true}>
+    <Tile className={styles.tileContainer} light>
       <div className={styles.tileHeader}>
         <div className={styles.headerLabelContainer}>
           <label className={styles.headerLabel}>{headerLabel}</label>
           {children}
         </div>
-        <div></div>
-        <Button
-          kind="ghost"
-          renderIcon={(props) => (
-            <ArrowRight size={16} className={styles.arrowIcon} />
-          )}
-          iconDescription={t("view", "View ")}
-        >
-          {t("view", "View ")}
-          &nbsp;
-        </Button>
+        {/* <div className={styles.link}>
+          <ConfigurableLink className={styles.link} to="">
+            {t("view", "View")}
+          </ConfigurableLink>
+          <ArrowRight size={16} />
+        </div> */}
       </div>
       <div>
         <label className={styles.totalsLabel}>{label}</label>

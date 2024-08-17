@@ -3,41 +3,41 @@ import { useTranslation } from "react-i18next";
 import {
   DataTable,
   DataTableSkeleton,
+  DatePicker,
+  DatePickerInput,
+  Dropdown,
+  Layer,
   Pagination,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
-  TableHeader,
+  TableExpandedRow,
   TableExpandHeader,
   TableExpandRow,
-  TableExpandedRow,
+  TableHead,
+  TableHeader,
   TableRow,
-  Tile,
-  Dropdown,
   TableToolbar,
   TableToolbarContent,
-  Layer,
   TableToolbarSearch,
-  DatePicker,
-  DatePickerInput,
+  Tile,
 } from "@carbon/react";
+import dayjs from "dayjs";
 import {
   formatDate,
   parseDate,
   useConfig,
   usePagination,
 } from "@openmrs/esm-framework";
-import styles from "./orders-data-table.scss";
 import { FulfillerStatus, OrdersDataTableProps } from "../../types";
 import {
   useLabOrders,
   useSearchGroupedResults,
 } from "../../laboratory-resource";
-import dayjs from "dayjs";
 import { isoDateTimeString } from "../../constants";
-import ListOrderDetails from "./listOrderDetails.component";
+import ListOrderDetails from "./list-order-details.component";
+import styles from "./orders-data-table.scss";
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
@@ -133,7 +133,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const columns = useMemo(() => {
     return [
       { id: 0, header: t("patient", "Patient"), key: "patientName" },
-      { id: 1, header: t("totalorders", "Total Orders"), key: "totalOrders" },
+      { id: 1, header: t("totalOrders", "Total Orders"), key: "totalOrders" },
     ];
   }, [t]);
 
@@ -160,19 +160,21 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
       orders: patient.orders,
       totalOrders: patient.orders?.length,
     }));
-  }, [
-    paginatedLabOrders,
-    redirectToResultsViewer,
-    redirectToOrders,
-    props.actionsSlotName,
-  ]);
+  }, [paginatedLabOrders]);
 
   if (isLoading) {
-    return <DataTableSkeleton role="progressbar" />;
+    return <DataTableSkeleton className={styles.loader} role="progressbar" />;
   }
   return (
     <DataTable rows={tableRows} headers={columns} useZebraStyles>
-      {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
+      {({
+        getExpandHeaderProps,
+        getHeaderProps,
+        getRowProps,
+        getTableProps,
+        headers,
+        rows,
+      }) => (
         <TableContainer className={styles.tableContainer}>
           <TableToolbar>
             <TableToolbarContent>
@@ -201,10 +203,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
                   {props.useActivatedOnOrAfterDateFilter && (
                     <>
                       <p>
-                        {t(
-                          "onOrAfterDateFilter",
-                          "Filter orders on or after : "
-                        )}
+                        {t("onOrAfterDateFilter", "Filter orders on or after")}:
                       </p>
                       <DatePicker
                         onChange={([date]) =>
@@ -238,7 +237,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           <Table {...getTableProps()} className={styles.tableWrapper}>
             <TableHead>
               <TableRow>
-                <TableExpandHeader />
+                <TableExpandHeader enableToggle {...getExpandHeaderProps()} />
                 {headers.map((header) => (
                   <TableHeader {...getHeaderProps({ header })}>
                     {header.header?.content ?? header.header}
@@ -257,14 +256,21 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
                         </TableCell>
                       ))}
                     </TableExpandRow>
-                    <TableExpandedRow colSpan={headers.length + 1}>
-                      <ListOrderDetails
-                        actions={props.actions}
-                        groupedOrders={groupedOrdersByPatient.find(
-                          (item) => item.patientId === row.id
-                        )}
+                    {row.isExpanded ? (
+                      <TableExpandedRow colSpan={headers.length + 1}>
+                        <ListOrderDetails
+                          actions={props.actions}
+                          groupedOrders={groupedOrdersByPatient.find(
+                            (item) => item.patientId === row.id
+                          )}
+                        />
+                      </TableExpandedRow>
+                    ) : (
+                      <TableExpandedRow
+                        className={styles.hiddenRow}
+                        colSpan={headers.length + 2}
                       />
-                    </TableExpandedRow>
+                    )}
                   </React.Fragment>
                 );
               })}
@@ -275,9 +281,12 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
               <Tile className={styles.tile}>
                 <div className={styles.tileContent}>
                   <p className={styles.content}>
+                    {t("noLabRequestsFoundC", "No lab requests found")}
+                  </p>
+                  <p className={styles.emptyStateHelperText}>
                     {t(
-                      "noLabRequestsFoundCheckFilters",
-                      "No lab requests found. Please check your filters and try again."
+                      "checkFilters",
+                      "Please check the filters above and try again"
                     )}
                   </p>
                 </div>

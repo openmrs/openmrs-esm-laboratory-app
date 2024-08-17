@@ -1,9 +1,9 @@
-import { Order } from "@openmrs/esm-patient-common-lib";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { OverflowMenuItem } from "@carbon/react";
+import { Order } from "@openmrs/esm-patient-common-lib";
 import { launchOverlay } from "../../components/overlay/store";
 import ResultForm from "../../results/result-form.component";
-import { useTranslation } from "react-i18next";
 import styles from "./actions.scss";
 
 interface AddLabRequestResultsActionProps {
@@ -16,10 +16,10 @@ const AddLabRequestResultsAction: React.FC<AddLabRequestResultsActionProps> = ({
 
   return (
     <OverflowMenuItem
-      itemText={t("labResultsForm", "Lab Results Form")}
+      itemText={t("labResultsForm", "Lab results form")}
       onClick={() => {
         launchOverlay(
-          t("labResultsForm", "Lab Results Form"),
+          t("labResultsForm", "Lab results form"),
           <ResultForm patientUuid={order.patient.uuid} order={order} />
         );
       }}

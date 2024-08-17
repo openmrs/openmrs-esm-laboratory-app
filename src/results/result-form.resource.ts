@@ -334,7 +334,7 @@ export function useGetOrderConceptByUuid(uuid: string) {
   };
 }
 
-export async function UpdateEncounter(uuid: string, payload: any) {
+export async function updateEncounter(uuid: string, payload: any) {
   const abortController = new AbortController();
   return openmrsFetch(`${restBaseUrl}/encounter/${uuid}`, {
     method: "POST",
@@ -346,8 +346,8 @@ export async function UpdateEncounter(uuid: string, payload: any) {
   });
 }
 
-//TODO: the calls to update order and observations for results should be transactional to allow for rollback
-export async function UpdateOrderResult(
+// TODO: the calls to update order and observations for results should be transactional to allow for rollback
+export async function updateOrderResult(
   encounterPayload: any,
   orderPayload: any
 ): Promise<FetchResponse<any>> {

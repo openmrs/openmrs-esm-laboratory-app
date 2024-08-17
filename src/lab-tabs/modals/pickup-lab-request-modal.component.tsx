@@ -1,7 +1,8 @@
-import { Order } from "@openmrs/esm-patient-common-lib";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { setFulfillerStatus } from "../../laboratory-resource";
+import { Button, ModalBody, ModalFooter, ModalHeader } from "@carbon/react";
+import { mutate } from "swr";
+import { Order } from "@openmrs/esm-patient-common-lib";
 import {
   restBaseUrl,
   showNotification,
@@ -9,9 +10,8 @@ import {
   useAbortController,
   useConfig,
 } from "@openmrs/esm-framework";
-import { Button, ModalBody, ModalFooter, ModalHeader } from "@carbon/react";
-import { mutate } from "swr";
 import { Config } from "../../config-schema";
+import { setFulfillerStatus } from "../../laboratory-resource";
 
 interface PickupLabRequestModal {
   closeModal: () => void;
@@ -55,7 +55,7 @@ const PickupLabRequestModal: React.FC<PickupLabRequestModal> = ({
       (error) => {
         setIsSubmitting(false);
         showNotification({
-          title: t(`errorPickingAnOrder', 'Error picking an order`),
+          title: t(`errorPickingOrder', 'Error picking order`),
           kind: "error",
           critical: true,
           description: error?.message,
@@ -68,7 +68,7 @@ const PickupLabRequestModal: React.FC<PickupLabRequestModal> = ({
     <div>
       <ModalHeader
         closeModal={closeModal}
-        title={t("pickRequest", "Pick Lab Request")}
+        title={t("pickRequest", "Pick lab request")}
       />
       <ModalBody>
         <p>
@@ -83,7 +83,7 @@ const PickupLabRequestModal: React.FC<PickupLabRequestModal> = ({
           {t("discard", "Discard")}
         </Button>
         <Button type="submit" onClick={handlePickup} disabled={isSubmitting}>
-          {t("pickupLabRequest", "Pickup Lab Request")}
+          {t("pickupLabRequest", "Pick up lab request")}
         </Button>
       </ModalFooter>
     </div>

@@ -69,7 +69,7 @@ export const completedLabRequestsTable = getAsyncLifecycle(
 );
 
 export const worklistTile = getAsyncLifecycle(
-  () => import("./lab-tiles/inprogress-lab-requests-tile.component"),
+  () => import("./lab-tiles/in-progress-lab-requests-tile.component"),
   options
 );
 

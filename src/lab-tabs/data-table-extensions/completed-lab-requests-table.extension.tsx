@@ -6,7 +6,7 @@ const CompletedLabRequestsTable: React.FC = () => {
     <OrdersDataTable
       fulfillerStatus="COMPLETED"
       excludeColumns={[]}
-      useActivatedOnOrAfterDateFilter={true}
+      useActivatedOnOrAfterDateFilter
       excludeCanceledAndDiscontinuedOrders={false}
       actions={[]}
     />
