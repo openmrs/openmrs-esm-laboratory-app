@@ -1,22 +1,22 @@
 import React from "react";
-import styles from "./result-form.scss";
-import { TextInput, Select, SelectItem } from "@carbon/react";
+import { Select, SelectItem, TextInput } from "@carbon/react";
+import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { ConceptReference } from "./result-form.resource";
-import { Controller } from "react-hook-form";
+import styles from "./result-form.scss";
 
 interface ResultFormFieldProps {
   concept: ConceptReference;
   control: any;
   register: any;
-  errors: any;
 }
+
 const ResultFormField: React.FC<ResultFormFieldProps> = ({
   concept,
   control,
-  errors,
 }) => {
   const { t } = useTranslation();
+
   const isTextOrNumeric = (concept) =>
     concept.datatype?.display === "Text" ||
     concept.datatype?.display === "Numeric";
@@ -44,17 +44,9 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
 
   return (
     <>
-      {Object.keys(errors).length > 0 && (
-        <div className={styles.errorDiv}>
-          {t("allFieldsRequired", "All fields are required")}
-        </div>
-      )}
       {isTextOrNumeric(concept) && (
         <Controller
           control={control}
-          rules={{
-            required: true,
-          }}
           name={concept.uuid}
           render={({ field }) => (
             <TextInput
@@ -78,9 +70,6 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
         <Controller
           name={concept.uuid}
           control={control}
-          rules={{
-            required: true,
-          }}
           render={({ field }) => (
             <Select
               key={concept.uuid}
@@ -88,7 +77,6 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
               {...field}
               type="text"
               labelText={concept?.display}
-              rules={{ required: true }}
             >
               <SelectItem
                 text={t("chooseOption", "Choose an option")}
@@ -116,9 +104,6 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
               <Controller
                 control={control}
                 name={member.uuid}
-                rules={{
-                  required: true,
-                }}
                 render={({ field }) => (
                   <TextInput
                     key={member.uuid}
@@ -145,9 +130,6 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({
               <Controller
                 name={member.uuid}
                 control={control}
-                rules={{
-                  required: true,
-                }}
                 render={({ field }) => (
                   <Select
                     key={member.uuid}
