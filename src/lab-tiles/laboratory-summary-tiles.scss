@@ -5,13 +5,12 @@
 .cardContainer {
   background-color: $ui-02;
   display: flex;
+  flex-wrap: wrap;
   padding: 0 spacing.$spacing-05 spacing.$spacing-10 spacing.$spacing-03;
+  gap: spacing.$spacing-01;
 }
 
-.cardContainer > div:nth-child(1),
-.cardContainer > div:nth-child(2),
-.cardContainer > div:nth-child(3),
-.cardContainer > div:nth-child(4),
-.cardContainer > div:nth-child(5) {
-  width: 20%;
+.cardContainer > div {
+  flex: 1 1 300px;
+  box-sizing: border-box;
 }
