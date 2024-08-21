@@ -81,9 +81,8 @@ export const rejectLabRequestAction = getAsyncLifecycle(
   options,
 );
 export const trasitionPatientToLatestQueue = getAsyncLifecycle(
-  () =>
-    import("./lab-tabs/actions/transition-latest-queue-entry-button.component"),
-  options
+  () => import('./lab-tabs/actions/transition-latest-queue-entry-button.component'),
+  options,
 );
 
 export function startupApp() {
