@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select, SelectItem, TextInput } from '@carbon/react';
+import { Select, SelectItem, TextInput, NumberInput } from '@carbon/react';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { ConceptReference } from './result-form.resource';
@@ -14,22 +14,23 @@ interface ResultFormFieldProps {
 const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control }) => {
   const { t } = useTranslation();
 
-  const isTextOrNumeric = (concept) => concept.datatype?.display === 'Text' || concept.datatype?.display === 'Numeric';
-  const isCoded = (concept) => concept.datatype?.display === 'Coded';
-  const isPanel = (concept) => concept.setMembers?.length > 0;
+  const isText = (concept: ConceptReference) => concept.datatype?.display === 'Text';
+  const isNumeric = (concept: ConceptReference) => concept.datatype?.display === 'Numeric';
+  const isCoded = (concept: ConceptReference) => concept.datatype?.display === 'Coded';
+  const isPanel = (concept: ConceptReference) => concept.setMembers?.length > 0;
 
   const printValueRange = (concept: ConceptReference) => {
     if (concept?.datatype?.display === 'Numeric') {
-      const maxVal = Math.max(concept?.hiAbsolute, concept?.hiCritical, concept?.hiNormal);
-      const minVal = Math.min(concept?.lowAbsolute, concept?.lowCritical, concept?.lowNormal);
-      return ` (${minVal ?? 0} - ${maxVal > 0 ? maxVal : '--'} ${concept?.units ?? ''})`;
+      const maxVal = Math.max(concept?.hiAbsolute ?? 0, concept?.hiCritical ?? 0, concept?.hiNormal ?? 0);
+      const minVal = Math.min(concept?.lowAbsolute ?? 0, concept?.lowCritical ?? 0, concept?.lowNormal ?? 0);
+      return `(${minVal} - ${maxVal > 0 ? maxVal : '--'} ${concept?.units ?? ''})`;
     }
     return '';
   };
 
   return (
     <>
-      {isTextOrNumeric(concept) && (
+      {isText(concept) && (
         <Controller
           control={control}
           name={concept.uuid}
@@ -38,11 +39,10 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control }) =
               key={concept.uuid}
               className={styles.textInput}
               {...field}
-              type={concept.datatype.display === 'Numeric' ? 'number' : 'text'}
-              labelText={
-                concept?.display + (concept.datatype.display === 'Numeric' ? printValueRange(concept) ?? '' : '')
-              }
+              type="text"
+              labelText={concept?.display ?? ''}
               autoFocus
+              allowEmpty
             />
           )}
         />
@@ -53,9 +53,14 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control }) =
           name={concept.uuid}
           control={control}
           render={({ field }) => (
-            <Select key={concept.uuid} className={styles.textInput} {...field} type="text" labelText={concept?.display}>
+            <Select
+              key={concept.uuid}
+              className={styles.textInput}
+              {...field}
+              labelText={concept?.display ?? ''}
+              allowEmpty
+            >
               <SelectItem text={t('chooseOption', 'Choose an option')} value="" />
-
               {concept?.answers?.map((answer) => (
                 <SelectItem key={answer.uuid} text={answer.display} value={answer.uuid}>
                   {answer.display}
@@ -67,9 +72,9 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control }) =
       )}
 
       {isPanel(concept) &&
-        concept.setMembers.map((member, index) => {
-          if (isTextOrNumeric(member)) {
-            return (
+        concept.setMembers?.map((member, index) => (
+          <React.Fragment key={member.uuid}>
+            {isText(member) && (
               <Controller
                 control={control}
                 name={member.uuid}
@@ -78,19 +83,38 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control }) =
                     key={member.uuid}
                     className={styles.textInput}
                     {...field}
-                    type={member.datatype.display === 'Numeric' ? 'number' : 'text'}
-                    labelText={
-                      member?.display + (member.datatype.display === 'Numeric' ? printValueRange(member) ?? '' : '')
-                    }
+                    type="text"
+                    labelText={member?.display ?? ''}
                     autoFocus={index === 0}
+                    allowEmpty
                   />
                 )}
               />
-            );
-          }
+            )}
 
-          if (isCoded(member)) {
-            return (
+            {isNumeric(member) && (
+              <Controller
+                control={control}
+                name={member.uuid}
+                render={({ field }) => (
+                  <NumberInput
+                    key={member.uuid}
+                    className={styles.numberInput}
+                    value={field.value || ''}
+                    onChange={(event) => field.onChange(event.target.value)}
+                    label={member?.display + printValueRange(member)}
+                    id={member.uuid}
+                    step={1}
+                    autoFocus={index === 0}
+                    hideSteppers
+                    disableWheel
+                    allowEmpty
+                  />
+                )}
+              />
+            )}
+
+            {isCoded(member) && (
               <Controller
                 name={member.uuid}
                 control={control}
@@ -99,12 +123,11 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control }) =
                     key={member.uuid}
                     className={styles.textInput}
                     {...field}
-                    type="text"
-                    labelText={member?.display}
+                    labelText={member?.display ?? ''}
                     autoFocus={index === 0}
+                    allowEmpty
                   >
-                    <SelectItem text={t('option', 'Choose an option')} value="" />
-
+                    <SelectItem text={t('chooseOption', 'Choose an option')} value="" />
                     {member?.answers?.map((answer) => (
                       <SelectItem key={answer.uuid} text={answer.display} value={answer.uuid}>
                         {answer.display}
@@ -113,9 +136,9 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control }) =
                   </Select>
                 )}
               />
-            );
-          }
-        })}
+            )}
+          </React.Fragment>
+        ))}
     </>
   );
 };
