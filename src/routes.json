@@ -1,14 +1,14 @@
 {
-    "$schema": "https://json.openmrs.org/routes.schema.json",
-    "backendDependencies": {
-        "webservices.rest": "^2.24.0"
-    },
-    "pages": [
-        {
-            "component": "root",
-            "route": "laboratory"
-        }
-    ],
+  "$schema": "https://json.openmrs.org/routes.schema.json",
+  "backendDependencies": {
+    "webservices.rest": "^2.24.0"
+  },
+  "pages": [
+    {
+      "component": "root",
+      "route": "laboratory"
+    }
+  ],
     "extensions": [
         {
             "name": "laboratory-dashboard",
@@ -111,6 +111,12 @@
             "name": "reject-lab-request-worklist-action",
             "component": "rejectLabRequestAction",
             "slot": "inprogress-tests-actions-slot"
-        }
+        },
+        {
+      "name": "reject-lab-request-worklist-action",
+      "component": "rejectLabRequestAction",
+      "slot": "inprogress-tests-actions-slot"
+    }
     ]
+  
 }

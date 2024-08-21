@@ -1,10 +1,5 @@
-import {
-  FetchResponse,
-  openmrsFetch,
-  restBaseUrl,
-  showNotification,
-} from "@openmrs/esm-framework";
-import useSWR from "swr";
+import { FetchResponse, openmrsFetch, restBaseUrl, showNotification } from '@openmrs/esm-framework';
+import useSWR from 'swr';
 
 export interface ConceptResponse {
   uuid: string;
@@ -308,11 +303,11 @@ export interface ObPayload {
 }
 
 // get order concept
-export async function GetOrderConceptByUuid(uuid: string) {
+export async function getOrderConceptByUuid(uuid: string) {
   const abortController = new AbortController();
   return openmrsFetch(`${restBaseUrl}/concept/${uuid}?v=full`, {
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     signal: abortController.signal,
   });
@@ -321,10 +316,10 @@ export async function GetOrderConceptByUuid(uuid: string) {
 export function useGetOrderConceptByUuid(uuid: string) {
   const apiUrl = `${restBaseUrl}/concept/${uuid}?v=custom:(uuid,display,name,datatype,set,answers,hiNormal,hiAbsolute,hiCritical,lowNormal,lowAbsolute,lowCritical,units,setMembers:(uuid,display,answers,datatype,hiNormal,hiAbsolute,hiCritical,lowNormal,lowAbsolute,lowCritical,units))`;
 
-  const { data, error, isLoading, isValidating, mutate } = useSWR<
-    { data: ConceptResponse },
-    Error
-  >(apiUrl, openmrsFetch);
+  const { data, error, isLoading, isValidating, mutate } = useSWR<{ data: ConceptResponse }, Error>(
+    apiUrl,
+    openmrsFetch,
+  );
   return {
     concept: data?.data,
     isLoading,
@@ -334,30 +329,27 @@ export function useGetOrderConceptByUuid(uuid: string) {
   };
 }
 
-export async function UpdateEncounter(uuid: string, payload: any) {
+export async function updateEncounter(uuid: string, payload: any) {
   const abortController = new AbortController();
   return openmrsFetch(`${restBaseUrl}/encounter/${uuid}`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     signal: abortController.signal,
     body: payload,
   });
 }
 
-//TODO: the calls to update order and observations for results should be transactional to allow for rollback
-export async function UpdateOrderResult(
-  encounterPayload: any,
-  orderPayload: any
-): Promise<FetchResponse<any>> {
+// TODO: the calls to update order and observations for results should be transactional to allow for rollback
+export async function updateOrderResult(encounterPayload: any, orderPayload: any): Promise<FetchResponse<any>> {
   const abortController = new AbortController();
 
   try {
     const orderResponse = await openmrsFetch(`${restBaseUrl}/order`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       signal: abortController.signal,
       body: orderPayload,
@@ -365,23 +357,20 @@ export async function UpdateOrderResult(
 
     if (orderResponse.status === 201) {
       const encounterResponse = await openmrsFetch(`${restBaseUrl}/encounter`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         signal: abortController.signal,
         body: encounterPayload,
       });
 
       return encounterResponse;
-    } else
-      throw new Error(
-        `Order update failed with status ${orderResponse.status}`
-      );
+    } else throw new Error(`Order update failed with status ${orderResponse.status}`);
   } catch (error) {
     showNotification({
-      title: "Error",
-      kind: "error",
+      title: 'Error',
+      kind: 'error',
       critical: true,
       description: error?.message,
     });

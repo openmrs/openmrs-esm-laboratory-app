@@ -3,8 +3,9 @@
 @use '@carbon/colors';
 
 .tableContainer {
+  border: 1px solid colors.$gray-20;
   background-color: colors.$gray-10;
-  margin: 0 spacing.$spacing-05;
+  margin: spacing.$spacing-05;
   padding: 0;
 
   :global(.cds--data-table-content) {
@@ -25,11 +26,14 @@
 
   :global(.cds--table-toolbar) {
     position: static;
-    margin: 0.5rem;
   }
 
   :global(.cds--overflow-menu) {
     width: 75%;
+  }
+
+  :global(.cds--pagination) {
+    border-top: none;
   }
 
   .toolbarContent {
@@ -38,19 +42,21 @@
   }
 }
 
+.loader {
+  margin: spacing.$spacing-05;
+}
+
 .toolbarItem {
+  margin-left: 1rem;
   display: flex;
-  margin: 5px 10px;
   align-items: center;
 
   & p {
-    padding-right: 5px;
+    padding-right: 0.5rem;
     @include type.type-style('body-01');
     color: colors.$gray-70;
   }
 }
-
-
 
 .tableWrapper tr:last-of-type {
   td {
@@ -83,4 +89,12 @@
 
 .singleLineDisplay {
   white-space: nowrap;
+}
+
+.emptyStateHelperText {
+  @include type.type-style('helper-text-02');
+}
+
+.hiddenRow {
+  display: none;
 }
