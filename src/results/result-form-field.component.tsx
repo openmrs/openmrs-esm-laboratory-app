@@ -21,9 +21,9 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control }) =
 
   const printValueRange = (concept: ConceptReference) => {
     if (concept?.datatype?.display === 'Numeric') {
-      const maxVal = Math.max(concept?.hiAbsolute ?? 0, concept?.hiCritical ?? 0, concept?.hiNormal ?? 0);
-      const minVal = Math.min(concept?.lowAbsolute ?? 0, concept?.lowCritical ?? 0, concept?.lowNormal ?? 0);
-      return `(${minVal} - ${maxVal > 0 ? maxVal : '--'} ${concept?.units ?? ''})`;
+      const maxVal = Math.max(concept?.hiAbsolute, concept?.hiCritical, concept?.hiNormal);
+      const minVal = Math.min(concept?.lowAbsolute, concept?.lowCritical, concept?.lowNormal);
+      return ` (${minVal ?? 0} - ${maxVal > 0 ? maxVal : '--'} ${concept?.units ?? ''})`;
     }
     return '';
   };
@@ -42,6 +42,28 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control }) =
               type="text"
               labelText={concept?.display ?? ''}
               autoFocus
+              allowEmpty
+            />
+          )}
+        />
+      )}
+
+      {isNumeric(concept) && (
+        <Controller
+          control={control}
+          name={concept.uuid}
+          render={({ field }) => (
+            <NumberInput
+              key={concept.uuid}
+              className={styles.numberInput}
+              value={field.value || ''}
+              onChange={(event) => field.onChange(event.target.value)}
+              label={concept?.display + printValueRange(concept)}
+              id={concept.uuid}
+              step={1}
+              autoFocus
+              hideSteppers
+              disableWheel
               allowEmpty
             />
           )}
