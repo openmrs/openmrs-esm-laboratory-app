@@ -56,6 +56,18 @@
     @include type.type-style('body-01');
     color: colors.$gray-70;
   }
+
+  :global(.cds--date-picker__input) {
+    height: spacing.$spacing-09;
+  }
+
+  :global(.cds--dropdown) {
+    height: spacing.$spacing-09;
+  }
+
+  :global(.cds--list-box__menu:focus) {
+    outline: none;
+  }
 }
 
 .tableWrapper tr:last-of-type {
@@ -67,7 +79,7 @@
 .tileContainer {
   background-color: colors.$white;
   border-top: 1px solid colors.$gray-20;
-  padding: 5rem 0;
+  padding: 3rem 0;
 }
 
 .tile {

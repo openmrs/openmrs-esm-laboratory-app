@@ -153,36 +153,34 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         <TableContainer className={styles.tableContainer}>
           <TableToolbar>
             <TableToolbarContent>
-              {
-                <Layer className={styles.toolbarItem}>
-                  {props.useFilter && (
-                    <Dropdown
-                      id="orderStatusFilter"
-                      initialSelectedItem={
-                        filter ? orderStatuses.find((status) => status.value === filter) : orderStatuses[0]
-                      }
-                      titleText={t('filterOrdersByStatus', 'Filter orders by status') + ':'}
-                      type="inline"
-                      items={orderStatuses}
-                      onChange={handleOrderStatusChange}
-                      itemToString={(item) => item?.display}
-                    />
-                  )}
-                  {props.useActivatedOnOrAfterDateFilter && (
-                    <>
-                      <p>{t('onOrAfterDateFilter', 'Filter orders on or after')}:</p>
-                      <DatePicker
-                        onChange={([date]) => handleActivateOnOrAfterDateChange(date)}
-                        maxDate={new Date()}
-                        datePickerType="single"
-                        value={new Date(activatedOnOrAfterDate).toISOString()}
-                      >
-                        <DatePickerInput placeholder="mm/dd/yyyy" labelText="" id="date-picker-single" size="md" />
-                      </DatePicker>
-                    </>
-                  )}
-                </Layer>
-              }
+              <Layer className={styles.toolbarItem}>
+                {props.useFilter && (
+                  <Dropdown
+                    id="orderStatusFilter"
+                    initialSelectedItem={
+                      filter ? orderStatuses.find((status) => status.value === filter) : orderStatuses[0]
+                    }
+                    items={orderStatuses}
+                    itemToString={(item) => item?.display}
+                    onChange={handleOrderStatusChange}
+                    titleText={t('filterOrdersByStatus', 'Filter orders by status') + ':'}
+                    type="inline"
+                  />
+                )}
+                {props.useActivatedOnOrAfterDateFilter && (
+                  <>
+                    <p>{t('onOrAfterDateFilter', 'Filter orders on or after')}:</p>
+                    <DatePicker
+                      onChange={([date]) => handleActivateOnOrAfterDateChange(date)}
+                      maxDate={new Date()}
+                      datePickerType="single"
+                      value={new Date(activatedOnOrAfterDate).toISOString()}
+                    >
+                      <DatePickerInput placeholder="mm/dd/yyyy" labelText="" id="date-picker-single" size="md" />
+                    </DatePicker>
+                  </>
+                )}
+              </Layer>
               <Layer className={styles.toolbarItem}>
                 <TableToolbarSearch
                   expanded
@@ -196,14 +194,14 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           <Table {...getTableProps()} className={styles.tableWrapper}>
             <TableHead>
               <TableRow>
-                <TableExpandHeader enableToggle {...getExpandHeaderProps()} />
+                <TableExpandHeader enableToggle={rows.length > 0} {...getExpandHeaderProps()} />
                 {headers.map((header) => (
                   <TableHeader {...getHeaderProps({ header })}>{header.header?.content ?? header.header}</TableHeader>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row, index) => {
+              {rows.map((row) => {
                 return (
                   <React.Fragment key={row.id}>
                     <TableExpandRow {...getRowProps({ row })} key={row.id}>
@@ -238,23 +236,25 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
               </Tile>
             </div>
           ) : null}
-          <Pagination
-            forwardText={t('nextPage', 'Next page')}
-            backwardText={t('previousPage', 'Previous page')}
-            page={currentPage}
-            pageSize={currentPageSize}
-            pageSizes={pageSizes}
-            totalItems={groupedOrdersByPatient?.length}
-            className={styles.pagination}
-            onChange={({ pageSize, page }) => {
-              if (pageSize !== currentPageSize) {
-                setPageSize(pageSize);
-              }
-              if (page !== currentPage) {
-                goTo(page);
-              }
-            }}
-          />
+          {rows.length > 0 && (
+            <Pagination
+              forwardText={t('nextPage', 'Next page')}
+              backwardText={t('previousPage', 'Previous page')}
+              page={currentPage}
+              pageSize={currentPageSize}
+              pageSizes={pageSizes}
+              totalItems={groupedOrdersByPatient?.length}
+              className={styles.pagination}
+              onChange={({ pageSize, page }) => {
+                if (pageSize !== currentPageSize) {
+                  setPageSize(pageSize);
+                }
+                if (page !== currentPage) {
+                  goTo(page);
+                }
+              }}
+            />
+          )}
         </TableContainer>
       )}
     </DataTable>
