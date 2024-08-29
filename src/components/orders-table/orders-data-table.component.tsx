@@ -38,6 +38,7 @@ import {
 import dayjs from "dayjs";
 import { isoDateTimeString } from "../../constants";
 import ListOrderDetails from "./listOrderDetails.component";
+import { Order } from "@openmrs/esm-patient-common-lib";
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
@@ -57,15 +58,15 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     activatedOnOrAfterDate
   );
 
-  const flattenedLabOrders = useMemo(() => {
-    return labOrders.map((eachObject) => {
+  const flattenedLabOrders: Order[] = useMemo(() => {
+    return labOrders.map((order) => {
       return {
-        ...eachObject,
-        dateActivated: formatDate(parseDate(eachObject.dateActivated)),
-        patientName: eachObject.patient?.display.split("-")[1],
-        patientUuid: eachObject.patient?.uuid,
-        status: eachObject.fulfillerStatus ?? "--",
-        orderer: eachObject.orderer?.display.split("-")[1],
+        ...order,
+        dateActivated: formatDate(parseDate(order.dateActivated)),
+        patientName: order.patient?.display.split("-")[1],
+        patientUuid: order.patient?.uuid,
+        status: order.fulfillerStatus ?? "--",
+        orderer: order.orderer,
       };
     });
   }, [labOrders]);
@@ -90,6 +91,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     }
   }
   const groupedOrdersByPatient = groupOrdersById(flattenedLabOrders);
+
   const searchResults = useSearchGroupedResults(
     groupedOrdersByPatient,
     searchString
@@ -160,12 +162,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
       orders: patient.orders,
       totalOrders: patient.orders?.length,
     }));
-  }, [
-    paginatedLabOrders,
-    redirectToResultsViewer,
-    redirectToOrders,
-    props.actionsSlotName,
-  ]);
+  }, [paginatedLabOrders]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;

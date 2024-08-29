@@ -101,7 +101,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                 />
                 <OrderDetail
                   label={t("orderer", "orderer").toUpperCase()}
-                  value={row.orderer}
+                  value={row.orderer.display}
                 />
                 <OrderDetail
                   label={t("instructions", "Instructions").toUpperCase()}
