@@ -3,8 +3,9 @@
 @use '@carbon/colors';
 
 .tableContainer {
+  border: 1px solid colors.$gray-20;
   background-color: colors.$gray-10;
-  margin: 0 spacing.$spacing-05;
+  margin: spacing.$spacing-05;
   padding: 0;
 
   :global(.cds--data-table-content) {
@@ -25,11 +26,14 @@
 
   :global(.cds--table-toolbar) {
     position: static;
-    margin: 0.5rem;
   }
 
   :global(.cds--overflow-menu) {
     width: 75%;
+  }
+
+  :global(.cds--pagination) {
+    border-top: none;
   }
 
   .toolbarContent {
@@ -38,19 +42,33 @@
   }
 }
 
+.loader {
+  margin: spacing.$spacing-05;
+}
+
 .toolbarItem {
+  margin-left: 1rem;
   display: flex;
-  margin: 5px 10px;
   align-items: center;
 
   & p {
-    padding-right: 5px;
+    padding-right: 0.5rem;
     @include type.type-style('body-01');
     color: colors.$gray-70;
   }
+
+  :global(.cds--date-picker__input) {
+    height: spacing.$spacing-09;
+  }
+
+  :global(.cds--dropdown) {
+    height: spacing.$spacing-09;
+  }
+
+  :global(.cds--list-box__menu:focus) {
+    outline: none;
+  }
 }
-
-
 
 .tableWrapper tr:last-of-type {
   td {
@@ -61,7 +79,7 @@
 .tileContainer {
   background-color: colors.$white;
   border-top: 1px solid colors.$gray-20;
-  padding: 5rem 0;
+  padding: 3rem 0;
 }
 
 .tile {
@@ -83,4 +101,12 @@
 
 .singleLineDisplay {
   white-space: nowrap;
+}
+
+.emptyStateHelperText {
+  @include type.type-style('helper-text-02');
+}
+
+.hiddenRow {
+  display: none;
 }

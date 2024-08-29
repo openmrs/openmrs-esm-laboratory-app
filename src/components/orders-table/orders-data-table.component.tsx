@@ -1,44 +1,36 @@
-import React, { useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
+import React, { useMemo, useState } from 'react';
+import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 import {
   DataTable,
   DataTableSkeleton,
+  DatePicker,
+  DatePickerInput,
+  Dropdown,
+  Layer,
   Pagination,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
-  TableHeader,
+  TableExpandedRow,
   TableExpandHeader,
   TableExpandRow,
-  TableExpandedRow,
+  TableHead,
+  TableHeader,
   TableRow,
-  Tile,
-  Dropdown,
   TableToolbar,
   TableToolbarContent,
-  Layer,
   TableToolbarSearch,
-  DatePicker,
-  DatePickerInput,
-} from "@carbon/react";
-import {
-  formatDate,
-  parseDate,
-  useConfig,
-  usePagination,
-} from "@openmrs/esm-framework";
-import styles from "./orders-data-table.scss";
-import { FulfillerStatus, OrdersDataTableProps } from "../../types";
-import {
-  useLabOrders,
-  useSearchGroupedResults,
-} from "../../laboratory-resource";
-import dayjs from "dayjs";
-import { isoDateTimeString } from "../../constants";
-import ListOrderDetails from "./listOrderDetails.component";
-import { Order } from "@openmrs/esm-patient-common-lib";
+  Tile,
+} from '@carbon/react';
+import { formatDate, parseDate, useConfig, usePagination } from '@openmrs/esm-framework';
+import { FulfillerStatus, OrdersDataTableProps } from '../../types';
+import { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
+import { isoDateTimeString } from '../../constants';
+import ListOrderDetails from './list-order-details.component';
+import styles from './orders-data-table.scss';
+import { Order } from '@openmrs/esm-patient-common-lib';
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
@@ -48,14 +40,14 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
 
   const [filter, setFilter] = useState<FulfillerStatus>(null);
   const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState<string>(
-    dayjs().startOf("day").format(isoDateTimeString)
+    dayjs().startOf('day').format(isoDateTimeString),
   );
-  const [searchString, setSearchString] = useState<string>("");
+  const [searchString, setSearchString] = useState<string>('');
 
   const { labOrders, isLoading } = useLabOrders(
     props.useFilter ? filter : props.fulfillerStatus,
     props.excludeCanceledAndDiscontinuedOrders,
-    activatedOnOrAfterDate
+    activatedOnOrAfterDate,
   );
 
   const flattenedLabOrders: Order[] = useMemo(() => {
@@ -63,9 +55,9 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
       return {
         ...order,
         dateActivated: formatDate(parseDate(order.dateActivated)),
-        patientName: order.patient?.display.split("-")[1],
+        patientName: order.patient?.display.split('-')[1],
         patientUuid: order.patient?.uuid,
-        status: order.fulfillerStatus ?? "--",
+        status: order.fulfillerStatus ?? '--',
         orderer: order.orderer,
       };
     });
@@ -92,141 +84,110 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   }
   const groupedOrdersByPatient = groupOrdersById(flattenedLabOrders);
 
-  const searchResults = useSearchGroupedResults(
-    groupedOrdersByPatient,
-    searchString
-  );
+  const searchResults = useSearchGroupedResults(groupedOrdersByPatient, searchString);
 
   const orderStatuses = [
     {
       value: null,
-      display: t("all", "All"),
+      display: t('all', 'All'),
     },
     {
-      value: "NEW",
-      display: t("newStatus", "NEW"),
+      value: 'NEW',
+      display: t('newStatus', 'NEW'),
     },
     {
-      value: "RECEIVED",
-      display: t("receivedStatus", "RECEIVED"),
+      value: 'RECEIVED',
+      display: t('receivedStatus', 'RECEIVED'),
     },
     {
-      value: "IN_PROGRESS",
-      display: t("inProgressStatus", "IN_PROGRESS"),
+      value: 'IN_PROGRESS',
+      display: t('inProgressStatus', 'IN_PROGRESS'),
     },
     {
-      value: "COMPLETED",
-      display: t("completedStatus", "COMPLETED"),
+      value: 'COMPLETED',
+      display: t('completedStatus', 'COMPLETED'),
     },
     {
-      value: "EXCEPTION",
-      display: t("exceptionStatus", "EXCEPTION"),
+      value: 'EXCEPTION',
+      display: t('exceptionStatus', 'EXCEPTION'),
     },
     {
-      value: "ON_HOLD",
-      display: t("onHoldStatus", "ON_HOLD"),
+      value: 'ON_HOLD',
+      display: t('onHoldStatus', 'ON_HOLD'),
     },
     {
-      value: "DECLINED",
-      display: t("declinedStatus", "DECLINED"),
+      value: 'DECLINED',
+      display: t('declinedStatus', 'DECLINED'),
     },
   ];
 
   const columns = useMemo(() => {
     return [
-      { id: 0, header: t("patient", "Patient"), key: "patientName" },
-      { id: 1, header: t("totalorders", "Total Orders"), key: "totalOrders" },
+      { id: 0, header: t('patient', 'Patient'), key: 'patientName' },
+      { id: 1, header: t('totalOrders', 'Total Orders'), key: 'totalOrders' },
     ];
   }, [t]);
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
-  const {
-    goTo,
-    results: paginatedLabOrders,
-    currentPage,
-  } = usePagination(searchResults, currentPageSize);
+  const { goTo, results: paginatedLabOrders, currentPage } = usePagination(searchResults, currentPageSize);
 
-  const handleOrderStatusChange = ({ selectedItem }) =>
-    setFilter(selectedItem.value);
+  const handleOrderStatusChange = ({ selectedItem }) => setFilter(selectedItem.value);
 
   const handleActivateOnOrAfterDateChange = (date: string) =>
-    setActivatedOnOrAfterDate(
-      dayjs(date).startOf("day").format(isoDateTimeString)
-    );
+    setActivatedOnOrAfterDate(dayjs(date).startOf('day').format(isoDateTimeString));
 
   const tableRows = useMemo(() => {
     return paginatedLabOrders.map((patient, index) => ({
       id: patient.patientId,
-      patientName: patient.orders[0].patient?.display?.split("-")[1],
+      patientName: patient.orders[0].patient?.display?.split('-')[1],
       orders: patient.orders,
       totalOrders: patient.orders?.length,
     }));
   }, [paginatedLabOrders]);
 
   if (isLoading) {
-    return <DataTableSkeleton role="progressbar" />;
+    return <DataTableSkeleton className={styles.loader} role="progressbar" />;
   }
   return (
     <DataTable rows={tableRows} headers={columns} useZebraStyles>
-      {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
+      {({ getExpandHeaderProps, getHeaderProps, getRowProps, getTableProps, headers, rows }) => (
         <TableContainer className={styles.tableContainer}>
           <TableToolbar>
             <TableToolbarContent>
-              {
-                <Layer className={styles.toolbarItem}>
-                  {props.useFilter && (
-                    <Dropdown
-                      id="orderStatusFilter"
-                      initialSelectedItem={
-                        filter
-                          ? orderStatuses.find(
-                              (status) => status.value === filter
-                            )
-                          : orderStatuses[0]
-                      }
-                      titleText={
-                        t("filterOrdersByStatus", "Filter orders by status") +
-                        ":"
-                      }
-                      type="inline"
-                      items={orderStatuses}
-                      onChange={handleOrderStatusChange}
-                      itemToString={(item) => item?.display}
-                    />
-                  )}
-                  {props.useActivatedOnOrAfterDateFilter && (
-                    <>
-                      <p>
-                        {t(
-                          "onOrAfterDateFilter",
-                          "Filter orders on or after : "
-                        )}
-                      </p>
-                      <DatePicker
-                        onChange={([date]) =>
-                          handleActivateOnOrAfterDateChange(date)
-                        }
-                        maxDate={new Date()}
-                        datePickerType="single"
-                        value={new Date(activatedOnOrAfterDate).toISOString()}
-                      >
-                        <DatePickerInput
-                          placeholder="mm/dd/yyyy"
-                          labelText=""
-                          id="date-picker-single"
-                          size="md"
-                        />
-                      </DatePicker>
-                    </>
-                  )}
-                </Layer>
-              }
+              <Layer className={styles.toolbarItem}>
+                {props.useFilter && (
+                  <Dropdown
+                    id="orderStatusFilter"
+                    initialSelectedItem={
+                      filter ? orderStatuses.find((status) => status.value === filter) : orderStatuses[0]
+                    }
+                    items={orderStatuses}
+                    itemToString={(item) => item?.display}
+                    onChange={handleOrderStatusChange}
+                    titleText={t('filterOrdersByStatus', 'Filter orders by status') + ':'}
+                    type="inline"
+                  />
+                )}
+                {props.useActivatedOnOrAfterDateFilter && (
+                  <>
+                    <p>{t('onOrAfterDateFilter', 'Filter orders on or after')}:</p>
+                    <DatePicker
+                      onChange={([date]) => handleActivateOnOrAfterDateChange(date)}
+                      maxDate={new Date()}
+                      datePickerType="single"
+                      value={new Date(activatedOnOrAfterDate).toISOString()}
+                    >
+                      <DatePickerInput placeholder="mm/dd/yyyy" labelText="" id="date-picker-single" size="md" />
+                    </DatePicker>
+                  </>
+                )}
+              </Layer>
               <Layer className={styles.toolbarItem}>
                 <TableToolbarSearch
                   expanded
                   onChange={(e) => setSearchString(e.target.value)}
-                  placeholder={t("searchThisList", "Search this list")}
+                  placeholder={t('searchThisList', 'Search this list')}
                   size="sm"
                 />
               </Layer>
@@ -235,33 +196,31 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           <Table {...getTableProps()} className={styles.tableWrapper}>
             <TableHead>
               <TableRow>
-                <TableExpandHeader />
+                <TableExpandHeader enableToggle={rows.length > 0} {...getExpandHeaderProps()} />
                 {headers.map((header) => (
-                  <TableHeader {...getHeaderProps({ header })}>
-                    {header.header?.content ?? header.header}
-                  </TableHeader>
+                  <TableHeader {...getHeaderProps({ header })}>{header.header?.content ?? header.header}</TableHeader>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row, index) => {
+              {rows.map((row) => {
                 return (
                   <React.Fragment key={row.id}>
                     <TableExpandRow {...getRowProps({ row })} key={row.id}>
                       {row.cells.map((cell) => (
-                        <TableCell key={cell.id}>
-                          {cell.value?.content ?? cell.value}
-                        </TableCell>
+                        <TableCell key={cell.id}>{cell.value?.content ?? cell.value}</TableCell>
                       ))}
                     </TableExpandRow>
-                    <TableExpandedRow colSpan={headers.length + 1}>
-                      <ListOrderDetails
-                        actions={props.actions}
-                        groupedOrders={groupedOrdersByPatient.find(
-                          (item) => item.patientId === row.id
-                        )}
-                      />
-                    </TableExpandedRow>
+                    {row.isExpanded ? (
+                      <TableExpandedRow colSpan={headers.length + 1}>
+                        <ListOrderDetails
+                          actions={props.actions}
+                          groupedOrders={groupedOrdersByPatient.find((item) => item.patientId === row.id)}
+                        />
+                      </TableExpandedRow>
+                    ) : (
+                      <TableExpandedRow className={styles.hiddenRow} colSpan={headers.length + 2} />
+                    )}
                   </React.Fragment>
                 );
               })}
@@ -271,33 +230,33 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
             <div className={styles.tileContainer}>
               <Tile className={styles.tile}>
                 <div className={styles.tileContent}>
-                  <p className={styles.content}>
-                    {t(
-                      "noLabRequestsFoundCheckFilters",
-                      "No lab requests found. Please check your filters and try again."
-                    )}
+                  <p className={styles.content}>{t('noLabRequestsFoundC', 'No lab requests found')}</p>
+                  <p className={styles.emptyStateHelperText}>
+                    {t('checkFilters', 'Please check the filters above and try again')}
                   </p>
                 </div>
               </Tile>
             </div>
           ) : null}
-          <Pagination
-            forwardText={t("nextPage", "Next page")}
-            backwardText={t("previousPage", "Previous page")}
-            page={currentPage}
-            pageSize={currentPageSize}
-            pageSizes={pageSizes}
-            totalItems={groupedOrdersByPatient?.length}
-            className={styles.pagination}
-            onChange={({ pageSize, page }) => {
-              if (pageSize !== currentPageSize) {
-                setPageSize(pageSize);
-              }
-              if (page !== currentPage) {
-                goTo(page);
-              }
-            }}
-          />
+          {rows.length > 0 && (
+            <Pagination
+              forwardText={t('nextPage', 'Next page')}
+              backwardText={t('previousPage', 'Previous page')}
+              page={currentPage}
+              pageSize={currentPageSize}
+              pageSizes={pageSizes}
+              totalItems={groupedOrdersByPatient?.length}
+              className={styles.pagination}
+              onChange={({ pageSize, page }) => {
+                if (pageSize !== currentPageSize) {
+                  setPageSize(pageSize);
+                }
+                if (page !== currentPage) {
+                  goTo(page);
+                }
+              }}
+            />
+          )}
         </TableContainer>
       )}
     </DataTable>

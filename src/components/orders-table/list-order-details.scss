@@ -3,6 +3,8 @@
 @use '@openmrs/esm-styleguide/src/vars' as *;
 
 .orderTile {
+  display: flex;
+  justify-content: space-between;
   width: 100%;
   margin: 2px 0 8px;
   padding: 0 8px 0 8px;
@@ -10,8 +12,9 @@
   border-left: 4px solid var(--brand-03);
   color: $text-02;
   margin-bottom: 1rem !important;
-  &:hover{
-    background-color: colors.$white-hover; 
+
+  &:hover {
+    background-color: colors.$white-hover;
   }
 }
 
@@ -32,24 +35,27 @@
   padding-left: 10px !important;
   margin: auto;
 }
- 
+
 .orderPropertyDisplay {
-    font-size: 15px !important;
+  font-size: 15px !important;
+}
+
+.bodyLong01 {
+  font-size: 13px !important;
+}
+
+.displayValue {
+  color: #525252;
+  font-weight: bold;
+  width: layout.$spacing-05;
+  height: layout.$spacing-05;
+}
+
+.actionButtons {
+  margin-left: layout.$spacing-05;
+  margin-top: layout.$spacing-07;
+
+  > * + * {
+    margin-left: layout.$spacing-03;
   }
-  
-  .bodyLong01 {
-    font-size: 13px !important;
-  }
-  
-  .displayValue {
-    color: #525252;
-    font-weight: bold;
-    width: layout.$spacing-05;
-    height: layout.$spacing-05;
-  }
-  
-  .actionBtns {
-    float: right;
-    margin-left: layout.$spacing-05;
-    margin-top: layout.$spacing-07;
-  }
+}

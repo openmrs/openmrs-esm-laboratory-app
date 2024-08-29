@@ -1,5 +1,5 @@
-import React from "react";
-import OrdersDataTable from "../../components/orders-table/orders-data-table.component";
+import React from 'react';
+import OrdersDataTable from '../../components/orders-table/orders-data-table.component';
 
 const TestsOrderedTable: React.FC = () => {
   return (
@@ -8,8 +8,8 @@ const TestsOrderedTable: React.FC = () => {
       actionsSlotName="tests-ordered-actions-slot"
       useFilter
       actions={[
-        { actionName: "pickupLabRequest", order: 0 },
-        { actionName: "rejectLabRequest", order: 1 },
+        { actionName: 'pickupLabRequest', order: 0 },
+        { actionName: 'rejectLabRequest', order: 1 },
       ]}
     />
   );
