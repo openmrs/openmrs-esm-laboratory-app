@@ -1,14 +1,16 @@
 import React from 'react';
-import { Select, SelectItem, TextInput, NumberInput } from '@carbon/react';
-import { Controller } from 'react-hook-form';
+import { NumberInput, Select, SelectItem, TextInput } from '@carbon/react';
+import { Control, Controller, UseFormRegister } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { ConceptReference } from './result-form.resource';
 import styles from './result-form.scss';
 
 interface ResultFormFieldProps {
   concept: ConceptReference;
-  control: any;
-  register: any;
+  control: Control<any, any>;
+  register: UseFormRegister<{
+    testResult: string;
+  }>;
 }
 
 const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control }) => {
@@ -36,13 +38,12 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control }) =
           name={concept.uuid}
           render={({ field }) => (
             <TextInput
-              key={concept.uuid}
               className={styles.textInput}
-              {...field}
-              type="text"
+              id={concept.uuid}
+              key={concept.uuid}
               labelText={concept?.display ?? ''}
-              autoFocus
-              allowEmpty
+              type="text"
+              {...field}
             />
           )}
         />
@@ -54,17 +55,16 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control }) =
           name={concept.uuid}
           render={({ field }) => (
             <NumberInput
-              key={concept.uuid}
-              className={styles.numberInput}
-              value={field.value || ''}
-              onChange={(event) => field.onChange(event.target.value)}
-              label={concept?.display + printValueRange(concept)}
-              id={concept.uuid}
-              step={1}
-              autoFocus
-              hideSteppers
-              disableWheel
               allowEmpty
+              className={styles.numberInput}
+              disableWheel
+              hideSteppers
+              id={concept.uuid}
+              key={concept.uuid}
+              label={concept?.display + printValueRange(concept)}
+              onChange={(event) => field.onChange(event.target.value)}
+              step={0.01}
+              value={field.value || ''}
             />
           )}
         />
@@ -120,17 +120,16 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control }) =
                 name={member.uuid}
                 render={({ field }) => (
                   <NumberInput
-                    key={member.uuid}
-                    className={styles.numberInput}
-                    value={field.value || ''}
-                    onChange={(event) => field.onChange(event.target.value)}
-                    label={member?.display + printValueRange(member)}
-                    id={member.uuid}
-                    step={1}
-                    autoFocus={index === 0}
-                    hideSteppers
-                    disableWheel
                     allowEmpty
+                    className={styles.numberInput}
+                    disableWheel
+                    hideSteppers
+                    id={member.uuid}
+                    key={member.uuid}
+                    label={member?.display + printValueRange(member)}
+                    onChange={(event) => field.onChange(event.target.value)}
+                    step={0.01}
+                    value={field.value || ''}
                   />
                 )}
               />
