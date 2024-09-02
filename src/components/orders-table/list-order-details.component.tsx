@@ -1,17 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Tile } from '@carbon/react';
-import { showModal } from '@openmrs/esm-framework';
-import { launchOverlay } from '../overlay/store';
+import { launchWorkspace, showModal } from '@openmrs/esm-framework';
 import { ListOrdersDetailsProps } from '../../types';
 import { OrderDetail } from './order-detail.component';
-import ResultForm from '../../results/result-form.component';
 import styles from './list-order-details.scss';
 
 const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
   const { t } = useTranslation();
   const orders = props.groupedOrders?.orders;
-  const patientId = props.groupedOrders?.patientId;
 
   return (
     <div className={styles.ordersContainer}>
@@ -57,12 +54,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                       <Button
                         key={`${action.actionName}-${row.uuid}`}
                         kind="primary"
-                        onClick={() => {
-                          launchOverlay(
-                            t('labResultsForm', 'Lab results form'),
-                            <ResultForm patientUuid={patientId} order={row} />,
-                          );
-                        }}
+                        onClick={() => launchWorkspace('test-results-form-workspace', { order: row })}
                       >
                         {t('labResultsForm', 'Lab results form')}
                       </Button>
