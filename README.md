@@ -44,3 +44,6 @@ should open with the OpenMRS 3 application. Log in and then navigate to
 ```
 yarn run test
 ```
+
+# ⚠️ Important Notice: Dependency
+As of this [PR](https://github.com/openmrs/openmrs-esm-laboratory-app/pull/87) some features of the `@openmrs/esm-laboratory-app` are dependent on `@openmrs/esm-patient-lab-order` package. Please keep that in mind as you are implementing the module.
