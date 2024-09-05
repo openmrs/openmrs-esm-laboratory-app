@@ -1,26 +1,26 @@
 # OpenMRS 3.x Laboratory ESM
 
-A frontend module for managing laboratory requests and queues built on OpenMRS 3.x
+A frontend module for managing laboratory requests and queues built on O3.
 
-For more information, please refer to the
-[OpenMRS 3.x Frontend Documentation](https://o3-docs.openmrs.org/).
+For more information, please refer to the [OpenMRS 3.x Frontend Documentation](https://o3-docs.openmrs.org/).
 
-### Dashboard
+## Dashboard
 
 <img src="https://raw.githubusercontent.com/openmrs/openmrs-esm-laboratory/main/assets/screenshots/labs_general_dashboard.png" />
 
 ### Adding Results
 
 ### Adding tab panels
-Implementers can add or remove laboratory tab panels via extension configuration in the [routes.js](https://github.com/openmrs/openmrs-esm-laboratory/blob/main/src/routes.json) json file 
 
+Implementers can add or remove laboratory tab panels via extension configuration in the [routes.js](https://github.com/openmrs/openmrs-esm-laboratory/blob/main/src/routes.json) json file.
 
 <img src="https://raw.githubusercontent.com/openmrs/openmrs-esm-laboratory/main/assets/screenshots/labs_enter_results.png" />
 
 ### Adding or removing summary tiles
-Implementers can add or remove summary tiles via extension configuration in the [routes.js](https://github.com/openmrs/openmrs-esm-laboratory/blob/main/src/routes.json) json file 
 
-# Getting Started
+Implementers can add or remove summary tiles via extension configuration in the [routes.js](https://github.com/openmrs/openmrs-esm-laboratory/blob/main/src/routes.json) json file.
+
+## Getting Started
 
 ```sh
 # Clone the repository
@@ -36,11 +36,10 @@ yarn start
 yarn start --port 5000
 ```
 
-Once it is running, a browser window
-should open with the OpenMRS 3 application. Log in and then navigate to
-`/openmrs/spa/home/laboratory`.
+Once it is running, a browser window should open with O3 running. Log in and then navigate to `/openmrs/spa/home/laboratory`.
 
-# Running tests
-```
+## Running tests
+
+```sh
 yarn run test
 ```
