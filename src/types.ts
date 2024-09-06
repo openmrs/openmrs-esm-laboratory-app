@@ -22,6 +22,5 @@ export interface OrdersDataTableProps {
   excludeColumns?: string[];
   fulfillerStatus?: FulfillerStatus;
   excludeCanceledAndDiscontinuedOrders?: boolean;
-  useActivatedOnOrAfterDateFilter?: boolean;
   actions: Array<OrderAction>;
 }

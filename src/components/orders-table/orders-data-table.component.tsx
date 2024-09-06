@@ -169,19 +169,17 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
                     type="inline"
                   />
                 )}
-                {props.useActivatedOnOrAfterDateFilter && (
-                  <>
-                    <p>{t('onOrAfterDateFilter', 'Filter orders on or after')}:</p>
-                    <DatePicker
-                      onChange={([date]) => handleActivateOnOrAfterDateChange(date)}
-                      maxDate={new Date()}
-                      datePickerType="single"
-                      value={new Date(activatedOnOrAfterDate).toISOString()}
-                    >
-                      <DatePickerInput placeholder="mm/dd/yyyy" labelText="" id="date-picker-single" size="md" />
-                    </DatePicker>
-                  </>
-                )}
+                <>
+                  <p>{t('onOrAfterDateFilter', 'Filter orders on or after')}:</p>
+                  <DatePicker
+                    onChange={([date]) => handleActivateOnOrAfterDateChange(date)}
+                    maxDate={new Date()}
+                    datePickerType="single"
+                    value={new Date(activatedOnOrAfterDate).toISOString()}
+                  >
+                    <DatePickerInput placeholder="mm/dd/yyyy" labelText="" id="date-picker-single" size="md" />
+                  </DatePicker>
+                </>
               </Layer>
               <Layer className={styles.toolbarItem}>
                 <TableToolbarSearch
