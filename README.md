@@ -43,3 +43,6 @@ Once it is running, a browser window should open with O3 running. Log in and the
 ```sh
 yarn run test
 ```
+
+# ⚠️ Important Notice: Dependency
+As of this [PR](https://github.com/openmrs/openmrs-esm-laboratory-app/pull/87) some features of the `@openmrs/esm-laboratory-app` are dependent on `@openmrs/esm-patient-lab-order` package. Please keep that in mind as you are implementing the module.
