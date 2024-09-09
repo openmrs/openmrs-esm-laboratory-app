@@ -31,6 +31,7 @@ import { isoDateTimeString } from '../../constants';
 import ListOrderDetails from './list-order-details.component';
 import styles from './orders-data-table.scss';
 import { Order } from '@openmrs/esm-patient-common-lib';
+import { OrdersDateRangePicker } from './orders-date-range-picker';
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
@@ -39,15 +40,14 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   } = useConfig();
 
   const [filter, setFilter] = useState<FulfillerStatus>(null);
-  const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState<string>(
-    dayjs().startOf('day').format(isoDateTimeString),
-  );
+  const [dateRange, setDateRange] = useState<Date[]>([dayjs().startOf('day').toDate(), new Date()]);
+
   const [searchString, setSearchString] = useState<string>('');
 
   const { labOrders, isLoading } = useLabOrders(
     props.useFilter ? filter : props.fulfillerStatus,
     props.excludeCanceledAndDiscontinuedOrders,
-    activatedOnOrAfterDate,
+    dateRange,
   );
 
   const flattenedLabOrders: Order[] = useMemo(() => {
@@ -134,11 +134,12 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
 
   const handleOrderStatusChange = ({ selectedItem }) => setFilter(selectedItem.value);
 
-  const handleActivateOnOrAfterDateChange = (date: string) =>
-    setActivatedOnOrAfterDate(dayjs(date).startOf('day').format(isoDateTimeString));
+  const handleOrdersDateRangeChange = (dates: Date[]) => {
+    setDateRange(dates);
+  };
 
   const tableRows = useMemo(() => {
-    return paginatedLabOrders.map((patient, index) => ({
+    return paginatedLabOrders.map((patient) => ({
       id: patient.patientId,
       patientName: patient.orders[0].patient?.display?.split('-')[1],
       orders: patient.orders,
@@ -147,14 +148,14 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   }, [paginatedLabOrders]);
 
   if (isLoading) {
-    return <DataTableSkeleton className={styles.loader} role="progressbar" />;
+    return <DataTableSkeleton className={styles.loader} role="progressbar" showHeader={false} showToolbar={false} />;
   }
   return (
     <DataTable rows={tableRows} headers={columns} useZebraStyles>
       {({ getExpandHeaderProps, getHeaderProps, getRowProps, getTableProps, headers, rows }) => (
         <TableContainer className={styles.tableContainer}>
           <TableToolbar>
-            <TableToolbarContent>
+            <TableToolbarContent className={styles.tableToolBar}>
               <Layer className={styles.toolbarItem}>
                 {props.useFilter && (
                   <Dropdown
@@ -169,19 +170,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
                     type="inline"
                   />
                 )}
-                {props.useActivatedOnOrAfterDateFilter && (
-                  <>
-                    <p>{t('onOrAfterDateFilter', 'Filter orders on or after')}:</p>
-                    <DatePicker
-                      onChange={([date]) => handleActivateOnOrAfterDateChange(date)}
-                      maxDate={new Date()}
-                      datePickerType="single"
-                      value={new Date(activatedOnOrAfterDate).toISOString()}
-                    >
-                      <DatePickerInput placeholder="mm/dd/yyyy" labelText="" id="date-picker-single" size="md" />
-                    </DatePicker>
-                  </>
-                )}
+                <OrdersDateRangePicker onChange={handleOrdersDateRangeChange} currentValues={dateRange} />
               </Layer>
               <Layer className={styles.toolbarItem}>
                 <TableToolbarSearch

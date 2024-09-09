@@ -1,6 +1,7 @@
 @use '@carbon/styles/scss/spacing';
 @use '@carbon/styles/scss/type';
 @use '@carbon/colors';
+@use '@carbon/layout';
 
 .tableContainer {
   border: 1px solid colors.$gray-20;
@@ -109,4 +110,9 @@
 
 .hiddenRow {
   display: none;
+}
+
+.tableToolBar {
+  height: auto;
+  padding-top: layout.$spacing-05;
 }
