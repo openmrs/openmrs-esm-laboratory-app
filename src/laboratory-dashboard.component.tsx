@@ -16,7 +16,7 @@ const LaboratoryDashboard: React.FC = () => {
         title={t('laboratory', 'Laboratory')}
         className={styles.pageHeader}
       />
-      <div className={styles.container}>
+      <div>
         <LaboratorySummaryTiles />
         <LaboratoryOrdersTabs />
         <Overlay />
