@@ -1,8 +1,9 @@
-import { openmrsFetch, restBaseUrl, useConfig } from '@openmrs/esm-framework';
+import { getGlobalStore, openmrsFetch, restBaseUrl, useConfig } from '@openmrs/esm-framework';
 import { FulfillerStatus, GroupedOrders } from './types';
 import { Order } from '@openmrs/esm-patient-common-lib';
 import useSWR from 'swr';
 import { useMemo } from 'react';
+import dayjs from 'dayjs';
 
 /**
  * Custom hook for retrieving laboratory orders based on the specified status.
@@ -83,3 +84,7 @@ export function rejectLabOrder(orderId: string, comment: string, abortController
     },
   });
 }
+
+export const labDateRange = getGlobalStore<{ dateRange: Date[] }>('lab-date-range', {
+  dateRange: [dayjs().startOf('day').toDate(), new Date()],
+});

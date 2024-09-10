@@ -1,3 +1,7 @@
 .dateRangePicker {
   flex-grow: unset;
+
+  input {
+    background-color: transparent;
+  }
 }

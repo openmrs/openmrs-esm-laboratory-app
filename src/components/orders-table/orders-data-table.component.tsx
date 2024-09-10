@@ -24,10 +24,9 @@ import {
   TableToolbarSearch,
   Tile,
 } from '@carbon/react';
-import { formatDate, parseDate, useConfig, usePagination } from '@openmrs/esm-framework';
+import { formatDate, parseDate, usePagination, useStore } from '@openmrs/esm-framework';
 import { FulfillerStatus, OrdersDataTableProps } from '../../types';
-import { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
-import { isoDateTimeString } from '../../constants';
+import { labDateRange, useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
 import ListOrderDetails from './list-order-details.component';
 import styles from './orders-data-table.scss';
 import { Order } from '@openmrs/esm-patient-common-lib';
@@ -35,13 +34,9 @@ import { OrdersDateRangePicker } from './orders-date-range-picker';
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
-  const {
-    targetPatientDashboard: { redirectToResultsViewer, redirectToOrders },
-  } = useConfig();
+  const { dateRange } = useStore(labDateRange);
 
   const [filter, setFilter] = useState<FulfillerStatus>(null);
-  const [dateRange, setDateRange] = useState<Date[]>([dayjs().startOf('day').toDate(), new Date()]);
-
   const [searchString, setSearchString] = useState<string>('');
 
   const { labOrders, isLoading } = useLabOrders(
@@ -135,7 +130,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const handleOrderStatusChange = ({ selectedItem }) => setFilter(selectedItem.value);
 
   const handleOrdersDateRangeChange = (dates: Date[]) => {
-    setDateRange(dates);
+    labDateRange.setState({ dateRange: dates });
   };
 
   const tableRows = useMemo(() => {
