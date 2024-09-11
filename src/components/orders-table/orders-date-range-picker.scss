@@ -1,3 +1,11 @@
+@use '@carbon/layout';
+
+.datePickerWrapper {
+  display: flex;
+  gap: layout.$spacing-03;
+  align-items: center;
+}
+
 .dateRangePicker {
   flex-grow: unset;
 
