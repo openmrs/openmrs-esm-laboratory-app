@@ -118,9 +118,10 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
       patientName: patient.orders[0].patient?.display?.split('-')[1],
       orders: patient.orders,
       totalOrders: patient.orders?.length,
-      action: props.fulfillerStatus === 'COMPLETED' ? (
-        <TransitionLatestQueueEntryButton patientUuid={patient.patientId} />
-      ) : null,
+      action:
+        props.fulfillerStatus === 'COMPLETED' ? (
+          <TransitionLatestQueueEntryButton patientUuid={patient.patientId} />
+        ) : null,
     }));
   }, [paginatedLabOrders, props.fulfillerStatus]);
 
@@ -138,7 +139,9 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
                 {props.useFilter && (
                   <Dropdown
                     id="orderStatusFilter"
-                    initialSelectedItem={filter ? orderStatuses.find((status) => status.value === filter) : orderStatuses[0]}
+                    initialSelectedItem={
+                      filter ? orderStatuses.find((status) => status.value === filter) : orderStatuses[0]
+                    }
                     items={orderStatuses}
                     itemToString={(item) => item?.display}
                     onChange={handleOrderStatusChange}
@@ -176,7 +179,10 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
                     ))}
                   </TableExpandRow>
                   <TableExpandedRow colSpan={headers.length + 1}>
-                    <ListOrderDetails actions={props.actions} groupedOrders={groupedOrdersByPatient.find((item) => item.patientId === row.id)} />
+                    <ListOrderDetails
+                      actions={props.actions}
+                      groupedOrders={groupedOrdersByPatient.find((item) => item.patientId === row.id)}
+                    />
                   </TableExpandedRow>
                 </React.Fragment>
               ))}
@@ -187,7 +193,10 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
               <Tile className={styles.tile}>
                 <div className={styles.tileContent}>
                   <p className={styles.content}>
-                    {t('noLabRequestsFoundCheckFilters', 'No lab requests found. Please check your filters and try again.')}
+                    {t(
+                      'noLabRequestsFoundCheckFilters',
+                      'No lab requests found. Please check your filters and try again.',
+                    )}
                   </p>
                 </div>
               </Tile>

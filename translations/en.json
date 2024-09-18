@@ -1,7 +1,7 @@
 {
+  "actionButton": "Action",
   "all": "All",
   "cancel": "Cancel",
-  "checkFilters": "Please check the filters above and try again",
   "completed": "Completed",
   "completedStatus": "COMPLETED",
   "date": "Date",
@@ -20,9 +20,8 @@
   "loading": "Loading",
   "newStatus": "NEW",
   "nextPage": "Next page",
-  "noLabRequestsFoundC": "No lab requests found",
+  "noLabRequestsFoundCheckFilters": "No lab requests found. Please check your filters and try again.",
   "onHoldStatus": "ON_HOLD",
-  "onOrAfterDateFilter": "Filter orders on or after",
   "orderer": "orderer",
   "orderNumber": "Order number",
   "orderPickedSuccessfully": "You have successfully picked an order",
@@ -44,11 +43,9 @@
   "status": "Status",
   "tabletOverlay": "Tablet overlay",
   "testsOrdered": "Tests ordered",
-  "testType": "Test Type",
-  "transition": "Transition",
-  "totalorders": "Total Orders",
   "testType": "Test type",
-  "totalOrders": "Total orders",
+  "totalorders": "Total Orders",
+  "transition": "Transition",
   "urgency": "Urgency",
   "worklist": "Worklist"
 }
