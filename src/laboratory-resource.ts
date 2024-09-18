@@ -10,11 +10,7 @@ import { useMemo } from 'react';
  * @param status - The status of the orders to retrieve
  * @param excludeCanceled - Whether to exclude canceled, discontinued and expired orders
  */
-export function useLabOrders(
-  status: 'NEW' | FulfillerStatus = null,
-  excludeCanceled = true,
-  activatedOnOrAfterDate?: string,
-) {
+export function useLabOrders(status: 'NEW' | FulfillerStatus = null, excludeCanceled = true, dateRange?: Date[]) {
   const { laboratoryOrderTypeUuid } = useConfig();
   const fulfillerStatus = useMemo(() => (status === 'NEW' ? null : status), [status]);
   const newOrdersOnly = status === 'NEW';
@@ -22,7 +18,11 @@ export function useLabOrders(
   url = fulfillerStatus ? url + `&fulfillerStatus=${fulfillerStatus}` : url;
   url = excludeCanceled ? `${url}&excludeCanceledAndExpired=true&excludeDiscontinueOrders=true` : url;
   // The usage of SWR's mutator seems to only suffice for cases where we don't apply a status filter
-  url = activatedOnOrAfterDate ? `${url}&=&activatedOnOrAfterDate=${activatedOnOrAfterDate}` : url;
+  url = dateRange
+    ? `${url}&=&activatedOnOrAfterDate=${dateRange.at(0).toISOString()}&activatedOnOrBeforeDate=${dateRange
+        .at(1)
+        .toISOString()}`
+    : url;
 
   const { data, error, mutate, isLoading, isValidating } = useSWR<{
     data: { results: Array<Order> };

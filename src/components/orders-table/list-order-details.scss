@@ -3,6 +3,8 @@
 @use '@openmrs/esm-styleguide/src/vars' as *;
 
 .orderTile {
+  display: flex;
+  justify-content: space-between;
   width: 100%;
   margin: 2px 0 8px;
   padding: 0 8px 0 8px;
@@ -49,9 +51,7 @@
   height: layout.$spacing-05;
 }
 
-.actionBtns {
-  display: flex;
-  justify-content: flex-end;
+.actionButtons {
   margin-left: layout.$spacing-05;
   margin-top: layout.$spacing-07;
 

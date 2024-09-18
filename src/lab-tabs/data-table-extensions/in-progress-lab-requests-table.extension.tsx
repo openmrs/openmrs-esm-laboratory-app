@@ -6,7 +6,6 @@ const InProgressLabRequestsTable: React.FC = () => {
     <OrdersDataTable
       excludeColumns={[]}
       actionsSlotName="inprogress-tests-actions-slot"
-      useActivatedOnOrAfterDateFilter
       fulfillerStatus="IN_PROGRESS"
       actions={[
         { actionName: 'labResultsForm', order: 0 },
