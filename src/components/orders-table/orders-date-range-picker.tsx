@@ -15,7 +15,7 @@ export const OrdersDateRangePicker = ({
 
   return (
     <div className={styles.datePickerWrapper}>
-      <p>{t('dateRange', 'date range')}:</p>
+      <p>{t('dateRange', 'Date range')}:</p>
       <DatePicker
         datePickerType="range"
         className={styles.dateRangePicker}
