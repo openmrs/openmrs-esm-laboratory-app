@@ -47,5 +47,6 @@
   "testType": "Test type",
   "totalOrders": "Total orders",
   "urgency": "Urgency",
-  "worklist": "Worklist"
+  "worklist": "Worklist",
+  "itemsPerPage": "Items per page"
 }

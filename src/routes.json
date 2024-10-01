@@ -39,7 +39,7 @@
       "component": "allLabRequestsTable",
       "meta": {
         "name": "inprogressPanel",
-        "title": "Tests ordered"
+        "title": "testsOrdered"
       }
     },
     {
@@ -48,7 +48,7 @@
       "component": "inprogressLabRequestsTable",
       "meta": {
         "name": "inprogressPanel",
-        "title": "In progress"
+        "title": "inProgress"
       }
     },
     {
@@ -57,7 +57,7 @@
       "component": "completedLabRequestsTable",
       "meta": {
         "name": "completedPanel",
-        "title": "Completed"
+        "title": "completed"
       }
     },
     {
