@@ -3,17 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { useLabOrders } from '../laboratory-resource';
 import LabSummaryTile from '../components/summary-tile/lab-summary-tile.component';
 
-const CompletedLabRequestsTile = () => {
+const InProgressLabRequestsTile = () => {
   const { t } = useTranslation();
-  const { labOrders } = useLabOrders('COMPLETED', false);
+  const { labOrders } = useLabOrders('IN_PROGRESS');
 
   return (
     <LabSummaryTile
-      label={t('completed', 'Completed')}
+      label={t('inProgress', 'In progress')}
       value={labOrders?.length}
-      headerLabel={t('results', 'Results')}
+      headerLabel={t('worklist', 'Ex-Worklist')}
     />
   );
 };
 
-export default CompletedLabRequestsTile;
+export default InProgressLabRequestsTile;

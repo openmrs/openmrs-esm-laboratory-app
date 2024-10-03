@@ -1,6 +1,6 @@
 @use '@carbon/styles/scss/spacing';
 @use '@carbon/styles/scss/type';
-@import "~@openmrs/esm-styleguide/src/vars";
+@import '~@openmrs/esm-styleguide/src/vars';
 @import '../root.scss';
 
 .orderTabsContainer {
@@ -35,5 +35,14 @@
 }
 
 .tab {
-  width: 150px;
+  min-width: 8.875rem;
+
+  &:active,
+  &:focus {
+    outline: 2px solid var(--brand-03) !important;
+  }
+
+  &[aria-selected='true'] {
+    box-shadow: inset 0 2px 0 0 var(--brand-03) !important;
+  }
 }
