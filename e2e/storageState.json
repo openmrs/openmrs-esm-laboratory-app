@@ -1,0 +1,15 @@
+{
+  "cookies": [
+    {
+      "name": "JSESSIONID",
+      "value": "47191689FC3246F3E9902FDABCAD8FA7",
+      "domain": "dev3.openmrs.org",
+      "path": "/openmrs",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": []
+}

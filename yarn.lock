@@ -3022,6 +3022,7 @@ __metadata:
     "@openmrs/esm-framework": "npm:next"
     "@openmrs/esm-patient-common-lib": "npm:next"
     "@openmrs/esm-styleguide": "npm:next"
+    "@playwright/test": "npm:^1.44.1"
     "@swc/cli": "npm:^0.1.62"
     "@swc/core": "npm:^1.3.62"
     "@swc/jest": "npm:^0.2.26"
@@ -3039,6 +3040,7 @@ __metadata:
     concurrently: "npm:^7.6.0"
     css-loader: "npm:^6.8.1"
     dayjs: "npm:^1.11.11"
+    dotenv: "npm:^16.3.1"
     eslint: "npm:^8.42.0"
     eslint-config-prettier: "npm:^8.8.0"
     eslint-config-ts-react-important-stuff: "npm:^3.0.0"
@@ -3411,6 +3413,17 @@ __metadata:
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
   checksum: 10/115e8ceeec6bc69dff2048b35c0ab4f8bbee12d8bb6c1f4af758604586d802b6e669dcb02dda61d078de42c2b4ddce41b3d9e726d7daa6b4b850f4adbf7333ff
+  languageName: node
+  linkType: hard
+
+"@playwright/test@npm:^1.44.1":
+  version: 1.44.1
+  resolution: "@playwright/test@npm:1.44.1"
+  dependencies:
+    playwright: "npm:1.44.1"
+  bin:
+    playwright: cli.js
+  checksum: 10/572b4c97834fae54fda833939b8f376df2c301b724f9825a3c705533efc124beb346dd9406f54cd771b3f79c00f0e5c70b5469ef33818a0d2e2ea17b19636f9a
   languageName: node
   linkType: hard
 
@@ -8453,6 +8466,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dotenv@npm:^16.3.1":
+  version: 16.4.5
+  resolution: "dotenv@npm:16.4.5"
+  checksum: 10/55a3134601115194ae0f924e54473459ed0d9fc340ae610b676e248cca45aa7c680d86365318ea964e6da4e2ea80c4514c1adab5adb43d6867fb57ff068f95c8
+  languageName: node
+  linkType: hard
+
 "downshift@npm:5.2.1":
   version: 5.2.1
   resolution: "downshift@npm:5.2.1"
@@ -9742,12 +9762,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fsevents@npm:2.3.2":
+  version: 2.3.2
+  resolution: "fsevents@npm:2.3.2"
+  dependencies:
+    node-gyp: "npm:latest"
+  checksum: 10/6b5b6f5692372446ff81cf9501c76e3e0459a4852b3b5f1fc72c103198c125a6b8c72f5f166bdd76ffb2fca261e7f6ee5565daf80dca6e571e55bcc589cc1256
+  conditions: os=darwin
+  languageName: node
+  linkType: hard
+
 "fsevents@npm:^2.3.2, fsevents@npm:~2.3.2":
   version: 2.3.3
   resolution: "fsevents@npm:2.3.3"
   dependencies:
     node-gyp: "npm:latest"
   checksum: 10/4c1ade961ded57cdbfbb5cac5106ec17bc8bccd62e16343c569a0ceeca83b9dfef87550b4dc5cbb89642da412b20c5071f304c8c464b80415446e8e155a038c0
+  conditions: os=darwin
+  languageName: node
+  linkType: hard
+
+"fsevents@patch:fsevents@npm%3A2.3.2#optional!builtin<compat/fsevents>":
+  version: 2.3.2
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#optional!builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
+  dependencies:
+    node-gyp: "npm:latest"
   conditions: os=darwin
   languageName: node
   linkType: hard
@@ -14064,6 +14103,30 @@ __metadata:
   dependencies:
     find-up: "npm:^4.0.0"
   checksum: 10/9863e3f35132bf99ae1636d31ff1e1e3501251d480336edb1c211133c8d58906bed80f154a1d723652df1fda91e01c7442c2eeaf9dc83157c7ae89087e43c8d6
+  languageName: node
+  linkType: hard
+
+"playwright-core@npm:1.44.1":
+  version: 1.44.1
+  resolution: "playwright-core@npm:1.44.1"
+  bin:
+    playwright-core: cli.js
+  checksum: 10/f79f9022bbb760daed371e36c802b27d43dc75e67de4d139d83b47feea51c8b884f3296cce85c3afa71c942290cef1b4369cd9ddf4dda5457a0a81772c73b50a
+  languageName: node
+  linkType: hard
+
+"playwright@npm:1.44.1":
+  version: 1.44.1
+  resolution: "playwright@npm:1.44.1"
+  dependencies:
+    fsevents: "npm:2.3.2"
+    playwright-core: "npm:1.44.1"
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    playwright: cli.js
+  checksum: 10/3207178a78f1c971dddf99c9a08052e462c882092e0d47e3dd8287ced40897a49e387e545a61d31e5d68f7e443d7818660aa12ce43ab662d01d95bcfcfeca2ca
   languageName: node
   linkType: hard
 

@@ -18,6 +18,7 @@
         "verify": "turbo lint typescript test",
         "extract-translations": "i18next 'src/**/*.component.tsx' --config ./i18next-parser.config.js",
         "coverage": "yarn test -- --coverage",
+        "test-e2e": "playwright test",
         "postinstall": "husky install"
     },
     "browserslist": [
@@ -44,6 +45,8 @@
     },
     "dependencies": {
         "@carbon/react": "^1.14.0",
+        "@playwright/test": "^1.44.1",
+        "dotenv": "^16.4.5",
         "lodash-es": "^4.17.21",
         "react-hook-form": "^7.49.3"
     },
@@ -75,6 +78,7 @@
         "concurrently": "^7.6.0",
         "css-loader": "^6.8.1",
         "dayjs": "^1.11.11",
+        "dotenv": "^16.3.1",
         "eslint": "^8.42.0",
         "eslint-config-prettier": "^8.8.0",
         "eslint-config-ts-react-important-stuff": "^3.0.0",

@@ -13,4 +13,6 @@ module.exports = {
   testEnvironmentOptions: {
     url: "http://localhost/",
   },
+  //testPathIgnorePatterns: [path.resolve(__dirname, 'packages', 'esm-form-entry-app'), path.resolve(__dirname, 'e2e')],
+  testPathIgnorePatterns: [path.resolve(__dirname, 'e2e')]
 };
