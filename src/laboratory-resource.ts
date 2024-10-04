@@ -1,9 +1,9 @@
-import { getGlobalStore, openmrsFetch, restBaseUrl, useConfig } from '@openmrs/esm-framework';
-import { FulfillerStatus, GroupedOrders } from './types';
+import { getGlobalStore, openmrsFetch, restBaseUrl, useConfig, useStore } from '@openmrs/esm-framework';
 import { Order } from '@openmrs/esm-patient-common-lib';
-import useSWR from 'swr';
-import { useMemo } from 'react';
 import dayjs from 'dayjs';
+import { useMemo } from 'react';
+import useSWR from 'swr';
+import { FulfillerStatus, GroupedOrders } from './types';
 
 /**
  * Custom hook for retrieving laboratory orders based on the specified status.
@@ -11,7 +11,8 @@ import dayjs from 'dayjs';
  * @param status - The status of the orders to retrieve
  * @param excludeCanceled - Whether to exclude canceled, discontinued and expired orders
  */
-export function useLabOrders(status: 'NEW' | FulfillerStatus = null, excludeCanceled = true, dateRange?: Date[]) {
+export function useLabOrders(status: 'NEW' | FulfillerStatus = null, excludeCanceled = true) {
+  const { dateRange } = useStore(labDateRange);
   const { laboratoryOrderTypeUuid } = useConfig();
   const fulfillerStatus = useMemo(() => (status === 'NEW' ? null : status), [status]);
   const newOrdersOnly = status === 'NEW';

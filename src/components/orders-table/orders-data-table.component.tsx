@@ -1,11 +1,6 @@
-import React, { useMemo, useState } from 'react';
-import dayjs from 'dayjs';
-import { useTranslation } from 'react-i18next';
 import {
   DataTable,
   DataTableSkeleton,
-  DatePicker,
-  DatePickerInput,
   Dropdown,
   Layer,
   Pagination,
@@ -24,25 +19,24 @@ import {
   TableToolbarSearch,
   Tile,
 } from '@carbon/react';
-import { formatDate, parseDate, usePagination, useStore } from '@openmrs/esm-framework';
+import { formatDate, parseDate, usePagination } from '@openmrs/esm-framework';
+import { Order } from '@openmrs/esm-patient-common-lib';
+import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
 import { FulfillerStatus, OrdersDataTableProps } from '../../types';
-import { labDateRange, useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
 import ListOrderDetails from './list-order-details.component';
 import styles from './orders-data-table.scss';
-import { Order } from '@openmrs/esm-patient-common-lib';
 import { OrdersDateRangePicker } from './orders-date-range-picker';
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
-  const { dateRange } = useStore(labDateRange);
-
   const [filter, setFilter] = useState<FulfillerStatus>(null);
   const [searchString, setSearchString] = useState<string>('');
 
   const { labOrders, isLoading } = useLabOrders(
     props.useFilter ? filter : props.fulfillerStatus,
     props.excludeCanceledAndDiscontinuedOrders,
-    dateRange,
   );
 
   const flattenedLabOrders: Order[] = useMemo(() => {
@@ -129,10 +123,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
 
   const handleOrderStatusChange = ({ selectedItem }) => setFilter(selectedItem.value);
 
-  const handleOrdersDateRangeChange = (dates: Date[]) => {
-    labDateRange.setState({ dateRange: dates });
-  };
-
   const tableRows = useMemo(() => {
     return paginatedLabOrders.map((patient) => ({
       id: patient.patientId,
@@ -165,7 +155,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
                     type="inline"
                   />
                 )}
-                <OrdersDateRangePicker onChange={handleOrdersDateRangeChange} currentValues={dateRange} />
+                <OrdersDateRangePicker />
               </Layer>
               <Layer className={styles.toolbarItem}>
                 <TableToolbarSearch
