@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { OverflowMenuItem } from '@carbon/react';
+import { Button } from '@carbon/react';
 import { showModal } from '@openmrs/esm-framework';
 import { Order } from '@openmrs/esm-patient-common-lib';
 import styles from './actions.scss';
@@ -21,12 +21,15 @@ const PickupLabRequestAction: React.FC<PickLabRequestActionMenuProps> = ({ order
   }, [order]);
 
   return (
-    <OverflowMenuItem
-      itemText={t('pickupLabRequest', 'Pick up lab request')}
-      onClick={launchModal}
+    <Button
+      className={styles.actionButton}
       disabled={unSupportedStatuses.includes(order.fulfillerStatus)}
-      className={styles.menuItem}
-    />
+      kind="primary"
+      key={`${order.uuid}`}
+      onClick={launchModal}
+    >
+      {t('pickLabRequest', 'Pick Lab Request')}
+    </Button>
   );
 };
 
