@@ -18,7 +18,7 @@ export const laboratoryDashboardLink = getSyncLifecycle(
   createHomeDashboardLink({
     name: 'laboratory',
     slot: 'laboratory-dashboard-slot',
-    title: 'Laboratory',
+    title: 'laboratory',
   }),
   options,
 );
