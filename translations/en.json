@@ -23,6 +23,7 @@
   "nextPage": "Next page",
   "noLabRequestsFoundC": "No lab requests found",
   "onHoldStatus": "ON_HOLD",
+  "onOrAfterDateFilter": "Filter orders on or after",
   "orderer": "orderer",
   "orderNumber": "Order number",
   "orderPickedSuccessfully": "You have successfully picked an order",
