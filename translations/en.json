@@ -15,6 +15,7 @@
   "inProgress": "In progress",
   "inProgressStatus": "IN_PROGRESS",
   "instructions": "Instructions",
+  "itemsPerPage": "Items per page",
   "laboratory": "Laboratory",
   "labResultsForm": "Lab results form",
   "loading": "Loading",
@@ -22,7 +23,6 @@
   "nextPage": "Next page",
   "noLabRequestsFoundC": "No lab requests found",
   "onHoldStatus": "ON_HOLD",
-  "onOrAfterDateFilter": "Filter orders on or after",
   "orderer": "orderer",
   "orderNumber": "Order number",
   "orderPickedSuccessfully": "You have successfully picked an order",
@@ -47,6 +47,5 @@
   "testType": "Test type",
   "totalOrders": "Total orders",
   "urgency": "Urgency",
-  "worklist": "Worklist",
-  "itemsPerPage": "Items per page"
+  "worklist": "Worklist"
 }
