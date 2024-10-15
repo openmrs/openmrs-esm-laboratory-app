@@ -1,7 +1,13 @@
-@use '@carbon/styles/scss/spacing';
 @use '@carbon/styles/scss/type';
+@use '@carbon/styles/scss/spacing';
+@use '@carbon/layout';
+@use '@carbon/colors';
+
 .menuItem {
   max-width: none;
+}
+.actionButton {
+ margin-top: layout.$spacing-01;
 }
 .addPatientToQueue {
   --cds-layout-size-height-context: var(--cds-layout-size-height-sm, 2rem);

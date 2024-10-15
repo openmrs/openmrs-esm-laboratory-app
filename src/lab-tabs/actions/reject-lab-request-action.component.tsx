@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { OverflowMenuItem } from '@carbon/react';
+import { Button } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
 import { showModal } from '@openmrs/esm-framework';
 import { Order } from '@openmrs/esm-patient-common-lib';
@@ -20,14 +20,15 @@ const RejectLabRequestAction: React.FC<RejectLabRequestActionProps> = ({ order }
   }, [order]);
 
   return (
-    <OverflowMenuItem
-      className={styles.menuItem}
+    <Button
+      kind="danger"
+      className={styles.actionButton}
       disabled={unSupportedStatuses.includes(order.fulfillerStatus)}
-      hasDivider
-      isDelete
-      itemText={t('rejectLabRequest', 'Reject lab request')}
+      key={`${order.uuid}`}
       onClick={launchRejectLabRequestModal}
-    />
+    >
+      {t('rejectLabRequest', 'Reject lab request')}
+    </Button>
   );
 };
 

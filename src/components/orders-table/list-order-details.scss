@@ -54,8 +54,4 @@
 .actionButtons {
   margin-left: layout.$spacing-05;
   margin-top: layout.$spacing-07;
-
-  > * + * {
-    margin-left: layout.$spacing-03;
-  }
 }

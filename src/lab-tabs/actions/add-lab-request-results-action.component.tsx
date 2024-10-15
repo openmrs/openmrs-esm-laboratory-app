@@ -1,6 +1,6 @@
 import { Order } from '@openmrs/esm-patient-common-lib';
 import React from 'react';
-import { OverflowMenuItem } from '@carbon/react';
+import { Button } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
 import styles from './actions.scss';
 import { launchWorkspace } from '@openmrs/esm-framework';
@@ -12,11 +12,14 @@ const AddLabRequestResultsAction: React.FC<AddLabRequestResultsActionProps> = ({
   const { t } = useTranslation();
 
   return (
-    <OverflowMenuItem
-      itemText={t('labResultsForm', 'Lab Results Form')}
+    <Button
+      className={styles.actionButton}
+      kind="primary"
+      key={`${order.uuid}`}
       onClick={() => launchWorkspace('test-results-form-workspace', { order })}
-      className={styles.menuItem}
-    />
+    >
+      {t('labResultsForm', 'Lab Results Form')}
+    </Button>
   );
 };
 
