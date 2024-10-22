@@ -1,30 +1,18 @@
 import { DatePicker, DatePickerInput } from '@carbon/react';
-import { useStore } from '@openmrs/esm-framework';
-import dayjs from 'dayjs';
+import { useAppContext } from '@openmrs/esm-framework';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { labDateRange } from '../../laboratory-resource';
+import { DateFilterContext } from '../../types';
 import styles from './orders-date-range-picker.scss';
 
 export const OrdersDateRangePicker = () => {
   const currentDate = new Date();
-  const { dateRange } = useStore(labDateRange);
+  const { dateRange, setDateRange } = useAppContext<DateFilterContext>('laboratory-date-filter');
   const { t } = useTranslation();
 
   const handleOrdersDateRangeChange = (dates: Array<Date>) => {
-    labDateRange.setState({ dateRange: dates });
+    setDateRange(dates);
   };
-
-  const hasCheckedForDateRangeMismatch: boolean = JSON.parse(
-    sessionStorage.getItem('has-checked-for-date-range-mismatch') || 'false',
-  );
-
-  const startOfToday = dayjs().startOf('day');
-
-  if (dayjs(dateRange[0]).isBefore(startOfToday, 'day') && !hasCheckedForDateRangeMismatch) {
-    labDateRange.setState({ dateRange: [startOfToday.toDate(), new Date()] });
-    sessionStorage.setItem('has-checked-for-date-range-mismatch', 'true');
-  }
 
   return (
     <div className={styles.datePickerWrapper}>
