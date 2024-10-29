@@ -1,3 +1,8 @@
-.menuItem {
-  max-width: none;
+@use '@carbon/styles/scss/type';
+@use '@carbon/styles/scss/spacing';
+@use '@carbon/layout';
+@use '@carbon/colors';
+
+.actionButton {
+  margin-top: layout.$spacing-01;
 }
