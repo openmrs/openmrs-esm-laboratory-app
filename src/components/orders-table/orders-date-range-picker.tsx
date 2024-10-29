@@ -1,5 +1,6 @@
 import { DatePicker, DatePickerInput } from '@carbon/react';
 import { useAppContext } from '@openmrs/esm-framework';
+import dayjs from 'dayjs';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DateFilterContext } from '../../types';
@@ -7,7 +8,11 @@ import styles from './orders-date-range-picker.scss';
 
 export const OrdersDateRangePicker = () => {
   const currentDate = new Date();
-  const { dateRange, setDateRange } = useAppContext<DateFilterContext>('laboratory-date-filter');
+  const { dateRange, setDateRange } = useAppContext<DateFilterContext>('laboratory-date-filter') ?? {
+    dateRange: [dayjs().startOf('day').toDate(), new Date()],
+    setDateRange: () => {},
+  };
+
   const { t } = useTranslation();
 
   const handleOrdersDateRangeChange = (dates: Array<Date>) => {
