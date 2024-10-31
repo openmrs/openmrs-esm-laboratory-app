@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Tab, Tabs, TabList, TabPanels, TabPanel } from '@carbon/react';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
 import { type AssignedExtension, Extension, useConnectedExtensions } from '@openmrs/esm-framework';
 import { ComponentContext } from '@openmrs/esm-framework/src/internal';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './laboratory-tabs.scss';
 
 const labPanelSlot = 'lab-panels-slot';

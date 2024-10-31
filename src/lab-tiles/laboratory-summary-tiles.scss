@@ -6,8 +6,8 @@
   background-color: $ui-02;
   display: flex;
   flex-wrap: wrap;
-  padding: 0 spacing.$spacing-05 spacing.$spacing-10 spacing.$spacing-03;
-  gap: spacing.$spacing-01;
+  padding: spacing.$spacing-03;
+  gap: 0 spacing.$spacing-01;
 }
 
 .cardContainer > div {

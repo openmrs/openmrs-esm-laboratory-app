@@ -25,3 +25,8 @@ export interface OrdersDataTableProps {
   excludeCanceledAndDiscontinuedOrders?: boolean;
   actions: Array<OrderAction>;
 }
+
+export type DateFilterContext = {
+  dateRange: Array<Date>;
+  setDateRange: React.Dispatch<React.SetStateAction<Array<Date>>>;
+};
