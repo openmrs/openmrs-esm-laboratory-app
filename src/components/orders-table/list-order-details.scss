@@ -1,57 +1,74 @@
 @use '@carbon/layout';
 @use '@carbon/colors';
 @use '@openmrs/esm-styleguide/src/vars' as *;
-
-.orderTile {
+@use '@carbon/type';
+.buttonSection {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding-top: layout.$spacing-03;
   width: 100%;
-  margin: 2px 0 8px;
-  padding: 0 8px 0 8px;
-  background-color: colors.$white-0;
-  border-left: 4px solid var(--brand-03);
-  color: $text-02;
-  margin-bottom: 1rem !important;
-
-  &:hover {
-    background-color: colors.$white-hover;
-  }
 }
 
-.ordersContainer {
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
-  margin-bottom: 1rem;
-
-  &:global(.cds--tile) {
-    min-height: 3rem !important;
-    padding-left: 10px !important;
-  }
-}
-
-.ordersContainer > :global(.cds--tile) {
-  min-height: 3rem !important;
-  padding-left: 10px !important;
-  margin: auto;
-}
-
-.orderPropertyDisplay {
-  font-size: 15px !important;
-}
-
-.bodyLong01 {
-  font-size: 13px !important;
-}
-
-.displayValue {
-  color: #525252;
-  font-weight: bold;
-  width: layout.$spacing-05;
-  height: layout.$spacing-05;
+.nameOrder {
+  font-size: type.type-scale(2);
 }
 
 .actionButtons {
-  margin-left: layout.$spacing-05;
-  margin-top: layout.$spacing-07;
+  display: flex;
+  gap: layout.$spacing-03;
+  align-items: center;
+}
+
+.menuLink {
+  display: inline-flex;
+}
+
+.orderDetailsContainer {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  padding: layout.$spacing-05;
+  margin-left: layout.$spacing-13;
+  background-color: colors.$white-0;
+  margin: layout.$spacing-05 0;
+}
+
+.orderUrgency {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  padding: 0 layout.$spacing-03;
+  margin-bottom: layout.$spacing-03;
+}
+
+.orderHeader {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0;
+  margin-bottom: layout.$spacing-03;
+}
+.orderNumber {
+  font-size: type.type-scale(2);
+}
+.orderStatus {
+  font-size: type.type-scale(2);
+}
+
+.orderDate {
+  text-align: right;
+  font-size: type.type-scale(2);
+}
+
+.instructions {
+  text-align: justify;
+  font-size: type.type-scale(1);
+}
+.urgencyStatus {
+  font-size: type.type-scale(2);
+}
+.instructionLabel {
+  font-weight: bold;
+  font-size: type.type-scale(2);
 }

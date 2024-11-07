@@ -1,43 +1,100 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Tile } from '@carbon/react';
-import { ExtensionSlot, launchWorkspace, showModal } from '@openmrs/esm-framework';
+import {
+  Tag,
+  StructuredListWrapper,
+  StructuredListRow,
+  StructuredListCell,
+  StructuredListBody,
+  Button,
+} from '@carbon/react';
+import capitalize from 'lodash-es/capitalize';
 import { ListOrdersDetailsProps } from '../../types';
-import { OrderDetail } from './order-detail.component';
 import styles from './list-order-details.scss';
-
+import { ExtensionSlot, useLayoutType } from '@openmrs/esm-framework';
+import { Edit } from '@carbon/react/icons';
 const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
   const { t } = useTranslation();
   const orders = props.groupedOrders?.orders;
+  const isTablet = useLayoutType() === 'tablet';
 
   return (
-    <div className={styles.ordersContainer}>
+    <div>
       {orders &&
         orders.map((row) => (
-          <Tile className={styles.orderTile}>
+          <div className={styles.orderDetailsContainer}>
+            <div className={styles.orderUrgency}></div>
+            <div className={styles.orderHeader}>
+              <span className={styles.orderNumber}>
+                {t('orderNumbers', 'Order number:')} {row.orderNumber}
+              </span>
+              <span className={styles.orderDate}>
+                {t('orderDate', 'Order Date:')} {row.dateActivated}
+              </span>
+            </div>
+            <div className={styles.orderStatus}>
+              {t('orderStatus', 'Status:')}
+              <Tag size="lg" type={row.fulfillerStatus ? 'green' : 'red'}>
+                {row.fulfillerStatus || t('orderNotPicked', 'Order not picked')}
+              </Tag>
+            </div>
             <div>
-              <OrderDetail label={t('date', 'Date').toUpperCase()} value={row.dateActivated} />
-              <OrderDetail label={t('orderNumber', 'Order number').toUpperCase()} value={row.orderNumber} />
-              <OrderDetail label={t('procedure', 'Procedure').toUpperCase()} value={row.display} />
-              <OrderDetail label={t('status', 'Status').toUpperCase()} value={row.fulfillerStatus} />
-              <OrderDetail label={t('urgency', 'Urgency').toUpperCase()} value={row.urgency} />
-              <OrderDetail label={t('orderer', 'Orderer').toUpperCase()} value={row.orderer?.display} />
-              <OrderDetail label={t('instructions', 'Instructions').toUpperCase()} value={row.instructions ?? '--'} />
+              <div className={styles.orderUrgency}>
+                <span className={styles.urgencyStatus}>
+                  {t('urgencyStatus', 'Urgency: ')} {capitalize(row.urgency)}
+                </span>
+              </div>
+              <StructuredListWrapper>
+                <StructuredListBody>
+                  <StructuredListRow>
+                    <StructuredListCell>{t('testOrdered', 'Test ordered: ')}</StructuredListCell>
+                    <StructuredListCell>{capitalize(row?.display)}</StructuredListCell>
+                    <br />
+                    <StructuredListCell>
+                      <span className={styles.instructionLabel}>{t('orderInStruction', 'Instructions: ')}</span>
+                      <span className={styles.instructions}>
+                        {row.instructions ?? (
+                          <Tag size="lg" type="red">
+                            {t('NoInstructionLeft', 'No instructions are provided.')}
+                          </Tag>
+                        )}
+                      </span>
+                    </StructuredListCell>
+                  </StructuredListRow>
+                </StructuredListBody>
+              </StructuredListWrapper>
+              <div className={styles.buttonSection}>
+                <span className={styles.nameOrder}>
+                  {t('ordererName', 'Orderer Name: ')} {capitalize(row.orderer?.display)}
+                </span>
+                <div className={styles.actionButtons}>
+                  {row.fulfillerStatus === 'New' ||
+                  row.fulfillerStatus === 'RECEIVED' ||
+                  row.fulfillerStatus == null ? (
+                    <ExtensionSlot
+                      className={styles.menuLink}
+                      state={{ order: row }}
+                      name="tests-ordered-actions-slot"
+                    />
+                  ) : row.fulfillerStatus === 'COMPLETED' ? (
+                    <ExtensionSlot
+                      className={styles.menuLink}
+                      state={{ order: row }}
+                      name="completed-ordered-actions-slot"
+                    />
+                  ) : row.fulfillerStatus === 'IN_PROGRESS' ? (
+                    <ExtensionSlot
+                      className={styles.menuLink}
+                      state={{ order: row }}
+                      name="inprogress-tests-actions-slot"
+                    />
+                  ) : (
+                    <div></div>
+                  )}
+                </div>
+              </div>
             </div>
-            <div className={styles.actionButtons}>
-              {row.fulfillerStatus === 'New' || row.fulfillerStatus === 'RECEIVED' || row.fulfillerStatus == null ? (
-                <ExtensionSlot className={styles.menuLink} state={{ order: row }} name="tests-ordered-actions-slot" />
-              ) : row.fulfillerStatus === 'IN_PROGRESS' ? (
-                <ExtensionSlot
-                  className={styles.menuLink}
-                  state={{ order: row }}
-                  name="inprogress-tests-actions-slot"
-                />
-              ) : (
-                <div></div>
-              )}
-            </div>
-          </Tile>
+          </div>
         ))}
     </div>
   );

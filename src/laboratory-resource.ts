@@ -1,4 +1,4 @@
-import { openmrsFetch, restBaseUrl, useAppContext, useConfig } from '@openmrs/esm-framework';
+import { FetchResponse, openmrsFetch, restBaseUrl, useAppContext, useConfig } from '@openmrs/esm-framework';
 import { Order } from '@openmrs/esm-patient-common-lib';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
@@ -88,3 +88,12 @@ export function rejectLabOrder(orderId: string, comment: string, abortController
     },
   });
 }
+
+const usePatientAge = (uuid: string) => {
+  const customRepresentation = `custom:(person:(age))`;
+  const url = `${restBaseUrl}/patient/${uuid}?v=${customRepresentation}`;
+  const { isLoading, error, data } = useSWR<FetchResponse<{ person: { age: number } }>>(url, openmrsFetch);
+  return { isLoading, error, patientAge: data?.data?.person?.age };
+};
+
+export default usePatientAge;

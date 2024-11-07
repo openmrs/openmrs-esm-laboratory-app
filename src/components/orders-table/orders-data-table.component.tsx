@@ -23,11 +23,12 @@ import { formatDate, parseDate, usePagination } from '@openmrs/esm-framework';
 import { Order } from '@openmrs/esm-patient-common-lib';
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
+import usePatientAge, { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
 import { FulfillerStatus, OrdersDataTableProps } from '../../types';
 import ListOrderDetails from './list-order-details.component';
 import styles from './orders-data-table.scss';
 import { OrdersDateRangePicker } from './orders-date-range-picker';
+import { PatientAge } from './patient-age.component';
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
@@ -113,7 +114,8 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const columns = useMemo(() => {
     return [
       { id: 0, header: t('patient', 'Patient'), key: 'patientName' },
-      { id: 1, header: t('totalOrders', 'Total Orders'), key: 'totalOrders' },
+      { id: 1, header: t('age', 'Age'), key: 'age' },
+      { id: 2, header: t('totalOrders', 'Total Orders'), key: 'totalOrders' },
     ];
   }, [t]);
 
@@ -124,11 +126,12 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const handleOrderStatusChange = ({ selectedItem }) => setFilter(selectedItem.value);
 
   const tableRows = useMemo(() => {
-    return paginatedLabOrders.map((patient) => ({
-      id: patient.patientId,
-      patientName: patient.orders[0].patient?.display?.split('-')[1],
-      orders: patient.orders,
-      totalOrders: patient.orders?.length,
+    return paginatedLabOrders.map((order) => ({
+      id: order.patientId,
+      patientName: order.orders[0].patient?.display?.split('-')[1],
+      age: <PatientAge patientUuid={order.patientId} />,
+      orders: order.orders,
+      totalOrders: order.orders?.length,
     }));
   }, [paginatedLabOrders]);
 

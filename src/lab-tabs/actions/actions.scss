@@ -1,8 +1,15 @@
-@use '@carbon/styles/scss/type';
+@use '@carbon/type';
 @use '@carbon/styles/scss/spacing';
 @use '@carbon/layout';
 @use '@carbon/colors';
 
 .actionButton {
-  margin-top: layout.$spacing-01;
+  --cds-layout-size-height-context: var(--cds-layout-size-height-sm, 2rem);
+  --cds-layout-size-height: var(--cds-layout-size-height-context);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 layout.$spacing-04;
+  font-size: type.type-scale(2);
 }
