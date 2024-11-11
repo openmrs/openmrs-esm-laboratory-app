@@ -93,6 +93,13 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                   )}
                 </div>
               </div>
+              {row.fulfillerStatus === 'COMPLETED' && (
+                <ExtensionSlot
+                  className={styles.labResultSlot}
+                  state={{ order: row }}
+                  name="completed-lab-order-results-slot"
+                />
+              )}
             </div>
           </div>
         ))}
