@@ -11,7 +11,7 @@
   "errorRejectingRequest": "Erreur lors du rejet de la demande",
   "exceptionStatus": "EXCEPTION",
   "filterOrdersByStatus": "Filtrer les commandes par statut",
-  "fulfillerComment": "Commentaire du remplisseur",
+  "fulfillerComment": "Commentaire du prescripteur",
   "inProgress": "En cours",
   "inProgressStatus": "EN_COURS",
   "instructions": "Instructions",
@@ -22,13 +22,13 @@
   "nextPage": "Page suivante",
   "noLabRequestsFoundC": "Pas de demandes de laboratoires trouvés",
   "onHoldStatus": "EN_ATTENTE",
-  "onOrAfterDateFilter": "Filtrer les demandes à partir du",
   "orderer": "Prescripteur",
   "orderNumber": "Numéro de la demande",
   "orderPickedSuccessfully": "Vous avez sélectionné une commande avec succès",
   "orders": "Demandes",
   "patient": "Patient",
   "pickedAnOrder": "Commande sélectionnée",
+  "pickLabRequest": "Sélectionner la demande",
   "pickRequest": "Sélectionner la demande",
   "pickRequestConfirmationText": "La poursuite mettra à jour le statut de la demande en « En cours » et la fera avancer à l'étape suivante. Êtes-vous sûr de vouloir poursuivre?",
   "pickupLabRequest": "Sélectionner la demande de laboratoire",
@@ -47,5 +47,5 @@
   "testType": "Type de test",
   "totalOrders": "Total des demandes d'examens",
   "urgency": "Urgence",
-  "worklist": "Liste de travail"
+  "worklist": "liste des tâches"
 }
