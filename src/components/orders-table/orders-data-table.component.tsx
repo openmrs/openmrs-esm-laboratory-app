@@ -23,12 +23,11 @@ import { formatDate, parseDate, usePagination } from '@openmrs/esm-framework';
 import { Order } from '@openmrs/esm-patient-common-lib';
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import usePatientAge, { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
+import { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
 import { FulfillerStatus, OrdersDataTableProps } from '../../types';
 import ListOrderDetails from './list-order-details.component';
 import styles from './orders-data-table.scss';
 import { OrdersDateRangePicker } from './orders-date-range-picker';
-import { PatientAge } from './patient-age.component';
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
@@ -47,6 +46,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         dateActivated: formatDate(parseDate(order.dateActivated)),
         patientName: order.patient?.display.split('-')[1],
         patientUuid: order.patient?.uuid,
+        patientAge: order.patient?.person?.age,
         status: order.fulfillerStatus ?? '--',
         orderer: order.orderer,
       };
@@ -114,7 +114,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const columns = useMemo(() => {
     return [
       { id: 0, header: t('patient', 'Patient'), key: 'patientName' },
-      { id: 1, header: t('age', 'Age'), key: 'age' },
+      { id: 1, header: t('age', 'Age'), key: 'patientAge' }, // Age is now included as a column
       { id: 2, header: t('totalOrders', 'Total Orders'), key: 'totalOrders' },
     ];
   }, [t]);
@@ -129,9 +129,9 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     return paginatedLabOrders.map((order) => ({
       id: order.patientId,
       patientName: order.orders[0].patient?.display?.split('-')[1],
-      age: <PatientAge patientUuid={order.patientId} />,
       orders: order.orders,
       totalOrders: order.orders?.length,
+      patientAge: order.orders[0].patient?.person?.age,
     }));
   }, [paginatedLabOrders]);
 
