@@ -81,6 +81,11 @@ export const rejectLabRequestAction = getAsyncLifecycle(
   options,
 );
 
+export const editLabRequestAction = getAsyncLifecycle(
+  () => import('./lab-tabs/actions/edit-lab-request-results-action.component'),
+  options,
+);
+
 export function startupApp() {
   defineConfigSchema(moduleName, configSchema);
 }

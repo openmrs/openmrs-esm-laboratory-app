@@ -46,6 +46,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         dateActivated: formatDate(parseDate(order.dateActivated)),
         patientName: order.patient?.display.split('-')[1],
         patientUuid: order.patient?.uuid,
+        patientAge: order.patient?.person?.age,
         status: order.fulfillerStatus ?? '--',
         orderer: order.orderer,
       };
@@ -113,7 +114,8 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const columns = useMemo(() => {
     return [
       { id: 0, header: t('patient', 'Patient'), key: 'patientName' },
-      { id: 1, header: t('totalOrders', 'Total Orders'), key: 'totalOrders' },
+      { id: 1, header: t('age', 'Age'), key: 'patientAge' }, // Age is now included as a column
+      { id: 2, header: t('totalOrders', 'Total Orders'), key: 'totalOrders' },
     ];
   }, [t]);
 
@@ -124,11 +126,12 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const handleOrderStatusChange = ({ selectedItem }) => setFilter(selectedItem.value);
 
   const tableRows = useMemo(() => {
-    return paginatedLabOrders.map((patient) => ({
-      id: patient.patientId,
-      patientName: patient.orders[0].patient?.display?.split('-')[1],
-      orders: patient.orders,
-      totalOrders: patient.orders?.length,
+    return paginatedLabOrders.map((order) => ({
+      id: order.patientId,
+      patientName: order.orders[0].patient?.display?.split('-')[1],
+      orders: order.orders,
+      totalOrders: order.orders?.length,
+      patientAge: order.orders[0].patient?.person?.age,
     }));
   }, [paginatedLabOrders]);
 
