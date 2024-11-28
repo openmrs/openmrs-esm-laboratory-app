@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import { Button, Form, ModalBody, ModalFooter, ModalHeader, TextArea, Layer } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
-import { showNotification, showSnackbar, useAbortController } from '@openmrs/esm-framework';
 import { type Order } from '@openmrs/esm-patient-common-lib';
+import {
+  type Config,
+  restBaseUrl,
+  showNotification,
+  showSnackbar,
+  useAbortController,
+  useConfig,
+} from '@openmrs/esm-framework';
 import { rejectLabOrder } from '../../laboratory-resource';
 import styles from './reject-lab-request-modal.scss';
-
+import { mutate } from 'swr';
 interface RejectLabRequestModalProps {
   order: Order;
   closeModal: () => void;
@@ -16,12 +23,19 @@ const RejectLabRequestModal: React.FC<RejectLabRequestModalProps> = ({ order, cl
   const [fulfillerComment, setFulfillerComment] = useState('');
   const abortController = useAbortController();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { laboratoryOrderTypeUuid } = useConfig<Config>();
 
   const handleRejectOrder = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
     rejectLabOrder(order.uuid, fulfillerComment, abortController).then(
       () => {
+        mutate(
+          (key) =>
+            typeof key === 'string' && key.startsWith(`${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}`),
+          undefined,
+          { revalidate: true },
+        );
         setIsSubmitting(false);
         closeModal();
         showSnackbar({

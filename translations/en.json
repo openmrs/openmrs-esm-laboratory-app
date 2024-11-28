@@ -26,11 +26,9 @@
   "orderDate": "Order Date:",
   "ordererName": "Orderer Name: ",
   "orderInStruction": "Instructions: ",
-  "orderNotPicked": "Order not picked",
   "orderNumbers": "Order number:",
   "orderPickedSuccessfully": "You have successfully picked an order",
   "orders": "Orders",
-  "orderStatus": "Status:",
   "patient": "Patient",
   "pickedAnOrder": "Picked an order",
   "pickLabRequest": "Pick Lab Request",
@@ -38,6 +36,7 @@
   "pickRequestConfirmationText": "Continuing will update the request status to \"In Progress\" and advance it to the next stage. Are you sure you want to proceed?",
   "pickupLabRequest": "Pick up lab request",
   "previousPage": "Previous page",
+  "reasonForDecline": "Reason for decline",
   "receivedStatus": "RECEIVED",
   "reject": "Reject",
   "rejectLabRequest": "Reject lab request",
@@ -50,7 +49,6 @@
   "testsOrdered": "Tests ordered",
   "testType": "Test type",
   "totalOrders": "Total orders",
-  "urgencyStatus": "Urgency: ",
   "viewTestResults": "View test results",
   "worklist": "Worklist"
 }
