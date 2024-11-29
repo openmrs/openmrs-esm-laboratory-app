@@ -13,8 +13,9 @@ const EditButton: React.FC<EditButtonProps> = ({ order }) => {
   const { t } = useTranslation();
   return (
     <Button
-      kind="secondary"
+      kind="tertiary"
       className={styles.actionButton}
+      size="sm"
       onClick={() => launchWorkspace('test-results-form-workspace', { order })}
     >
       {t('editResults', 'Edit results')}

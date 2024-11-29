@@ -1,6 +1,6 @@
 import { Order } from '@openmrs/esm-patient-common-lib';
 
-export type FulfillerStatus = 'EXCEPTION' | 'RECEIVED' | 'COMPLETED' | 'IN_PROGRESS' | 'ON_HOLD' | 'DECLINED';
+export type FulfillerStatus = 'EXCEPTION' | 'RECEIVED' | 'COMPLETED' | 'IN_PROGRESS' | 'ON_HOLD' | 'DECLINED' | 'NEW';
 
 export interface GroupedOrders {
   patientId: string;

@@ -15,10 +15,11 @@ const AddLabRequestResultsAction: React.FC<AddLabRequestResultsActionProps> = ({
     <Button
       className={styles.actionButton}
       kind="primary"
+      size="sm"
       key={`${order.uuid}`}
       onClick={() => launchWorkspace('test-results-form-workspace', { order })}
     >
-      {t('labResultsForm', 'Lab Results Form')}
+      {t('addLabResult', 'Add lab results')}
     </Button>
   );
 };
