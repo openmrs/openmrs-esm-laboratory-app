@@ -20,6 +20,12 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
               <OrderDetail label={t('orderNumber', 'Order number').toUpperCase()} value={row.orderNumber} />
               <OrderDetail label={t('procedure', 'Procedure').toUpperCase()} value={row.display} />
               <OrderDetail label={t('status', 'Status').toUpperCase()} value={row.fulfillerStatus} />
+              {row.fulfillerStatus === 'DECLINED' && (
+                <OrderDetail
+                  label={t('reasonForDecline', 'Reason for decline').toUpperCase()}
+                  value={row.fulfillerComment}
+                />
+              )}
               <OrderDetail label={t('urgency', 'Urgency').toUpperCase()} value={row.urgency} />
               <OrderDetail label={t('orderer', 'Orderer').toUpperCase()} value={row.orderer?.display} />
               <OrderDetail label={t('instructions', 'Instructions').toUpperCase()} value={row.instructions ?? '--'} />
