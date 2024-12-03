@@ -1,10 +1,36 @@
-import { DatePicker, DatePickerInput } from '@carbon/react';
-import { useAppContext } from '@openmrs/esm-framework';
-import dayjs from 'dayjs';
 import React from 'react';
+import { useAppContext, OpenmrsDatePicker } from '@openmrs/esm-framework';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { DateFilterContext } from '../../types';
 import styles from './orders-date-range-picker.scss';
+
+const OpenmrsDateRangePicker = ({ dateRange, onDateRangeChange, maxDate }) => {
+  const { t } = useTranslation();
+
+  const handleDateChange = (index, date) => {
+    const updatedDateRange = [...dateRange];
+    updatedDateRange[index] = date;
+    onDateRangeChange(updatedDateRange);
+  };
+
+  return (
+    <div className={styles.dateRangePicker}>
+      <p>{t('dateRange', 'Date range')}:</p>
+      <div className={styles.datePickers}>
+        {['start', 'finish'].map((type, index) => (
+          <OpenmrsDatePicker
+            key={type}
+            id={`date-picker-input-id-${type}`}
+            value={dateRange[index]}
+            onChange={(date) => handleDateChange(index, date)}
+            maxDate={maxDate}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export const OrdersDateRangePicker = () => {
   const currentDate = new Date();
@@ -13,25 +39,9 @@ export const OrdersDateRangePicker = () => {
     setDateRange: () => {},
   };
 
-  const { t } = useTranslation();
-
-  const handleOrdersDateRangeChange = (dates: Array<Date>) => {
-    setDateRange(dates);
-  };
-
   return (
     <div className={styles.datePickerWrapper}>
-      <p>{t('dateRange', 'Date range')}:</p>
-      <DatePicker
-        datePickerType="range"
-        className={styles.dateRangePicker}
-        onClose={handleOrdersDateRangeChange}
-        maxDate={currentDate.toISOString()}
-        value={dateRange}
-      >
-        <DatePickerInput id="date-picker-input-id-start" placeholder="dd/mm/yyyy" size="md" />
-        <DatePickerInput id="date-picker-input-id-finish" placeholder="dd/mm/yyyy" size="md" />
-      </DatePicker>
+      <OpenmrsDateRangePicker dateRange={dateRange} onDateRangeChange={setDateRange} maxDate={currentDate} />
     </div>
   );
 };
