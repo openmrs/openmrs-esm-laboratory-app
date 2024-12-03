@@ -114,7 +114,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const columns = useMemo(() => {
     return [
       { id: 0, header: t('patient', 'Patient'), key: 'patientName' },
-      { id: 1, header: t('age', 'Age'), key: 'patientAge' }, // Age is now included as a column
+      { id: 1, header: t('age', 'Age'), key: 'patientAge' },
       { id: 2, header: t('totalOrders', 'Total Orders'), key: 'totalOrders' },
     ];
   }, [t]);

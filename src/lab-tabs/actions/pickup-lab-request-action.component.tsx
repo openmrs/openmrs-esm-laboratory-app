@@ -24,6 +24,7 @@ const PickupLabRequestAction: React.FC<PickLabRequestActionMenuProps> = ({ order
     <Button
       className={styles.actionButton}
       disabled={unSupportedStatuses.includes(order.fulfillerStatus)}
+      size="sm"
       kind="primary"
       key={`${order.uuid}`}
       onClick={launchModal}

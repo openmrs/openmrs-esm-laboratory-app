@@ -21,10 +21,11 @@ const RejectLabRequestAction: React.FC<RejectLabRequestActionProps> = ({ order }
 
   return (
     <Button
-      kind="danger"
-      className={styles.actionButton}
+      kind="danger--tertiary"
+      className={styles.actionRejectButton}
       disabled={unSupportedStatuses.includes(order.fulfillerStatus)}
       key={`${order.uuid}`}
+      size="sm"
       onClick={launchRejectLabRequestModal}
     >
       {t('rejectLabRequest', 'Reject lab request')}
