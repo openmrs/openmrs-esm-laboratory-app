@@ -1,12 +1,11 @@
-@use '@carbon/styles/scss/spacing';
-@use '@carbon/styles/scss/type';
 @use '@carbon/colors';
 @use '@carbon/layout';
+@use '@carbon/type';
 
 .tableContainer {
   border: 1px solid colors.$gray-20;
   background-color: colors.$gray-10;
-  margin: spacing.$spacing-05;
+  margin: layout.$spacing-05;
   padding: 0;
 
   :global(.cds--data-table-content) {
@@ -38,32 +37,32 @@
   }
 
   .toolbarContent {
-    height: spacing.$spacing-07;
-    margin-bottom: spacing.$spacing-02;
+    height: layout.$spacing-07;
+    margin-bottom: layout.$spacing-02;
   }
 }
 
 .loader {
-  margin: spacing.$spacing-05;
+  margin: layout.$spacing-05;
 }
 
 .toolbarItem {
-  margin-left: 1rem;
+  margin-left: layout.$spacing-05;
   display: flex;
   align-items: center;
 
   & p {
-    padding-right: 0.5rem;
+    padding-right: layout.$spacing-03;
     @include type.type-style('body-01');
     color: colors.$gray-70;
   }
 
   :global(.cds--date-picker__input) {
-    height: spacing.$spacing-09;
+    height: layout.$spacing-09;
   }
 
   :global(.cds--dropdown) {
-    height: spacing.$spacing-09;
+    height: layout.$spacing-09;
   }
 
   :global(.cds--list-box__menu:focus) {
@@ -97,7 +96,7 @@
 .content {
   @include type.type-style('heading-compact-02');
   color: colors.$gray-70;
-  margin-bottom: 0.5rem;
+  margin-bottom: layout.$spacing-03;
 }
 
 .singleLineDisplay {

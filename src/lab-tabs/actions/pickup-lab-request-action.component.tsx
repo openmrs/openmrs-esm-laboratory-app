@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@carbon/react';
 import { showModal } from '@openmrs/esm-framework';
-import { Order } from '@openmrs/esm-patient-common-lib';
+import { type Order } from '@openmrs/esm-patient-common-lib';
 import styles from './actions.scss';
 
 interface PickLabRequestActionMenuProps {

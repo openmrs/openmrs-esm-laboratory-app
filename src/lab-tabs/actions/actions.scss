@@ -1,7 +1,5 @@
 @use '@carbon/type';
-@use '@carbon/styles/scss/spacing';
 @use '@carbon/layout';
-@use '@carbon/colors';
 
 .actionButton {
   display: flex;
@@ -11,6 +9,7 @@
   padding: 0 layout.$spacing-04;
   font-size: type.type-scale(2);
 }
+
 .actionRejectButton {
   display: flex;
   align-items: center;

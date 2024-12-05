@@ -1,24 +1,22 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Tag,
-  StructuredListWrapper,
-  StructuredListRow,
-  StructuredListCell,
-  StructuredListBody,
-  Button,
   Accordion,
   AccordionItem,
+  StructuredListBody,
+  StructuredListCell,
+  StructuredListRow,
+  StructuredListWrapper,
+  Tag,
 } from '@carbon/react';
 import capitalize from 'lodash-es/capitalize';
-import { ListOrdersDetailsProps } from '../../types';
+import { ExtensionSlot } from '@openmrs/esm-framework';
+import { type ListOrdersDetailsProps } from '../../types';
 import styles from './list-order-details.scss';
-import { ExtensionSlot, useLayoutType } from '@openmrs/esm-framework';
-import { Edit } from '@carbon/react/icons';
+
 const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
   const { t } = useTranslation();
   const orders = props.groupedOrders?.orders;
-  const isTablet = useLayoutType() === 'tablet';
 
   return (
     <div>

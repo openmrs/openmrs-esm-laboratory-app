@@ -1,9 +1,6 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Tile, Button } from '@carbon/react';
-import { ArrowRight } from '@carbon/react/icons';
+import { Tile } from '@carbon/react';
 import styles from './lab-summary-tile.scss';
-import { ConfigurableLink } from '@openmrs/esm-framework';
 
 interface LabSummaryTileProps {
   label: string;
@@ -13,8 +10,6 @@ interface LabSummaryTileProps {
 }
 
 const LabSummaryTile: React.FC<LabSummaryTileProps> = ({ label, value, headerLabel, children }) => {
-  const { t } = useTranslation();
-
   return (
     <Tile className={styles.tileContainer} light>
       <div className={styles.tileHeader}>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Form, ModalBody, ModalFooter, ModalHeader, TextArea, Layer } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
 import { showNotification, showSnackbar, useAbortController } from '@openmrs/esm-framework';
-import { Order } from '@openmrs/esm-patient-common-lib';
+import { type Order } from '@openmrs/esm-patient-common-lib';
 import { rejectLabOrder } from '../../laboratory-resource';
 import styles from './reject-lab-request-modal.scss';
 

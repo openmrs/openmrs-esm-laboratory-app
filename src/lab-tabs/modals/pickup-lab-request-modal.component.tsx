@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
 import { mutate } from 'swr';
-import { Order } from '@openmrs/esm-patient-common-lib';
+import { type Order } from '@openmrs/esm-patient-common-lib';
 import { restBaseUrl, showNotification, showSnackbar, useAbortController, useConfig } from '@openmrs/esm-framework';
-import { Config } from '../../config-schema';
+import { type Config } from '../../config-schema';
 import { setFulfillerStatus } from '../../laboratory-resource';
 
 interface PickupLabRequestModal {

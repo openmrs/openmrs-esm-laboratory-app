@@ -20,11 +20,11 @@ import {
   Tile,
 } from '@carbon/react';
 import { formatDate, parseDate, usePagination } from '@openmrs/esm-framework';
-import { Order } from '@openmrs/esm-patient-common-lib';
+import { type Order } from '@openmrs/esm-patient-common-lib';
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
-import { FulfillerStatus, OrdersDataTableProps } from '../../types';
+import { type FulfillerStatus, type OrdersDataTableProps } from '../../types';
 import ListOrderDetails from './list-order-details.component';
 import styles from './orders-data-table.scss';
 import { OrdersDateRangePicker } from './orders-date-range-picker';

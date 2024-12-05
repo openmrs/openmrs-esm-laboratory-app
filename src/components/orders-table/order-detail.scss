@@ -1,0 +1,18 @@
+@use '@carbon/layout';
+@use '@carbon/type';
+@use '@openmrs/esm-styleguide/src/vars' as *;
+
+.bodyLong01 {
+  @include type.type-style('body-01');
+}
+
+.label01 {
+  @include type.type-style('label-01');
+}
+
+.displayValue {
+  color: $text-02;
+  font-weight: bold;
+  width: layout.$spacing-05;
+  height: layout.$spacing-05;
+}
