@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import useSWR from 'swr';
 import { openmrsFetch, restBaseUrl, useAppContext, useConfig } from '@openmrs/esm-framework';
 import { type Order } from '@openmrs/esm-patient-common-lib';
-import { type DateFilterContext, type FulfillerStatus, type GroupedOrders } from './types';
+import type { DateFilterContext, FulfillerStatus, GroupedOrders } from './types';
 
 /**
  * Custom hook for retrieving laboratory orders based on the specified status.
