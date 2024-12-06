@@ -1,6 +1,6 @@
-# OpenMRS 3.x Laboratory ESM
+# openmrs-esm-laboratory-app
 
-A frontend module for managing laboratory requests and queues built on O3.
+An O3 frontend module for managing laboratory requests and queues.
 
 For more information, please refer to the [OpenMRS 3.x Frontend Documentation](https://o3-docs.openmrs.org/).
 

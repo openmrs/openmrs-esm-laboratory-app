@@ -1,7 +1,8 @@
-@use '@carbon/layout';
 @use '@carbon/colors';
-@use '@openmrs/esm-styleguide/src/vars' as *;
+@use '@carbon/layout';
 @use '@carbon/type';
+@use '@openmrs/esm-styleguide/src/vars' as *;
+
 .buttonSection {
   display: flex;
   justify-content: space-between;
@@ -12,9 +13,11 @@
 }
 
 .nameOrder {
+  // TODO: Prefer type styles over scales as mentioned here: https://carbondesignsystem.com/elements/typography/code/#type-scale
   font-size: type.type-scale(2);
   margin-left: layout.$spacing-04;
 }
+
 .testOrder {
   font-size: type.type-scale(2);
   font-weight: bold;
@@ -66,9 +69,11 @@
   padding: 0;
   margin-bottom: layout.$spacing-03;
 }
+
 .orderNumber {
   font-size: type.type-scale(2);
 }
+
 .orderStatus {
   font-size: type.type-scale(2);
 }
@@ -82,9 +87,11 @@
   text-align: justify;
   font-size: type.type-scale(1);
 }
+
 .urgencyStatus {
   font-size: type.type-scale(2);
 }
+
 .instructionLabel {
   font-weight: bold;
   font-size: type.type-scale(2);
@@ -94,6 +101,7 @@
   text-align: center;
   margin-bottom: layout.$spacing-03;
 }
+
 .accordionTitle {
   font-weight: bold;
 }

@@ -1,13 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { AssignedExtension, useConnectedExtensions, Extension } from '@openmrs/esm-framework';
+import { type AssignedExtension, useAssignedExtensions, Extension } from '@openmrs/esm-framework';
 import { ComponentContext } from '@openmrs/esm-framework/src/internal';
 import styles from './laboratory-summary-tiles.scss';
 
 const LaboratorySummaryTiles: React.FC = () => {
   const { t } = useTranslation();
   const labTileSlot = 'lab-tiles-slot';
-  const tilesExtensions = useConnectedExtensions(labTileSlot) as AssignedExtension[];
+  const tilesExtensions = useAssignedExtensions(labTileSlot) as AssignedExtension[];
 
   return (
     <div className={styles.cardContainer}>

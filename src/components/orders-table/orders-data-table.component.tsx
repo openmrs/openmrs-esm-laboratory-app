@@ -1,3 +1,4 @@
+import React, { useMemo, useState } from 'react';
 import {
   DataTable,
   DataTableSkeleton,
@@ -19,15 +20,14 @@ import {
   TableToolbarSearch,
   Tile,
 } from '@carbon/react';
-import { formatDate, parseDate, usePagination } from '@openmrs/esm-framework';
-import { Order } from '@openmrs/esm-patient-common-lib';
-import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { formatDate, parseDate, usePagination } from '@openmrs/esm-framework';
+import { type Order } from '@openmrs/esm-patient-common-lib';
 import { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
-import { FulfillerStatus, OrdersDataTableProps } from '../../types';
+import type { FulfillerStatus, OrdersDataTableProps } from '../../types';
+import { OrdersDateRangePicker } from './orders-date-range-picker';
 import ListOrderDetails from './list-order-details.component';
 import styles from './orders-data-table.scss';
-import { OrdersDateRangePicker } from './orders-date-range-picker';
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();

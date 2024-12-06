@@ -6,7 +6,7 @@ import Overlay from './components/overlay/overlay.component';
 import LaboratoryOrdersTabs from './lab-tabs/laboratory-tabs.component';
 import LaboratorySummaryTiles from './lab-tiles/laboratory-summary-tiles.component';
 import styles from './laboratory-dashboard.scss';
-import { DateFilterContext } from './types';
+import { type DateFilterContext } from './types';
 
 const LaboratoryDashboard: React.FC = () => {
   const { t } = useTranslation();

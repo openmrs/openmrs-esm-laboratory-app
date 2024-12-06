@@ -29,5 +29,8 @@ export const configSchema = {
 export type Config = {
   laboratoryOrderTypeUuid: string;
   encounterTypeUuid: string;
-  targetPatientDashboard: Object;
+  targetPatientDashboard: {
+    redirectToResultsViewer: string;
+    redirectToOrders: string;
+  };
 };

@@ -1,9 +1,9 @@
-import { Order } from '@openmrs/esm-patient-common-lib';
 import React from 'react';
 import { Button } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
-import styles from './actions.scss';
 import { launchWorkspace } from '@openmrs/esm-framework';
+import { type Order } from '@openmrs/esm-patient-common-lib';
+import styles from './actions.scss';
 
 interface AddLabRequestResultsActionProps {
   order: Order;
