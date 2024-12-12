@@ -61,7 +61,7 @@ export const worklistTile = getAsyncLifecycle(
   options,
 );
 
-// t("Referred Tests", "Referred Tests")
+// t("Referred tests", "Referred tests")
 export const completedTile = getAsyncLifecycle(
   () => import('./lab-tiles/completed-lab-requests-tile.component'),
   options,
