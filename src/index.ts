@@ -15,6 +15,7 @@ export const importTranslation = require.context('../translations', false, /.jso
 export const root = getSyncLifecycle(rootComponent, options);
 
 export const laboratoryDashboardLink = getSyncLifecycle(
+  // t('Laboratory', 'Laboratory')
   createHomeDashboardLink({
     name: 'laboratory',
     slot: 'laboratory-dashboard-slot',
@@ -36,32 +37,37 @@ export const rejectLabRequestModal = getAsyncLifecycle(
 );
 
 // Tables and tiles
-
+// t('Tests ordered', 'Tests ordered')
 export const allLabRequestsTable = getAsyncLifecycle(
   () => import('./lab-tabs/data-table-extensions/tests-ordered-table.extension'),
   options,
 );
 
+// t('In progress', 'In progress')
 export const inprogressLabRequestsTable = getAsyncLifecycle(
   () => import('./lab-tabs/data-table-extensions/in-progress-lab-requests-table.extension'),
   options,
 );
 
+// t('Completed', 'Completed')
 export const completedLabRequestsTable = getAsyncLifecycle(
   () => import('./lab-tabs/data-table-extensions/completed-lab-requests-table.extension'),
   options,
 );
 
+// t('Worklist', 'Worklist')
 export const worklistTile = getAsyncLifecycle(
   () => import('./lab-tiles/in-progress-lab-requests-tile.component'),
   options,
 );
 
+// t("Referred tests", "Referred tests")
 export const completedTile = getAsyncLifecycle(
   () => import('./lab-tiles/completed-lab-requests-tile.component'),
   options,
 );
 
+// t('Ordered tests', 'Ordered tests')
 export const testOrderedTile = getAsyncLifecycle(() => import('./lab-tiles/all-lab-requests-tile.component'), options);
 
 // Actions
