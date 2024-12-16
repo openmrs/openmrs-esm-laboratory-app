@@ -88,6 +88,15 @@
       }
     },
     {
+      "name": "declined-tile-component",
+      "slot": "lab-panels-slot",
+      "component": "declinedLabRequestsTable",
+      "meta": {
+          "name": "declinedPanel",
+          "title": "Declined tests"
+      }
+    },
+    {
       "name": "pick-lab-request-action",
       "component": "pickupLabRequestAction",
       "slot": "tests-ordered-actions-slot"
