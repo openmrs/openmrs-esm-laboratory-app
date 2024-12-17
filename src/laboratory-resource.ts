@@ -20,7 +20,7 @@ export function useLabOrders(status: 'NEW' | FulfillerStatus = null, excludeCanc
   const fulfillerStatus = useMemo(() => (status === 'NEW' ? null : status), [status]);
   const newOrdersOnly = status === 'NEW';
   const customRepresentation =
-    'custom:(uuid,orderNumber,patient:(uuid,display,person:(uuid,display,age)),concept:(uuid,display),action,careSetting:(uuid,display,description,careSettingType,display),previousOrder,dateActivated,scheduledDate,dateStopped,autoExpireDate,encounter:(uuid,display),orderer:(uuid,display),orderReason,orderReasonNonCoded,orderType:(uuid,display,name,description,conceptClasses,parent),urgency,instructions,commentToFulfiller,display,fulfillerStatus,fulfillerComment,specimenSource,laterality,clinicalHistory,frequency,numberOfRepeats)';
+    'custom:(uuid,orderNumber,patient:(uuid,display,person:(uuid,display,age,gender)),concept:(uuid,display),action,careSetting:(uuid,display,description,careSettingType,display),previousOrder,dateActivated,scheduledDate,dateStopped,autoExpireDate,encounter:(uuid,display),orderer:(uuid,display),orderReason,orderReasonNonCoded,orderType:(uuid,display,name,description,conceptClasses,parent),urgency,instructions,commentToFulfiller,display,fulfillerStatus,fulfillerComment,specimenSource,laterality,clinicalHistory,frequency,numberOfRepeats)';
   let url = `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}&v=${customRepresentation}`;
   url = fulfillerStatus ? url + `&fulfillerStatus=${fulfillerStatus}` : url;
   url = excludeCanceled ? `${url}&excludeCanceledAndExpired=true&excludeDiscontinueOrders=true` : url;
