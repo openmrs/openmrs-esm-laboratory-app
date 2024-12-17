@@ -84,7 +84,16 @@
       "component": "completedTile",
       "meta": {
         "name": "referredPanleSlot",
-        "title": "Referred Tests"
+        "title": "Referred tests"
+      }
+    },
+    {
+      "name": "declined-tile-component",
+      "slot": "lab-panels-slot",
+      "component": "declinedLabRequestsTable",
+      "meta": {
+          "name": "declinedPanel",
+          "title": "Declined tests"
       }
     },
     {
