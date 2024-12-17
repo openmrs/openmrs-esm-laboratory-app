@@ -28,7 +28,7 @@ import type { FulfillerStatus, OrdersDataTableProps } from '../../types';
 import { OrdersDateRangePicker } from './orders-date-range-picker';
 import ListOrderDetails from './list-order-details.component';
 import styles from './orders-data-table.scss';
-import TransitionLatestQueueEntryButton from '../../lab-tabs/actions/transition-patient-to-new-queue.component';
+import TransitionLatestQueueEntryButton from '../../lab-tabs/actions/transition-patient-to-new-queue/transition-patient-to-new-queue.component';
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
