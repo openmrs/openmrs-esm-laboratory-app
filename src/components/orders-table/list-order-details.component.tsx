@@ -102,6 +102,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
 
               <div className={styles.buttonSection}>
                 <div className={styles.actionButtons}>
+                  {/* @ts-ignore */}
                   {row.fulfillerStatus === 'New' ||
                   row.fulfillerStatus === 'RECEIVED' ||
                   row.fulfillerStatus == null ? (
