@@ -31,6 +31,19 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
               <span className={styles.orderDate}>
                 {t('orderDate', 'Order Date:')} {row.dateActivated}
               </span>
+            </div>
+            <div className={styles.orderStatus}>
+              {t('orderStatus', 'Status:')}
+              <Tag size="lg" type={row.fulfillerStatus ? 'green' : 'red'}>
+                {row.fulfillerStatus || t('orderNotPicked', 'Order not picked')}
+              </Tag>
+            </div>
+            <div>
+              <div className={styles.orderUrgency}>
+                <span className={styles.urgencyStatus}>
+                  {t('urgencyStatus', 'Urgency: ')} {capitalize(row.urgency)}
+                </span>
+              </div>
               <StructuredListWrapper>
                 <StructuredListBody>
                   <StructuredListRow>
@@ -89,6 +102,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
 
               <div className={styles.buttonSection}>
                 <div className={styles.actionButtons}>
+                  {/* @ts-ignore */}
                   {row.fulfillerStatus === 'New' ||
                   row.fulfillerStatus === 'RECEIVED' ||
                   row.fulfillerStatus == null ? (
