@@ -5,7 +5,8 @@ import LabSummaryTile from '../components/summary-tile/lab-summary-tile.componen
 
 const AllLabRequestsTile = () => {
   const { t } = useTranslation();
-  const { labOrders } = useLabOrders();
+
+  const { labOrders } = useLabOrders('NEW');
 
   return (
     <LabSummaryTile
