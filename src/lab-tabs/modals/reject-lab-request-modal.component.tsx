@@ -66,6 +66,7 @@ const RejectLabRequestModal: React.FC<RejectLabRequestModalProps> = ({ order, cl
       <ModalHeader
         closeModal={closeModal}
         title={`${t('rejectLabRequest', 'Reject lab request')} [${order.orderNumber}]`}
+        className={styles.modalHeader}
       />
       <ModalBody>
         <div className={styles.modalBody}>
