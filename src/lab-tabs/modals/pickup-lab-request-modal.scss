@@ -1,17 +1,5 @@
 @use '@carbon/layout';
 
-section {
-  margin: layout.$spacing-03;
-}
-
-.sectionTitle {
-  margin-bottom: layout.$spacing-04;
-}
-
-.modalBody {
-  padding-bottom: layout.$spacing-05;
-}
-
 .modalHeader {
   :global {
     .cds--modal-close-button {
