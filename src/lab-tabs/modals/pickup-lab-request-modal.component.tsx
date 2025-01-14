@@ -6,6 +6,7 @@ import { type Order } from '@openmrs/esm-patient-common-lib';
 import { restBaseUrl, showNotification, showSnackbar, useAbortController, useConfig } from '@openmrs/esm-framework';
 import { type Config } from '../../config-schema';
 import { setFulfillerStatus } from '../../laboratory-resource';
+import styles from './pickup-lab-request-modal.scss';
 
 interface PickupLabRequestModal {
   closeModal: () => void;
@@ -51,7 +52,11 @@ const PickupLabRequestModal: React.FC<PickupLabRequestModal> = ({ order, closeMo
 
   return (
     <div>
-      <ModalHeader closeModal={closeModal} title={t('pickRequest', 'Pick lab request')} />
+      <ModalHeader
+        closeModal={closeModal}
+        title={t('pickRequest', 'Pick lab request')}
+        className={styles.modalHeader}
+      />
       <ModalBody>
         <p>
           {t(
