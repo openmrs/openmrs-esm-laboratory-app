@@ -12,6 +12,10 @@
   gap: 10rem;
 }
 
+.nameOrderRow {
+  border-top: none;
+}
+
 .nameOrder {
   // TODO: Prefer type styles over scales as mentioned here: https://carbondesignsystem.com/elements/typography/code/#type-scale
   font-size: type.type-scale(2);
@@ -103,4 +107,10 @@
 
 .accordionTitle {
   font-weight: bold;
+}
+
+.instructionLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
