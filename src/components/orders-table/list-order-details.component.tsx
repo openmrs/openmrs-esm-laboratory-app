@@ -50,15 +50,17 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                     <StructuredListCell>{t('testOrdered', 'Test ordered: ')}</StructuredListCell>
                     <StructuredListCell>{capitalize(row?.display)}</StructuredListCell>
                     <br />
-                    <StructuredListCell className={styles.instructionLabel}>
-                      <span className={styles.instructionLabel}>{t('orderInStruction', 'Instructions: ')}</span>
-                      <span className={styles.instructions}>
-                        {row.instructions ?? (
-                          <Tag size="lg" type="red">
-                            {t('NoInstructionLeft', 'No instructions are provided.')}
-                          </Tag>
-                        )}
-                      </span>
+                    <StructuredListCell>
+                      <div className={styles.instructionLabelContainer}>
+                        <span className={styles.instructionLabel}>{t('orderInStruction', 'Instructions: ')}</span>
+                        <span className={styles.instructions}>
+                          {row.instructions ?? (
+                            <Tag size="lg" type="red">
+                              {t('NoInstructionLeft', 'No instructions are provided.')}
+                            </Tag>
+                          )}
+                        </span>
+                      </div>
                     </StructuredListCell>
                   </StructuredListRow>
                 </StructuredListBody>
