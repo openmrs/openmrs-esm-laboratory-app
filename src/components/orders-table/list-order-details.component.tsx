@@ -9,7 +9,7 @@ import {
   StructuredListWrapper,
   Tag,
 } from '@carbon/react';
-import capitalize from 'lodash-es/capitalize';
+import { capitalize } from 'lodash-es';
 import { ExtensionSlot } from '@openmrs/esm-framework';
 import { type ListOrdersDetailsProps } from '../../types';
 import styles from './list-order-details.scss';
@@ -51,14 +51,16 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                     <StructuredListCell>{capitalize(row?.display)}</StructuredListCell>
                     <br />
                     <StructuredListCell>
-                      <span className={styles.instructionLabel}>{t('orderInStruction', 'Instructions: ')}</span>
-                      <span className={styles.instructions}>
-                        {row.instructions ?? (
-                          <Tag size="lg" type="red">
-                            {t('NoInstructionLeft', 'No instructions are provided.')}
-                          </Tag>
-                        )}
-                      </span>
+                      <div className={styles.instructionLabelContainer}>
+                        <span className={styles.instructionLabel}>{t('orderInStruction', 'Instructions: ')}</span>
+                        <span className={styles.instructions}>
+                          {row.instructions ?? (
+                            <Tag size="lg" type="red">
+                              {t('NoInstructionLeft', 'No instructions are provided.')}
+                            </Tag>
+                          )}
+                        </span>
+                      </div>
                     </StructuredListCell>
                   </StructuredListRow>
                 </StructuredListBody>
@@ -92,7 +94,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                   <StructuredListCell>{row.fulfillerComment}</StructuredListCell>
                 </StructuredListRow>
               )}
-              <StructuredListRow>
+              <StructuredListRow className={styles.nameOrderRow}>
                 <StructuredListCell>
                   <span className={styles.nameOrder}>
                     {t('ordererName', 'Orderer Name: ')} {capitalize(row.orderer?.display)}

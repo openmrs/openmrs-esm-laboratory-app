@@ -27,13 +27,13 @@ import { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource
 import type { FulfillerStatus, OrdersDataTableProps } from '../../types';
 import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
-import styles from './orders-data-table.scss';
 import TransitionLatestQueueEntryButton from '../../lab-tabs/actions/transition-patient-to-new-queue/transition-patient-to-new-queue.component';
+import styles from './orders-data-table.scss';
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<FulfillerStatus>(null);
-  const [searchString, setSearchString] = useState<string>('');
+  const [searchString, setSearchString] = useState('');
 
   const { labOrders, isLoading } = useLabOrders(
     props.useFilter ? filter : props.fulfillerStatus,
@@ -126,7 +126,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   }
 
   return (
-    <DataTable rows={tableRows} headers={columns} useZebraStyles>
+    <DataTable rows={tableRows} headers={columns} useZebraStyles={labOrders?.length > 1}>
       {({ getExpandHeaderProps, getHeaderProps, getRowProps, getTableProps, headers, rows }) => (
         <TableContainer className={styles.tableContainer}>
           <TableToolbar>
@@ -157,7 +157,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
               </Layer>
             </TableToolbarContent>
           </TableToolbar>
-          <Table {...getTableProps()} className={styles.tableWrapper}>
+          <Table className={styles.tableWrapper} {...getTableProps()}>
             <TableHead>
               <TableRow>
                 <TableExpandHeader enableToggle={rows.length > 0} {...getExpandHeaderProps()} />
@@ -175,13 +175,15 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
                     ))}
                   </TableExpandRow>
                   {row.isExpanded ? (
-                    <TableExpandedRow colSpan={headers.length + 1}>
+                    <TableExpandedRow colSpan={headers.length + 2}>
                       <ListOrderDetails
                         actions={props.actions}
                         groupedOrders={groupedOrdersByPatient.find((item) => item.patientId === row.id)}
                       />
                     </TableExpandedRow>
-                  ) : null}
+                  ) : (
+                    <TableExpandedRow className={styles.hiddenRow} colSpan={headers.length + 2} />
+                  )}
                 </React.Fragment>
               ))}
             </TableBody>
