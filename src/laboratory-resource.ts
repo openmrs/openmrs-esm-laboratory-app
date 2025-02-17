@@ -26,7 +26,7 @@ export function useLabOrders(status: 'NEW' | FulfillerStatus = null, excludeCanc
   url = excludeCanceled ? `${url}&excludeCanceledAndExpired=true&excludeDiscontinueOrders=true` : url;
   // The usage of SWR's mutator seems to only suffice for cases where we don't apply a status filter
   url = dateRange
-    ? `${url}&=&activatedOnOrAfterDate=${dateRange.at(0).toISOString()}&activatedOnOrBeforeDate=${dateRange
+    ? `${url}&activatedOnOrAfterDate=${dateRange.at(0).toISOString()}&activatedOnOrBeforeDate=${dateRange
         .at(1)
         .toISOString()}`
     : url;
@@ -47,6 +47,7 @@ export function useLabOrders(status: 'NEW' | FulfillerStatus = null, excludeCanc
     isValidating,
   };
 }
+
 export function useSearchGroupedResults(data: Array<GroupedOrders>, searchString: string) {
   const searchResults = useMemo(() => {
     if (searchString && searchString.trim() !== '') {
@@ -66,6 +67,7 @@ export function useSearchGroupedResults(data: Array<GroupedOrders>, searchString
 
   return searchResults;
 }
+
 export function setFulfillerStatus(orderId: string, status: FulfillerStatus, abortController: AbortController) {
   return openmrsFetch(`${restBaseUrl}/order/${orderId}/fulfillerdetails/`, {
     method: 'POST',
