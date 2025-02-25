@@ -7,13 +7,13 @@ import { type DateFilterContext } from '../../types';
 import styles from './orders-date-range-picker.scss';
 
 export const OrdersDateRangePicker = () => {
+  const { t } = useTranslation();
   const currentDate = new Date();
+
   const { dateRange, setDateRange } = useAppContext<DateFilterContext>('laboratory-date-filter') ?? {
     dateRange: [dayjs().startOf('day').toDate(), new Date()],
     setDateRange: () => {},
   };
-
-  const { t } = useTranslation();
 
   const handleOrdersDateRangeChange = (dates: Array<Date>) => {
     setDateRange(dates);
@@ -23,9 +23,10 @@ export const OrdersDateRangePicker = () => {
     <div className={styles.datePickerWrapper}>
       <p>{t('dateRange', 'Date range')}:</p>
       <DatePicker
-        datePickerType="range"
         className={styles.dateRangePicker}
-        onClose={handleOrdersDateRangeChange}
+        dateFormat="d/m/Y"
+        datePickerType="range"
+        onChange={handleOrdersDateRangeChange}
         maxDate={currentDate.toISOString()}
         value={dateRange}
       >
