@@ -17,6 +17,10 @@
       "es2020",
       "es2022"
     ],
+    "paths": {
+      "@mocks": ["./__mocks__"],
+      "@tools": ["./tools"],
+    },
     "resolveJsonModule": true,
     "noEmit": true,
     "target": "esnext"
