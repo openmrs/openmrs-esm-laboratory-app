@@ -1,9 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import styles from './transition-patient-to-new-queue.scss';
-import { showModal } from '@openmrs/esm-framework';
 import { Button } from '@carbon/react';
 import { AirlineManageGates } from '@carbon/react/icons';
+import { showModal } from '@openmrs/esm-framework';
 
 interface TransitionLatestQueueEntryButtonProps {
   patientUuid: string;
@@ -12,7 +11,7 @@ interface TransitionLatestQueueEntryButtonProps {
 const TransitionLatestQueueEntryButton: React.FC<TransitionLatestQueueEntryButtonProps> = ({ patientUuid }) => {
   const { t } = useTranslation();
 
-  const launchModal = () => {
+  const handleLaunchModal = () => {
     const dispose = showModal('transition-patient-to-latest-queue-modal', {
       closeModal: () => dispose(),
       patientUuid,
@@ -21,11 +20,11 @@ const TransitionLatestQueueEntryButton: React.FC<TransitionLatestQueueEntryButto
 
   return (
     <Button
+      iconDescription={t('transitionPatientToNewQueue', 'Transition patient to new queue')}
       kind="tertiary"
-      className={styles.addPatientToQueue}
-      onClick={launchModal}
+      onClick={handleLaunchModal}
+      renderIcon={AirlineManageGates}
       size="sm"
-      renderIcon={() => <AirlineManageGates size={18} />}
     >
       {t('transition', 'Transition')}
     </Button>
