@@ -61,6 +61,7 @@
   "testType": "检验类型",
   "totalOrders": "总医嘱",
   "transition": "Transition",
+  "transitionPatientToNewQueue": "Transition patient to new queue",
   "urgencyStatus": "紧迫性：",
   "viewTestResults": "查看检验结果",
   "worklist": "工作表",
