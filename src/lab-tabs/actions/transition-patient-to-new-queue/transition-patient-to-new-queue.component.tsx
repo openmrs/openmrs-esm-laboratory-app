@@ -10,7 +10,11 @@ interface TransitionLatestQueueEntryButtonProps {
 
 const TransitionLatestQueueEntryButton: React.FC<TransitionLatestQueueEntryButtonProps> = ({ patientUuid }) => {
   const { activeVisit, isLoading } = useVisit(patientUuid);
+  const shouldHideButton = !activeVisit;
   const { t } = useTranslation();
+  if (shouldHideButton) {
+    return null;
+  }
 
   const handleLaunchModal = () => {
     const dispose = showModal('transition-patient-to-latest-queue-modal', {
@@ -30,7 +34,6 @@ const TransitionLatestQueueEntryButton: React.FC<TransitionLatestQueueEntryButto
       onClick={handleLaunchModal}
       renderIcon={AirlineManageGates}
       size="sm"
-      disabled={!activeVisit}
     >
       {t('transition', 'Transition')}
     </Button>
