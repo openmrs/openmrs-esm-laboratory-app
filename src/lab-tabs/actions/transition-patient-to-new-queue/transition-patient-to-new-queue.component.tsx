@@ -1,22 +1,27 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@carbon/react';
+import { Button, InlineLoading } from '@carbon/react';
 import { AirlineManageGates } from '@carbon/react/icons';
-import { showModal } from '@openmrs/esm-framework';
+import { showModal, useVisit } from '@openmrs/esm-framework';
 
 interface TransitionLatestQueueEntryButtonProps {
   patientUuid: string;
 }
 
 const TransitionLatestQueueEntryButton: React.FC<TransitionLatestQueueEntryButtonProps> = ({ patientUuid }) => {
+  const { activeVisit, isLoading } = useVisit(patientUuid);
   const { t } = useTranslation();
 
   const handleLaunchModal = () => {
     const dispose = showModal('transition-patient-to-latest-queue-modal', {
       closeModal: () => dispose(),
-      patientUuid,
+      activeVisit,
     });
   };
+
+  if (isLoading) {
+    return <InlineLoading description={t('loading', 'Loading...')} />;
+  }
 
   return (
     <Button
@@ -25,6 +30,7 @@ const TransitionLatestQueueEntryButton: React.FC<TransitionLatestQueueEntryButto
       onClick={handleLaunchModal}
       renderIcon={AirlineManageGates}
       size="sm"
+      disabled={!activeVisit}
     >
       {t('transition', 'Transition')}
     </Button>
