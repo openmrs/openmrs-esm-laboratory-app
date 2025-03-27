@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from 'react';
 import {
   DataTable,
   DataTableSkeleton,
   Dropdown,
   Layer,
+  OverflowMenu,
+  OverflowMenuItem,
   Pagination,
   Table,
   TableBody,
@@ -20,15 +21,16 @@ import {
   TableToolbarSearch,
   Tile,
 } from '@carbon/react';
-import { useTranslation } from 'react-i18next';
-import { formatDate, parseDate, usePagination } from '@openmrs/esm-framework';
+import { ExtensionSlot, formatDate, parseDate, showModal, usePagination, useVisit } from '@openmrs/esm-framework';
 import { type Order } from '@openmrs/esm-patient-common-lib';
+import { upperCase } from 'lodash-es';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
 import type { FulfillerStatus, OrdersDataTableProps } from '../../types';
-import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
-import TransitionLatestQueueEntryButton from '../../lab-tabs/actions/transition-patient-to-new-queue/transition-patient-to-new-queue.component';
 import styles from './orders-data-table.scss';
+import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
@@ -41,17 +43,19 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   );
 
   const flattenedLabOrders: Order[] = useMemo(() => {
-    return labOrders.map((order) => {
-      return {
-        ...order,
-        dateActivated: formatDate(parseDate(order.dateActivated)),
-        patientName: order.patient?.display.split('-')[1],
-        patientUuid: order.patient?.uuid,
-        patientAge: order.patient?.person?.age,
-        status: order.fulfillerStatus ?? '--',
-        orderer: order.orderer,
-      };
-    });
+    return (
+      labOrders?.map((order) => {
+        return {
+          ...order,
+          dateActivated: formatDate(parseDate(order.dateActivated)),
+          patientName: order.patient?.display.split('-')[1],
+          patientUuid: order.patient?.uuid,
+          patientAge: order.patient?.person?.age,
+          status: order.fulfillerStatus ?? '--',
+          orderer: order.orderer,
+        };
+      }) ?? []
+    );
   }, [labOrders]);
 
   function groupOrdersById(orders) {
@@ -107,19 +111,35 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
 
   const handleOrderStatusChange = ({ selectedItem }) => setFilter(selectedItem.value);
 
+  const handlePrintModal = (orders: Array<Order>) => {
+    const completedOrders = orders.filter((order) => order.fulfillerStatus === 'COMPLETED');
+    const dispose = showModal('print-lab-results-modal', {
+      closeModal: () => dispose(),
+      orders: completedOrders,
+    });
+  };
+
   const tableRows = useMemo(() => {
     return paginatedLabOrders.map((order) => ({
       id: order.patientId,
-      patientName: order.orders[0]?.patient?.display?.split('-')[1],
+      patientName: upperCase(order.orders[0]?.patient?.display?.split('-')[1]?.trim() || ''),
       orders: order.orders,
       totalOrders: order.orders?.length,
       patientAge: order.orders[0]?.patient?.person?.age,
-      patientGender: order.orders[0]?.patient?.person?.gender,
+      patientGender: order.orders[0]?.patient?.person?.gender || '',
       action: order.orders.some((o) => o.fulfillerStatus === 'COMPLETED') ? (
-        <TransitionLatestQueueEntryButton patientUuid={order.patientId} />
+        <div className={styles.actionCell}>
+          <OverflowMenu aria-label="Actions" iconDescription="Actions" flipped>
+            <ExtensionSlot name="transition-overflow-menu-item-slot" state={{ patientUuid: order.patientId }} />
+            <OverflowMenuItem
+              itemText={t('printTestResults', 'Print test results')}
+              onClick={() => handlePrintModal(order?.orders)}
+            />
+          </OverflowMenu>
+        </div>
       ) : null,
     }));
-  }, [paginatedLabOrders]);
+  }, [paginatedLabOrders, t]);
 
   if (isLoading) {
     return <DataTableSkeleton className={styles.loader} role="progressbar" showHeader={false} showToolbar={false} />;
@@ -192,7 +212,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
             <div className={styles.tileContainer}>
               <Tile className={styles.tile}>
                 <div className={styles.tileContent}>
-                  <p className={styles.content}>{t('noLabRequestsFoundC', 'No lab requests found')}</p>
+                  <p className={styles.content}>{t('noLabRequestsFound', 'No lab requests found')}</p>
                   <p className={styles.emptyStateHelperText}>
                     {t('checkFilters', 'Please check the filters above and try again')}
                   </p>
