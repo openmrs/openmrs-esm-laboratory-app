@@ -61,6 +61,7 @@
   "testType": "Analyse",
   "totalOrders": "Total des demandes d'examens",
   "transition": "Transition",
+  "transitionPatientToNewQueue": "Transition patient to new queue",
   "urgencyStatus": "Urgence :",
   "viewTestResults": "Afficher les résultats d'examens",
   "worklist": "liste des tâches",

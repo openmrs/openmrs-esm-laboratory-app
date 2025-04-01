@@ -61,6 +61,7 @@
   "testType": "Tipo di test",
   "totalOrders": "Ordini totali",
   "transition": "Transizione",
+  "transitionPatientToNewQueue": "Transition patient to new queue",
   "urgencyStatus": "Urgenza: ",
   "viewTestResults": "Visualizza risultati dei test",
   "worklist": "Lista di lavoro",
