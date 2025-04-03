@@ -130,8 +130,9 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
       action: order.orders.some((o) => o.fulfillerStatus === 'COMPLETED') ? (
         <div className={styles.actionCell}>
           <OverflowMenu aria-label="Actions" iconDescription="Actions" flipped>
+            <ExtensionSlot name="transition-overflow-menu-item-slot" state={{ patientUuid: order?.patientId }} />
             <OverflowMenuItem
-              itemText={t('printTestResults', 'Print test results')}
+              itemText={t('printTestResults', 'Print  results')}
               onClick={() => handlePrintModal(order?.orders)}
             />
           </OverflowMenu>
