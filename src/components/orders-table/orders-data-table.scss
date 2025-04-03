@@ -29,7 +29,8 @@
   }
 
   :global(.cds--overflow-menu) {
-    width: 75%;
+    background-color: transparent;
+    border: none;
   }
 
   :global(.cds--pagination) {
