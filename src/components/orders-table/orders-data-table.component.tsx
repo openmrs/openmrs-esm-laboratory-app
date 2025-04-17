@@ -21,10 +21,9 @@ import {
   TableToolbarSearch,
   Tile,
 } from '@carbon/react';
-import { ExtensionSlot, formatDate, parseDate, showModal, usePagination, useVisit } from '@openmrs/esm-framework';
+import { ExtensionSlot, formatDate, parseDate, showModal, usePagination } from '@openmrs/esm-framework';
 import { type Order } from '@openmrs/esm-patient-common-lib';
-import { upperCase } from 'lodash-es';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
 import type { FulfillerStatus, OrdersDataTableProps } from '../../types';
@@ -130,7 +129,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const tableRows = useMemo(() => {
     return paginatedLabOrders.map((order) => ({
       id: order.patientId,
-      patientName: upperCase(order.orders[0]?.patient?.display?.split('-')[1]?.trim() || ''),
+      patientName: order.orders[0]?.patient?.display?.split('-')[1]?.trim() || '',
       orders: order.orders,
       totalOrders: order.orders?.length,
       patientAge: order.orders[0]?.patient?.person?.age,
