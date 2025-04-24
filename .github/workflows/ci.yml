@@ -1,4 +1,4 @@
-name: Node CI
+name: OpenMRS CI
 
 on:
   push:
@@ -8,47 +8,45 @@ on:
   release:
     types:
       - created
+
 env:
-  ESM_NAME: "@openmrs/esm-laboratory-app"
-  JS_NAME: "openmrs-esm-laboratory-app.js"
+  TURBO_API: 'http://127.0.0.1:9080'
+  TURBO_TOKEN: 'turbo-token'
+  TURBO_TEAM: ${{ github.repository_owner }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      TURBO_API: 'http://127.0.0.1:9080'
-      TURBO_TOKEN: ${{ secrets.TURBO_SERVER_TOKEN }}
-      TURBO_TEAM: ${{ github.repository_owner }}
 
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js
+      - name: 🚀 Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: 20
           registry-url: "https://registry.npmjs.org"
 
-      - name: Cache dependencies
+      - name: 📦 Cache dependencies
         id: cache
         uses: actions/cache@v4
         with:
           path: "**/node_modules"
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
 
-      - name: Install dependencies
+      - name: 📥 Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install --immutable
 
-      - name: Setup local cache server for Turborepo
+      - name: 🏗️ Setup local cache server for Turborepo
         uses: felixmosh/turborepo-gh-artifacts@v3
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          server-token: ${{ secrets.TURBO_SERVER_TOKEN }}
+          server-token: ${{ env.TURBO_TOKEN }}
 
       - run: yarn verify
       - run: yarn turbo run build --color --concurrency=5
 
-      - name: Upload Artifacts
+      - name: 📤 Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dist
@@ -66,44 +64,44 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: 🚀 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: 20
           registry-url: "https://registry.npmjs.org"
 
-      - name: Cache dependencies
+      - name: 📦 Cache dependencies
         id: cache
         uses: actions/cache@v4
         with:
           path: "**/node_modules"
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
 
-      - name: Install dependencies
+      - name: 📥 Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install --immutable
 
-      - name: Setup local cache server for Turborepo
+      - name: 🏗️ Setup local cache server for Turborepo
         uses: felixmosh/turborepo-gh-artifacts@v3
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          server-token: ${{ secrets.TURBO_SERVER_TOKEN }}
+          server-token: ${{ env.TURBO_TOKEN }}
 
-      - name: Version
+      - name: 🔢 Version
         run: yarn version "$(node -e "console.log(require('semver').inc(require('./package.json').version, 'patch'))")-pre.${{ github.run_number }}"
 
-      - name: Build
+      - name: 🏗️ Build
         run: yarn turbo run build --color --concurrency=5
 
       - run: git config user.email "<>" && git config user.name "OpenMRS CI"
       - run: git add . && git commit -m "Prerelease version" --no-verify
 
-      - name: Pre-release
+      - name: 📦 Pre-release
         run: yarn config set npmAuthToken "${NODE_AUTH_TOKEN}" && yarn npm publish --access public --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-      - name: Upload Artifacts
+      - name: 📤 Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dist
@@ -120,33 +118,34 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Download Artifacts
+      - name: 📥 Download Artifacts
         uses: actions/download-artifact@v4
 
-      - name: Setup Node.js
+      - name: 🚀 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: 20
           registry-url: "https://registry.npmjs.org"
 
-      - name: Cache dependencies
+      - name: 📦 Cache dependencies
         id: cache
         uses: actions/cache@v4
         with:
           path: "**/node_modules"
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
 
-      - name: Install dependencies
+      - name: 📥 Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install --immutable
 
-      - name: Setup local cache server for Turborepo
+      - name: 🏗️ Setup local cache server for Turborepo
         uses: felixmosh/turborepo-gh-artifacts@v3
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          server-token: ${{ secrets.TURBO_SERVER_TOKEN }}
+          server-token: ${{ env.TURBO_TOKEN }}
 
-      - run: yarn config set npmAuthToken "${NODE_AUTH_TOKEN}" &&  yarn npm publish
+      - name: 📦 Release
+        run: yarn config set npmAuthToken "${NODE_AUTH_TOKEN}" &&  yarn npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
@@ -158,7 +157,7 @@ jobs:
     if: ${{ github.event_name == 'push' }}
 
     steps:
-      - name: Trigger RefApp Build
+      - name: 🚀 Trigger RefApp Build
         uses: fjogeleit/http-request-action@v1
         with:
           url: https://ci.openmrs.org/rest/api/latest/queue/O3-BF
