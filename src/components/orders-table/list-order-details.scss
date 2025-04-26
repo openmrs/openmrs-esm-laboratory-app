@@ -9,7 +9,7 @@
   align-items: center;
   padding-top: layout.$spacing-03;
   width: 100%;
-  gap: 10rem;
+  gap: layout.$spacing-03;
 }
 
 .nameOrderRow {
@@ -24,10 +24,6 @@
 .testOrder {
   font-size: type.type-scale(2);
   font-weight: bold;
-}
-
-.actionButtons {
-  gap: layout.$spacing-03;
 }
 
 .testsOrderedActions {
