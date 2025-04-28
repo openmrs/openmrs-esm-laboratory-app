@@ -126,6 +126,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     });
   };
 
+
   const tableRows = useMemo(() => {
     return paginatedLabOrders.map((order) => ({
       id: order.patientId,
@@ -143,7 +144,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
               onClick={() => handleLaunchModal(order?.orders)}
             />
             <OverflowMenuItem
-              itemText={t('printTestResults', 'Print  results')}
+              itemText={t('printTestResults', 'Print test results')}
               onClick={() => handlePrintModal(order?.orders)}
             />
           </OverflowMenu>
