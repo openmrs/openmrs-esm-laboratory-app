@@ -122,7 +122,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const tableRows = useMemo(() => {
     return paginatedLabOrders.map((order) => ({
       id: order.patientId,
-      patientName: upperCase(order.orders[0]?.patient?.display?.split('-')[1]?.trim() || ''),
+      patientName: order.orders[0]?.patient?.display?.split('-')[1]?.trim() || '',
       orders: order.orders,
       totalOrders: order.orders?.length,
       patientAge: order.orders[0]?.patient?.person?.age,
@@ -132,7 +132,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           <OverflowMenu aria-label="Actions" iconDescription="Actions" flipped>
             <ExtensionSlot name="transition-overflow-menu-item-slot" state={{ patientUuid: order?.patientId }} />
             <OverflowMenuItem
-              itemText={t('printTestResults', 'Print  results')}
+              itemText={t('printTestResults', 'Print test results')}
               onClick={() => handlePrintModal(order?.orders)}
             />
           </OverflowMenu>

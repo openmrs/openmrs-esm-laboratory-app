@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Form, ModalBody, ModalFooter, ModalHeader, TextArea, Layer } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
+import { mutate } from 'swr';
 import { type Order } from '@openmrs/esm-patient-common-lib';
 import {
   type Config,
@@ -12,7 +13,7 @@ import {
 } from '@openmrs/esm-framework';
 import { rejectLabOrder } from '../../laboratory-resource';
 import styles from './reject-lab-request-modal.scss';
-import { mutate } from 'swr';
+
 interface RejectLabRequestModalProps {
   order: Order;
   closeModal: () => void;
@@ -66,7 +67,6 @@ const RejectLabRequestModal: React.FC<RejectLabRequestModalProps> = ({ order, cl
       <ModalHeader
         closeModal={closeModal}
         title={`${t('rejectLabRequest', 'Reject lab request')} [${order.orderNumber}]`}
-        className={styles.modalHeader}
       />
       <ModalBody>
         <div className={styles.modalBody}>
