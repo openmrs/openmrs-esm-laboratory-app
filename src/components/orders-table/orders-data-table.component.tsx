@@ -1,4 +1,3 @@
-import React, { useMemo, useState } from 'react';
 import {
   DataTable,
   DataTableSkeleton,
@@ -22,8 +21,9 @@ import {
   TableToolbarSearch,
   Tile,
 } from '@carbon/react';
-import { formatDate, parseDate, showModal, usePagination } from '@openmrs/esm-framework';
+import { ExtensionSlot, formatDate, parseDate, showModal, usePagination } from '@openmrs/esm-framework';
 import { type Order } from '@openmrs/esm-patient-common-lib';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
 import type { FulfillerStatus, OrdersDataTableProps } from '../../types';
@@ -118,6 +118,15 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     });
   };
 
+  const handleLaunchModal = (orders: Array<Order>) => {
+    const completedOrders = orders.filter((order) => order.fulfillerStatus === 'COMPLETED');
+    const dispose = showModal('edit-lab-results-modal', {
+      closeModal: () => dispose(),
+      orders: completedOrders,
+    });
+  };
+
+
   const tableRows = useMemo(() => {
     return paginatedLabOrders.map((order) => ({
       id: order.patientId,
@@ -129,6 +138,11 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
       action: order.orders.some((o) => o.fulfillerStatus === 'COMPLETED') ? (
         <div className={styles.actionCell}>
           <OverflowMenu aria-label="Actions" iconDescription="Actions" flipped>
+            <ExtensionSlot name="transition-overflow-menu-item-slot" state={{ patientUuid: order?.patientId }} />
+            <OverflowMenuItem
+              itemText={t('editResults', 'Edit results')}
+              onClick={() => handleLaunchModal(order?.orders)}
+            />
             <OverflowMenuItem
               itemText={t('printTestResults', 'Print test results')}
               onClick={() => handlePrintModal(order?.orders)}
