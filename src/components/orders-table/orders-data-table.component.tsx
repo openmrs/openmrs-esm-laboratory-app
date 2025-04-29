@@ -48,7 +48,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         return {
           ...order,
           dateActivated: formatDate(parseDate(order.dateActivated)),
-          patientName: order.patient?.person?.display,
+          patientName: order.patient?.person.display,
           patientUuid: order.patient?.uuid,
           patientAge: order.patient?.person?.age,
           status: order.fulfillerStatus ?? '--',
@@ -122,7 +122,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const tableRows = useMemo(() => {
     return paginatedLabOrders.map((order) => ({
       id: order.patientId,
-      patientName: order.orders[0]?.patient?.person?.display || '',
+      patientName: order.orders[0]?.patient.person.display,
       orders: order.orders,
       totalOrders: order.orders?.length,
       patientAge: order.orders[0]?.patient?.person?.age,
