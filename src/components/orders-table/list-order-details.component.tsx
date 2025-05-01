@@ -106,10 +106,8 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                 {/* @ts-ignore */}
                 {row.fulfillerStatus === 'New' || row.fulfillerStatus === 'RECEIVED' || row.fulfillerStatus == null ? (
                   <>
-                    <div className={styles.rejectButton}>
-                      <ExtensionSlot state={{ order: row }} name="rejected-ordered-actions-slot" />
-                    </div>
                     <div className={styles.testsOrderedActions}>
+                      <ExtensionSlot state={{ order: row }} name="rejected-ordered-actions-slot" />
                       <ExtensionSlot state={{ order: row }} name="tests-ordered-actions-slot" />
                     </div>
                   </>
