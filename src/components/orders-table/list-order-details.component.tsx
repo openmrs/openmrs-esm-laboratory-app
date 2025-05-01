@@ -77,14 +77,6 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
                         name="completed-lab-order-results-slot"
                       />
                     </div>
-
-                    {row.fulfillerStatus === 'COMPLETED' && (
-                      <ExtensionSlot
-                        className={styles.menuLink}
-                        state={{ order: row }}
-                        name="completed-ordered-actions-slot"
-                      />
-                    )}
                   </AccordionItem>
                 </Accordion>
               )}
