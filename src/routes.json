@@ -112,14 +112,15 @@
       "slot": "completed-ordered-actions-slot"
     },
     {
-      "name": "add-lab-request-results-action",
-      "component": "addLabRequestResultsAction",
-      "slot": "inprogress-tests-actions-slot"
-    },
-    {
       "name": "reject-lab-request-worklist-action",
       "component": "rejectLabRequestAction",
       "slot": "inprogress-tests-actions-slot"
+    },
+    {
+      "name": "add-lab-request-results-action",
+      "component": "addLabRequestResultsAction",
+      "slot": "inprogress-tests-actions-slot"
     }
+    
   ]
 }
