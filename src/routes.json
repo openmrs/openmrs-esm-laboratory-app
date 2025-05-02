@@ -107,13 +107,18 @@
       "slot": "rejected-ordered-actions-slot"
     },
     {
-      "name": "add-lab-request-results-action",
-      "component": "addLabRequestResultsAction",
-      "slot": "inprogress-tests-actions-slot"
+      "name": "edit-lab-request-tests-ordered-action",
+      "component": "editLabRequestAction",
+      "slot": "completed-ordered-actions-slot"
     },
     {
       "name": "reject-lab-request-worklist-action",
       "component": "rejectLabRequestAction",
+      "slot": "inprogress-tests-actions-slot"
+    },
+    {
+      "name": "add-lab-request-results-action",
+      "component": "addLabRequestResultsAction",
       "slot": "inprogress-tests-actions-slot"
     }
   ]

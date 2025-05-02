@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@carbon/react';
 import { mutate } from 'swr';
 import { useTranslation } from 'react-i18next';
-import { launchWorkspace, restBaseUrl, useConfig } from '@openmrs/esm-framework';
+import { AddIcon, launchWorkspace, restBaseUrl, useConfig } from '@openmrs/esm-framework';
 import { type Order } from '@openmrs/esm-patient-common-lib';
 import { type Config } from '../../config-schema';
 import styles from './actions.scss';
@@ -29,7 +29,14 @@ const AddLabRequestResultsAction: React.FC<AddLabRequestResultsActionProps> = ({
   };
 
   return (
-    <Button className={styles.actionButton} kind="primary" onClick={launchTestResultsWorkspace} size="sm">
+    <Button
+      className={styles.actionButton}
+      kind="primary"
+      renderIcon={() => <AddIcon className={styles.actionButtonIcon} />}
+      iconDescription="Add lab results"
+      onClick={launchTestResultsWorkspace}
+      size="sm"
+    >
       {t('addLabResult', 'Add lab results')}
     </Button>
   );
