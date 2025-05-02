@@ -101,7 +101,7 @@
       "component": "pickupLabRequestAction",
       "slot": "tests-ordered-actions-slot"
     },
-     {
+    {
       "name": "reject-lab-request-tests-ordered-action",
       "component": "rejectLabRequestAction",
       "slot": "rejected-ordered-actions-slot"
