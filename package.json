@@ -74,7 +74,6 @@
     "@types/webpack-env": "^1.18.1",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
     "@typescript-eslint/parser": "^8.17.0",
-    "concurrently": "^7.6.0",
     "css-loader": "^6.8.1",
     "dayjs": "^1.11.11",
     "eslint": "^8.57.0",
