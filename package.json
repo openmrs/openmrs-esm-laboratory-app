@@ -16,7 +16,7 @@
     "typescript": "tsc",
     "test": "jest --config jest.config.js --passWithNoTests --color",
     "verify": "turbo lint typescript test --color",
-    "extract-translations": "i18next 'src/**/*.component.tsx' 'src/index.ts' --config ./i18next-parser.config.js",
+    "extract-translations": "i18next 'src/**/*.component.tsx' 'src/index.ts' --config ./tools/i18next-parser.config.js",
     "coverage": "yarn test -- --coverage",
     "postinstall": "husky install"
   },
