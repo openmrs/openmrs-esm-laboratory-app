@@ -5,11 +5,11 @@
 
 .buttonSection {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   padding-top: layout.$spacing-03;
   width: 100%;
-  gap: 10rem;
+  margin-left: layout.$spacing-05;
 }
 
 .nameOrderRow {
@@ -26,18 +26,10 @@
   font-weight: bold;
 }
 
-.actionButtons {
-  gap: layout.$spacing-03;
-}
-
 .testsOrderedActions {
   margin-left: auto;
   display: flex;
-}
-
-.rejectButton {
-  margin-right: auto;
-  display: flex;
+  padding-right: 1rem;
 }
 
 .menuLink {

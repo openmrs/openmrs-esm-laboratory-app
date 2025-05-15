@@ -18,7 +18,7 @@ module.exports = {
     '^@tools/(.*)$': path.resolve(__dirname, 'tools', '$1'),
     '^@mocks/(.*)$': path.resolve(__dirname, '__mocks__', '$1'),
   },
-  setupFilesAfterEnv: ['<rootDir>/src/setup-tests.ts'],
+  setupFilesAfterEnv: ['<rootDir>/tools/setup-tests.ts'],
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {
     url: 'http://localhost/',

@@ -1,3 +1,4 @@
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   DataTable,
   DataTableSkeleton,
@@ -23,7 +24,7 @@ import {
 } from '@carbon/react';
 import { ExtensionSlot, formatDate, parseDate, showModal, usePagination } from '@openmrs/esm-framework';
 import { type Order } from '@openmrs/esm-patient-common-lib';
-import React, { useMemo, useState } from 'react';
+import { upperCase } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
 import type { FulfillerStatus, OrdersDataTableProps } from '../../types';
@@ -47,7 +48,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         return {
           ...order,
           dateActivated: formatDate(parseDate(order.dateActivated)),
-          patientName: order.patient?.display.split('-')[1],
+          patientName: order.patient?.person.display,
           patientUuid: order.patient?.uuid,
           patientAge: order.patient?.person?.age,
           status: order.fulfillerStatus ?? '--',
@@ -130,7 +131,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const tableRows = useMemo(() => {
     return paginatedLabOrders.map((order) => ({
       id: order.patientId,
-      patientName: order.orders[0]?.patient?.display?.split('-')[1]?.trim() || '',
+      patientName: order.orders[0]?.patient.person.display,
       orders: order.orders,
       totalOrders: order.orders?.length,
       patientAge: order.orders[0]?.patient?.person?.age,

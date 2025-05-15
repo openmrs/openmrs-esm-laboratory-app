@@ -95,35 +95,27 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = (props) => {
               </StructuredListRow>
 
               <div className={styles.buttonSection}>
-                <div className={styles.actionButtons}>
-                  {/* @ts-ignore */}
-                  {row.fulfillerStatus === 'New' ||
-                  row.fulfillerStatus === 'RECEIVED' ||
-                  row.fulfillerStatus == null ? (
-                    <>
-                      <div className={styles.actionButtons}>
-                        <div className={styles.rejectButton}>
-                          <ExtensionSlot state={{ order: row }} name="rejected-ordered-actions-slot" />
-                        </div>
-                        <div className={styles.testsOrderedActions}>
-                          <ExtensionSlot state={{ order: row }} name="tests-ordered-actions-slot" />
-                        </div>
-                      </div>
-                    </>
-                  ) : row.fulfillerStatus === 'IN_PROGRESS' ? (
-                    <>
-                      <div className={styles.testsOrderedActions}>
-                        <ExtensionSlot
-                          className={styles.menuLink}
-                          state={{ order: row }}
-                          name="inprogress-tests-actions-slot"
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <div></div>
-                  )}
-                </div>
+                {/* @ts-ignore */}
+                {row.fulfillerStatus === 'New' || row.fulfillerStatus === 'RECEIVED' || row.fulfillerStatus == null ? (
+                  <>
+                    <div className={styles.testsOrderedActions}>
+                      <ExtensionSlot state={{ order: row }} name="rejected-ordered-actions-slot" />
+                      <ExtensionSlot state={{ order: row }} name="tests-ordered-actions-slot" />
+                    </div>
+                  </>
+                ) : row.fulfillerStatus === 'IN_PROGRESS' ? (
+                  <>
+                    <div className={styles.testsOrderedActions}>
+                      <ExtensionSlot
+                        className={styles.menuLink}
+                        state={{ order: row }}
+                        name="inprogress-tests-actions-slot"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <div></div>
+                )}
               </div>
             </div>
           </div>
