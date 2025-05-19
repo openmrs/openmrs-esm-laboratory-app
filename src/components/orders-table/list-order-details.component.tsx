@@ -63,7 +63,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
               <OrderDetailRow label={t('orderedBy', 'Ordered By: ')} value={capitalize(row.orderer?.display)} />
               <OrderDetailRow
                 label={t('orderInstructions', 'Instructions: ')}
-                value={row.instructions ?? t('noInstructionsProvided', 'No instructions provided.')}
+                value={row.instructions ?? t('NoInstructionLeft', 'No instructions are provided.')}
                 isTag={!row.instructions}
                 tagType="red"
               />
@@ -71,7 +71,6 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
               {row.fulfillerStatus === 'DECLINED' && (
                 <OrderDetailRow label={t('reasonForDecline', 'Reason for decline:')} value={row.fulfillerComment} />
               )}
-              <OrderDetailRow label={t('ordererName', 'Orderer Name:')} value={capitalize(row.orderer?.display)} />
             </StructuredListBody>
           </StructuredListWrapper>
           {row.fulfillerStatus === 'COMPLETED' && (
