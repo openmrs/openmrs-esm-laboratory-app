@@ -7,23 +7,9 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-top: layout.$spacing-03;
+  padding-top: layout.$spacing-01;
   width: 100%;
-  margin-left: layout.$spacing-05;
-}
-
-.nameOrderRow {
-  border-top: none;
-}
-
-.nameOrder {
-  // TODO: Prefer type styles over scales as mentioned here: https://carbondesignsystem.com/elements/typography/code/#type-scale
-  font-size: type.type-scale(2);
-}
-
-.testOrder {
-  font-size: type.type-scale(2);
-  font-weight: bold;
+  margin-left: layout.$spacing-03;
 }
 
 .testsOrderedActions {
@@ -40,53 +26,26 @@
   width: 80%;
   display: flex;
   flex-direction: column;
-  padding: layout.$spacing-05;
-  margin-left: layout.$spacing-13;
+  padding: layout.$spacing-03;
+  margin-left: layout.$spacing-07;
   background-color: colors.$white-0;
-  margin: layout.$spacing-05 0;
+  margin: layout.$spacing-03 0;
 }
 
-.orderUrgency {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  padding: 0 layout.$spacing-03;
-  margin-bottom: layout.$spacing-03;
+.orderDetailsRow {
+  &:first-child {
+    border-top: none !important;
+  }
 }
 
-.orderHeader {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding: 0;
-  margin-bottom: layout.$spacing-03;
+.orderDetailsWrapper {
+  :global(.cds--structured-list-td) {
+    padding: 0.5rem 0.5rem 0.5rem !important;
+  }
 }
 
-.orderNumber {
-  font-size: type.type-scale(2);
-}
-
-.orderStatus {
-  font-size: type.type-scale(2);
-}
-
-.orderDate {
-  text-align: right;
-  font-size: type.type-scale(2);
-}
-
-.instructions {
-  text-align: justify;
-  font-size: type.type-scale(1);
-}
-
-.urgencyStatus {
-  font-size: type.type-scale(2);
-}
-
-.instructionLabel {
+.orderDetailsTextBold {
   font-weight: bold;
-  font-size: type.type-scale(2);
 }
 
 .labResultSlot {
