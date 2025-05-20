@@ -40,7 +40,7 @@ const PickupLabRequestModal: React.FC<PickupLabRequestModal> = ({ order, closeMo
       (error) => {
         setIsSubmitting(false);
         showNotification({
-          title: t(`errorPickingOrder', 'Error picking order`),
+          title: t('errorPickingOrder', 'Error picking order'),
           kind: 'error',
           critical: true,
           description: error?.message,
