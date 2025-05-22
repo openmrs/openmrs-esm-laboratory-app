@@ -10,7 +10,7 @@ import {
   StructuredListWrapper,
   Tag,
 } from '@carbon/react';
-import { capitalize } from 'lodash-es';
+import { capitalize, lowerCase } from 'lodash-es';
 import { ExtensionSlot } from '@openmrs/esm-framework';
 import { type ListOrdersDetailsProps } from '../../types';
 import styles from './list-order-details.scss';
@@ -18,24 +18,16 @@ import styles from './list-order-details.scss';
 type OrderDetailsRowProps = {
   label: ReactNode;
   value: ReactNode;
-  isTag?: boolean;
-  tagType?: string;
 };
 
-const OrderDetailRow = ({ label, value, isTag, tagType }: OrderDetailsRowProps) => {
+const OrderDetailRow = ({ label, value }: OrderDetailsRowProps) => {
   return (
     <StructuredListRow className={styles.orderDetailsRow}>
       <StructuredListCell className={styles.orderDetailsCell}>
         <span className={styles.orderDetailsTextBold}>{label}</span>
       </StructuredListCell>
       <StructuredListCell className={styles.orderDetailsCell}>
-        {isTag ? (
-          <Tag size="sm" type={tagType}>
-            {value}
-          </Tag>
-        ) : (
-          <span className={styles.orderDetailsText}>{value}</span>
-        )}
+        <span className={styles.orderDetailsText}>{value}</span>
       </StructuredListCell>
     </StructuredListRow>
   );
@@ -52,16 +44,23 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
             <StructuredListBody>
               <OrderDetailRow
                 label={t('urgencyStatus', 'Urgency:')}
-                value={capitalize(row.urgency)}
-                isTag
-                tagType={row.urgency ? 'green' : 'red'}
+                value={
+                  <div className={styles.priorityPill} data-urgency={lowerCase(row.urgency?.replace('_', ' ') || '')}>
+                    {t(row.urgency, capitalize(row.urgency?.replace('_', ' ') || ''))}
+                  </div>
+                }
               />
               <OrderDetailRow label={t('testOrdered', 'Test ordered:')} value={capitalize(row.display)} />
               <OrderDetailRow
                 label={t('orderStatus', 'Status:')}
-                value={row.fulfillerStatus ?? t('orderNotPicked', 'Order not picked')}
-                isTag
-                tagType={row.fulfillerStatus ? 'green' : 'red'}
+                value={
+                  <div
+                    className={styles.statusPill}
+                    data-status={lowerCase(row.fulfillerStatus?.replace('_', ' ') || '')}
+                  >
+                    {t(row.fulfillerStatus, capitalize(row.fulfillerStatus?.replace('_', ' ')))}
+                  </div>
+                }
               />
               <OrderDetailRow label={t('orderNumbers', 'Order number:')} value={capitalize(row.orderNumber)} />
               <OrderDetailRow label={t('orderDate', 'Order Date:')} value={row.dateActivated} />
