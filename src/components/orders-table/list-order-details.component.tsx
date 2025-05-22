@@ -1,3 +1,6 @@
+import React from 'react';
+import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Accordion,
   AccordionItem,
@@ -7,11 +10,8 @@ import {
   StructuredListWrapper,
   Tag,
 } from '@carbon/react';
-import { ExtensionSlot } from '@openmrs/esm-framework';
 import { capitalize } from 'lodash-es';
-import type { ReactNode } from 'react';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { ExtensionSlot } from '@openmrs/esm-framework';
 import { type ListOrdersDetailsProps } from '../../types';
 import styles from './list-order-details.scss';
 
@@ -50,8 +50,13 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
         <div key={row.orderNumber} className={styles.orderDetailsContainer}>
           <StructuredListWrapper className={styles.orderDetailsWrapper}>
             <StructuredListBody>
-              <OrderDetailRow label={t('urgencyStatus', 'Urgency: ')} value={capitalize(row.urgency)} />
-              <OrderDetailRow label={t('testOrdered', 'Test ordered: ')} value={capitalize(row.display)} />
+              <OrderDetailRow
+                label={t('urgencyStatus', 'Urgency:')}
+                value={capitalize(row.urgency)}
+                isTag
+                tagType={row.urgency ? 'green' : 'red'}
+              />
+              <OrderDetailRow label={t('testOrdered', 'Test ordered:')} value={capitalize(row.display)} />
               <OrderDetailRow
                 label={t('orderStatus', 'Status:')}
                 value={row.fulfillerStatus ?? t('orderNotPicked', 'Order not picked')}
@@ -60,12 +65,10 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
               />
               <OrderDetailRow label={t('orderNumbers', 'Order number:')} value={capitalize(row.orderNumber)} />
               <OrderDetailRow label={t('orderDate', 'Order Date:')} value={row.dateActivated} />
-              <OrderDetailRow label={t('orderedBy', 'Ordered By: ')} value={capitalize(row.orderer?.display)} />
+              <OrderDetailRow label={t('orderedBy', 'Ordered By:')} value={capitalize(row.orderer?.display)} />
               <OrderDetailRow
-                label={t('orderInstructions', 'Instructions: ')}
+                label={t('orderInstructions', 'Instructions:')}
                 value={row.instructions ?? t('NoInstructionLeft', 'No instructions are provided.')}
-                isTag={!row.instructions}
-                tagType="red"
               />
 
               {row.fulfillerStatus === 'DECLINED' && (
