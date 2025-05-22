@@ -114,7 +114,8 @@
   }
 
   &[data-status='discontinued'],
-  &[data-status='declined'] {
+  &[data-status='declined'],
+  &[data-status='order not picked'] {
     background-color: colors.$red-20;
   }
 }
