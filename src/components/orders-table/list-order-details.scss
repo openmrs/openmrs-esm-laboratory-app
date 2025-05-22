@@ -62,3 +62,59 @@
   align-items: center;
   justify-content: center;
 }
+
+.priorityPill {
+  @include type.type-style('label-01');
+  display: inline-block;
+  background-color: colors.$gray-20;
+  border-radius: layout.$spacing-05;
+  padding: layout.$spacing-01;
+  text-align: center;
+
+  &[data-urgency='routine'] {
+    background-color: colors.$orange-20;
+  }
+
+  &[data-urgency='on scheduled date'] {
+    background-color: colors.$red-20;
+  }
+}
+
+.statusPill {
+  @include type.type-style('label-01');
+  display: inline-block;
+  background-color: colors.$gray-20;
+  border-radius: layout.$spacing-03;
+  padding: layout.$spacing-01;
+  padding-inline: layout.$spacing-03;
+  text-align: center;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &[data-status='received'] {
+    background-color: colors.$blue-20;
+  }
+
+  &[data-status='in progress'] {
+    background-color: colors.$cyan-20;
+  }
+
+  &[data-status='on hold'] {
+    background-color: colors.$teal-20;
+  }
+
+  &[data-status='exception'] {
+    background-color: colors.$magenta-20;
+  }
+
+  &[data-status='completed'] {
+    background-color: colors.$green-20;
+  }
+
+  &[data-status='discontinued'],
+  &[data-status='declined'] {
+    background-color: colors.$red-20;
+  }
+}
