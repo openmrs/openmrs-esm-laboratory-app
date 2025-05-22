@@ -54,12 +54,16 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
               <OrderDetailRow
                 label={t('orderStatus', 'Status:')}
                 value={
-                  <div
-                    className={styles.statusPill}
-                    data-status={lowerCase(row.fulfillerStatus?.replace('_', ' ') || '')}
-                  >
-                    {t(row.fulfillerStatus, capitalize(row.fulfillerStatus?.replace('_', ' ')))}
-                  </div>
+                  row.fulfillerStatus ? (
+                    <div
+                      className={styles.statusPill}
+                      data-status={lowerCase(row.fulfillerStatus?.replace('_', ' ') || '')}
+                    >
+                      {t(row.fulfillerStatus, capitalize(row.fulfillerStatus?.replace('_', ' ')))}
+                    </div>
+                  ) : (
+                    t('orderNotPicked', 'Order not picked')
+                  )
                 }
               />
               <OrderDetailRow label={t('orderNumbers', 'Order number:')} value={capitalize(row.orderNumber)} />
