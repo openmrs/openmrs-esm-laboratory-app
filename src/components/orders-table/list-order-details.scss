@@ -72,7 +72,7 @@
   text-align: center;
 
   &[data-urgency='routine'] {
-    background-color: colors.$orange-20;
+    background-color: colors.$green-20;
   }
 
   &[data-urgency='on scheduled date'] {
