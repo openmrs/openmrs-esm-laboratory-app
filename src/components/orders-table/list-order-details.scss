@@ -71,11 +71,11 @@
   padding: layout.$spacing-02;
   text-align: center;
 
-  &[data-urgency='routine'] {
+  &[data-urgency='ROUTINE'] {
     background-color: colors.$green-20;
   }
 
-  &[data-urgency='on scheduled date'] {
+  &[data-urgency='ON SCHEDULED_DATE'] {
     background-color: colors.$red-20;
   }
 }
@@ -93,29 +93,29 @@
   overflow: hidden;
   text-overflow: ellipsis;
 
-  &[data-status='received'] {
+  &[data-status='RECEIVED'] {
     background-color: colors.$blue-20;
   }
 
-  &[data-status='in progress'] {
+  &[data-status='IN PROGRESS'] {
     background-color: colors.$cyan-20;
   }
 
-  &[data-status='on hold'] {
+  &[data-status='ON HOLD'] {
     background-color: colors.$teal-20;
   }
 
-  &[data-status='exception'] {
+  &[data-status='EXCEPTION'] {
     background-color: colors.$magenta-20;
   }
 
-  &[data-status='completed'] {
+  &[data-status='COMPLETED'] {
     background-color: colors.$green-20;
   }
 
-  &[data-status='discontinued'],
-  &[data-status='declined'],
-  &[data-status='order not picked'] {
+  &[data-status='DISCONTINUED'],
+  &[data-status='DECLINED'],
+  &[data-status='Order not picked'] {
     background-color: colors.$red-20;
   }
 }

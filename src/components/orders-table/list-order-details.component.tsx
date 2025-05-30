@@ -10,7 +10,7 @@ import {
   StructuredListWrapper,
   Tag,
 } from '@carbon/react';
-import { capitalize, lowerCase } from 'lodash-es';
+import { capitalize } from 'lodash-es';
 import { ExtensionSlot } from '@openmrs/esm-framework';
 import { type ListOrdersDetailsProps } from '../../types';
 import styles from './list-order-details.scss';
@@ -45,7 +45,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
               <OrderDetailRow
                 label={t('urgencyStatus', 'Urgency:')}
                 value={
-                  <div className={styles.priorityPill} data-urgency={lowerCase(row.urgency?.replace('_', ' ') || '')}>
+                  <div className={styles.priorityPill} data-urgency={row.urgency?.replace('_', ' ')}>
                     {t(row.urgency, capitalize(row.urgency?.replace('_', ' ') || ''))}
                   </div>
                 }
@@ -56,11 +56,11 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                 value={
                   <div
                     className={styles.statusPill}
-                    data-status={lowerCase((row.fulfillerStatus ?? 'Order not picked').replace(/_/g, ' '))}
+                    data-status={(row.fulfillerStatus ?? 'Order not picked').replace('_', ' ')}
                   >
                     {t(
                       row.fulfillerStatus ?? 'orderNotPicked',
-                      capitalize((row.fulfillerStatus ?? 'Order not picked').replace(/_/g, ' ')),
+                      capitalize((row.fulfillerStatus ?? 'Order not picked').replace('_', ' ')),
                     )}
                   </div>
                 }
