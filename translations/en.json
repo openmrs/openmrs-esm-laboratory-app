@@ -12,7 +12,7 @@
   "declinedStatus": "DECLINED",
   "discard": "Discard",
   "editResults": "Edit results",
-  "errorPickingOrder', 'Error picking order": "",
+  "errorPickingOrder": "Error picking order",
   "errorRejectingRequest": "Error rejecting lab request",
   "exceptionStatus": "EXCEPTION",
   "filterOrdersByStatus": "Filter orders by status",
