@@ -3367,7 +3367,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openmrs/esm-laboratory-app@workspace:."
   dependencies:
-    "@carbon/react": "npm:^1.76.0"
+    "@carbon/react": "npm:^1.83.0"
     "@openmrs/esm-framework": "npm:next"
     "@openmrs/esm-patient-common-lib": "npm:next"
     "@swc/cli": "npm:^0.1.62"
