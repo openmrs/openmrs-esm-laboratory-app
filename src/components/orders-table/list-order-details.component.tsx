@@ -1,6 +1,3 @@
-import React from 'react';
-import type { ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   Accordion,
   AccordionItem,
@@ -8,10 +5,12 @@ import {
   StructuredListCell,
   StructuredListRow,
   StructuredListWrapper,
-  Tag,
 } from '@carbon/react';
-import { capitalize } from 'lodash-es';
 import { ExtensionSlot } from '@openmrs/esm-framework';
+import { capitalize } from 'lodash-es';
+import type { ReactNode } from 'react';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { type ListOrdersDetailsProps } from '../../types';
 import styles from './list-order-details.scss';
 
@@ -46,7 +45,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                 label={t('urgencyStatus', 'Urgency:')}
                 value={
                   <div className={styles.priorityPill} data-urgency={row.urgency?.replace('_', ' ')}>
-                    {t(row.urgency, capitalize(row.urgency?.replace('_', ' ') || ''))}
+                    {capitalize(row.urgency?.replace(/_/g, ' '))}
                   </div>
                 }
               />
@@ -58,10 +57,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                     className={styles.statusPill}
                     data-status={(row.fulfillerStatus ?? 'Order not picked').replace('_', ' ')}
                   >
-                    {t(
-                      row.fulfillerStatus ?? 'orderNotPicked',
-                      capitalize((row.fulfillerStatus ?? 'Order not picked').replace('_', ' ')),
-                    )}
+                    {capitalize(row.fulfillerStatus?.replace('_', '')) || t('orderNotPicked', 'Order not picked')}
                   </div>
                 }
               />
