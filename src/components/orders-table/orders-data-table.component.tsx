@@ -127,7 +127,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     });
   };
 
-
   const tableRows = useMemo(() => {
     return paginatedLabOrders.map((order) => ({
       id: order.patientId,
@@ -173,6 +172,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
                     }
                     items={orderStatuses}
                     itemToString={(item) => item?.display}
+                    label=""
                     onChange={handleOrderStatusChange}
                     titleText={t('filterOrdersByStatus', 'Filter orders by status') + ':'}
                     type="inline"
@@ -183,7 +183,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
               <Layer className={styles.toolbarItem}>
                 <TableToolbarSearch
                   expanded
-                  onChange={(e) => setSearchString(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchString(e.target.value)}
                   placeholder={t('searchThisList', 'Search this list')}
                   size="sm"
                 />
@@ -193,9 +193,9 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           <Table className={styles.tableWrapper} {...getTableProps()}>
             <TableHead>
               <TableRow>
-                <TableExpandHeader enableToggle={rows.length > 0} {...getExpandHeaderProps()} />
+                <TableExpandHeader enableToggle {...getExpandHeaderProps()} />
                 {headers.map((header) => (
-                  <TableHeader {...getHeaderProps({ header })}>{header.header?.content ?? header.header}</TableHeader>
+                  <TableHeader {...getHeaderProps({ header })}>{header.header}</TableHeader>
                 ))}
               </TableRow>
             </TableHead>

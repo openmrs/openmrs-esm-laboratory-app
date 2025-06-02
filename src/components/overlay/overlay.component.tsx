@@ -22,16 +22,14 @@ const Overlay: React.FC = () => {
               </Button>
             </div>
           ) : (
-            <Header
-              onClick={() => closeOverlay()}
-              aria-label={t('tabletOverlay', 'Tablet overlay')}
-              className={styles.tabletOverlayHeader}
-            >
-              <Button hasIconOnly>
-                <ArrowLeft size={16} />
-              </Button>
-              <div className={styles.headerContent}>{header}</div>
-            </Header>
+            <div onClick={() => closeOverlay()}>
+              <Header aria-label={t('tabletOverlay', 'Tablet overlay')} className={styles.tabletOverlayHeader}>
+                <Button hasIconOnly>
+                  <ArrowLeft size={16} />
+                </Button>
+                <div className={styles.headerContent}>{header}</div>
+              </Header>
+            </div>
           )}
           <div>{component}</div>
         </div>
