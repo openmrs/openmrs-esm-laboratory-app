@@ -116,3 +116,15 @@
   height: auto;
   padding-top: layout.$spacing-04;
 }
+
+.menuitem {
+  max-width: none;
+}
+
+.transitionOverflowMenuItemSlot {
+  min-width: 100%;
+
+  :global(.cds--overflow-menu-options__btn) {
+    min-width: 100%;
+  }
+}
