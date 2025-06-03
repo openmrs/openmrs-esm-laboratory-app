@@ -1,3 +1,6 @@
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import type { ReactNode } from 'react';
 import {
   Accordion,
   AccordionItem,
@@ -7,10 +10,7 @@ import {
   StructuredListWrapper,
 } from '@carbon/react';
 import { ExtensionSlot } from '@openmrs/esm-framework';
-import React from 'react';
-import type { ReactNode } from 'react';
 import { capitalize } from 'lodash-es';
-import { useTranslation } from 'react-i18next';
 import { type ListOrdersDetailsProps } from '../../types';
 import styles from './list-order-details.scss';
 
