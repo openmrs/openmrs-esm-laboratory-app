@@ -7,9 +7,9 @@ import {
   StructuredListWrapper,
 } from '@carbon/react';
 import { ExtensionSlot } from '@openmrs/esm-framework';
-import { capitalize } from 'lodash-es';
-import type { ReactNode } from 'react';
 import React from 'react';
+import type { ReactNode } from 'react';
+import { capitalize } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import { type ListOrdersDetailsProps } from '../../types';
 import styles from './list-order-details.scss';
@@ -109,9 +109,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                   />
                 </div>
               </>
-            ) : (
-              <div></div>
-            )}
+            ) : null}
           </div>
         </div>
       ))}
