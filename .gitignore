@@ -23,8 +23,6 @@ lib-cov
 
 .DS_Store
 .turbo
-
-
 # Coverage directory used by tools like istanbul
 coverage
 
@@ -48,8 +46,6 @@ build/Release
 /playwright-report/
 /playwright/.cache/
 e2e/storageState.json
-
-
 # Dependency directories
 node_modules/
 jspm_packages/

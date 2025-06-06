@@ -74,7 +74,7 @@ e2e
 |   ^ Contains the actual test cases/specs. New tests should be placed in this folder.
 |__ support
     ^ Contains support files that requires to run e2e tests, e.g. docker compose files. 
-
+```
 When you want to write a new test case, start by creating a new spec in `./specs`.
 Depending on what you want to achieve, you might want to create new fixtures and/or
 page object models. To see examples, have a look at the existing code to see how these different concepts play together.
@@ -103,10 +103,9 @@ one for running on commits.
 1. When running on PRs, the workflow will start the dev server, use dev3.openmrs.org as the backend, 
 and run tests only on chromium. This is done in order to quickly provide feedback to the developer. 
 The tests are designed to generate their own data and clean up after themselves once they are finished. 
-This ensures that the tests will have minimum effect from changes made to dev3 by other developers. 
-
-In the future, we plan to use a docker container to run the tests in an isolated environment once we 
+This ensures that the tests will have minimum effect from changes made to dev3 by other developers. In the future, we plan to use a docker container to run the tests in an isolated environment once we 
 figure out a way to spin up the container within a small amount of time.
+
 2. When running on commits, the workflow will spin up a docker container and run the dev server against
 it in order to provide a known and isolated environment. In addition, tests will be run on multiple 
 browsers (chromium, firefox, and WebKit) to ensure compatibility.
