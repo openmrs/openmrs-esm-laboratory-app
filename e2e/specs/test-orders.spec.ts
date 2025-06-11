@@ -9,9 +9,8 @@ test('View test orders', async ({ page }) => {
 
   await test.step('Given I am on the laboratory page', async () => {
     await laboratoryPage.goTo();
-
-    await test.step('Then I should see the test orders', async () => {
-      await expect(page).toHaveURL(url + `/spa/home/laboratory`);
-    });
+  });
+  await test.step('Then I should see the test orders', async () => {
+    await expect(page).toHaveURL(url + `/spa/home/laboratory`);
   });
 });
