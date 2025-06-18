@@ -3,11 +3,13 @@ import { generateRandomTestOrder, deleteTestOrder, createEncounter, deleteEncoun
 import { test } from '../core';
 import { type Encounter, type Provider } from '../commands/types';
 import { type Order } from '@openmrs/esm-patient-common-lib';
+import { LaboratoryPage } from '../pages';
 
 let testOrder: Order;
 let encounter: Encounter;
 let orderer: Provider;
 let fullName: string;
+const url = process.env.E2E_BASE_URL;
 
 test.beforeEach(async ({ api, patient, visit }) => {
   orderer = await getProvider(api);
@@ -18,8 +20,10 @@ test.beforeEach(async ({ api, patient, visit }) => {
 
 test.describe('Running laboratory order tests sequentially', () => {
   test('Add lab results via lab App', async ({ page }) => {
+    const laboratoryPage = new LaboratoryPage(page);
     await test.step('When I visit the Laboratory section', async () => {
-      await page.goto(process.env.E2E_BASE_URL + `/spa/home/laboratory`);
+      await laboratoryPage.goTo();
+      await expect(page).toHaveURL(url + `/spa/home/laboratory`);
     });
 
     await test.step('And I select the patient and the order for which the results need to be added', async () => {
