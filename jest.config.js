@@ -5,9 +5,9 @@ const path = require('path');
 module.exports = {
   clearMocks: true,
   transform: {
-    '^.+\\.tsx?$': ['@swc/jest'],
+    '^.+\\.[jt]sx?$': ['@swc/jest'],
   },
-  transformIgnorePatterns: ['/node_modules/(?!@openmrs)'],
+  transformIgnorePatterns: ['/node_modules/(?!@openmrs|.+\\.pnp\\.[^\\/]+$)'],
   moduleNameMapper: {
     '^dexie$': require.resolve('dexie'),
     '@openmrs/esm-framework': '@openmrs/esm-framework/mock',
@@ -18,6 +18,14 @@ module.exports = {
     '^@tools/(.*)$': path.resolve(__dirname, 'tools', '$1'),
     '^@mocks/(.*)$': path.resolve(__dirname, '__mocks__', '$1'),
   },
+  collectCoverageFrom: [
+    '!**/node_modules/**',
+    '!**/e2e/**',
+  ],
+  testPathIgnorePatterns: [
+    "/node_modules/",
+      "/e2e/"  // Ignore the e2e directory containing Playwright tests
+    ],
   setupFilesAfterEnv: ['<rootDir>/tools/setup-tests.ts'],
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {

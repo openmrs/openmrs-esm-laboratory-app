@@ -30,8 +30,8 @@ export const OrdersDateRangePicker = () => {
         maxDate={currentDate.toISOString()}
         value={dateRange}
       >
-        <DatePickerInput id="date-picker-input-id-start" placeholder="dd/mm/yyyy" size="md" />
-        <DatePickerInput id="date-picker-input-id-finish" placeholder="dd/mm/yyyy" size="md" />
+        <DatePickerInput id="date-picker-input-id-start" labelText="" placeholder="dd/mm/yyyy" size="md" />
+        <DatePickerInput id="date-picker-input-id-finish" labelText="" placeholder="dd/mm/yyyy" size="md" />
       </DatePicker>
     </div>
   );

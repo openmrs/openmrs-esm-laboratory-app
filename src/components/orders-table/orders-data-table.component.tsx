@@ -23,14 +23,13 @@ import {
   Tile,
 } from '@carbon/react';
 import { ExtensionSlot, formatDate, parseDate, showModal, usePagination } from '@openmrs/esm-framework';
-import { type Order } from '@openmrs/esm-patient-common-lib';
-import { upperCase } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
-import { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
+import { type Order } from '@openmrs/esm-patient-common-lib';
 import type { FulfillerStatus, OrdersDataTableProps } from '../../types';
+import { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
+import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
 import styles from './orders-data-table.scss';
-import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
@@ -127,7 +126,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     });
   };
 
-
   const tableRows = useMemo(() => {
     return paginatedLabOrders.map((order) => ({
       id: order.patientId,
@@ -138,13 +136,21 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
       patientGender: order.orders[0]?.patient?.person?.gender || '',
       action: order.orders.some((o) => o.fulfillerStatus === 'COMPLETED') ? (
         <div className={styles.actionCell}>
-          <OverflowMenu aria-label="Actions" iconDescription="Actions" flipped>
-            <ExtensionSlot name="transition-overflow-menu-item-slot" state={{ patientUuid: order?.patientId }} />
+          <OverflowMenu aria-label="Actions" flipped iconDescription="Actions">
+            <ExtensionSlot
+              className={styles.transitionOverflowMenuItemSlot}
+              name="transition-overflow-menu-item-slot"
+              state={{ patientUuid: order?.patientId }}
+              // Without tabIndex={0} here, the overflow menu incorrectly sets initial focus to the second item instead of the first.
+              tabIndex={0}
+            />
             <OverflowMenuItem
+              className={styles.menuitem}
               itemText={t('editResults', 'Edit results')}
               onClick={() => handleLaunchModal(order?.orders)}
             />
             <OverflowMenuItem
+              className={styles.menuitem}
               itemText={t('printTestResults', 'Print test results')}
               onClick={() => handlePrintModal(order?.orders)}
             />
@@ -173,6 +179,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
                     }
                     items={orderStatuses}
                     itemToString={(item) => item?.display}
+                    label=""
                     onChange={handleOrderStatusChange}
                     titleText={t('filterOrdersByStatus', 'Filter orders by status') + ':'}
                     type="inline"
@@ -183,7 +190,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
               <Layer className={styles.toolbarItem}>
                 <TableToolbarSearch
                   expanded
-                  onChange={(e) => setSearchString(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchString(e.target.value)}
                   placeholder={t('searchThisList', 'Search this list')}
                   size="sm"
                 />
@@ -193,9 +200,9 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           <Table className={styles.tableWrapper} {...getTableProps()}>
             <TableHead>
               <TableRow>
-                <TableExpandHeader enableToggle={rows.length > 0} {...getExpandHeaderProps()} />
+                <TableExpandHeader enableToggle {...getExpandHeaderProps()} />
                 {headers.map((header) => (
-                  <TableHeader {...getHeaderProps({ header })}>{header.header?.content ?? header.header}</TableHeader>
+                  <TableHeader {...getHeaderProps({ header })}>{header.header}</TableHeader>
                 ))}
               </TableRow>
             </TableHead>
