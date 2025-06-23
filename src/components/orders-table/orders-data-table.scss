@@ -5,7 +5,6 @@
 .tableContainer {
   border: 1px solid colors.$gray-20;
   background-color: colors.$gray-10;
-  margin: layout.$spacing-05;
   padding: 0;
 
   :global(.cds--data-table-content) {
@@ -41,10 +40,6 @@
     height: layout.$spacing-07;
     margin-bottom: layout.$spacing-02;
   }
-}
-
-.loader {
-  margin: layout.$spacing-05;
 }
 
 .toolbarItem {
@@ -114,7 +109,6 @@
 
 .tableToolBar {
   height: auto;
-  padding-top: layout.$spacing-04;
 }
 
 .menuitem {

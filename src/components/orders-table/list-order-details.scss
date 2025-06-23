@@ -7,15 +7,14 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-top: layout.$spacing-01;
   width: 100%;
-  margin-left: layout.$spacing-03;
 }
 
 .testsOrderedActions {
-  margin-left: auto;
   display: flex;
-  padding-right: 1rem;
+  justify-content: flex-end;
+  padding: layout.$spacing-03 0;
+  width: 100%;
 }
 
 .menuLink {
@@ -26,10 +25,14 @@
   width: 80%;
   display: flex;
   flex-direction: column;
-  padding: layout.$spacing-03;
-  margin-left: layout.$spacing-07;
   background-color: colors.$white-0;
-  margin: layout.$spacing-03 0;
+  padding: layout.$spacing-03;
+  gap: layout.$spacing-03;
+  margin-bottom: layout.$spacing-05;
+}
+
+.orderDetailsContainer:last-child {
+  margin-bottom: 0;
 }
 
 .orderDetailsRow {
@@ -40,12 +43,17 @@
 
 .orderDetailsWrapper {
   :global(.cds--structured-list-td) {
-    padding: 0.5rem 0.5rem 0.5rem !important;
+    align-content: center;
+    padding: layout.$spacing-03 !important;
   }
 }
 
-.orderDetailsTextBold {
+.textBold {
   font-weight: bold;
+}
+
+.orderDetailsTextBold {
+  @extend .textBold;
 }
 
 .labResultSlot {
@@ -54,7 +62,7 @@
 }
 
 .accordionTitle {
-  font-weight: bold;
+  @extend .textBold;
 }
 
 .instructionLabelContainer {
@@ -63,13 +71,21 @@
   justify-content: center;
 }
 
-.priorityPill {
+.pill {
   @include type.type-style('label-01');
   display: inline-block;
   background-color: colors.$gray-20;
-  border-radius: layout.$spacing-05;
+  border-radius: layout.$spacing-03;
   padding: layout.$spacing-02;
+  padding-inline: layout.$spacing-03;
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.priorityPill {
+  @extend .pill;
 
   &[data-urgency='ROUTINE'] {
     background-color: colors.$green-20;
@@ -81,17 +97,7 @@
 }
 
 .statusPill {
-  @include type.type-style('label-01');
-  display: inline-block;
-  background-color: colors.$gray-20;
-  border-radius: layout.$spacing-03;
-  padding: layout.$spacing-02;
-  padding-inline: layout.$spacing-03;
-  text-align: center;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  @extend .pill;
 
   &[data-status='RECEIVED'] {
     background-color: colors.$blue-20;
