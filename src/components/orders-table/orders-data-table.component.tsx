@@ -161,11 +161,11 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   }, [paginatedLabOrders, t]);
 
   if (isLoading) {
-    return <DataTableSkeleton className={styles.loader} role="progressbar" showHeader={false} showToolbar={false} />;
+    return <DataTableSkeleton role="progressbar" showHeader={false} showToolbar={false} />;
   }
 
   return (
-    <DataTable rows={tableRows} headers={columns} useZebraStyles={labOrders?.length > 1}>
+    <DataTable rows={tableRows} headers={columns} useZebraStyles>
       {({ getExpandHeaderProps, getHeaderProps, getRowProps, getTableProps, headers, rows }) => (
         <TableContainer className={styles.tableContainer}>
           <TableToolbar>

@@ -11,7 +11,7 @@ interface PickLabRequestActionMenuProps {
 
 const PickupLabRequestAction: React.FC<PickLabRequestActionMenuProps> = ({ order }) => {
   const { t } = useTranslation();
-  const unSupportedStatuses = ['IN_PROGRESS', 'COMPLETED', 'DECLINED'];
+  const unsupportedStatuses = ['COMPLETED', 'DECLINED', 'IN_PROGRESS'];
 
   const launchModal = useCallback(() => {
     const dispose = showModal('pickup-lab-request-modal', {
@@ -23,13 +23,13 @@ const PickupLabRequestAction: React.FC<PickLabRequestActionMenuProps> = ({ order
   return (
     <Button
       className={styles.actionButton}
-      disabled={unSupportedStatuses.includes(order.fulfillerStatus)}
+      disabled={unsupportedStatuses.includes(order.fulfillerStatus)}
       size="sm"
       kind="primary"
-      key={`${order.uuid}`}
+      key={order.uuid}
       onClick={launchModal}
     >
-      {t('pickLabRequest', 'Pick Lab Request')}
+      {t('pickRequest', 'Pick lab request')}
     </Button>
   );
 };

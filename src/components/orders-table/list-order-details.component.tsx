@@ -62,7 +62,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                 }
               />
               <OrderDetailRow label={t('orderNumbers', 'Order number:')} value={capitalize(row.orderNumber)} />
-              <OrderDetailRow label={t('orderDate', 'Order Date:')} value={row.dateActivated} />
+              <OrderDetailRow label={t('orderDate', 'Order date:')} value={row.dateActivated} />
               <OrderDetailRow label={t('orderedBy', 'Ordered By:')} value={capitalize(row.orderer?.display)} />
               <OrderDetailRow
                 label={t('orderInstructions', 'Instructions:')}

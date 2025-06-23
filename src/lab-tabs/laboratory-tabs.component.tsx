@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
 import { type AssignedExtension, Extension, useAssignedExtensions } from '@openmrs/esm-framework';
 import { ComponentContext } from '@openmrs/esm-framework/src/internal';
 import styles from './laboratory-tabs.scss';
@@ -13,8 +13,8 @@ const LaboratoryOrdersTabs: React.FC = () => {
   const tabExtensions = useAssignedExtensions(labPanelSlot) as AssignedExtension[];
 
   return (
-    <main className={`omrs-main-content`}>
-      <section className={styles.orderTabsContainer}>
+    <main>
+      <section>
         <div className={styles.tabs}>
           <Tabs selectedIndex={selectedTab} onChange={({ selectedIndex }) => setSelectedTab(selectedIndex)}>
             <TabList style={{ paddingLeft: '1rem' }} aria-label="Laboratory tabs" contained>
