@@ -77,6 +77,19 @@ test.describe('Running laboratory order tests sequentially', () => {
     await test.step('Then I should see a success notification', async () => {
       await expect(page.getByText(/Lab results for .* have been successfully updated/i)).toBeVisible();
     });
+
+    await test.step('Then I click the completed tab', async () => {
+      await page.getByRole('tab', { name: 'Completed' }).click();
+    });
+
+    await test.step('And I select the patient and conform the result was added with completed status', async () => {
+      await page
+        .getByRole('row', { name: new RegExp(`Expand current row ${fullName}`) })
+        .getByRole('button', { name: 'Expand current row' })
+        .click();
+      await expect(page.getByLabel('Structured list section').getByText('Completed')).toBeVisible();
+      await expect(page.getByRole('cell', { name: 'serum glucose' })).toBeVisible();
+    });
   });
 });
 
