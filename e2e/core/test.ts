@@ -1,6 +1,6 @@
 import { type APIRequestContext, type Page, test as base } from '@playwright/test';
 import { api } from '../fixtures';
-import { type Patient } from '../types';
+import { type Patient } from '../commands/types';
 import { generateRandomPatient, deletePatient } from '../commands';
 
 // This file sets up our custom test harness using the custom fixtures.
@@ -24,11 +24,7 @@ export const test = base.extend<CustomTestFixtures, CustomWorkerFixtures>({
     async ({ api }, use) => {
       const patient = await generateRandomPatient(api);
       await use(patient);
-      try {
-        if (patient) await deletePatient(api, patient.uuid);
-      } catch (e) {
-        console.warn('Failed to delete patient:', e);
-      }
+      await deletePatient(api, patient.uuid);
     },
     { scope: 'test', auto: true },
   ],
