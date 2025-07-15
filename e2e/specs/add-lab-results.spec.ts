@@ -82,7 +82,7 @@ test.describe('Running laboratory order tests sequentially', () => {
       await page.getByRole('tab', { name: 'Completed' }).click();
     });
 
-    await test.step('And I select the patient and conform the result was added with completed status', async () => {
+    await test.step('And I select the patient and confirm the result was added with completed status', async () => {
       await page
         .getByRole('row', { name: new RegExp(`Expand current row ${fullName}`) })
         .getByRole('button', { name: 'Expand current row' })
