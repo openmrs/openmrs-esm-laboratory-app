@@ -29,7 +29,7 @@ test.beforeEach(async ({ api, patient }) => {
 });
 
 test.describe('Running laboratory order tests sequentially', () => {
-  test('Add lab results via lab App', async ({ page }) => {
+  test('Add lab results via the lab app', async ({ page }) => {
     const laboratoryPage = new LaboratoryPage(page);
     await test.step('When I visit the Laboratory section', async () => {
       await laboratoryPage.goTo();
