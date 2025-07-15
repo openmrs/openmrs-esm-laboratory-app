@@ -55,6 +55,7 @@ export const completedLabRequestsTable = getAsyncLifecycle(
   options,
 );
 
+// t('Declined Tests', 'Declined Tests')
 export const declinedLabRequestsTable = getAsyncLifecycle(
   () => import('./lab-tabs/data-table-extensions/declined-lab-requests-table-extension'),
   options,
