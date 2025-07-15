@@ -15,7 +15,7 @@ export const generateRandomTestOrder = async (
       action: 'new',
       accessionNumber: null,
       urgency: 'ROUTINE',
-      dateActivated: encounter.encounterDateTime,
+      dateActivated: encounter.encounterDatetime,
       scheduledDate: null,
       dateStopped: null,
       autoExpireDate: null,
