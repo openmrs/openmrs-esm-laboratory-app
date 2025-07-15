@@ -32,6 +32,11 @@ jq -n \
   --arg app_names "$(echo ${app_names[@]})" \
   '{
     "@openmrs/esm-primary-navigation-app": "next",
+    "@openmrs/esm-home-app": "next",
+    "@openmrs/esm-patient-chart-app": "next",
+    "@openmrs/esm-patient-banner-app": "next",
+    "@openmrs/esm-patient-orders-app": "next",
+    "@openmrs/esm-patient-tests-app": "next"
   } + (
     ($apps | split("\n")) as $apps | ($app_names | split(" ") | map("/app/" + .)) as $app_files
     | [$apps, $app_files]
