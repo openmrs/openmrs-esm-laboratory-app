@@ -46,7 +46,7 @@ test.describe('Running laboratory order tests sequentially', () => {
       await expect(page.getByRole('cell', { name: 'serum glucose' })).toBeVisible();
     });
 
-    await test.step('Then I click on Pick lab request action', async () => {
+    await test.step('Then I click the Pick up lab request' button', async () => {
       await page.getByRole('button', { name: 'Pick Lab Request' }).first().click();
       await page.getByRole('button', { name: 'Pick up lab request' }).click();
       await expect(page.getByText(/You have successfully picked an order/i)).toBeVisible();
