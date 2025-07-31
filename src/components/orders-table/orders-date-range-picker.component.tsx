@@ -1,21 +1,16 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
-import { OpenmrsDateRangePicker , useAppContext } from '@openmrs/esm-framework';
+import { OpenmrsDateRangePicker, useAppContext } from '@openmrs/esm-framework';
 import styles from './orders-date-range-picker.scss';
-
-// Update the DateFilterContext type to enforce a tuple for dateRange
-interface DateFilterContext {
-  dateRange: [Date, Date] | null;
-  setDateRange: (dates: [Date, Date] | null) => void;
-}
+import { DateFilterContext } from '../../types';
 
 export const OrdersDateRangePicker = () => {
   const { t } = useTranslation();
   const currentDate = new Date();
 
   const { dateRange, setDateRange } = useAppContext<DateFilterContext>('laboratory-date-filter') ?? {
-    dateRange: [dayjs().startOf('day').toDate(), new Date()] as [Date, Date],
+    dateRange: [dayjs().startOf('day').toDate(), new Date()],
     setDateRange: () => {},
   };
 
@@ -24,7 +19,7 @@ export const OrdersDateRangePicker = () => {
       <p>{t('dateRange', 'Date range')}:</p>
       <OpenmrsDateRangePicker
         value={dateRange}
-        onChange={(dates) => setDateRange(dates)}
+        onChange={(dates: [Date, Date]) => setDateRange(dates)}
         id="ordersDateRangePicker"
         data-testid="ordersDateRangePicker"
         labelText=""

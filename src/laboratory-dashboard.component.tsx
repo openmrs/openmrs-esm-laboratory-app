@@ -9,8 +9,13 @@ import styles from './laboratory-dashboard.scss';
 
 const LaboratoryDashboard: React.FC = () => {
   const { t } = useTranslation();
-  const [dateRange, setDateRange] = useState<Date[]>([dayjs().startOf('day').toDate(), new Date()]);
-  useDefineAppContext<DateFilterContext>('laboratory-date-filter', { dateRange, setDateRange });
+
+  const [dateRange, setDateRange] = useState<[Date, Date]>([dayjs().startOf('day').toDate(), new Date()]);
+
+  useDefineAppContext<DateFilterContext>('laboratory-date-filter', {
+    dateRange,
+    setDateRange,
+  });
 
   return (
     <div>
