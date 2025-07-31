@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { OpenmrsDateRangePicker, useAppContext } from '@openmrs/esm-framework';
 import styles from './orders-date-range-picker.scss';
-import { DateFilterContext } from '../../types';
+import type { DateFilterContext } from '../../types';
 
 export const OrdersDateRangePicker = () => {
   const { t } = useTranslation();
