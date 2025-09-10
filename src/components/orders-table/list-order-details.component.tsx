@@ -74,6 +74,22 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
               )}
             </StructuredListBody>
           </StructuredListWrapper>
+          {row.fulfillerStatus === 'ON_HOLD' && (
+            <Accordion>
+              <AccordionItem
+                title={<span className={styles.accordionTitle}>{t('viewTestResults', 'View test results')}</span>}
+              >
+                <div className={styles.viewResults}>
+                  <ExtensionSlot
+                    className={styles.labResultSlot}
+                    state={{ order: row }}
+                    name="completed-lab-order-results-slot"
+                  />
+                </div>
+              </AccordionItem>
+            </Accordion>
+          )}
+
           {row.fulfillerStatus === 'COMPLETED' && (
             <Accordion>
               <AccordionItem
@@ -106,6 +122,21 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                     className={styles.menuLink}
                     state={{ order: row }}
                     name="inprogress-tests-actions-slot"
+                  />
+                </div>
+              </>
+            ) : row.fulfillerStatus === 'ON_HOLD' ? (
+              <>
+                <div className={styles.testsOrderedActions}>
+                  <ExtensionSlot
+                    className={styles.menuLink}
+                    state={{ order: row }}
+                    name="amended-ordered-actions-slot"
+                  />
+                  <ExtensionSlot
+                    className={styles.menuLink}
+                    state={{ order: row }}
+                    name="approved-ordered-actions-slot"
                   />
                 </div>
               </>

@@ -24,6 +24,12 @@ export const configSchema = {
     },
     _description: 'The patient chart dashboard to navigate to from the lab app.',
   },
+  enableReviewingLabResultsBeforeApproval: {
+    _type: Type.Boolean,
+    _default: false,
+    _description:
+      'Enable reviewing lab results before final approval. When enabled, lab results will be submitted for review before being approved and finalized.',
+  },
 };
 
 export type Config = {
@@ -33,4 +39,5 @@ export type Config = {
     redirectToResultsViewer: string;
     redirectToOrders: string;
   };
+  enableReviewingLabResultsBeforeApproval: boolean;
 };
