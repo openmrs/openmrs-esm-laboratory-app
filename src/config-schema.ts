@@ -1,4 +1,6 @@
-import { Type } from '@openmrs/esm-framework';
+import { Type, validators } from '@openmrs/esm-framework';
+
+const allowedLabTableColumns = ['name', 'age', 'gender', 'totalOrders', 'action', 'id'];
 
 export const configSchema = {
   laboratoryOrderTypeUuid: {
@@ -23,6 +25,26 @@ export const configSchema = {
       _description: 'Redirects to Orders in patient chart dashboard from lab app.',
     },
     _description: 'The patient chart dashboard to navigate to from the lab app.',
+    id: {
+      // t('id', 'ID')
+      headerLabelKey: 'id',
+      headerLabelDefault: 'ID',
+      key: 'id',
+    },
+  },
+  labTableColumns: {
+    _type: Type.Array,
+    _default: ['name', 'age', 'gender', 'totalOrders', 'action'],
+    _description: 'The columns to display in the lab table. Allowed values: ' + allowedLabTableColumns.join(', '),
+    _elements: {
+      _type: Type.String,
+      _validators: [validators.oneOf(allowedLabTableColumns)],
+    },
+  },
+  patientIdIdentifierTypeUuid: {
+    _type: Type.UUID,
+    _default: '05a29f94-c0ed-11e2-94be-8c13b969e334',
+    _description: 'Needed if the "id" column of "labTableColumns" is used. Is the OpenMRS ID by default.',
   },
 };
 
@@ -33,4 +55,6 @@ export type Config = {
     redirectToResultsViewer: string;
     redirectToOrders: string;
   };
+  labTableColumns: Array<string>;
+  patientIdIdentifierTypeUuid: string;
 };

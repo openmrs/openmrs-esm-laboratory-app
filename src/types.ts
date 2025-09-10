@@ -1,10 +1,27 @@
-import { type Order } from '@openmrs/esm-patient-common-lib';
+import { type Order, type FulfillerStatus, type OrderUrgency } from '@openmrs/esm-patient-common-lib';
 
-export type FulfillerStatus = 'EXCEPTION' | 'RECEIVED' | 'COMPLETED' | 'IN_PROGRESS' | 'ON_HOLD' | 'DECLINED' | 'NEW';
+export interface FlattenedOrder {
+  id: string;
+  patientUuid: string;
+  orderNumber: string;
+  display: string;
+  dateActivated: string;
+  fulfillerStatus: FulfillerStatus;
+  urgency: OrderUrgency;
+  orderer: string;
+  instructions: string;
+  fulfillerComment: string;
+}
 
 export interface GroupedOrders {
+  patientUuid: string;
   patientId: string;
-  orders: Array<Order>;
+  patientName: string;
+  patientAge: number;
+  patientGender: string;
+  totalOrders: number;
+  orders: Array<FlattenedOrder>;
+  originalOrders: Array<Order>;
 }
 
 export interface ListOrdersDetailsProps {

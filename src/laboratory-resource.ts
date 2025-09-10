@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import dayjs from 'dayjs';
 import useSWR from 'swr';
 import { openmrsFetch, restBaseUrl, useAppContext, useConfig } from '@openmrs/esm-framework';
-import { type Order } from '@openmrs/esm-patient-common-lib';
-import type { DateFilterContext, FulfillerStatus, GroupedOrders } from './types';
+import { type Order, type FulfillerStatus } from '@openmrs/esm-patient-common-lib';
+import type { DateFilterContext } from './types';
 
 /**
  * Custom hook for retrieving laboratory orders based on the specified status.
@@ -11,7 +11,7 @@ import type { DateFilterContext, FulfillerStatus, GroupedOrders } from './types'
  * @param status - The status of the orders to retrieve
  * @param excludeCanceled - Whether to exclude canceled, discontinued and expired orders
  */
-export function useLabOrders(status: 'NEW' | FulfillerStatus = null, excludeCanceled = true) {
+export function useLabOrders(status: 'NEW' | FulfillerStatus = null, excludeCanceled = true, includePatientId = false) {
   const { dateRange } = useAppContext<DateFilterContext>('laboratory-date-filter') ?? {
     dateRange: [dayjs().startOf('day').toDate(), new Date()],
   };
@@ -19,8 +19,9 @@ export function useLabOrders(status: 'NEW' | FulfillerStatus = null, excludeCanc
   const { laboratoryOrderTypeUuid } = useConfig();
   const fulfillerStatus = useMemo(() => (status === 'NEW' ? null : status), [status]);
   const newOrdersOnly = status === 'NEW';
-  const customRepresentation =
-    'custom:(uuid,orderNumber,patient:(uuid,display,person:(uuid,display,age,gender)),concept:(uuid,display),action,careSetting:(uuid,display,description,careSettingType,display),previousOrder,dateActivated,scheduledDate,dateStopped,autoExpireDate,encounter:(uuid,display),orderer:(uuid,display),orderReason,orderReasonNonCoded,orderType:(uuid,display,name,description,conceptClasses,parent),urgency,instructions,commentToFulfiller,display,fulfillerStatus,fulfillerComment,specimenSource,laterality,clinicalHistory,frequency,numberOfRepeats)';
+  const customRepresentation = `custom:(uuid,orderNumber,patient:(uuid,display,person:(uuid,display,age,gender)${
+    includePatientId ? ',identifiers' : ''
+  }),concept:(uuid,display),action,careSetting:(uuid,display,description,careSettingType,display),previousOrder,dateActivated,scheduledDate,dateStopped,autoExpireDate,encounter:(uuid,display),orderer:(uuid,display),orderReason,orderReasonNonCoded,orderType:(uuid,display,name,description,conceptClasses,parent),urgency,instructions,commentToFulfiller,display,fulfillerStatus,fulfillerComment,specimenSource,laterality,clinicalHistory,frequency,numberOfRepeats)`;
   let url = `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}&v=${customRepresentation}`;
   url = fulfillerStatus ? url + `&fulfillerStatus=${fulfillerStatus}` : url;
   url = excludeCanceled ? `${url}&excludeCanceledAndExpired=true&excludeDiscontinueOrders=true` : url;
@@ -46,26 +47,6 @@ export function useLabOrders(status: 'NEW' | FulfillerStatus = null, excludeCanc
     mutate,
     isValidating,
   };
-}
-
-export function useSearchGroupedResults(data: Array<GroupedOrders>, searchString: string) {
-  const searchResults = useMemo(() => {
-    if (searchString && searchString.trim() !== '') {
-      // Normalize the search string to lowercase
-      const lowerSearchString = searchString.toLowerCase();
-      return data.filter((orderGroup) =>
-        orderGroup.orders.some(
-          (order) =>
-            order.orderNumber.toLowerCase().includes(lowerSearchString) ||
-            order.patient.display.toLowerCase().includes(lowerSearchString),
-        ),
-      );
-    }
-
-    return data;
-  }, [searchString, data]);
-
-  return searchResults;
 }
 
 export function setFulfillerStatus(orderId: string, status: FulfillerStatus, abortController: AbortController) {
