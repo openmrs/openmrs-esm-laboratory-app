@@ -157,7 +157,7 @@ describe('OrdersDataTable', () => {
     const headerRow = rows[0];
     expect(headerRow).toHaveTextContent('Patient');
     expect(headerRow).toHaveTextContent('Age');
-    expect(headerRow).toHaveTextContent('Gender');
+    expect(headerRow).toHaveTextContent('Sex');
     expect(headerRow).toHaveTextContent('Total Orders');
     const row1 = dataRows[0];
     expect(row1).toHaveTextContent('Pete Seeger');

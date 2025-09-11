@@ -18,7 +18,7 @@ export interface GroupedOrders {
   patientId: string;
   patientName: string;
   patientAge: number;
-  patientGender: string;
+  patientSex: string;
   totalOrders: number;
   orders: Array<FlattenedOrder>;
   originalOrders: Array<Order>;

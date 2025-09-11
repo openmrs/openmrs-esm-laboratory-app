@@ -53,11 +53,11 @@ const labTableColumnSpec = {
     headerLabelDefault: 'Age',
     key: 'patientAge',
   },
-  gender: {
-    // t('gender', 'Gender')
-    headerLabelKey: 'gender',
-    headerLabelDefault: 'Gender',
-    key: 'patientGender',
+  sex: {
+    // t('sex', 'Sex')
+    headerLabelKey: 'sex',
+    headerLabelDefault: 'Sex',
+    key: 'patientSex',
   },
   totalOrders: {
     // t('totalOrders', 'Total Orders')
@@ -140,7 +140,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           patientUuid: patientUuid,
           patientName: patient.person.display,
           patientAge: patient.person.age,
-          patientGender: patient.person.gender,
+          patientSex: patient.person.gender,
           totalOrders: flattenedLabOrdersForPatient.length,
           orders: flattenedLabOrdersForPatient,
           originalOrders: labOrdersForPatient,
