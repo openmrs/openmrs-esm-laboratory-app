@@ -33,7 +33,7 @@ import {
 } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
 import { type Order, type FulfillerStatus } from '@openmrs/esm-patient-common-lib';
-import { type FlattenedOrder , type OrdersDataTableProps } from '../../types';
+import { type FlattenedOrder, type OrderAction } from '../../types';
 import { useLabOrders } from '../../laboratory-resource';
 import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
@@ -79,17 +79,36 @@ const labTableColumnSpec = {
   },
 };
 
+export interface OrdersDataTableProps {
+  /* Whether the data table should include a status filter dropdown */
+  useFilter?: boolean;
+  actionsSlotName?: string;
+  excludeColumns?: Array<string>;
+  fulfillerStatus?: FulfillerStatus;
+  excludeCanceledAndDiscontinuedOrders?: boolean;
+  actions?: Array<OrderAction>;
+}
+
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<FulfillerStatus>(null);
   const [searchString, setSearchString] = useState('');
   const { labTableColumns, patientIdIdentifierTypeUuid } = useConfig<Config>();
 
+  console.log({ useFilter: props.useFilter,
+    filter: filter,
+    fulfillerStatus: props.fulfillerStatus,
+    excludeCanceled: props.excludeCanceledAndDiscontinuedOrders ?? true,
+    includePatientId: labTableColumns.includes('id'),
+  })
+
   const { labOrders, isLoading } = useLabOrders(
-    props.useFilter ? filter : props.fulfillerStatus,
-    props.excludeCanceledAndDiscontinuedOrders,
-    labTableColumns.includes('id'),
-  );
+    { status: props.useFilter ? filter : props.fulfillerStatus,
+    excludeCanceled: props.excludeCanceledAndDiscontinuedOrders,
+    includePatientId: labTableColumns.includes('id'),
+  });
+
+  console.log('labOrders', labOrders);
 
   const flattenedLabOrders: Array<FlattenedOrder> = useMemo(() => {
     return (
@@ -119,12 +138,12 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         const patient: Patient = labOrdersForPatient[0]?.patient;
         const flattenedLabOrdersForPatient = flattenedLabOrders.filter((order) => order.patientUuid === patientUuid);
         return {
-          patientId: patient.identifiers.find(
+          patientId: patient.identifiers?.find(
             (identifier) =>
               identifier.preferred &&
               !identifier.voided &&
               identifier.identifierType.uuid === patientIdIdentifierTypeUuid,
-          ).identifier,
+          )?.identifier,
           patientUuid: patientUuid,
           patientName: patient.person.display,
           patientAge: patient.person.age,
@@ -156,14 +175,12 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
 
   const orderStatuses = [
     { value: null, display: t('all', 'All') },
-    { value: 'NEW', display: t('newStatus', 'NEW') },
     { value: 'RECEIVED', display: t('receivedStatus', 'RECEIVED') },
     { value: 'IN_PROGRESS', display: t('inProgressStatus', 'IN_PROGRESS') },
     { value: 'COMPLETED', display: t('completedStatus', 'COMPLETED') },
     { value: 'EXCEPTION', display: t('exceptionStatus', 'EXCEPTION') },
     { value: 'ON_HOLD', display: t('onHoldStatus', 'ON_HOLD') },
     { value: 'DECLINED', display: t('declinedStatus', 'DECLINED') },
-    { value: 'DISCONTINUED', display: t('discontinuedStatus', 'DISCONTINUED') },
   ];
 
   const columns = useMemo(() => {

@@ -1,9 +1,22 @@
-import { useMemo } from 'react';
 import dayjs from 'dayjs';
 import useSWR from 'swr';
 import { openmrsFetch, restBaseUrl, useAppContext, useConfig } from '@openmrs/esm-framework';
 import { type Order, type FulfillerStatus } from '@openmrs/esm-patient-common-lib';
 import type { DateFilterContext } from './types';
+
+const useLabOrdersDefaultParams: UseLabOrdersParams = {
+  status: null,
+  newOrdersOnly: false,
+  excludeCanceled: true,
+  includePatientId: false,
+}
+
+export interface UseLabOrdersParams {
+  status: FulfillerStatus;
+  newOrdersOnly: boolean;
+  excludeCanceled: boolean;
+  includePatientId: boolean;
+}
 
 /**
  * Custom hook for retrieving laboratory orders based on the specified status.
@@ -11,19 +24,18 @@ import type { DateFilterContext } from './types';
  * @param status - The status of the orders to retrieve
  * @param excludeCanceled - Whether to exclude canceled, discontinued and expired orders
  */
-export function useLabOrders(status: 'NEW' | FulfillerStatus = null, excludeCanceled = true, includePatientId = false) {
+export function useLabOrders(params: Partial<UseLabOrdersParams> = useLabOrdersDefaultParams) {
+  const { status, newOrdersOnly, excludeCanceled, includePatientId } = { ...useLabOrdersDefaultParams, ...params };
   const { dateRange } = useAppContext<DateFilterContext>('laboratory-date-filter') ?? {
     dateRange: [dayjs().startOf('day').toDate(), new Date()],
   };
 
   const { laboratoryOrderTypeUuid } = useConfig();
-  const fulfillerStatus = useMemo(() => (status === 'NEW' ? null : status), [status]);
-  const newOrdersOnly = status === 'NEW';
   const customRepresentation = `custom:(uuid,orderNumber,patient:(uuid,display,person:(uuid,display,age,gender)${
     includePatientId ? ',identifiers' : ''
   }),concept:(uuid,display),action,careSetting:(uuid,display,description,careSettingType,display),previousOrder,dateActivated,scheduledDate,dateStopped,autoExpireDate,encounter:(uuid,display),orderer:(uuid,display),orderReason,orderReasonNonCoded,orderType:(uuid,display,name,description,conceptClasses,parent),urgency,instructions,commentToFulfiller,display,fulfillerStatus,fulfillerComment,specimenSource,laterality,clinicalHistory,frequency,numberOfRepeats)`;
   let url = `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}&v=${customRepresentation}`;
-  url = fulfillerStatus ? url + `&fulfillerStatus=${fulfillerStatus}` : url;
+  url = status ? url + `&fulfillerStatus=${status}` : url;
   url = excludeCanceled ? `${url}&excludeCanceledAndExpired=true&excludeDiscontinueOrders=true` : url;
   // The usage of SWR's mutator seems to only suffice for cases where we don't apply a status filter
   url = dateRange
@@ -37,11 +49,9 @@ export function useLabOrders(status: 'NEW' | FulfillerStatus = null, excludeCanc
   }>(`${url}`, openmrsFetch);
 
   const filteredOrders =
-    data?.data &&
-    newOrdersOnly &&
-    data.data.results.filter((order) => order?.action === 'NEW' && order?.fulfillerStatus === null);
+    data?.data?.results?.filter((order) => !newOrdersOnly || (order?.action === 'NEW' && order?.fulfillerStatus === null));
   return {
-    labOrders: filteredOrders || data?.data.results || [],
+    labOrders: filteredOrders ?? [],
     isLoading,
     isError: error,
     mutate,

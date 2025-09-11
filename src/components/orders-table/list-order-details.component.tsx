@@ -11,13 +11,19 @@ import {
 } from '@carbon/react';
 import { capitalize } from 'lodash-es';
 import { ExtensionSlot } from '@openmrs/esm-framework';
-import { type ListOrdersDetailsProps } from '../../types';
+import { type GroupedOrders, type OrderAction } from '../../types';
 import styles from './list-order-details.scss';
 
 type OrderDetailsRowProps = {
   label: ReactNode;
   value: ReactNode;
 };
+
+export interface ListOrdersDetailsProps {
+  groupedOrders: GroupedOrders;
+  actions: Array<OrderAction>;
+}
+
 
 const OrderDetailRow = ({ label, value }: OrderDetailsRowProps) => {
   return (
@@ -91,7 +97,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
           )}
 
           <div className={styles.buttonSection}>
-            {order.fulfillerStatus === 'NEW' ||
+            {
             order.fulfillerStatus === 'RECEIVED' ||
             order.fulfillerStatus == null ? (
               <>

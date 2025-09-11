@@ -25,12 +25,6 @@ export const configSchema = {
       _description: 'Redirects to Orders in patient chart dashboard from lab app.',
     },
     _description: 'The patient chart dashboard to navigate to from the lab app.',
-    id: {
-      // t('id', 'ID')
-      headerLabelKey: 'id',
-      headerLabelDefault: 'ID',
-      key: 'id',
-    },
   },
   labTableColumns: {
     _type: Type.Array,

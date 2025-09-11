@@ -24,23 +24,9 @@ export interface GroupedOrders {
   originalOrders: Array<Order>;
 }
 
-export interface ListOrdersDetailsProps {
-  groupedOrders: GroupedOrders;
-  actions: Array<OrderAction>;
-}
-
 export interface OrderAction {
   actionName: string;
   order: 0 | number;
-}
-
-export interface OrdersDataTableProps {
-  useFilter?: boolean;
-  actionsSlotName?: string;
-  excludeColumns?: string[];
-  fulfillerStatus?: FulfillerStatus;
-  excludeCanceledAndDiscontinuedOrders?: boolean;
-  actions: Array<OrderAction>;
 }
 
 export type DateFilterContext = {
