@@ -85,6 +85,7 @@ export interface OrdersDataTableProps {
   actionsSlotName?: string;
   excludeColumns?: Array<string>;
   fulfillerStatus?: FulfillerStatus;
+  newOrdersOnly?: boolean;
   excludeCanceledAndDiscontinuedOrders?: boolean;
   actions?: Array<OrderAction>;
 }
@@ -95,20 +96,12 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const [searchString, setSearchString] = useState('');
   const { labTableColumns, patientIdIdentifierTypeUuid } = useConfig<Config>();
 
-  console.log({ useFilter: props.useFilter,
-    filter: filter,
-    fulfillerStatus: props.fulfillerStatus,
-    excludeCanceled: props.excludeCanceledAndDiscontinuedOrders ?? true,
-    includePatientId: labTableColumns.includes('id'),
-  })
-
-  const { labOrders, isLoading } = useLabOrders(
-    { status: props.useFilter ? filter : props.fulfillerStatus,
+  const { labOrders, isLoading } = useLabOrders({
+    status: props.useFilter ? filter : props.fulfillerStatus,
+    newOrdersOnly: props.newOrdersOnly,
     excludeCanceled: props.excludeCanceledAndDiscontinuedOrders,
     includePatientId: labTableColumns.includes('id'),
   });
-
-  console.log('labOrders', labOrders);
 
   const flattenedLabOrders: Array<FlattenedOrder> = useMemo(() => {
     return (
@@ -131,7 +124,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
 
   const groupedOrdersByPatient = useMemo(() => {
     if (labOrders && labOrders.length > 0) {
-      const patientUuids = labOrders.map((order) => order.patient.uuid);
+      const patientUuids = [...new Set(labOrders.map((order) => order.patient.uuid))];
 
       return patientUuids.map((patientUuid) => {
         const labOrdersForPatient = labOrders.filter((order) => order.patient.uuid === patientUuid);

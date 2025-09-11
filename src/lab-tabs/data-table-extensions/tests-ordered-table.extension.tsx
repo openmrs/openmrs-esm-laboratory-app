@@ -6,7 +6,7 @@ const TestsOrderedTable: React.FC = () => {
     <OrdersDataTable
       excludeColumns={[]}
       actionsSlotName="tests-ordered-actions-slot"
-      fulfillerStatus="RECEIVED"
+      newOrdersOnly={true}
       actions={[
         { actionName: 'pickupLabRequest', order: 0 },
         { actionName: 'rejectLabRequest', order: 1 },

@@ -10,7 +10,7 @@ import {
   StructuredListWrapper,
 } from '@carbon/react';
 import { capitalize } from 'lodash-es';
-import { ExtensionSlot } from '@openmrs/esm-framework';
+import { ExtensionSlot, formatDate, parseDate } from '@openmrs/esm-framework';
 import { type GroupedOrders, type OrderAction } from '../../types';
 import styles from './list-order-details.scss';
 
@@ -23,7 +23,6 @@ export interface ListOrdersDetailsProps {
   groupedOrders: GroupedOrders;
   actions: Array<OrderAction>;
 }
-
 
 const OrderDetailRow = ({ label, value }: OrderDetailsRowProps) => {
   return (
@@ -55,7 +54,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                   </div>
                 }
               />
-              <OrderDetailRow label={t('testOrdered', 'Test ordered:')} value={capitalize(order.display)} />
+              <OrderDetailRow label={t('testOrdered', 'Test ordered:')} value={order.display} />
               <OrderDetailRow
                 label={t('orderStatus', 'Status:')}
                 value={
@@ -67,9 +66,12 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                   </div>
                 }
               />
-              <OrderDetailRow label={t('orderNumbers', 'Order number:')} value={capitalize(order.orderNumber)} />
-              <OrderDetailRow label={t('orderDate', 'Order date:')} value={order.dateActivated} />
-              <OrderDetailRow label={t('orderedBy', 'Ordered By:')} value={capitalize(order.orderer.display)} />
+              <OrderDetailRow label={t('orderNumbers', 'Order number:')} value={order.orderNumber} />
+              <OrderDetailRow
+                label={t('orderDate', 'Order date:')}
+                value={formatDate(parseDate(order.dateActivated))}
+              />
+              <OrderDetailRow label={t('orderedBy', 'Ordered By:')} value={order.orderer.display} />
               <OrderDetailRow
                 label={t('orderInstructions', 'Instructions:')}
                 value={order.instructions ?? t('NoInstructionLeft', 'No instructions are provided.')}
@@ -97,9 +99,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
           )}
 
           <div className={styles.buttonSection}>
-            {
-            order.fulfillerStatus === 'RECEIVED' ||
-            order.fulfillerStatus == null ? (
+            {order.fulfillerStatus === 'RECEIVED' || order.fulfillerStatus == null ? (
               <>
                 <div className={styles.testsOrderedActions}>
                   <ExtensionSlot state={{ order: order }} name="rejected-ordered-actions-slot" />
