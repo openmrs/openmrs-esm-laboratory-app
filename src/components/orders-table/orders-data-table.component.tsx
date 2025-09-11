@@ -71,10 +71,10 @@ const labTableColumnSpec = {
     headerLabelDefault: 'Action',
     key: 'action',
   },
-  id: {
-    // t('id', 'ID')
-    headerLabelKey: 'id',
-    headerLabelDefault: 'ID',
+  patientId: {
+    // t('patientId', 'Patient ID')
+    headerLabelKey: 'patientId',
+    headerLabelDefault: 'Patient ID',
     key: 'patientId',
   },
 };
@@ -100,7 +100,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     status: props.useFilter ? filter : props.fulfillerStatus,
     newOrdersOnly: props.newOrdersOnly,
     excludeCanceled: props.excludeCanceledAndDiscontinuedOrders,
-    includePatientId: labTableColumns.includes('id'),
+    includePatientId: labTableColumns.includes('patientId'),
   });
 
   const flattenedLabOrders: Array<FlattenedOrder> = useMemo(() => {
@@ -158,7 +158,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
       return groupedOrdersByPatient.filter(
         (orderGroup) =>
           (labTableColumns.includes('name') && orderGroup.patientName.toLowerCase().includes(lowerSearchString)) ||
-          (labTableColumns.includes('id') && orderGroup.patientId.toLowerCase().includes(lowerSearchString)) ||
+          (labTableColumns.includes('patientId') && orderGroup.patientId.toLowerCase().includes(lowerSearchString)) ||
           orderGroup.orders.some((order) => order.orderNumber.toLowerCase().includes(lowerSearchString)),
       );
     }

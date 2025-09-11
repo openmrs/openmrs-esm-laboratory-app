@@ -23,6 +23,17 @@ function mockUseLabOrdersImplementation(props: Partial<UseLabOrdersParams>) {
           {
             uuid: 'identifier-uuid-1',
             identifier: 'PAT-001',
+            preferred: true,
+            voided: false,
+            identifierType: {
+              uuid: 'identifier-type-uuid-1',
+            },
+          },
+          {
+            uuid: 'identifier-uuid-2',
+            identifier: 'BAD-ID-NOT-PREFERRED',
+            preferred: false,
+            voided: false,
             identifierType: {
               uuid: 'identifier-type-uuid-1',
             },
@@ -42,10 +53,21 @@ function mockUseLabOrdersImplementation(props: Partial<UseLabOrdersParams>) {
     identifiers: props.includePatientId
       ? [
           {
-            uuid: 'identifier-uuid-2',
-            identifier: 'PAT-002',
+            uuid: 'identifier-uuid-3',
+            identifier: 'BAD-ID-WRONG-TYPE',
+            preferred: true,
+            voided: false,
             identifierType: {
-              uuid: 'identifier-type-uuid-2',
+              uuid: '05a29f94-c0ed-11e2-94be-8c13b969e334',
+            },
+          },
+          {
+            uuid: 'identifier-uuid-4',
+            identifier: 'PAT-002',
+            preferred: true,
+            voided: false,
+            identifierType: {
+              uuid: 'identifier-type-uuid-1',
             },
           },
         ]
@@ -117,14 +139,14 @@ function mockUseLabOrdersImplementation(props: Partial<UseLabOrdersParams>) {
 
 describe('OrdersDataTable', () => {
   beforeEach(() => {
-    mockUseConfig.mockReturnValue({
-      ...getDefaultsFromConfigSchema(configSchema),
-    });
-
     mockUseLabOrders.mockImplementation(mockUseLabOrdersImplementation);
   });
 
   it('should render one row per patient and show lab details', async () => {
+    mockUseConfig.mockReturnValue({
+      ...getDefaultsFromConfigSchema(configSchema),
+    });
+
     render(<OrdersDataTable />);
     const table = screen.getByRole('table');
     expect(table).toBeInTheDocument();
@@ -158,14 +180,36 @@ describe('OrdersDataTable', () => {
     expect(orderDetailsTable1).toHaveTextContent('Banjo Inspection');
     expect(orderDetailsTable1).toHaveTextContent('Inspect banjo & check tuning');
     expect(orderDetailsTable1).toHaveTextContent('Dr. John Doe');
-    expect(orderDetailsTable1).toHaveTextContent('2021-01-01');
+    expect(orderDetailsTable1).toHaveTextContent('01-Jan-2021');
     expect(orderDetailsTable1).toHaveTextContent('Received');
     expect(orderDetailsTable1).toHaveTextContent('Routine');
     expect(orderDetailsTable2).toHaveTextContent('Guitar Inspection');
     expect(orderDetailsTable2).toHaveTextContent('Give it a strum');
     expect(orderDetailsTable2).toHaveTextContent('Dr. John Doe');
-    expect(orderDetailsTable2).toHaveTextContent('2021-01-01');
+    expect(orderDetailsTable2).toHaveTextContent('01-Jan-2021');
     expect(orderDetailsTable2).toHaveTextContent('Received');
     expect(orderDetailsTable2).toHaveTextContent('Routine');
+  });
+
+  it('should show patient identifier if it is configured', () => {
+    mockUseConfig.mockReturnValue({
+      ...getDefaultsFromConfigSchema(configSchema),
+      labTableColumns: ['patientId', 'age', 'totalOrders'],
+      patientIdIdentifierTypeUuid: 'identifier-type-uuid-1',
+    });
+    render(<OrdersDataTable />);
+    const rows = screen.getAllByRole('row');
+    expect(rows).toHaveLength(5);
+    const dataRows = rows.slice(1).filter((row) => !row.classList.contains('hiddenRow'));
+    expect(dataRows).toHaveLength(2);
+    const row1 = dataRows[0];
+    expect(row1).toHaveTextContent('PAT-001');
+    expect(row1).toHaveTextContent('70');
+    expect(row1).toHaveTextContent('2');
+    const row2 = dataRows[1];
+    expect(row2).toHaveTextContent('PAT-002');
+    expect(row2).toHaveTextContent('60');
+    expect(row2).toHaveTextContent('1');
+    expect(screen.queryByText(/BAD-ID/)).not.toBeInTheDocument();
   });
 });
