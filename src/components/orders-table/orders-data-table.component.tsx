@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   DataTable,
   DataTableSkeleton,
@@ -22,67 +22,152 @@ import {
   TableToolbarSearch,
   Tile,
 } from '@carbon/react';
-import { ExtensionSlot, formatDate, parseDate, showModal, usePagination } from '@openmrs/esm-framework';
+import {
+  ExtensionSlot,
+  formatDate,
+  parseDate,
+  type Patient,
+  showModal,
+  useConfig,
+  usePagination,
+} from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
-import { type Order } from '@openmrs/esm-patient-common-lib';
-import type { FulfillerStatus, OrdersDataTableProps } from '../../types';
-import { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource';
+import { type Order, type FulfillerStatus } from '@openmrs/esm-patient-common-lib';
+import { type FlattenedOrder, type OrderAction } from '../../types';
+import { useLabOrders } from '../../laboratory-resource';
 import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
 import styles from './orders-data-table.scss';
+import { type Config } from '../../config-schema';
+
+const labTableColumnSpec = {
+  name: {
+    // t('patient', 'Patient')
+    headerLabelKey: 'patient',
+    headerLabelDefault: 'Patient',
+    key: 'patientName',
+  },
+  age: {
+    // t('age', 'Age')
+    headerLabelKey: 'age',
+    headerLabelDefault: 'Age',
+    key: 'patientAge',
+  },
+  sex: {
+    // t('sex', 'Sex')
+    headerLabelKey: 'sex',
+    headerLabelDefault: 'Sex',
+    key: 'patientSex',
+  },
+  totalOrders: {
+    // t('totalOrders', 'Total Orders')
+    headerLabelKey: 'totalOrders',
+    headerLabelDefault: 'Total Orders',
+    key: 'totalOrders',
+  },
+  action: {
+    // t('action', 'Action')
+    headerLabelKey: 'action',
+    headerLabelDefault: 'Action',
+    key: 'action',
+  },
+  patientId: {
+    // t('patientId', 'Patient ID')
+    headerLabelKey: 'patientId',
+    headerLabelDefault: 'Patient ID',
+    key: 'patientId',
+  },
+};
+
+export interface OrdersDataTableProps {
+  /* Whether the data table should include a status filter dropdown */
+  useFilter?: boolean;
+  actionsSlotName?: string;
+  excludeColumns?: Array<string>;
+  fulfillerStatus?: FulfillerStatus;
+  newOrdersOnly?: boolean;
+  excludeCanceledAndDiscontinuedOrders?: boolean;
+  actions?: Array<OrderAction>;
+}
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<FulfillerStatus>(null);
   const [searchString, setSearchString] = useState('');
+  const { labTableColumns, patientIdIdentifierTypeUuid } = useConfig<Config>();
 
-  const { labOrders, isLoading } = useLabOrders(
-    props.useFilter ? filter : props.fulfillerStatus,
-    props.excludeCanceledAndDiscontinuedOrders,
-  );
+  const { labOrders, isLoading } = useLabOrders({
+    status: props.useFilter ? filter : props.fulfillerStatus,
+    newOrdersOnly: props.newOrdersOnly,
+    excludeCanceled: props.excludeCanceledAndDiscontinuedOrders,
+    includePatientId: labTableColumns.includes('patientId'),
+  });
 
-  const flattenedLabOrders: Order[] = useMemo(() => {
+  const flattenedLabOrders: Array<FlattenedOrder> = useMemo(() => {
     return (
       labOrders?.map((order) => {
         return {
-          ...order,
+          id: order.uuid,
+          patientUuid: order.patient.uuid,
+          orderNumber: order.orderNumber,
           dateActivated: formatDate(parseDate(order.dateActivated)),
-          patientName: order.patient?.person.display,
-          patientUuid: order.patient?.uuid,
-          patientAge: order.patient?.person?.age,
-          status: order.fulfillerStatus ?? '--',
-          orderer: order.orderer,
+          fulfillerStatus: order.fulfillerStatus,
+          urgency: order.urgency,
+          orderer: order.orderer?.display,
+          instructions: order.instructions,
+          fulfillerComment: order.fulfillerComment,
+          display: order.display,
         };
       }) ?? []
     );
   }, [labOrders]);
 
-  function groupOrdersById(orders) {
-    if (orders && orders.length > 0) {
-      const groupedOrders = orders.reduce((acc, item) => {
-        if (!acc[item.patientUuid]) {
-          acc[item.patientUuid] = [];
-        }
-        acc[item.patientUuid].push(item);
-        return acc;
-      }, {});
+  const groupedOrdersByPatient = useMemo(() => {
+    if (labOrders && labOrders.length > 0) {
+      const patientUuids = [...new Set(labOrders.map((order) => order.patient.uuid))];
 
-      return Object.keys(groupedOrders).map((patientId) => ({
-        patientId: patientId,
-        orders: groupedOrders[patientId],
-      }));
+      return patientUuids.map((patientUuid) => {
+        const labOrdersForPatient = labOrders.filter((order) => order.patient.uuid === patientUuid);
+        const patient: Patient = labOrdersForPatient[0]?.patient;
+        const flattenedLabOrdersForPatient = flattenedLabOrders.filter((order) => order.patientUuid === patientUuid);
+        return {
+          patientId: patient.identifiers?.find(
+            (identifier) =>
+              identifier.preferred &&
+              !identifier.voided &&
+              identifier.identifierType.uuid === patientIdIdentifierTypeUuid,
+          )?.identifier,
+          patientUuid: patientUuid,
+          patientName: patient.person.display,
+          patientAge: patient.person.age,
+          patientSex: patient.person.gender,
+          totalOrders: flattenedLabOrdersForPatient.length,
+          orders: flattenedLabOrdersForPatient,
+          originalOrders: labOrdersForPatient,
+        };
+      });
     } else {
       return [];
     }
-  }
+  }, [flattenedLabOrders, labOrders, patientIdIdentifierTypeUuid]);
 
-  const groupedOrdersByPatient = groupOrdersById(flattenedLabOrders);
+  const searchResults = useMemo(() => {
+    if (searchString && searchString.trim() !== '') {
+      // Normalize the search string to lowercase
+      const lowerSearchString = searchString.toLowerCase();
+      return groupedOrdersByPatient.filter(
+        (orderGroup) =>
+          (labTableColumns.includes('name') && orderGroup.patientName.toLowerCase().includes(lowerSearchString)) ||
+          (labTableColumns.includes('patientId') && orderGroup.patientId.toLowerCase().includes(lowerSearchString)) ||
+          orderGroup.orders.some((order) => order.orderNumber.toLowerCase().includes(lowerSearchString)),
+      );
+    }
 
-  const searchResults = useSearchGroupedResults(groupedOrdersByPatient, searchString);
+    return groupedOrdersByPatient;
+  }, [searchString, groupedOrdersByPatient, labTableColumns]);
 
   const orderStatuses = [
     { value: null, display: t('all', 'All') },
-    { value: 'NEW', display: t('newStatus', 'NEW') },
     { value: 'RECEIVED', display: t('receivedStatus', 'RECEIVED') },
     { value: 'IN_PROGRESS', display: t('inProgressStatus', 'IN_PROGRESS') },
     { value: 'COMPLETED', display: t('completedStatus', 'COMPLETED') },
@@ -92,17 +177,23 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   ];
 
   const columns = useMemo(() => {
-    const baseColumns = [
-      { id: 0, header: t('patient', 'Patient'), key: 'patientName' },
-      { id: 1, header: t('age', 'Age'), key: 'patientAge' },
-      { id: 2, header: t('gender', 'Gender'), key: 'patientGender' },
-      { id: 3, header: t('totalOrders', 'Total Orders'), key: 'totalOrders' },
-    ];
-
-    const showActionColumn = flattenedLabOrders.some((order) => order.fulfillerStatus === 'COMPLETED');
-
-    return showActionColumn ? [...baseColumns, { id: 4, header: t('action', 'Action'), key: 'action' }] : baseColumns;
-  }, [t, flattenedLabOrders]);
+    return labTableColumns
+      .map((column) => {
+        const spec = labTableColumnSpec[column];
+        if (!spec) {
+          throw new Error(`Lab table has been configured with an invalid column: ${column}`);
+        }
+        if (spec.key === 'action') {
+          const showActionColumn = flattenedLabOrders.some((order) => order.fulfillerStatus === 'COMPLETED');
+          if (!showActionColumn) {
+            return null;
+          }
+        }
+        return { header: t(spec.headerLabelKey, spec.headerLabelDefault), key: spec.key };
+      })
+      .filter(Boolean)
+      .map((column, index) => ({ ...column, id: index }));
+  }, [t, flattenedLabOrders, labTableColumns]);
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
@@ -127,32 +218,28 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   };
 
   const tableRows = useMemo(() => {
-    return paginatedLabOrders.map((order) => ({
-      id: order.patientId,
-      patientName: order.orders[0]?.patient.person.display,
-      orders: order.orders,
-      totalOrders: order.orders?.length,
-      patientAge: order.orders[0]?.patient?.person?.age,
-      patientGender: order.orders[0]?.patient?.person?.gender || '',
-      action: order.orders.some((o) => o.fulfillerStatus === 'COMPLETED') ? (
+    return paginatedLabOrders.map((groupedOrder) => ({
+      ...groupedOrder,
+      id: groupedOrder.patientUuid,
+      action: groupedOrder.orders.some((o) => o.fulfillerStatus === 'COMPLETED') ? (
         <div className={styles.actionCell}>
           <OverflowMenu aria-label="Actions" flipped iconDescription="Actions">
             <ExtensionSlot
               className={styles.transitionOverflowMenuItemSlot}
               name="transition-overflow-menu-item-slot"
-              state={{ patientUuid: order?.patientId }}
+              state={{ patientUuid: groupedOrder.patientUuid }}
               // Without tabIndex={0} here, the overflow menu incorrectly sets initial focus to the second item instead of the first.
               tabIndex={0}
             />
             <OverflowMenuItem
               className={styles.menuitem}
               itemText={t('editResults', 'Edit results')}
-              onClick={() => handleLaunchModal(order?.orders)}
+              onClick={() => handleLaunchModal(groupedOrder.originalOrders)}
             />
             <OverflowMenuItem
               className={styles.menuitem}
               itemText={t('printTestResults', 'Print test results')}
-              onClick={() => handlePrintModal(order?.orders)}
+              onClick={() => handlePrintModal(groupedOrder.originalOrders)}
             />
           </OverflowMenu>
         </div>
@@ -218,7 +305,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
                     <TableExpandedRow colSpan={headers.length + 2}>
                       <ListOrderDetails
                         actions={props.actions}
-                        groupedOrders={groupedOrdersByPatient.find((item) => item.patientId === row.id)}
+                        groupedOrders={groupedOrdersByPatient.find((item) => item.patientUuid === row.id)}
                       />
                     </TableExpandedRow>
                   ) : (
