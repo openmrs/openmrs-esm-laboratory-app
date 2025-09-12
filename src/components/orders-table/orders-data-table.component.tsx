@@ -22,7 +22,7 @@ import {
   TableToolbarSearch,
   Tile,
 } from '@carbon/react';
-import { ExtensionSlot, formatDate, parseDate, showModal, usePagination } from '@openmrs/esm-framework';
+import { ExtensionSlot, formatDate, parseDate, showModal, useConfig, usePagination } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
 import { type Order } from '@openmrs/esm-patient-common-lib';
 import type { FulfillerStatus, OrdersDataTableProps } from '../../types';
@@ -30,10 +30,12 @@ import { useLabOrders, useSearchGroupedResults } from '../../laboratory-resource
 import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
 import styles from './orders-data-table.scss';
+import { type Config } from '../../config-schema';
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<FulfillerStatus>(null);
+  const { enableReviewingLabResultsBeforeApproval } = useConfig<Config>();
   const [searchString, setSearchString] = useState('');
 
   const { labOrders, isLoading } = useLabOrders(
@@ -144,11 +146,13 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
               // Without tabIndex={0} here, the overflow menu incorrectly sets initial focus to the second item instead of the first.
               tabIndex={0}
             />
-            <OverflowMenuItem
-              className={styles.menuitem}
-              itemText={t('editResults', 'Edit results')}
-              onClick={() => handleLaunchModal(order?.orders)}
-            />
+            {!enableReviewingLabResultsBeforeApproval && (
+              <OverflowMenuItem
+                className={styles.menuitem}
+                itemText={t('editResults', 'Edit results')}
+                onClick={() => handleLaunchModal(order?.orders)}
+              />
+            )}
             <OverflowMenuItem
               className={styles.menuitem}
               itemText={t('printTestResults', 'Print test results')}
@@ -158,7 +162,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         </div>
       ) : null,
     }));
-  }, [paginatedLabOrders, t]);
+  }, [paginatedLabOrders, enableReviewingLabResultsBeforeApproval, t]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" showHeader={false} showToolbar={false} />;
