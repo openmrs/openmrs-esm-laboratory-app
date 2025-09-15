@@ -10,14 +10,19 @@ import {
   StructuredListWrapper,
 } from '@carbon/react';
 import { capitalize } from 'lodash-es';
-import { ExtensionSlot } from '@openmrs/esm-framework';
-import { type ListOrdersDetailsProps } from '../../types';
+import { ExtensionSlot, formatDate, parseDate } from '@openmrs/esm-framework';
+import { type GroupedOrders, type OrderAction } from '../../types';
 import styles from './list-order-details.scss';
 
 type OrderDetailsRowProps = {
   label: ReactNode;
   value: ReactNode;
 };
+
+export interface ListOrdersDetailsProps {
+  groupedOrders: GroupedOrders;
+  actions: Array<OrderAction>;
+}
 
 const OrderDetailRow = ({ label, value }: OrderDetailsRowProps) => {
   return (
@@ -33,48 +38,51 @@ const OrderDetailRow = ({ label, value }: OrderDetailsRowProps) => {
 };
 const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) => {
   const { t } = useTranslation();
-  const orders = groupedOrders?.orders ?? [];
+  const originalOrders = groupedOrders?.originalOrders ?? [];
 
   return (
     <div>
-      {orders.map((row) => (
-        <div key={row.orderNumber} className={styles.orderDetailsContainer}>
+      {originalOrders.map((order) => (
+        <div key={order.orderNumber} className={styles.orderDetailsContainer}>
           <StructuredListWrapper className={styles.orderDetailsWrapper}>
             <StructuredListBody>
               <OrderDetailRow
                 label={t('urgencyStatus', 'Urgency:')}
                 value={
-                  <div className={styles.priorityPill} data-urgency={row.urgency?.replace('_', ' ')}>
-                    {capitalize(row.urgency?.replace(/_/g, ' '))}
+                  <div className={styles.priorityPill} data-urgency={order.urgency?.replace('_', ' ')}>
+                    {capitalize(order.urgency?.replace(/_/g, ' '))}
                   </div>
                 }
               />
-              <OrderDetailRow label={t('testOrdered', 'Test ordered:')} value={capitalize(row.display)} />
+              <OrderDetailRow label={t('testOrdered', 'Test ordered:')} value={order.display} />
               <OrderDetailRow
                 label={t('orderStatus', 'Status:')}
                 value={
                   <div
                     className={styles.statusPill}
-                    data-status={(row.fulfillerStatus ?? 'Order not picked').replace('_', ' ')}
+                    data-status={(order.fulfillerStatus ?? 'Order not picked').replace('_', ' ')}
                   >
-                    {capitalize(row.fulfillerStatus?.replace('_', '')) || t('orderNotPicked', 'Order not picked')}
+                    {capitalize(order.fulfillerStatus?.replace('_', '')) || t('orderNotPicked', 'Order not picked')}
                   </div>
                 }
               />
-              <OrderDetailRow label={t('orderNumbers', 'Order number:')} value={capitalize(row.orderNumber)} />
-              <OrderDetailRow label={t('orderDate', 'Order date:')} value={row.dateActivated} />
-              <OrderDetailRow label={t('orderedBy', 'Ordered By:')} value={capitalize(row.orderer?.display)} />
+              <OrderDetailRow label={t('orderNumbers', 'Order number:')} value={order.orderNumber} />
+              <OrderDetailRow
+                label={t('orderDate', 'Order date:')}
+                value={formatDate(parseDate(order.dateActivated))}
+              />
+              <OrderDetailRow label={t('orderedBy', 'Ordered By:')} value={order.orderer.display} />
               <OrderDetailRow
                 label={t('orderInstructions', 'Instructions:')}
-                value={row.instructions ?? t('NoInstructionLeft', 'No instructions are provided.')}
+                value={order.instructions ?? t('NoInstructionLeft', 'No instructions are provided.')}
               />
 
-              {row.fulfillerStatus === 'DECLINED' && (
-                <OrderDetailRow label={t('reasonForDecline', 'Reason for decline:')} value={row.fulfillerComment} />
+              {order.fulfillerStatus === 'DECLINED' && (
+                <OrderDetailRow label={t('reasonForDecline', 'Reason for decline:')} value={order.fulfillerComment} />
               )}
             </StructuredListBody>
           </StructuredListWrapper>
-          {row.fulfillerStatus === 'ON_HOLD' && (
+          {(order.fulfillerStatus === 'COMPLETED' || order.fulfillerStatus === 'ON_HOLD') && (
             <Accordion>
               <AccordionItem
                 title={<span className={styles.accordionTitle}>{t('viewTestResults', 'View test results')}</span>}
@@ -82,23 +90,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                 <div className={styles.viewResults}>
                   <ExtensionSlot
                     className={styles.labResultSlot}
-                    state={{ order: row }}
-                    name="completed-lab-order-results-slot"
-                  />
-                </div>
-              </AccordionItem>
-            </Accordion>
-          )}
-
-          {row.fulfillerStatus === 'COMPLETED' && (
-            <Accordion>
-              <AccordionItem
-                title={<span className={styles.accordionTitle}>{t('viewTestResults', 'View test results')}</span>}
-              >
-                <div className={styles.viewResults}>
-                  <ExtensionSlot
-                    className={styles.labResultSlot}
-                    state={{ order: row }}
+                    state={{ order: order }}
                     name="completed-lab-order-results-slot"
                   />
                 </div>
@@ -107,35 +99,34 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
           )}
 
           <div className={styles.buttonSection}>
-            {/* @ts-ignore */}
-            {row.fulfillerStatus === 'New' || row.fulfillerStatus === 'RECEIVED' || row.fulfillerStatus == null ? (
+            {order.fulfillerStatus === 'RECEIVED' || order.fulfillerStatus == null ? (
               <>
                 <div className={styles.testsOrderedActions}>
-                  <ExtensionSlot state={{ order: row }} name="rejected-ordered-actions-slot" />
-                  <ExtensionSlot state={{ order: row }} name="tests-ordered-actions-slot" />
+                  <ExtensionSlot state={{ order: order }} name="rejected-ordered-actions-slot" />
+                  <ExtensionSlot state={{ order: order }} name="tests-ordered-actions-slot" />
                 </div>
               </>
-            ) : row.fulfillerStatus === 'IN_PROGRESS' ? (
+            ) : order.fulfillerStatus === 'IN_PROGRESS' ? (
               <>
                 <div className={styles.testsOrderedActions}>
                   <ExtensionSlot
                     className={styles.menuLink}
-                    state={{ order: row }}
+                    state={{ order: order }}
                     name="inprogress-tests-actions-slot"
                   />
                 </div>
               </>
-            ) : row.fulfillerStatus === 'ON_HOLD' ? (
+            ) : order.fulfillerStatus === 'ON_HOLD' ? (
               <>
                 <div className={styles.testsOrderedActions}>
                   <ExtensionSlot
                     className={styles.menuLink}
-                    state={{ order: row }}
+                    state={{ order: order }}
                     name="amended-ordered-actions-slot"
                   />
                   <ExtensionSlot
                     className={styles.menuLink}
-                    state={{ order: row }}
+                    state={{ order: order }}
                     name="approved-ordered-actions-slot"
                   />
                 </div>

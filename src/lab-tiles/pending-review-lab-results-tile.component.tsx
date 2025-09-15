@@ -5,7 +5,10 @@ import LabSummaryTile from '../components/summary-tile/lab-summary-tile.componen
 
 const PendingReviewLabRequestsTile = () => {
   const { t } = useTranslation();
-  const { labOrders } = useLabOrders('ON_HOLD', false);
+  const { labOrders, isLoading, isError } = useLabOrders({
+    status: 'ON_HOLD',
+    excludeCanceled: false,
+  });
 
   return (
     <LabSummaryTile
