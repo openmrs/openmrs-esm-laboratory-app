@@ -119,7 +119,6 @@
     background-color: colors.$green-20;
   }
 
-  &[data-status='DISCONTINUED'],
   &[data-status='DECLINED'],
   &[data-status='Order not picked'] {
     background-color: colors.$red-20;
