@@ -9,7 +9,7 @@ const useLabOrdersDefaultParams: UseLabOrdersParams = {
   newOrdersOnly: false,
   excludeCanceled: true,
   includePatientId: false,
-}
+};
 
 export interface UseLabOrdersParams {
   status: FulfillerStatus;
@@ -33,7 +33,7 @@ export function useLabOrders(params: Partial<UseLabOrdersParams> = useLabOrdersD
   const { laboratoryOrderTypeUuid } = useConfig();
   const customRepresentation = `custom:(uuid,orderNumber,patient:(uuid,display,person:(uuid,display,age,gender)${
     includePatientId ? ',identifiers' : ''
-  }),concept:(uuid,display),action,careSetting:(uuid,display,description,careSettingType,display),previousOrder,dateActivated,scheduledDate,dateStopped,autoExpireDate,encounter:(uuid,display),orderer:(uuid,display),orderReason,orderReasonNonCoded,orderType:(uuid,display,name,description,conceptClasses,parent),urgency,instructions,commentToFulfiller,display,fulfillerStatus,fulfillerComment,specimenSource,laterality,clinicalHistory,frequency,numberOfRepeats)`;
+  }),concept:(uuid,display),action,careSetting:(uuid,display,description,careSettingType,display),previousOrder,dateActivated,scheduledDate,dateStopped,autoExpireDate,encounter:(uuid,display),orderer:(uuid,display),orderReason,orderReasonNonCoded,orderType:(uuid,display,name,description,conceptClasses,parent),urgency,instructions,commentToFulfiller,display,fulfillerStatus,fulfillerComment,accessionNumber,specimenSource,laterality,clinicalHistory,frequency,numberOfRepeats)`;
   let url = `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}&v=${customRepresentation}`;
   url = status ? url + `&fulfillerStatus=${status}` : url;
   url = excludeCanceled ? `${url}&excludeCanceledAndExpired=true&excludeDiscontinueOrders=true` : url;
@@ -48,8 +48,9 @@ export function useLabOrders(params: Partial<UseLabOrdersParams> = useLabOrdersD
     data: { results: Array<Order> };
   }>(`${url}`, openmrsFetch);
 
-  const filteredOrders =
-    data?.data?.results?.filter((order) => !newOrdersOnly || (order?.action === 'NEW' && order?.fulfillerStatus === null));
+  const filteredOrders = data?.data?.results?.filter(
+    (order) => !newOrdersOnly || (order?.action === 'NEW' && order?.fulfillerStatus === null),
+  );
   return {
     labOrders: filteredOrders ?? [],
     isLoading,
