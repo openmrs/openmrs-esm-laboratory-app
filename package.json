@@ -58,7 +58,7 @@
     "react-router-dom": "6.x"
   },
   "devDependencies": {
-    "@openmrs/esm-framework": "next",
+    "@openmrs/esm-framework": "^8.0.1-pre.3308",
     "@openmrs/esm-patient-common-lib": "next",
     "@playwright/test": "^1.52.0",
     "@swc/cli": "^0.1.62",
@@ -90,7 +90,7 @@
     "jest-cli": "^28.1.3",
     "jest-environment-jsdom": "^28.1.3",
     "lint-staged": "^14.0.1",
-    "openmrs": "next",
+    "openmrs": "^8.0.1-pre.3308",
     "prettier": "^2.8.8",
     "pretty-quick": "^3.1.3",
     "raw-loader": "^4.0.2",
