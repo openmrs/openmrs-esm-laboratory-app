@@ -8,8 +8,7 @@
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": true,
-    "tsconfigRootDir": "__dirname"
+    "project": true 
   },
   "plugins": ["@typescript-eslint", "import", "react-hooks"],
   "root": true,
