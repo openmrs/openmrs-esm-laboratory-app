@@ -1,8 +1,7 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
-import { DatePicker, DatePickerInput } from '@carbon/react';
-import { useAppContext } from '@openmrs/esm-framework';
+import { OpenmrsDateRangePicker, useAppContext } from '@openmrs/esm-framework';
 import { type DateFilterContext } from '../../types';
 import styles from './orders-date-range-picker.scss';
 
@@ -15,24 +14,19 @@ export const OrdersDateRangePicker = () => {
     setDateRange: () => {},
   };
 
-  const handleOrdersDateRangeChange = (dates: Array<Date>) => {
-    setDateRange(dates);
-  };
-
   return (
     <div className={styles.datePickerWrapper}>
       <p>{t('dateRange', 'Date range')}:</p>
-      <DatePicker
-        className={styles.dateRangePicker}
-        dateFormat="d/m/Y"
-        datePickerType="range"
-        onChange={handleOrdersDateRangeChange}
-        maxDate={currentDate.toISOString()}
+      <OpenmrsDateRangePicker
         value={dateRange}
-      >
-        <DatePickerInput id="date-picker-input-id-start" labelText="" placeholder="dd/mm/yyyy" size="md" />
-        <DatePickerInput id="date-picker-input-id-finish" labelText="" placeholder="dd/mm/yyyy" size="md" />
-      </DatePicker>
+        onChange={(dates: [Date, Date]) => setDateRange(dates)}
+        id="ordersDateRangePicker"
+        data-testid="ordersDateRangePicker"
+        labelText=""
+        maxDate={currentDate}
+        startName="start"
+        endName="end"
+      />
     </div>
   );
 };
