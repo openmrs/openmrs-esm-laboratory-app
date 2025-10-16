@@ -5,7 +5,7 @@ const PendingReviewLabRequestsTable: React.FC = () => {
   return (
     <OrdersDataTable
       excludeColumns={[]}
-      fulfillerStatus="ON_HOLD"
+      fulfillerStatus="DRAFT"
       useFilter={false}
       excludeCanceledAndDiscontinuedOrders={false}
       actions={[]}

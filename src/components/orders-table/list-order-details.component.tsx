@@ -116,7 +116,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                   />
                 </div>
               </>
-            ) : order.fulfillerStatus === 'ON_HOLD' ? (
+            ) : order.fulfillerStatus === 'DRAFT' ? (
               <>
                 <div className={styles.testsOrderedActions}>
                   <ExtensionSlot

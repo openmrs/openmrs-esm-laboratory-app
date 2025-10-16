@@ -65,6 +65,7 @@ export const declinedLabRequestsTable = getAsyncLifecycle(
   () => import('./lab-tabs/data-table-extensions/declined-lab-requests-table-extension'),
   options,
 );
+
 // t('pending review tests', 'pending review tests')
 export const pendingReviewLabRequestsTable = getAsyncLifecycle(
   () => import('./lab-tabs/data-table-extensions/pending-review-lab-request-table.extension'),
@@ -108,10 +109,12 @@ export const rejectLabRequestAction = getAsyncLifecycle(
   () => import('./lab-tabs/actions/reject-lab-request-action.component'),
   options,
 );
+
 export const approveLabResultsAction = getAsyncLifecycle(
   () => import('./lab-tabs/actions/approve-lab-results-action.component'),
   options,
 );
+
 export const amendLabResultsAction = getAsyncLifecycle(
   () => import('./lab-tabs/actions/amend-lab-results-action.component'),
   options,

@@ -58,7 +58,7 @@
     "react-router-dom": "6.x"
   },
   "devDependencies": {
-    "@openmrs/esm-framework": "^8.0.1-pre.3308",
+    "@openmrs/esm-framework": "next",
     "@openmrs/esm-patient-common-lib": "next",
     "@playwright/test": "^1.52.0",
     "@swc/cli": "^0.1.62",
@@ -100,7 +100,7 @@
     "react-router-dom": "^6.11.2",
     "swc-loader": "^0.2.3",
     "turbo": "^2.5.2",
-    "typescript": "^5.0.0",
+    "typescript": "^4.9.5",
     "webpack": "^5.99.9",
     "webpack-cli": "^6.0.1"
   },
