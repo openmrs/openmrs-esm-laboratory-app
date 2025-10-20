@@ -1,4 +1,6 @@
-import { type Order, type FulfillerStatus, type OrderUrgency } from '@openmrs/esm-patient-common-lib';
+import { type Order, type OrderUrgency } from '@openmrs/esm-patient-common-lib';
+
+export type FulfillerStatus = 'DRAFT' | 'RECEIVED' | 'IN_PROGRESS' | 'EXCEPTION' | 'ON_HOLD' | 'DECLINED' | 'COMPLETED';
 
 export interface FlattenedOrder {
   id: string;
