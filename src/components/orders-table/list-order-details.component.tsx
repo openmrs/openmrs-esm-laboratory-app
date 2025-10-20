@@ -40,6 +40,8 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
   const { t } = useTranslation();
   const originalOrders = groupedOrders?.originalOrders ?? [];
 
+  
+
   return (
     <div>
       {originalOrders.map((order) => (
