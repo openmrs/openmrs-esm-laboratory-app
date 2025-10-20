@@ -40,7 +40,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
   const { t } = useTranslation();
   const originalOrders = groupedOrders?.originalOrders ?? [];
 
-  
+
 
   return (
     <div>
@@ -84,7 +84,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
               )}
             </StructuredListBody>
           </StructuredListWrapper>
-          {(order.fulfillerStatus === 'COMPLETED' || order.fulfillerStatus === 'ON_HOLD') && (
+          {(order.fulfillerStatus === 'COMPLETED' || order.fulfillerStatus === 'DRAFT') && (
             <Accordion>
               <AccordionItem
                 title={<span className={styles.accordionTitle}>{t('viewTestResults', 'View test results')}</span>}
