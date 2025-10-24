@@ -30,12 +30,17 @@
       "component": "pickupLabRequestModal"
     },
     {
+      "name": "approval-lab-results-modal",
+      "component": "approvalLabResultsModal"
+    },
+    {
       "name": "reject-lab-request-modal",
       "component": "rejectLabRequestModal"
     },
     {
       "name": "all-lab-requests-table",
       "slot": "lab-panels-slot",
+      "order": 0,
       "component": "allLabRequestsTable",
       "meta": {
         "name": "inprogressPanel",
@@ -46,6 +51,7 @@
       "name": "inprogress-lab-requests-table",
       "slot": "lab-panels-slot",
       "component": "inprogressLabRequestsTable",
+      "order": 1,
       "meta": {
         "name": "inprogressPanel",
         "title": "In progress"
@@ -55,6 +61,7 @@
       "name": "completed-lab-requests-table",
       "slot": "lab-panels-slot",
       "component": "completedLabRequestsTable",
+      "order": 3,
       "meta": {
         "name": "completedPanel",
         "title": "Completed"
@@ -69,6 +76,16 @@
         "title": "Ordered tests"
       }
     },
+        {
+      "name": "pending-review-tile-component",
+      "slot": "lab-panels-slot",
+      "component": "pendingReviewLabRequestsTable",
+      "order": 2,
+      "meta": {
+          "name": "pendingReviewPanel",
+          "title": "Pending review tests"
+      }
+    },
     {
       "name": "worklist-tile-component",
       "slot": "lab-tiles-slot",
@@ -76,6 +93,15 @@
       "meta": {
         "name": "worklisTileSlot",
         "title": "Worklist"
+      }
+    },
+    {
+      "name": "pending-review-list-tile-component",
+      "slot": "lab-tiles-slot",
+      "component": "pendingReviewListTile",
+      "meta": {
+        "name": "pendingReviewTileSlot",
+        "title": "Pending review tests"
       }
     },
     {
@@ -91,15 +117,27 @@
       "name": "declined-tile-component",
       "slot": "lab-panels-slot",
       "component": "declinedLabRequestsTable",
+      "order": 4,
       "meta": {
           "name": "declinedPanel",
           "title": "Declined tests"
       }
     },
+
     {
       "name": "pick-lab-request-action",
       "component": "pickupLabRequestAction",
       "slot": "tests-ordered-actions-slot"
+    },
+    {
+      "name": "approve-lab-results-tests-ordered-action",
+      "component": "approveLabResultsAction",
+      "slot": "approved-ordered-actions-slot"
+    },
+    {
+      "name": "amend-lab-results-tests-ordered-action",
+      "component": "amendLabResultsAction",
+      "slot": "amended-ordered-actions-slot"
     },
     {
       "name": "reject-lab-request-tests-ordered-action",

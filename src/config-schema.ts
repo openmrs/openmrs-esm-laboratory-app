@@ -41,8 +41,13 @@ export const configSchema = {
     _default: '05a29f94-c0ed-11e2-94be-8c13b969e334',
     _description: 'Needed if the "id" column of "labTableColumns" is used. Is the OpenMRS ID by default.',
   },
+  enableReviewingLabResultsBeforeApproval: {
+    _type: Type.Boolean,
+    _default: true,
+    _description:
+      'Enable reviewing lab results before final approval. When enabled, lab results will be submitted for review before being approved and finalized.',
+  },
 };
-
 export type Config = {
   laboratoryOrderTypeUuid: string;
   encounterTypeUuid: string;
@@ -52,4 +57,5 @@ export type Config = {
   };
   labTableColumns: Array<LabTableColumnName>;
   patientIdIdentifierTypeUuid: string;
+  enableReviewingLabResultsBeforeApproval: boolean;
 };
