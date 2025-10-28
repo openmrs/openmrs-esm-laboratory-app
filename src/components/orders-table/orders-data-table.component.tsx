@@ -32,8 +32,7 @@ import {
   usePagination,
 } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
-import { type Order } from '@openmrs/esm-patient-common-lib';
-import { type FulfillerStatus, type FlattenedOrder, type OrderAction } from '../../types';
+import { type FulfillerStatus, type FlattenedOrder, type OrderAction, type Order } from '../../types';
 import { useLabOrders } from '../../laboratory-resource';
 import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
