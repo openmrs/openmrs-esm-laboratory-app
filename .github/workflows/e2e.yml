@@ -53,8 +53,7 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
 
       - name: 🎭 Install Playwright Browsers
-        run: npx playwright install chromium --with-deps
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: yarn playwright install chromium --with-deps
 
       - name: 🚀 Setup local cache server for Turborepo
         uses: felixmosh/turborepo-gh-artifacts@v3
@@ -101,4 +100,3 @@ jobs:
           path: './logs'
           retention-days: 2
           overwrite: true
-          
