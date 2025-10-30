@@ -5,16 +5,16 @@ import { showModal } from '@openmrs/esm-framework';
 import { type Order } from '@openmrs/esm-patient-common-lib';
 import styles from './actions.scss';
 
-interface PickLabRequestActionMenuProps {
+interface ApproveLabRequestActionMenuProps {
   order: Order;
 }
 
-const PickupLabRequestAction: React.FC<PickLabRequestActionMenuProps> = ({ order }) => {
+const ApproveLabRequestAction: React.FC<ApproveLabRequestActionMenuProps> = ({ order }) => {
   const { t } = useTranslation();
-  const unsupportedStatuses = ['COMPLETED', 'DECLINED', 'IN_PROGRESS', 'ON_HOLD'];
+  const unsupportedStatuses = ['COMPLETED', 'DECLINED', 'IN_PROGRESS'];
 
   const launchModal = useCallback(() => {
-    const dispose = showModal('pickup-lab-request-modal', {
+    const dispose = showModal('approval-lab-results-modal', {
       closeModal: () => dispose(),
       order,
     });
@@ -29,9 +29,9 @@ const PickupLabRequestAction: React.FC<PickLabRequestActionMenuProps> = ({ order
       key={order.uuid}
       onClick={launchModal}
     >
-      {t('pickRequest', 'Pick lab request')}
+      {t('approveLabResults', 'Approve lab results')}
     </Button>
   );
 };
 
-export default PickupLabRequestAction;
+export default ApproveLabRequestAction;

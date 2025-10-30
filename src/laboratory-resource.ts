@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import useSWR from 'swr';
 import { openmrsFetch, restBaseUrl, useAppContext, useConfig } from '@openmrs/esm-framework';
-import { type Order, type FulfillerStatus } from '@openmrs/esm-patient-common-lib';
-import type { DateFilterContext } from './types';
+import { type Order } from '@openmrs/esm-patient-common-lib';
+import type { DateFilterContext, FulfillerStatus } from './types';
 
 const useLabOrdersDefaultParams: UseLabOrdersParams = {
   status: null,

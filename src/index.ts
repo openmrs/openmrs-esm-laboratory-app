@@ -31,6 +31,11 @@ export const pickupLabRequestModal = getAsyncLifecycle(
   options,
 );
 
+export const approvalLabResultsModal = getAsyncLifecycle(
+  () => import('./lab-tabs/modals/approval-lab-results-modal.component'),
+  options,
+);
+
 export const rejectLabRequestModal = getAsyncLifecycle(
   () => import('./lab-tabs/modals/reject-lab-request-modal.component'),
   options,
@@ -61,9 +66,21 @@ export const declinedLabRequestsTable = getAsyncLifecycle(
   options,
 );
 
+// t('pending review tests', 'pending review tests')
+export const pendingReviewLabRequestsTable = getAsyncLifecycle(
+  () => import('./lab-tabs/data-table-extensions/pending-review-lab-request-table.extension'),
+  options,
+);
+
 // t('Worklist', 'Worklist')
 export const worklistTile = getAsyncLifecycle(
   () => import('./lab-tiles/in-progress-lab-requests-tile.component'),
+  options,
+);
+
+// t('Pending review tests', 'Pending review tests')
+export const pendingReviewListTile = getAsyncLifecycle(
+  () => import('./lab-tiles/pending-review-lab-results-tile.component'),
   options,
 );
 
@@ -90,6 +107,16 @@ export const pickupLabRequestAction = getAsyncLifecycle(
 
 export const rejectLabRequestAction = getAsyncLifecycle(
   () => import('./lab-tabs/actions/reject-lab-request-action.component'),
+  options,
+);
+
+export const approveLabResultsAction = getAsyncLifecycle(
+  () => import('./lab-tabs/actions/approve-lab-results-action.component'),
+  options,
+);
+
+export const amendLabResultsAction = getAsyncLifecycle(
+  () => import('./lab-tabs/actions/amend-lab-results-action.component'),
   options,
 );
 
