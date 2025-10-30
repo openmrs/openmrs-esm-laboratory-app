@@ -15,7 +15,7 @@ const LaboratorySummaryTiles: React.FC = () => {
     .filter((extension) => Object.keys(extension.meta).length > 0)
     .filter((extension) => {
       if (extension.name === 'pending-review-list-tile-component') {
-        return enableReviewingLabResultsBeforeApproval === true;
+        return enableReviewingLabResultsBeforeApproval !== false;
       }
       return true;
     });
@@ -25,15 +25,10 @@ const LaboratorySummaryTiles: React.FC = () => {
       {filteredExtensions.map((extension, index) => {
         return (
           <ComponentContext.Provider
-            key={extension.id}
+            key={index}
             value={{
-              moduleName: extension.moduleName,
               featureName: 'laboratory',
-              extension: {
-                extensionId: extension.id,
-                extensionSlotName: labTileSlot,
-                extensionSlotModuleName: extension.moduleName,
-              },
+              moduleName: '@openmrs/esm-laboratory-app',
             }}
           >
             <Extension />
