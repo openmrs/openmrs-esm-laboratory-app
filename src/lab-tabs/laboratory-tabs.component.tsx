@@ -18,7 +18,7 @@ const LaboratoryOrdersTabs: React.FC = () => {
     .filter((extension) => Object.keys(extension.meta).length > 0)
     .filter((extension) => {
       if (extension.meta.name === 'pendingReviewPanel') {
-        return enableReviewingLabResultsBeforeApproval === true;
+        return enableReviewingLabResultsBeforeApproval;
       }
       return true;
     });
