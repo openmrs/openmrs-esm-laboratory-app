@@ -45,9 +45,10 @@ export const configSchema = {
     _type: Type.Boolean,
     _default: true,
     _description:
-      'Enable reviewing lab results before final approval. When enabled, lab results will be submitted for review before being approved and finalized.',
+      'Enable reviewing lab results before final approval. When false, the review workflow is disabled and results go directly to approval.',
   },
 };
+
 export type Config = {
   laboratoryOrderTypeUuid: string;
   encounterTypeUuid: string;
