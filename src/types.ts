@@ -109,6 +109,6 @@ export interface OrderAction {
 }
 
 export type DateFilterContext = {
-  dateRange: Array<Date>;
-  setDateRange: React.Dispatch<React.SetStateAction<Array<Date>>>;
+  dateRange: [Date, Date] | null;
+  setDateRange: React.Dispatch<React.SetStateAction<[Date, Date] | null>>;
 };
