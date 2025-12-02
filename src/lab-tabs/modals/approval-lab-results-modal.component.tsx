@@ -25,16 +25,18 @@ const ApproveLabResultsModal: React.FC<ApproveLabResultsModal> = ({ order, close
   const { laboratoryOrderTypeUuid } = useConfig<Config>();
   const abortController = useAbortController();
 
+  // Extracted mutation key for clarity & reusability
+const orderQueryKey = `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}`;
+
   const handleApproval = () => {
     setIsSubmitting(true);
     setFulfillerStatus(order.uuid, 'COMPLETED', abortController).then(
       () => {
-        mutate(
-          (key) =>
-            typeof key === 'string' && key.startsWith(`${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}`),
-          undefined,
-          { revalidate: true },
-        );
+         mutate(
+           (key) => key === orderQueryKey,
+           undefined,
+           { revalidate: true }
+            );
         setIsSubmitting(false);
         closeModal();
         showSnackbar({
