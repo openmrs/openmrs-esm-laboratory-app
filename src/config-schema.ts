@@ -43,7 +43,7 @@ export const configSchema = {
   },
   enableReviewingLabResultsBeforeApproval: {
     _type: Type.Boolean,
-    _default: true,
+    _default: false,
     _description:
       'Enable reviewing lab results before final approval. When enabled, lab results will be submitted for review before being approved and finalized.',
   },
