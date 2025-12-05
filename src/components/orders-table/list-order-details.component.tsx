@@ -104,6 +104,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                 <div className={styles.testsOrderedActions}>
                   <ExtensionSlot state={{ order: order }} name="rejected-ordered-actions-slot" />
                   <ExtensionSlot state={{ order: order }} name="tests-ordered-actions-slot" />
+                  <ExtensionSlot state={{ order: order }} name="add-lab-order-details-slot" />
                 </div>
               </>
             ) : order.fulfillerStatus === 'IN_PROGRESS' ? (
