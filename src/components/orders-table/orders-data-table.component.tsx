@@ -220,6 +220,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     const dispose = showModal('edit-lab-results-modal', {
       closeModal: () => dispose(),
       orders: completedOrders,
+      patient: orders[0]?.patient,
     });
   };
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@carbon/react';
 import { mutate } from 'swr';
 import { useTranslation } from 'react-i18next';
-import { AddIcon, launchWorkspace, restBaseUrl, useConfig } from '@openmrs/esm-framework';
+import { AddIcon, launchWorkspace2, restBaseUrl, useConfig } from '@openmrs/esm-framework';
 import { type Order } from '@openmrs/esm-patient-common-lib';
 import { type Config } from '../../config-schema';
 import styles from './actions.scss';
@@ -22,10 +22,17 @@ const AddLabRequestResultsAction: React.FC<AddLabRequestResultsActionProps> = ({
   };
 
   const launchTestResultsWorkspace = () => {
-    launchWorkspace('test-results-form-workspace', {
-      order,
-      invalidateLabOrders,
-    });
+    launchWorkspace2(
+      'test-results-form-workspace',
+      {
+        order,
+        invalidateLabOrders,
+      },
+      {},
+      {
+        patient: order.patient,
+      },
+    );
   };
 
   return (
