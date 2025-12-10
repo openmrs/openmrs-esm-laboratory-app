@@ -30,6 +30,8 @@ const PickupLabRequestModal: React.FC<PickupLabRequestModal> = ({ order, closeMo
         );
         setIsSubmitting(false);
         closeModal();
+        // Dispatch custom event to switch to In Progress tab
+        window.dispatchEvent(new CustomEvent('labOrderPickedUp'));
         showSnackbar({
           isLowContrast: true,
           title: t('pickedAnOrder', 'Picked an order'),
