@@ -11,7 +11,7 @@ const labPanelSlot = 'lab-panels-slot';
 const LaboratoryOrdersTabs: React.FC = () => {
   const { t } = useTranslation();
   const { enableReviewingLabResultsBeforeApproval } = useConfig<Config>();
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [selectedTab, setSelectedTab] = useState(1);
   const tabExtensions = useAssignedExtensions(labPanelSlot) as AssignedExtension[];
 
   const filteredExtensions = tabExtensions
