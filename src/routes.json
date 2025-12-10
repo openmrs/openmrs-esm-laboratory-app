@@ -164,5 +164,24 @@
       "component": "editLabRequestAction",
       "slot": "completed-ordered-actions-slot"
     }
+  ],
+  "workspaces2": [
+    {
+      "name": "test-results-form-workspace",
+      "component": "@openmrs/esm-patient-orders-app#exportedTestResultsFormWorkspace",
+      "window": "test-results"
+    }
+  ],
+  "workspaceWindows2": [
+    {
+      "name": "test-results",
+      "group": "test-results"
+    }
+  ],
+  "workspaceGroups2": [
+    {
+      "name": "test-results"
+    }
   ]
+
 }
