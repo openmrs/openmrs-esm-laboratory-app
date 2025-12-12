@@ -221,6 +221,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
       orders: completedOrders,
       closeModal: () => dispose(),
       patient: completedOrders[0]?.patient,
+      workspaceName: 'lab-app-test-results-form-workspace',
     });
   };
 
