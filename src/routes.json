@@ -167,20 +167,20 @@
   ],
   "workspaces2": [
     {
-      "name": "test-results-form-workspace",
+      "name": "lab-app-test-results-form-workspace",
       "component": "@openmrs/esm-patient-orders-app#exportedTestResultsFormWorkspace",
-      "window": "test-results"
+      "window": "labs-app-test-results-window"
     }
   ],
   "workspaceWindows2": [
     {
-      "name": "test-results",
-      "group": "test-results"
+      "name": "labs-app-test-results-window",
+      "group": "labs-app-group"
     }
   ],
   "workspaceGroups2": [
     {
-      "name": "test-results"
+      "name": "labs-app-group"
     }
   ]
 

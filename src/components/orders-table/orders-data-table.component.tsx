@@ -218,8 +218,8 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const handleLaunchModal = (orders: Array<Order>) => {
     const completedOrders = orders.filter((order) => order.fulfillerStatus === 'COMPLETED');
     const dispose = showModal('edit-lab-results-modal', {
-      closeModal: () => dispose(),
       orders: completedOrders,
+      closeModal: () => dispose(),
       patient: completedOrders[0]?.patient,
     });
   };
