@@ -164,7 +164,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
       return groupedOrdersByPatient.filter(
         (orderGroup) =>
           (labTableColumns.includes('name') && orderGroup.patientName.toLowerCase().includes(lowerSearchString)) ||
-          (labTableColumns.includes('patientId') && orderGroup.patientId.toLowerCase().includes(lowerSearchString)) ||
+          (labTableColumns.includes('patientId') && orderGroup.patientId?.toLowerCase().includes(lowerSearchString)) ||
           orderGroup.orders.some((order) => order.orderNumber.toLowerCase().includes(lowerSearchString)),
       );
     }
@@ -218,8 +218,10 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const handleLaunchModal = (orders: Array<Order>) => {
     const completedOrders = orders.filter((order) => order.fulfillerStatus === 'COMPLETED');
     const dispose = showModal('edit-lab-results-modal', {
-      closeModal: () => dispose(),
       orders: completedOrders,
+      closeModal: () => dispose(),
+      patient: completedOrders[0]?.patient,
+      workspaceName: 'lab-app-test-results-form-workspace',
     });
   };
 
