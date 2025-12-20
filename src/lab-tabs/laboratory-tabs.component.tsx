@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
 import { type AssignedExtension, Extension, useAssignedExtensions, useConfig } from '@openmrs/esm-framework';
@@ -22,6 +22,23 @@ const LaboratoryOrdersTabs: React.FC = () => {
       }
       return true;
     });
+
+  useEffect(() => {
+    const handleOrderPickup = () => {
+      const inProgressTabIndex = filteredExtensions.findIndex(
+        (extension) => extension.meta.title === 'In progress'
+      );
+      if (inProgressTabIndex !== -1) {
+        setSelectedTab(inProgressTabIndex);
+      }
+    };
+
+    window.addEventListener('labOrderPickedUp', handleOrderPickup);
+
+    return () => {
+      window.removeEventListener('labOrderPickedUp', handleOrderPickup);
+    };
+  }, [filteredExtensions]);
 
   return (
     <main>
