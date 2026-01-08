@@ -38,6 +38,7 @@ import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
 import styles from './orders-data-table.scss';
 import { type Config } from '../../config-schema';
+import { capitalize } from 'lodash-es';
 
 const labTableColumnSpec = {
   name: {
@@ -63,6 +64,12 @@ const labTableColumnSpec = {
     headerLabelKey: 'sex',
     headerLabelDefault: 'Sex',
     key: 'patientSex',
+  },
+  urgency: {
+    // t('urgency', 'Urgency')
+    headerLabelKey: 'urgency',
+    headerLabelDefault: 'Urgency',
+    key: 'urgency',
   },
   totalOrders: {
     // t('totalOrders', 'Total Orders')
@@ -135,6 +142,10 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         const labOrdersForPatient = labOrders.filter((order) => order.patient.uuid === patientUuid);
         const patient: Patient = labOrdersForPatient[0]?.patient;
         const flattenedLabOrdersForPatient = flattenedLabOrders.filter((order) => order.patientUuid === patientUuid);
+        // Determine aggregated urgency: STAT if any order is STAT, otherwise ROUTINE
+        const hasStatOrder = labOrdersForPatient.some((order) => order.urgency === 'STAT');
+        const aggregatedUrgency = hasStatOrder ? 'STAT' : 'ROUTINE';
+
         return {
           patientId: patient.identifiers?.find(
             (identifier) =>
@@ -147,6 +158,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           patientAge: patient.person.age,
           patientDob: formatDate(parseDate(patient.person.birthdate)),
           patientSex: patient.person.gender,
+          urgency: aggregatedUrgency,
           totalOrders: flattenedLabOrdersForPatient.length,
           orders: flattenedLabOrdersForPatient,
           originalOrders: labOrdersForPatient,
@@ -229,6 +241,11 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     return paginatedLabOrders.map((groupedOrder) => ({
       ...groupedOrder,
       id: groupedOrder.patientUuid,
+      urgency: (
+        <span className={styles.urgencyTag} data-urgency={groupedOrder.urgency}>
+          {capitalize(groupedOrder.urgency.toLowerCase())}
+        </span>
+      ),
       action: groupedOrder.orders.some((o) => o.fulfillerStatus === 'COMPLETED') ? (
         <div className={styles.actionCell}>
           <OverflowMenu aria-label="Actions" flipped iconDescription="Actions">
