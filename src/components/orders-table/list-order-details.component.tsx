@@ -11,7 +11,7 @@ import {
 } from '@carbon/react';
 import { capitalize } from 'lodash-es';
 import { ExtensionSlot, formatDate, parseDate } from '@openmrs/esm-framework';
-import { type GroupedOrders, type OrderAction } from '../../types';
+import { type GroupedOrders, type OrderAction, type FulfillerStatus } from '../../types';
 import styles from './list-order-details.scss';
 
 type OrderDetailsRowProps = {
@@ -22,6 +22,7 @@ type OrderDetailsRowProps = {
 export interface ListOrdersDetailsProps {
   groupedOrders: GroupedOrders;
   actions: Array<OrderAction>;
+  fulfillerStatus?: FulfillerStatus;
 }
 
 const OrderDetailRow = ({ label, value }: OrderDetailsRowProps) => {
@@ -36,7 +37,7 @@ const OrderDetailRow = ({ label, value }: OrderDetailsRowProps) => {
     </StructuredListRow>
   );
 };
-const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) => {
+const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders, fulfillerStatus }) => {
   const { t } = useTranslation();
   const originalOrders = groupedOrders?.originalOrders ?? [];
 
@@ -85,6 +86,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
           {(order.fulfillerStatus === 'COMPLETED' || order.fulfillerStatus === 'DRAFT') && (
             <Accordion>
               <AccordionItem
+                open={fulfillerStatus === 'COMPLETED'}
                 title={<span className={styles.accordionTitle}>{t('viewTestResults', 'View test results')}</span>}
               >
                 <div className={styles.viewResults}>
