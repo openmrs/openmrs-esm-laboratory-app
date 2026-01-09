@@ -62,7 +62,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                     className={styles.statusPill}
                     data-status={(order.fulfillerStatus ?? 'Order not picked').replace('_', ' ')}
                   >
-                    {capitalize(order.fulfillerStatus?.replace('_', '')) || t('orderNotPicked', 'Order not picked')}
+                    {capitalize(order.fulfillerStatus?.replace('_', ' ')) || t('orderNotPicked', 'Order not picked')}
                   </div>
                 }
               />
