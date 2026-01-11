@@ -127,11 +127,21 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     );
   }, [labOrders]);
 
+  // Helper function to check if a patient has any urgent/STAT orders
+  const hasUrgentOrder = (patientOrders: Array<FlattenedOrder>): boolean => {
+    return patientOrders.some((order) => order.urgency === 'STAT');
+  };
+
+  // Helper function to get the most recent order date for a patient
+  const getMostRecentOrderDate = (orders: Array<Order>): number => {
+    return Math.max(...orders.map((order) => new Date(order.dateActivated).getTime()));
+  };
+
   const groupedOrdersByPatient = useMemo(() => {
     if (labOrders && labOrders.length > 0) {
       const patientUuids = [...new Set(labOrders.map((order) => order.patient.uuid))];
 
-      return patientUuids.map((patientUuid) => {
+      const groupedOrders = patientUuids.map((patientUuid) => {
         const labOrdersForPatient = labOrders.filter((order) => order.patient.uuid === patientUuid);
         const patient: Patient = labOrdersForPatient[0]?.patient;
         const flattenedLabOrdersForPatient = flattenedLabOrders.filter((order) => order.patientUuid === patientUuid);
@@ -151,6 +161,23 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           orders: flattenedLabOrdersForPatient,
           originalOrders: labOrdersForPatient,
         };
+      });
+
+      return groupedOrders.sort((patientA, patientB) => {
+        const patientAHasUrgentOrder = hasUrgentOrder(patientA.orders);
+        const patientBHasUrgentOrder = hasUrgentOrder(patientB.orders);
+
+        if (patientAHasUrgentOrder && !patientBHasUrgentOrder) {
+          return -1;
+        }
+        if (!patientAHasUrgentOrder && patientBHasUrgentOrder) {
+          return 1;
+        }
+
+        const patientAMostRecentDate = getMostRecentOrderDate(patientA.originalOrders);
+        const patientBMostRecentDate = getMostRecentOrderDate(patientB.originalOrders);
+
+        return patientBMostRecentDate - patientAMostRecentDate;
       });
     } else {
       return [];
