@@ -73,6 +73,7 @@
   "testsOrdered": "Tests ordered",
   "testType": "Test type",
   "totalOrders": "Total orders",
+  "urgency": "urgency",
   "urgencyStatus": "Urgency: ",
   "viewTestResults": "View test results",
   "worklist": "Worklist",
