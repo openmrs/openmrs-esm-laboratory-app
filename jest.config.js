@@ -17,6 +17,7 @@ module.exports = {
     '^@tools$': path.resolve(__dirname, 'tools'),
     '^@tools/(.*)$': path.resolve(__dirname, 'tools', '$1'),
     '^@mocks/(.*)$': path.resolve(__dirname, '__mocks__', '$1'),
+    '^uuid$': path.resolve(__dirname, 'node_modules', 'uuid', 'dist', 'index.js'),
   },
   collectCoverageFrom: [
     '!**/node_modules/**',
