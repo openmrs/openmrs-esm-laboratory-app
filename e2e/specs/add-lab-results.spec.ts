@@ -61,7 +61,7 @@ test.describe('Running laboratory order tests sequentially', () => {
         .getByRole('row', { name: new RegExp(`Expand current row ${fullName}`) })
         .getByRole('button', { name: 'Expand current row' })
         .click();
-      await expect(page.getByText('Inprogress')).toBeVisible();
+      await expect(page.getByText('In progress')).toBeVisible();
       await expect(page.getByRole('cell', { name: 'serum glucose' })).toBeVisible();
     });
 
