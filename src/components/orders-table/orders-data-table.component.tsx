@@ -342,7 +342,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
               page={currentPage}
               pageSize={currentPageSize}
               pageSizes={pageSizes}
-              totalItems={groupedOrdersByPatient?.length}
+              totalItems={searchResults?.length}
               className={styles.pagination}
               onChange={({ pageSize, page }) => {
                 if (pageSize !== currentPageSize) setPageSize(pageSize);
