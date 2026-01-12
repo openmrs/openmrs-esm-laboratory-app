@@ -127,12 +127,10 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     );
   }, [labOrders]);
 
-  // Helper function to check if a patient has any urgent/STAT orders
   const hasUrgentOrder = (patientOrders: Array<FlattenedOrder>): boolean => {
     return patientOrders.some((order) => order.urgency === 'STAT');
   };
 
-  // Helper function to get the most recent order date for a patient
   const getMostRecentOrderDate = (orders: Array<Order>): number => {
     return Math.max(...orders.map((order) => new Date(order.dateActivated).getTime()));
   };
@@ -145,6 +143,27 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         const labOrdersForPatient = labOrders.filter((order) => order.patient.uuid === patientUuid);
         const patient: Patient = labOrdersForPatient[0]?.patient;
         const flattenedLabOrdersForPatient = flattenedLabOrders.filter((order) => order.patientUuid === patientUuid);
+        
+        const sortedFlattenedOrders = flattenedLabOrdersForPatient.sort((orderA, orderB) => {
+          if (orderA.urgency === 'STAT' && orderB.urgency !== 'STAT') {
+            return -1;
+          }
+          if (orderA.urgency !== 'STAT' && orderB.urgency === 'STAT') {
+            return 1;
+          }
+          return new Date(orderB.dateActivated).getTime() - new Date(orderA.dateActivated).getTime();
+        });
+
+        const sortedOriginalOrders = labOrdersForPatient.sort((orderA, orderB) => {
+          if (orderA.urgency === 'STAT' && orderB.urgency !== 'STAT') {
+            return -1;
+          }
+          if (orderA.urgency !== 'STAT' && orderB.urgency === 'STAT') {
+            return 1;
+          }
+          return new Date(orderB.dateActivated).getTime() - new Date(orderA.dateActivated).getTime();
+        });
+
         return {
           patientId: patient.identifiers?.find(
             (identifier) =>
@@ -157,9 +176,9 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           patientAge: patient.person.age,
           patientDob: formatDate(parseDate(patient.person.birthdate)),
           patientSex: patient.person.gender,
-          totalOrders: flattenedLabOrdersForPatient.length,
-          orders: flattenedLabOrdersForPatient,
-          originalOrders: labOrdersForPatient,
+          totalOrders: sortedFlattenedOrders.length,
+          orders: sortedFlattenedOrders,
+          originalOrders: sortedOriginalOrders,
         };
       });
 
