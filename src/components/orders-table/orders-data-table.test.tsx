@@ -2,10 +2,9 @@ import React from 'react';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import OrdersDataTable from './orders-data-table.component';
-import { useConfig, getDefaultsFromConfigSchema, type Patient, Person } from '@openmrs/esm-framework';
+import { useConfig, getDefaultsFromConfigSchema, type Order, type Patient } from '@openmrs/esm-framework';
 import { configSchema, type Config } from '../../config-schema';
 import { useLabOrders, type UseLabOrdersParams } from '../../laboratory-resource';
-import { type Order } from '@openmrs/esm-patient-common-lib';
 
 jest.mock('../../laboratory-resource', () => ({
   useLabOrders: jest.fn(),

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
 import { mutate } from 'swr';
-import { type Order } from '@openmrs/esm-patient-common-lib';
 import {
   ExtensionSlot,
   restBaseUrl,
@@ -10,6 +9,7 @@ import {
   showSnackbar,
   useAbortController,
   useConfig,
+  type Order,
 } from '@openmrs/esm-framework';
 import { type Config } from '../../config-schema';
 import { setFulfillerStatus } from '../../laboratory-resource';

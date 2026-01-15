@@ -1,8 +1,7 @@
-import React, { useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import React from 'react';
 import { Button } from '@carbon/react';
-import { showModal } from '@openmrs/esm-framework';
-import { type Order } from '@openmrs/esm-patient-common-lib';
+import { useTranslation } from 'react-i18next';
+import { showModal, type Order } from '@openmrs/esm-framework';
 import styles from './actions.scss';
 
 interface AmendLabResultsActionMenuProps {
