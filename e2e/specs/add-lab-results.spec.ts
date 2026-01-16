@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import { type Order, type Visit } from '@openmrs/esm-framework';
 import {
   generateRandomTestOrder,
   deleteTestOrder,
@@ -9,9 +10,7 @@ import {
   endVisit,
 } from '../commands';
 import { test } from '../core';
-import { type Visit } from '@openmrs/esm-framework';
 import { type Encounter, type Provider } from '../commands/types';
-import { type Order } from '@openmrs/esm-patient-common-lib';
 import { LaboratoryPage } from '../pages';
 
 let testOrder: Order;

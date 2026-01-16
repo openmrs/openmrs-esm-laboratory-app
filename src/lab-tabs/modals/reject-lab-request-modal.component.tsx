@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Button, Form, ModalBody, ModalFooter, ModalHeader, TextArea, Layer } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
 import { mutate } from 'swr';
-import { type Order } from '@openmrs/esm-patient-common-lib';
 import {
   type Config,
+  type Order,
   restBaseUrl,
   showNotification,
   showSnackbar,
