@@ -17,14 +17,20 @@ const Overlay: React.FC = () => {
           {layout !== 'tablet' ? (
             <div className={styles.desktopHeader}>
               <div className={styles.headerContent}>{header}</div>
-              <Button className={styles.closePanelButton} onClick={() => closeOverlay()} kind="ghost" hasIconOnly>
+              <Button
+                className={styles.closePanelButton}
+                onClick={() => closeOverlay()}
+                kind="ghost"
+                hasIconOnly
+                iconDescription={t('close', 'Close')}
+              >
                 <Close size={16} />
               </Button>
             </div>
           ) : (
             <div onClick={() => closeOverlay()}>
               <Header aria-label={t('tabletOverlay', 'Tablet overlay')} className={styles.tabletOverlayHeader}>
-                <Button hasIconOnly>
+                <Button hasIconOnly iconDescription={t('back', 'Back')}>
                   <ArrowLeft size={16} />
                 </Button>
                 <div className={styles.headerContent}>{header}</div>
