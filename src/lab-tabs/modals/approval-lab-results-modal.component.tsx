@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Button, ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
-import { mutate } from 'swr';
 import {
   ExtensionSlot,
   restBaseUrl,
@@ -11,6 +9,8 @@ import {
   useConfig,
   type Order,
 } from '@openmrs/esm-framework';
+import { useTranslation } from 'react-i18next';
+import { mutate } from 'swr';
 import { type Config } from '../../config-schema';
 import { setFulfillerStatus } from '../../laboratory-resource';
 

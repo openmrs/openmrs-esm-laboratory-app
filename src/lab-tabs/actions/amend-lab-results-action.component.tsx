@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@carbon/react';
-import { useTranslation } from 'react-i18next';
 import { showModal, type Order } from '@openmrs/esm-framework';
+import { useTranslation } from 'react-i18next';
 import styles from './actions.scss';
 
 interface AmendLabResultsActionMenuProps {
