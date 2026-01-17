@@ -1,4 +1,4 @@
-export const getStatusColor = (fulfillerStatus: string) => {
+export const getStatusColor = (fulfillerStatus: string): string => {
   if (fulfillerStatus === 'COMPLETED') {
     return 'green';
   } else if (fulfillerStatus === 'IN_PROGRESS') {
