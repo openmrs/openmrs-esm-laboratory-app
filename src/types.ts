@@ -16,17 +16,18 @@ export interface FlattenedOrder {
   dateActivated: string;
   fulfillerStatus: FulfillerStatus;
   urgency: OrderUrgency;
-  orderer: string;
-  instructions: string;
-  fulfillerComment: string;
+  orderer?: string;
+  instructions?: string;
+  fulfillerComment?: string;
 }
 
 export interface GroupedOrders {
   patientUuid: string;
-  patientId: string;
-  patientName: string;
-  patientAge: number;
-  patientSex: string;
+  patientId?: string;
+  patientName?: string;
+  patientAge?: number;
+  patientDob?: string;
+  patientSex?: string;
   totalOrders: number;
   orders: Array<FlattenedOrder>;
   originalOrders: Array<Order>;

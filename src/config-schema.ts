@@ -30,9 +30,10 @@ export const configSchema = {
       'Enable reviewing lab results before final approval. When enabled, lab results will be submitted for review before being approved and finalized.',
   },
 };
+
 export type Config = {
+  enableReviewingLabResultsBeforeApproval: boolean;
   laboratoryOrderTypeUuid: string;
   labTableColumns: Array<LabTableColumnName>;
   patientIdIdentifierTypeUuid: string;
-  enableReviewingLabResultsBeforeApproval: boolean;
 };

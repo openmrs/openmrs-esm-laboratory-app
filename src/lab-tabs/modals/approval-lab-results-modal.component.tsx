@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
 import { ExtensionSlot, showNotification, showSnackbar, useAbortController, type Order } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
-import { setFulfillerStatus, useInvalidateLabOrders } from '../../laboratory-resource';
+import { setFulfillerStatus, useInvalidateLabOrders } from '../../laboratory.resource';
 
 interface ApproveLabResultsModal {
   closeModal: () => void;

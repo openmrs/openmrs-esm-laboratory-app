@@ -2,10 +2,10 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { showSnackbar, showNotification, type Order } from '@openmrs/esm-framework';
-import { setFulfillerStatus, useInvalidateLabOrders } from '../../laboratory-resource';
+import { setFulfillerStatus, useInvalidateLabOrders } from '../../laboratory.resource';
 import PickupLabRequestModal from './pickup-lab-request-modal.component';
 
-jest.mock('../../laboratory-resource', () => ({
+jest.mock('../../laboratory.resource', () => ({
   setFulfillerStatus: jest.fn(),
   useInvalidateLabOrders: jest.fn(),
 }));

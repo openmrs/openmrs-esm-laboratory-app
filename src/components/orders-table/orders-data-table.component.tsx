@@ -22,22 +22,14 @@ import {
   TableToolbarSearch,
   Tile,
 } from '@carbon/react';
-import {
-  ExtensionSlot,
-  formatDate,
-  parseDate,
-  type Patient,
-  showModal,
-  useConfig,
-  usePagination,
-} from '@openmrs/esm-framework';
+import { ExtensionSlot, formatDate, parseDate, showModal, useConfig, usePagination } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
 import { type FulfillerStatus, type FlattenedOrder, type Order } from '../../types';
-import { useLabOrders } from '../../laboratory-resource';
+import { type Config } from '../../config-schema';
+import { useLabOrders } from '../../laboratory.resource';
 import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
 import styles from './orders-data-table.scss';
-import { type Config } from '../../config-schema';
 
 const labTableColumnSpec = {
   name: {
@@ -87,7 +79,6 @@ const labTableColumnSpec = {
 export interface OrdersDataTableProps {
   /* Whether the data table should include a status filter dropdown */
   useFilter?: boolean;
-  actionsSlotName?: string;
   excludeColumns?: Array<string>;
   fulfillerStatus?: FulfillerStatus;
   newOrdersOnly?: boolean;
@@ -162,9 +153,9 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
       const lowerSearchString = searchString.toLowerCase();
       return groupedOrdersByPatient.filter(
         (orderGroup) =>
-          (labTableColumns.includes('name') && orderGroup.patientName.toLowerCase().includes(lowerSearchString)) ||
+          (labTableColumns.includes('name') && orderGroup.patientName?.toLowerCase().includes(lowerSearchString)) ||
           (labTableColumns.includes('patientId') && orderGroup.patientId?.toLowerCase().includes(lowerSearchString)) ||
-          orderGroup.orders.some((order) => order.orderNumber.toLowerCase().includes(lowerSearchString)),
+          orderGroup.orders.some((order) => order.orderNumber?.toLowerCase().includes(lowerSearchString)),
       );
     }
 
@@ -341,7 +332,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
               page={currentPage}
               pageSize={currentPageSize}
               pageSizes={pageSizes}
-              totalItems={groupedOrdersByPatient?.length}
+              totalItems={searchResults?.length}
               className={styles.pagination}
               onChange={({ pageSize, page }) => {
                 if (pageSize !== currentPageSize) setPageSize(pageSize);
