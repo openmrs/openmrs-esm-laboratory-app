@@ -18,14 +18,14 @@ export const OrdersDateRangePicker = () => {
     <div className={styles.datePickerWrapper}>
       <p>{t('dateRange', 'Date range')}:</p>
       <OpenmrsDateRangePicker
-        value={dateRange}
-        onChange={(dates: [Date, Date]) => setDateRange(dates)}
-        id="ordersDateRangePicker"
         data-testid="ordersDateRangePicker"
+        endName="end"
+        id="ordersDateRangePicker"
         labelText=""
         maxDate={currentDate}
+        onChange={(dates: [Date, Date]) => setDateRange(dates)}
         startName="start"
-        endName="end"
+        value={dateRange}
       />
     </div>
   );
