@@ -48,7 +48,7 @@ test('Reject a lab request', async ({ page }) => {
   });
 
   await test.step('Then I should see the rejection modal with the test type', async () => {
-    await expect(page.getByText(/Reject lab request/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Reject lab request/ })).toBeVisible();
     await expect(page.getByText(/Test type:/i)).toBeVisible();
   });
 
@@ -76,7 +76,13 @@ test('Reject a lab request', async ({ page }) => {
 });
 
 test.afterEach(async ({ api }) => {
-  await endVisit(api, visit);
-  await deleteEncounter(api, encounter.uuid);
-  await deleteTestOrder(api, testOrder.uuid);
+  if (visit) {
+    await endVisit(api, visit);
+  }
+  if (encounter?.uuid) {
+    await deleteEncounter(api, encounter.uuid);
+  }
+  if (testOrder?.uuid) {
+    await deleteTestOrder(api, testOrder.uuid);
+  }
 });

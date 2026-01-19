@@ -57,7 +57,13 @@ test('View test orders', async ({ page }) => {
 });
 
 test.afterEach(async ({ api }) => {
-  await endVisit(api, visit);
-  await deleteEncounter(api, encounter.uuid);
-  await deleteTestOrder(api, testOrder.uuid);
+  if (visit) {
+    await endVisit(api, visit);
+  }
+  if (encounter?.uuid) {
+    await deleteEncounter(api, encounter.uuid);
+  }
+  if (testOrder?.uuid) {
+    await deleteTestOrder(api, testOrder.uuid);
+  }
 });
