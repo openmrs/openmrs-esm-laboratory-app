@@ -11,7 +11,7 @@ import {
 } from '@carbon/react';
 import { capitalize } from 'lodash-es';
 import { ExtensionSlot, formatDate, parseDate } from '@openmrs/esm-framework';
-import { type GroupedOrders, type OrderAction } from '../../types';
+import { type GroupedOrders } from '../../types';
 import styles from './list-order-details.scss';
 
 type OrderDetailsRowProps = {
@@ -21,7 +21,6 @@ type OrderDetailsRowProps = {
 
 export interface ListOrdersDetailsProps {
   groupedOrders: GroupedOrders;
-  actions: Array<OrderAction>;
 }
 
 const OrderDetailRow = ({ label, value }: OrderDetailsRowProps) => {

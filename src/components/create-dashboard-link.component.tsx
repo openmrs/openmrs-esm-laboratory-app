@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 export interface DashboardLinkConfig {
   name: string;
   title: string;
-  slot?: string;
 }
 
 function DashboardExtension({ dashboardLinkConfig }: { dashboardLinkConfig: DashboardLinkConfig }) {

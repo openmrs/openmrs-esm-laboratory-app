@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import OrdersDataTable from './orders-data-table.component';
 import { useConfig, getDefaultsFromConfigSchema, type Order, type Patient } from '@openmrs/esm-framework';
 import { configSchema, type Config } from '../../config-schema';
-import { useLabOrders, type UseLabOrdersParams } from '../../laboratory-resource';
+import { useLabOrders } from '../../laboratory-resource';
 
 jest.mock('../../laboratory-resource', () => ({
   useLabOrders: jest.fn(),
@@ -13,7 +13,7 @@ jest.mock('../../laboratory-resource', () => ({
 const mockUseConfig = jest.mocked(useConfig<Config>);
 const mockUseLabOrders = jest.mocked(useLabOrders);
 
-function mockUseLabOrdersImplementation(props: Partial<UseLabOrdersParams>) {
+function mockUseLabOrdersImplementation(props: Parameters<typeof useLabOrders>[0]) {
   const mockPatient1: Partial<Patient> = {
     uuid: 'patient-uuid-1',
     display: 'PAT-001 - Pete Seeger',

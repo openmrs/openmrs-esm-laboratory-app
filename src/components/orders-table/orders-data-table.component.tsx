@@ -32,7 +32,7 @@ import {
   usePagination,
 } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
-import { type FulfillerStatus, type FlattenedOrder, type OrderAction, type Order } from '../../types';
+import { type FulfillerStatus, type FlattenedOrder, type Order } from '../../types';
 import { useLabOrders } from '../../laboratory-resource';
 import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
@@ -92,7 +92,6 @@ export interface OrdersDataTableProps {
   fulfillerStatus?: FulfillerStatus;
   newOrdersOnly?: boolean;
   excludeCanceledAndDiscontinuedOrders?: boolean;
-  actions?: Array<OrderAction>;
 }
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
@@ -312,7 +311,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
                   {row.isExpanded ? (
                     <TableExpandedRow colSpan={headers.length + 2}>
                       <ListOrderDetails
-                        actions={props.actions}
                         groupedOrders={groupedOrdersByPatient.find((item) => item.patientUuid === row.id)}
                       />
                     </TableExpandedRow>

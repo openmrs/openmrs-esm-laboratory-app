@@ -32,11 +32,6 @@ export interface GroupedOrders {
   originalOrders: Array<Order>;
 }
 
-export interface OrderAction {
-  actionName: string;
-  order: 0 | number;
-}
-
 export type DateFilterContext = {
   dateRange: Array<Date>;
   setDateRange: React.Dispatch<React.SetStateAction<Array<Date>>>;

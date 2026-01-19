@@ -10,7 +10,7 @@ const useLabOrdersDefaultParams: UseLabOrdersParams = {
   includePatientId: false,
 };
 
-export interface UseLabOrdersParams {
+interface UseLabOrdersParams {
   status: FulfillerStatus;
   newOrdersOnly: boolean;
   excludeCanceled: boolean;
