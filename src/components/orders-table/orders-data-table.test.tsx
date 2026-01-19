@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import OrdersDataTable from './orders-data-table.component';
 import { useConfig, getDefaultsFromConfigSchema, type Order, type Patient } from '@openmrs/esm-framework';
 import { configSchema, type Config } from '../../config-schema';
 import { useLabOrders } from '../../laboratory-resource';
+import OrdersDataTable from './orders-data-table.component';
 
 jest.mock('../../laboratory-resource', () => ({
   useLabOrders: jest.fn(),

@@ -70,7 +70,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                 label={t('orderDate', 'Order date:')}
                 value={formatDate(parseDate(order.dateActivated))}
               />
-              <OrderDetailRow label={t('orderedBy', 'Ordered By:')} value={order.orderer.display} />
+              <OrderDetailRow label={t('orderedBy', 'Ordered By:')} value={order.orderer?.display} />
               <OrderDetailRow
                 label={t('orderInstructions', 'Instructions:')}
                 value={order.instructions ?? t('NoInstructionLeft', 'No instructions are provided.')}
