@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import { type Order, type Visit } from '@openmrs/esm-framework';
 import {
   generateRandomTestOrder,
   deleteTestOrder,
@@ -9,9 +10,7 @@ import {
   endVisit,
 } from '../commands';
 import { test } from '../core';
-import { type Visit } from '@openmrs/esm-framework';
 import { type Encounter, type Provider } from '../commands/types';
-import { type Order } from '@openmrs/esm-patient-common-lib';
 import { LaboratoryPage } from '../pages';
 
 let testOrder: Order;
@@ -28,49 +27,53 @@ test.beforeEach(async ({ api, patient }) => {
   fullName = patient.person?.display;
 });
 
-test.describe('Running laboratory order tests sequentially', () => {
+test.describe('Laboratory order workflow', () => {
   test('Add lab results via the lab app', async ({ page }) => {
     const laboratoryPage = new LaboratoryPage(page);
-    await test.step('When I visit the Laboratory section', async () => {
+
+    await test.step('Given I navigate to the laboratory page', async () => {
       await laboratoryPage.goTo();
       await expect(page).toHaveURL(process.env.E2E_BASE_URL + `/spa/home/laboratory`);
     });
 
-    await test.step('And I select the patient and the order for which the results need to be added', async () => {
+    await test.step('When I expand the patient row on the Tests ordered tab', async () => {
       await expect(page.getByRole('tab', { name: 'Tests ordered' })).toBeVisible();
-      await page
-        .getByRole('row', { name: new RegExp(`Expand current row ${fullName}`) })
-        .getByLabel('Expand current row')
-        .click();
+      await laboratoryPage.expandPatientRow(fullName);
+    });
+
+    await test.step('Then I should see the order with status "not picked"', async () => {
       await expect(page.getByText(/Status:Order not picked/i)).toBeVisible();
       await expect(page.getByRole('cell', { name: 'serum glucose' })).toBeVisible();
     });
 
-    await test.step('Then I click the Pick up lab request button', async () => {
+    await test.step('When I click Pick Lab Request and confirm', async () => {
       await page.getByRole('button', { name: 'Pick Lab Request' }).first().click();
       await page.getByRole('button', { name: 'Pick up lab request' }).click();
+    });
+
+    await test.step('Then I should see a success notification', async () => {
       await expect(page.getByText(/You have successfully picked an order/i)).toBeVisible();
     });
 
-    await test.step('Then I click In progress tab', async () => {
-      await page.getByRole('tab', { name: 'In progress' }).click();
+    await test.step('When I navigate to the In progress tab', async () => {
+      await laboratoryPage.navigateToTab('In progress');
     });
 
-    await test.step('And I select the patient and the order for which the results need to be added', async () => {
-      await page
-        .getByRole('row', { name: new RegExp(`Expand current row ${fullName}`) })
-        .getByRole('button', { name: 'Expand current row' })
-        .click();
-      await expect(page.getByText('Inprogress')).toBeVisible();
+    await test.step('And I expand the patient row', async () => {
+      await laboratoryPage.expandPatientRow(fullName);
+    });
+
+    await test.step('Then I should see the order with In progress status', async () => {
+      await expect(page.getByLabel('Structured list section').getByText('In progress')).toBeVisible();
       await expect(page.getByRole('cell', { name: 'serum glucose' })).toBeVisible();
     });
 
-    await test.step('Then I click Add Lab results form action and enters the result value', async () => {
+    await test.step('When I click Add lab results and enter a value', async () => {
       await page.getByRole('button', { name: 'Add lab results' }).click();
       await page.getByRole('spinbutton', { name: 'serum glucose (>= 0' }).fill('35');
     });
 
-    await test.step('And I click on the `Save and close` button', async () => {
+    await test.step('And I save the results', async () => {
       await page.getByRole('button', { name: 'Save and close' }).click();
     });
 
@@ -78,15 +81,15 @@ test.describe('Running laboratory order tests sequentially', () => {
       await expect(page.getByText(/Lab results for .* have been successfully updated/i)).toBeVisible();
     });
 
-    await test.step('Then I click the completed tab', async () => {
-      await page.getByRole('tab', { name: 'Completed' }).click();
+    await test.step('When I navigate to the Completed tab', async () => {
+      await laboratoryPage.navigateToTab('Completed');
     });
 
-    await test.step('And I select the patient and confirm the result was added with completed status', async () => {
-      await page
-        .getByRole('row', { name: new RegExp(`Expand current row ${fullName}`) })
-        .getByRole('button', { name: 'Expand current row' })
-        .click();
+    await test.step('And I expand the patient row', async () => {
+      await laboratoryPage.expandPatientRow(fullName);
+    });
+
+    await test.step('Then I should see the order with Completed status', async () => {
       await expect(page.getByLabel('Structured list section').getByText('Completed')).toBeVisible();
       await expect(page.getByRole('cell', { name: 'serum glucose' })).toBeVisible();
     });
@@ -94,7 +97,13 @@ test.describe('Running laboratory order tests sequentially', () => {
 });
 
 test.afterEach(async ({ api }) => {
-  await endVisit(api, visit);
-  await deleteEncounter(api, encounter.uuid);
-  await deleteTestOrder(api, testOrder.uuid);
+  if (visit) {
+    await endVisit(api, visit);
+  }
+  if (encounter?.uuid) {
+    await deleteEncounter(api, encounter.uuid);
+  }
+  if (testOrder?.uuid) {
+    await deleteTestOrder(api, testOrder.uuid);
+  }
 });

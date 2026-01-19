@@ -1,8 +1,14 @@
+/* eslint-disable no-console */
 import { devices, type PlaywrightTestConfig } from '@playwright/test';
 import { config as dotenvConfig } from 'dotenv';
 import { resolve } from 'node:path';
+
+// Suppress dotenv promotional messages
+const originalLog = console.log;
+console.log = () => {};
 dotenvConfig({ path: resolve(process.cwd(), '.env') });
 dotenvConfig();
+console.log = originalLog;
 
 // See https://playwright.dev/docs/test-configuration.
 const config: PlaywrightTestConfig = {

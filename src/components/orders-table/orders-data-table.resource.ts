@@ -1,5 +1,5 @@
-import { type Order } from '@openmrs/esm-patient-common-lib';
 import { useMemo } from 'react';
+import { type Order } from '@openmrs/esm-framework';
 
 interface CustomOrder extends Omit<Order, 'orderer' | 'patient'> {
   patient: string;

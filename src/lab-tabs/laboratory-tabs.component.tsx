@@ -34,7 +34,7 @@ const LaboratoryOrdersTabs: React.FC = () => {
 
                 if (name && title) {
                   return (
-                    <Tab key={index} className={styles.tab} id={`${title || index}-tab`}>
+                    <Tab key={extension.id} className={styles.tab} id={`${extension.id}-tab`}>
                       {t(title, {
                         ns: extension.moduleName,
                         defaultValue: title,
@@ -47,9 +47,9 @@ const LaboratoryOrdersTabs: React.FC = () => {
               })}
             </TabList>
             <TabPanels>
-              {filteredExtensions.map((extension, index) => {
+              {filteredExtensions.map((extension) => {
                 return (
-                  <TabPanel key={`${extension.meta.title}-tab-${index}`}>
+                  <TabPanel key={extension.id}>
                     <ComponentContext.Provider
                       key={extension.id}
                       value={{

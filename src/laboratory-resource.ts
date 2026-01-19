@@ -1,8 +1,9 @@
+import { useCallback } from 'react';
 import dayjs from 'dayjs';
-import useSWR from 'swr';
-import { openmrsFetch, restBaseUrl, useAppContext, useConfig } from '@openmrs/esm-framework';
-import { type Order } from '@openmrs/esm-patient-common-lib';
+import useSWR, { mutate } from 'swr';
+import { openmrsFetch, type Order, restBaseUrl, useAppContext, useConfig } from '@openmrs/esm-framework';
 import type { DateFilterContext, FulfillerStatus } from './types';
+import { type Config } from './config-schema';
 
 const useLabOrdersDefaultParams: UseLabOrdersParams = {
   status: null,
@@ -11,7 +12,7 @@ const useLabOrdersDefaultParams: UseLabOrdersParams = {
   includePatientId: false,
 };
 
-export interface UseLabOrdersParams {
+interface UseLabOrdersParams {
   status: FulfillerStatus;
   newOrdersOnly: boolean;
   excludeCanceled: boolean;
@@ -83,4 +84,20 @@ export function rejectLabOrder(orderId: string, comment: string, abortController
       fulfillerComment: comment,
     },
   });
+}
+
+/**
+ * Custom hook that returns a function to invalidate and refetch all lab orders.
+ * Use this after mutations to ensure the UI reflects the latest data.
+ */
+export function useInvalidateLabOrders() {
+  const { laboratoryOrderTypeUuid } = useConfig<Config>();
+
+  return useCallback(() => {
+    mutate(
+      (key) => typeof key === 'string' && key.startsWith(`${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}`),
+      undefined,
+      { revalidate: true },
+    );
+  }, [laboratoryOrderTypeUuid]);
 }

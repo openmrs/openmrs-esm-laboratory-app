@@ -11,7 +11,7 @@ import {
 } from '@carbon/react';
 import { capitalize } from 'lodash-es';
 import { ExtensionSlot, formatDate, parseDate } from '@openmrs/esm-framework';
-import { type GroupedOrders, type OrderAction } from '../../types';
+import { type GroupedOrders } from '../../types';
 import styles from './list-order-details.scss';
 
 type OrderDetailsRowProps = {
@@ -21,7 +21,6 @@ type OrderDetailsRowProps = {
 
 export interface ListOrdersDetailsProps {
   groupedOrders: GroupedOrders;
-  actions: Array<OrderAction>;
 }
 
 const OrderDetailRow = ({ label, value }: OrderDetailsRowProps) => {
@@ -62,7 +61,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                     className={styles.statusPill}
                     data-status={(order.fulfillerStatus ?? 'Order not picked').replace('_', ' ')}
                   >
-                    {capitalize(order.fulfillerStatus?.replace('_', '')) || t('orderNotPicked', 'Order not picked')}
+                    {capitalize(order.fulfillerStatus?.replace('_', ' ')) || t('orderNotPicked', 'Order not picked')}
                   </div>
                 }
               />
@@ -71,7 +70,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                 label={t('orderDate', 'Order date:')}
                 value={formatDate(parseDate(order.dateActivated))}
               />
-              <OrderDetailRow label={t('orderedBy', 'Ordered By:')} value={order.orderer.display} />
+              <OrderDetailRow label={t('orderedBy', 'Ordered By:')} value={order.orderer?.display} />
               <OrderDetailRow
                 label={t('orderInstructions', 'Instructions:')}
                 value={order.instructions ?? t('NoInstructionLeft', 'No instructions are provided.')}
