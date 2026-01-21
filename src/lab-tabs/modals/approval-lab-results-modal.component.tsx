@@ -1,18 +1,8 @@
 import React, { useState } from 'react';
 import { Button, ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
-import {
-  ExtensionSlot,
-  restBaseUrl,
-  showNotification,
-  showSnackbar,
-  useAbortController,
-  useConfig,
-  type Order,
-} from '@openmrs/esm-framework';
+import { ExtensionSlot, showNotification, showSnackbar, useAbortController, type Order } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
-import { mutate } from 'swr';
-import { type Config } from '../../config-schema';
-import { setFulfillerStatus } from '../../laboratory-resource';
+import { setFulfillerStatus, useInvalidateLabOrders } from '../../laboratory.resource';
 
 interface ApproveLabResultsModal {
   closeModal: () => void;
@@ -22,19 +12,14 @@ interface ApproveLabResultsModal {
 const ApproveLabResultsModal: React.FC<ApproveLabResultsModal> = ({ order, closeModal }) => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { laboratoryOrderTypeUuid } = useConfig<Config>();
   const abortController = useAbortController();
+  const invalidateLabOrders = useInvalidateLabOrders();
 
   const handleApproval = () => {
     setIsSubmitting(true);
     setFulfillerStatus(order.uuid, 'COMPLETED', abortController).then(
       () => {
-        mutate(
-          (key) =>
-            typeof key === 'string' && key.startsWith(`${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}`),
-          undefined,
-          { revalidate: true },
-        );
+        invalidateLabOrders();
         setIsSubmitting(false);
         closeModal();
         showSnackbar({

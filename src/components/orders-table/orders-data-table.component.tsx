@@ -22,22 +22,14 @@ import {
   TableToolbarSearch,
   Tile,
 } from '@carbon/react';
-import {
-  ExtensionSlot,
-  formatDate,
-  parseDate,
-  type Patient,
-  showModal,
-  useConfig,
-  usePagination,
-} from '@openmrs/esm-framework';
+import { ExtensionSlot, formatDate, parseDate, showModal, useConfig, usePagination } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
-import { type FulfillerStatus, type FlattenedOrder, type OrderAction, type Order } from '../../types';
-import { useLabOrders } from '../../laboratory-resource';
+import { type FulfillerStatus, type FlattenedOrder, type Order } from '../../types';
+import { type Config } from '../../config-schema';
+import { useLabOrders } from '../../laboratory.resource';
 import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
 import styles from './orders-data-table.scss';
-import { type Config } from '../../config-schema';
 
 const labTableColumnSpec = {
   name: {
@@ -87,12 +79,10 @@ const labTableColumnSpec = {
 export interface OrdersDataTableProps {
   /* Whether the data table should include a status filter dropdown */
   useFilter?: boolean;
-  actionsSlotName?: string;
   excludeColumns?: Array<string>;
   fulfillerStatus?: FulfillerStatus;
   newOrdersOnly?: boolean;
   excludeCanceledAndDiscontinuedOrders?: boolean;
-  actions?: Array<OrderAction>;
 }
 
 const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
@@ -133,20 +123,20 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
 
       return patientUuids.map((patientUuid) => {
         const labOrdersForPatient = labOrders.filter((order) => order.patient.uuid === patientUuid);
-        const patient: Patient = labOrdersForPatient[0]?.patient;
+        const patient = labOrdersForPatient[0]?.patient;
         const flattenedLabOrdersForPatient = flattenedLabOrders.filter((order) => order.patientUuid === patientUuid);
         return {
-          patientId: patient.identifiers?.find(
+          patientId: patient?.identifiers?.find(
             (identifier) =>
               identifier.preferred &&
               !identifier.voided &&
               identifier.identifierType.uuid === patientIdIdentifierTypeUuid,
           )?.identifier,
           patientUuid: patientUuid,
-          patientName: patient.person.display,
-          patientAge: patient.person.age,
-          patientDob: formatDate(parseDate(patient.person.birthdate)),
-          patientSex: patient.person.gender,
+          patientName: patient?.person?.display,
+          patientAge: patient?.person?.age,
+          patientDob: patient?.person?.birthdate ? formatDate(parseDate(patient.person.birthdate)) : undefined,
+          patientSex: patient?.person?.gender,
           totalOrders: flattenedLabOrdersForPatient.length,
           orders: flattenedLabOrdersForPatient,
           originalOrders: labOrdersForPatient,
@@ -163,9 +153,9 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
       const lowerSearchString = searchString.toLowerCase();
       return groupedOrdersByPatient.filter(
         (orderGroup) =>
-          (labTableColumns.includes('name') && orderGroup.patientName.toLowerCase().includes(lowerSearchString)) ||
+          (labTableColumns.includes('name') && orderGroup.patientName?.toLowerCase().includes(lowerSearchString)) ||
           (labTableColumns.includes('patientId') && orderGroup.patientId?.toLowerCase().includes(lowerSearchString)) ||
-          orderGroup.orders.some((order) => order.orderNumber.toLowerCase().includes(lowerSearchString)),
+          orderGroup.orders.some((order) => order.orderNumber?.toLowerCase().includes(lowerSearchString)),
       );
     }
 
@@ -198,14 +188,15 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         return { header: t(spec.headerLabelKey, spec.headerLabelDefault), key: spec.key };
       })
       .filter(Boolean)
-      .map((column, index) => ({ ...column, id: index }));
+      .map((column) => ({ ...column, id: column.key }));
   }, [t, flattenedLabOrders, labTableColumns]);
 
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
   const { goTo, results: paginatedLabOrders, currentPage } = usePagination(searchResults, currentPageSize);
 
-  const handleOrderStatusChange = ({ selectedItem }) => setFilter(selectedItem.value);
+  const handleOrderStatusChange = ({ selectedItem }: { selectedItem: { value: FulfillerStatus; display: string } }) =>
+    setFilter(selectedItem.value);
 
   const handlePrintModal = (orders: Array<Order>) => {
     const completedOrders = orders.filter((order) => order.fulfillerStatus === 'COMPLETED');
@@ -312,7 +303,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
                   {row.isExpanded ? (
                     <TableExpandedRow colSpan={headers.length + 2}>
                       <ListOrderDetails
-                        actions={props.actions}
                         groupedOrders={groupedOrdersByPatient.find((item) => item.patientUuid === row.id)}
                       />
                     </TableExpandedRow>

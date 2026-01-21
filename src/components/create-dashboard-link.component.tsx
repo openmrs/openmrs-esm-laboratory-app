@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 export interface DashboardLinkConfig {
   name: string;
   title: string;
-  slot?: string;
 }
 
 function DashboardExtension({ dashboardLinkConfig }: { dashboardLinkConfig: DashboardLinkConfig }) {
@@ -15,16 +14,15 @@ function DashboardExtension({ dashboardLinkConfig }: { dashboardLinkConfig: Dash
   const location = useLocation();
   const spaBasePath = `${window.spaBase}/home`;
 
-  const navLink = useMemo(() => {
-    const pathArray = location.pathname.split('/home');
-    const lastElement = pathArray[pathArray.length - 1];
-    return decodeURIComponent(lastElement);
-  }, [location.pathname]);
+  const isActive = useMemo(() => {
+    const pathSegments = location.pathname.split('/').map((segment) => decodeURIComponent(segment));
+    return pathSegments.includes(name);
+  }, [location.pathname, name]);
 
   return (
     <ConfigurableLink
       to={`${spaBasePath}/${name}`}
-      className={`cds--side-nav__link ${navLink.match(name) && 'active-left-nav-link'}`}
+      className={`cds--side-nav__link ${isActive && 'active-left-nav-link'}`}
     >
       {t(title)}
     </ConfigurableLink>
