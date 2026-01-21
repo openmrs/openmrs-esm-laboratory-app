@@ -14,6 +14,7 @@ export interface FlattenedOrder {
   orderNumber: string;
   display: string;
   dateActivated: string;
+  rawDateActivated: string;
   fulfillerStatus: FulfillerStatus;
   urgency: OrderUrgency;
   orderer: string;
@@ -30,6 +31,8 @@ export interface GroupedOrders {
   totalOrders: number;
   orders: Array<FlattenedOrder>;
   originalOrders: Array<Order>;
+  _hasUrgentOrder: boolean;
+  _mostRecentOrderDate: number;
 }
 
 export interface OrderAction {

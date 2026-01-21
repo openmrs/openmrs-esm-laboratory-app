@@ -116,6 +116,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           patientUuid: order.patient.uuid,
           orderNumber: order.orderNumber,
           dateActivated: formatDate(parseDate(order.dateActivated)),
+          rawDateActivated: order.dateActivated,
           fulfillerStatus: order.fulfillerStatus,
           urgency: order.urgency,
           orderer: order.orderer?.display,
@@ -127,42 +128,55 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     );
   }, [labOrders]);
 
-  const hasUrgentOrder = (patientOrders: Array<FlattenedOrder>): boolean => {
-    return patientOrders.some((order) => order.urgency === 'STAT');
-  };
-
-  const getMostRecentOrderDate = (orders: Array<Order>): number => {
-    return Math.max(...orders.map((order) => new Date(order.dateActivated).getTime()));
+  const orderComparator = (orderA: Order | FlattenedOrder, orderB: Order | FlattenedOrder) => {
+    if (orderA.urgency === 'STAT' && orderB.urgency !== 'STAT') {
+      return -1;
+    }
+    if (orderA.urgency !== 'STAT' && orderB.urgency === 'STAT') {
+      return 1;
+    }
+    const dateA = 'rawDateActivated' in orderA ? orderA.rawDateActivated : orderA.dateActivated;
+    const dateB = 'rawDateActivated' in orderB ? orderB.rawDateActivated : orderB.dateActivated;
+    return new Date(dateB).getTime() - new Date(dateA).getTime();
   };
 
   const groupedOrdersByPatient = useMemo(() => {
     if (labOrders && labOrders.length > 0) {
-      const patientUuids = [...new Set(labOrders.map((order) => order.patient.uuid))];
+      const ordersByPatient = new Map<
+        string,
+        { originalOrders: Array<Order>; flattenedOrders: Array<FlattenedOrder>; patient: Patient }
+      >();
 
-      const groupedOrders = patientUuids.map((patientUuid) => {
-        const labOrdersForPatient = labOrders.filter((order) => order.patient.uuid === patientUuid);
-        const patient: Patient = labOrdersForPatient[0]?.patient;
-        const flattenedLabOrdersForPatient = flattenedLabOrders.filter((order) => order.patientUuid === patientUuid);
-        
-        const sortedFlattenedOrders = flattenedLabOrdersForPatient.sort((orderA, orderB) => {
-          if (orderA.urgency === 'STAT' && orderB.urgency !== 'STAT') {
-            return -1;
-          }
-          if (orderA.urgency !== 'STAT' && orderB.urgency === 'STAT') {
-            return 1;
-          }
-          return new Date(orderB.dateActivated).getTime() - new Date(orderA.dateActivated).getTime();
-        });
+      labOrders.forEach((order) => {
+        const patientUuid = order.patient.uuid;
+        if (!ordersByPatient.has(patientUuid)) {
+          ordersByPatient.set(patientUuid, {
+            originalOrders: [],
+            flattenedOrders: [],
+            patient: order.patient,
+          });
+        }
+        ordersByPatient.get(patientUuid).originalOrders.push(order);
+      });
 
-        const sortedOriginalOrders = labOrdersForPatient.sort((orderA, orderB) => {
-          if (orderA.urgency === 'STAT' && orderB.urgency !== 'STAT') {
-            return -1;
-          }
-          if (orderA.urgency !== 'STAT' && orderB.urgency === 'STAT') {
-            return 1;
-          }
-          return new Date(orderB.dateActivated).getTime() - new Date(orderA.dateActivated).getTime();
-        });
+      flattenedLabOrders.forEach((flattenedOrder) => {
+        const group = ordersByPatient.get(flattenedOrder.patientUuid);
+        if (group) {
+          group.flattenedOrders.push(flattenedOrder);
+        }
+      });
+
+      const groupedOrders = Array.from(ordersByPatient.entries()).map(([patientUuid, group]) => {
+        const { originalOrders, flattenedOrders, patient } = group;
+
+        const sortedFlattenedOrders = [...flattenedOrders].sort(orderComparator);
+        const sortedOriginalOrders = [...originalOrders].sort(orderComparator);
+
+        const hasUrgentOrder = sortedFlattenedOrders.some((order) => order.urgency === 'STAT');
+        const mostRecentOrderDate =
+          sortedOriginalOrders.length > 0
+            ? Math.max(...sortedOriginalOrders.map((order) => new Date(order.dateActivated).getTime()))
+            : 0;
 
         return {
           patientId: patient.identifiers?.find(
@@ -179,24 +193,20 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           totalOrders: sortedFlattenedOrders.length,
           orders: sortedFlattenedOrders,
           originalOrders: sortedOriginalOrders,
+          _hasUrgentOrder: hasUrgentOrder,
+          _mostRecentOrderDate: mostRecentOrderDate,
         };
       });
 
+      // Sort patients using pre-computed metadata
       return groupedOrders.sort((patientA, patientB) => {
-        const patientAHasUrgentOrder = hasUrgentOrder(patientA.orders);
-        const patientBHasUrgentOrder = hasUrgentOrder(patientB.orders);
-
-        if (patientAHasUrgentOrder && !patientBHasUrgentOrder) {
+        if (patientA._hasUrgentOrder && !patientB._hasUrgentOrder) {
           return -1;
         }
-        if (!patientAHasUrgentOrder && patientBHasUrgentOrder) {
+        if (!patientA._hasUrgentOrder && patientB._hasUrgentOrder) {
           return 1;
         }
-
-        const patientAMostRecentDate = getMostRecentOrderDate(patientA.originalOrders);
-        const patientBMostRecentDate = getMostRecentOrderDate(patientB.originalOrders);
-
-        return patientBMostRecentDate - patientAMostRecentDate;
+        return patientB._mostRecentOrderDate - patientA._mostRecentOrderDate;
       });
     } else {
       return [];
