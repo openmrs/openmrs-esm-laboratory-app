@@ -17,17 +17,18 @@ export interface FlattenedOrder {
   rawDateActivated: string;
   fulfillerStatus: FulfillerStatus;
   urgency: OrderUrgency;
-  orderer: string;
-  instructions: string;
-  fulfillerComment: string;
+  orderer?: string;
+  instructions?: string;
+  fulfillerComment?: string;
 }
 
 export interface GroupedOrders {
   patientUuid: string;
-  patientId: string;
-  patientName: string;
-  patientAge: number;
-  patientSex: string;
+  patientId?: string;
+  patientName?: string;
+  patientAge?: number;
+  patientDob?: string;
+  patientSex?: string;
   totalOrders: number;
   orders: Array<FlattenedOrder>;
   originalOrders: Array<Order>;
@@ -35,12 +36,7 @@ export interface GroupedOrders {
   _mostRecentOrderDate: number;
 }
 
-export interface OrderAction {
-  actionName: string;
-  order: 0 | number;
-}
-
 export type DateFilterContext = {
-  dateRange: Array<Date>;
-  setDateRange: React.Dispatch<React.SetStateAction<Array<Date>>>;
+  dateRange: [Date, Date] | null;
+  setDateRange: React.Dispatch<React.SetStateAction<[Date, Date] | null>>;
 };

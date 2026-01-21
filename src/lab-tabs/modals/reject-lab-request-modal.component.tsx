@@ -1,17 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Form, ModalBody, ModalFooter, ModalHeader, TextArea, Layer } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
-import { mutate } from 'swr';
-import {
-  type Config,
-  type Order,
-  restBaseUrl,
-  showNotification,
-  showSnackbar,
-  useAbortController,
-  useConfig,
-} from '@openmrs/esm-framework';
-import { rejectLabOrder } from '../../laboratory-resource';
+import { type Order, showNotification, showSnackbar, useAbortController } from '@openmrs/esm-framework';
+import { rejectLabOrder, useInvalidateLabOrders } from '../../laboratory.resource';
 import styles from './reject-lab-request-modal.scss';
 
 interface RejectLabRequestModalProps {
@@ -24,19 +15,14 @@ const RejectLabRequestModal: React.FC<RejectLabRequestModalProps> = ({ order, cl
   const [fulfillerComment, setFulfillerComment] = useState('');
   const abortController = useAbortController();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { laboratoryOrderTypeUuid } = useConfig<Config>();
+  const invalidateLabOrders = useInvalidateLabOrders();
 
-  const handleRejectOrder = async (event) => {
+  const handleRejectOrder = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitting(true);
     rejectLabOrder(order.uuid, fulfillerComment, abortController).then(
       () => {
-        mutate(
-          (key) =>
-            typeof key === 'string' && key.startsWith(`${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}`),
-          undefined,
-          { revalidate: true },
-        );
+        invalidateLabOrders();
         setIsSubmitting(false);
         closeModal();
         showSnackbar({
