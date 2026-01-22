@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from '@carbon/react';
-import { mutate } from 'swr';
 import { useTranslation } from 'react-i18next';
+import { mutate } from 'swr';
 import { AddIcon, launchWorkspace2, restBaseUrl, useConfig } from '@openmrs/esm-framework';
-import { type Order } from '@openmrs/esm-patient-common-lib';
+import { type Order } from '@openmrs/esm-framework';
 import { type Config } from '../../config-schema';
 import styles from './actions.scss';
 
