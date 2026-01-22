@@ -2,17 +2,7 @@ import React from 'react';
 import OrdersDataTable from '../../components/orders-table/orders-data-table.component';
 
 const InProgressLabRequestsTable: React.FC = () => {
-  return (
-    <OrdersDataTable
-      excludeColumns={[]}
-      actionsSlotName="inprogress-tests-actions-slot"
-      fulfillerStatus="IN_PROGRESS"
-      actions={[
-        { actionName: 'labResultsForm', order: 0 },
-        { actionName: 'rejectLabRequest', order: 1 },
-      ]}
-    />
-  );
+  return <OrdersDataTable fulfillerStatus="IN_PROGRESS" />;
 };
 
 export default InProgressLabRequestsTable;

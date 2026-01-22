@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { devices, type PlaywrightTestConfig } from '@playwright/test';
 import { config as dotenvConfig } from 'dotenv';
 import { resolve } from 'node:path';
