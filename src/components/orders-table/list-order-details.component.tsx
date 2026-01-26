@@ -35,7 +35,7 @@ const OrderDetailRow = ({ label, value }: OrderDetailsRowProps) => {
     </StructuredListRow>
   );
 };
-const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders, fulfillerStatus }) => {
+const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) => {
   const { t } = useTranslation();
   const originalOrders = groupedOrders?.originalOrders ?? [];
 
@@ -84,7 +84,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders, ful
           {(order.fulfillerStatus === 'COMPLETED' || order.fulfillerStatus === 'DRAFT') && (
             <Accordion>
               <AccordionItem
-                open={fulfillerStatus === 'COMPLETED'}
+                open={order.fulfillerStatus === 'COMPLETED'}
                 title={<span className={styles.accordionTitle}>{t('viewTestResults', 'View test results')}</span>}
               >
                 <div className={styles.viewResults}>

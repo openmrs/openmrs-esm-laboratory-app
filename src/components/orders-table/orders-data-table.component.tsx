@@ -56,12 +56,6 @@ const labTableColumnSpec = {
     headerLabelDefault: 'Sex',
     key: 'patientSex',
   },
-  urgency: {
-    // t('urgency', 'Urgency')
-    headerLabelKey: 'urgency',
-    headerLabelDefault: 'Urgency',
-    key: 'urgency',
-  },
   totalOrders: {
     // t('totalOrders', 'Total Orders')
     headerLabelKey: 'totalOrders',
@@ -131,10 +125,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         const labOrdersForPatient = labOrders.filter((order) => order.patient.uuid === patientUuid);
         const patient = labOrdersForPatient[0]?.patient;
         const flattenedLabOrdersForPatient = flattenedLabOrders.filter((order) => order.patientUuid === patientUuid);
-        // Determine aggregated urgency: STAT if any order is STAT, otherwise ROUTINE
-        const hasStatOrder = labOrdersForPatient.some((order) => order.urgency === 'STAT');
-        const aggregatedUrgency = hasStatOrder ? 'STAT' : 'ROUTINE';
-
         return {
           patientId: patient?.identifiers?.find(
             (identifier) =>
@@ -230,11 +220,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     return paginatedLabOrders.map((groupedOrder) => ({
       ...groupedOrder,
       id: groupedOrder.patientUuid,
-      urgency: (
-        <span className={styles.urgencyTag} data-urgency={groupedOrder.urgency}>
-          {capitalize(groupedOrder.urgency.toLowerCase())}
-        </span>
-      ),
       action: groupedOrder.orders.some((o) => o.fulfillerStatus === 'COMPLETED') ? (
         <div className={styles.actionCell}>
           <OverflowMenu aria-label="Actions" flipped iconDescription="Actions">
@@ -319,7 +304,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
                     <TableExpandedRow colSpan={headers.length + 2}>
                       <ListOrderDetails
                         groupedOrders={groupedOrdersByPatient.find((item) => item.patientUuid === row.id)}
-                        fulfillerStatus={props.fulfillerStatus}
                       />
                     </TableExpandedRow>
                   ) : (
