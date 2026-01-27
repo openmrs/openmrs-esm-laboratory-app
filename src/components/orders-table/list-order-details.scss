@@ -41,10 +41,23 @@
   }
 }
 
+.orderDetailsCell {
+  &:first-child {
+    width: 30%;
+    min-width: layout.$spacing-13;
+  }
+
+  &:last-child {
+    width: 70%;
+  }
+}
+
 .orderDetailsWrapper {
+  table-layout: fixed;
+
   :global(.cds--structured-list-td) {
     align-content: center;
-    padding: layout.$spacing-03 !important;
+    padding: layout.$spacing-03 layout.$spacing-05;
   }
 }
 
