@@ -172,9 +172,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
 
         const hasUrgentOrder = sortedFlattenedOrders.some((order) => order.urgency === 'STAT');
         const mostRecentOrderDate =
-          sortedOriginalOrders.length > 0
-            ? Math.max(...sortedOriginalOrders.map((order) => new Date(order.dateActivated).getTime()))
-            : 0;
+          sortedOriginalOrders.length > 0 ? new Date(sortedOriginalOrders[0].dateActivated).getTime() : 0;
 
         return {
           patientId: patient?.identifiers?.find(
