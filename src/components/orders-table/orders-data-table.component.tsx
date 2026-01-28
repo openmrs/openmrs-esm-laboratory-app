@@ -131,9 +131,13 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         const labOrdersForPatient = labOrders.filter((order) => order.patient.uuid === patientUuid);
         const patient = labOrdersForPatient[0]?.patient;
         const flattenedLabOrdersForPatient = flattenedLabOrders.filter((order) => order.patientUuid === patientUuid);
-        // Determine aggregated urgency: STAT if any order is STAT, otherwise ROUTINE
-        const hasStatOrder = labOrdersForPatient.some((order) => order.urgency === 'STAT');
-        const aggregatedUrgency = hasStatOrder ? 'STAT' : 'ROUTINE';
+
+        // Group orders by urgency type and count them
+        const urgencyCounts = labOrdersForPatient.reduce((acc, order) => {
+          const urgency = order.urgency || 'ROUTINE';
+          acc[urgency] = (acc[urgency] || 0) + 1;
+          return acc;
+        }, {} as Record<string, number>);
 
         return {
           patientId: patient?.identifiers?.find(
@@ -150,6 +154,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           totalOrders: flattenedLabOrdersForPatient.length,
           orders: flattenedLabOrdersForPatient,
           originalOrders: labOrdersForPatient,
+          urgencyCounts,
         };
       });
     } else {
@@ -227,13 +232,36 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   };
 
   const tableRows = useMemo(() => {
+    // Priority order for urgency types: STAT first, then ROUTINE, then scheduled
+    const urgencyPriority: Record<string, number> = { STAT: 0, ROUTINE: 1, ON_SCHEDULED_DATE: 2 };
+
+    // Format urgency label for display
+    const formatUrgencyLabel = (urgency: string): string => {
+      switch (urgency) {
+        case 'STAT':
+          return 'STAT';
+        case 'ROUTINE':
+          return 'routine';
+        case 'ON_SCHEDULED_DATE':
+          return 'scheduled';
+        default:
+          return urgency.toLowerCase().replace(/_/g, ' ');
+      }
+    };
+
     return paginatedLabOrders.map((groupedOrder) => ({
       ...groupedOrder,
       id: groupedOrder.patientUuid,
       urgency: (
-        <span className={styles.urgencyTag} data-urgency={groupedOrder.urgency}>
-          {capitalize(groupedOrder.urgency.toLowerCase())}
-        </span>
+        <div className={styles.urgencyTagsContainer}>
+          {Object.entries(groupedOrder.urgencyCounts)
+            .sort(([a], [b]) => (urgencyPriority[a] ?? 99) - (urgencyPriority[b] ?? 99))
+            .map(([urgency, count]) => (
+              <span key={urgency} className={styles.urgencyTag} data-urgency={urgency}>
+                {count} {formatUrgencyLabel(urgency)}
+              </span>
+            ))}
+        </div>
       ),
       action: groupedOrder.orders.some((o) => o.fulfillerStatus === 'COMPLETED') ? (
         <div className={styles.actionCell}>
