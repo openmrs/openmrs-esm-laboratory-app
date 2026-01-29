@@ -84,6 +84,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
           {(order.fulfillerStatus === 'COMPLETED' || order.fulfillerStatus === 'DRAFT') && (
             <Accordion>
               <AccordionItem
+                open={order.fulfillerStatus === 'COMPLETED'}
                 title={<span className={styles.accordionTitle}>{t('viewTestResults', 'View test results')}</span>}
               >
                 <div className={styles.viewResults}>
