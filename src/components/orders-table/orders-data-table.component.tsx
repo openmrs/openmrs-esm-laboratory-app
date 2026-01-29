@@ -207,7 +207,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     } else {
       return [];
     }
-  }, [flattenedLabOrders, labOrders, patientIdIdentifierTypeUuid]);
+  }, [flattenedLabOrders, labOrders, patientIdIdentifierTypeUuid, orderComparator]);
 
   const searchResults = useMemo(() => {
     if (searchString && searchString.trim() !== '') {
