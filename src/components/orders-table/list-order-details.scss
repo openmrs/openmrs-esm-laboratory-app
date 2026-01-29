@@ -23,13 +23,13 @@
 }
 
 .orderDetailsContainer {
+  width: 80%;
   display: flex;
   flex-direction: column;
   background-color: colors.$white-0;
-  padding: layout.$spacing-05;
-  gap: layout.$spacing-05;
+  padding: layout.$spacing-03;
+  gap: layout.$spacing-03;
   margin-bottom: layout.$spacing-05;
-  border: 1px solid colors.$gray-20;
 }
 
 .orderDetailsContainer:last-child {
