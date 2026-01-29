@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   DataTable,
   DataTableSkeleton,
@@ -126,7 +126,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     );
   }, [labOrders]);
 
-  const orderComparator = (orderA: Order | FlattenedOrder, orderB: Order | FlattenedOrder) => {
+  const orderComparator = useCallback((orderA: Order | FlattenedOrder, orderB: Order | FlattenedOrder) => {
     if (orderA.urgency === 'STAT' && orderB.urgency !== 'STAT') {
       return -1;
     }
@@ -136,7 +136,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     const dateA = 'rawDateActivated' in orderA ? orderA.rawDateActivated : orderA.dateActivated;
     const dateB = 'rawDateActivated' in orderB ? orderB.rawDateActivated : orderB.dateActivated;
     return new Date(dateB).getTime() - new Date(dateA).getTime();
-  };
+  }, []);
 
   const groupedOrdersByPatient = useMemo(() => {
     if (labOrders && labOrders.length > 0) {
