@@ -34,11 +34,11 @@ const AddLabRequestResultsAction: React.FC<AddLabRequestResultsActionProps> = ({
       className={styles.actionButton}
       kind="primary"
       renderIcon={() => <AddIcon className={styles.actionButtonIcon} />}
-      iconDescription={t('addLabResults', 'Add lab results')}
+      iconDescription={t('addLabResult', 'Add lab results')}
       onClick={launchTestResultsWorkspace}
       size="sm"
     >
-      {t('addLabResults', 'Add lab results')}
+      {t('addLabResult', 'Add lab results')}
     </Button>
   );
 };
