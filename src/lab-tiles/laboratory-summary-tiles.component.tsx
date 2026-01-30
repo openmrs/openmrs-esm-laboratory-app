@@ -18,7 +18,7 @@ const LaboratorySummaryTiles: React.FC = () => {
     .filter((extension) => Object.keys(extension.meta).length > 0)
     .filter((extension) => {
       if (extension.name === 'pending-review-list-tile-component') {
-        return enableReviewingLabResultsBeforeApproval === true;
+        return enableReviewingLabResultsBeforeApproval;
       }
       return true;
     });
