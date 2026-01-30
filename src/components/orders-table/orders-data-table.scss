@@ -36,6 +36,16 @@
     border-top: none;
   }
 
+  :global(.cds--data-table tbody tr.cds--parent-row) {
+    height: auto;
+  }
+
+  :global(.cds--data-table tbody tr.cds--expandable-row) {
+    td {
+      padding: layout.$spacing-05;
+    }
+  }
+
   .toolbarContent {
     height: layout.$spacing-07;
     margin-bottom: layout.$spacing-02;
