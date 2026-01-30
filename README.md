@@ -2,37 +2,46 @@
 
 An O3 frontend module for managing laboratory requests and queues.
 
-For more information, please refer to the [OpenMRS 3.x Frontend Documentation](https://o3-docs.openmrs.org/).
+For more information, please refer to the [O3 Frontend Documentation](https://o3-docs.openmrs.org/).
 
 ## Dashboard
 
-<img src="https://raw.githubusercontent.com/openmrs/openmrs-esm-laboratory/main/assets/screenshots/labs_general_dashboard.png" />
+![Laboratory dashboard](assets/screenshots/labs_general_dashboard.png)
 
-### Adding Results
+## Adding results
 
-### Adding tab panels
+Lab technicians can enter test results by expanding an in-progress order and clicking "Add lab results". This opens a workspace where results can be recorded for each test.
 
-Implementers can add or remove laboratory tab panels via extension configuration in the [routes.js](https://github.com/openmrs/openmrs-esm-laboratory/blob/main/src/routes.json) json file.
+![Adding lab results](assets/screenshots/labs_enter_results.png)
 
-<img src="https://raw.githubusercontent.com/openmrs/openmrs-esm-laboratory/main/assets/screenshots/labs_enter_results.png" />
+## Customizing tab panels and summary tiles
 
-### Adding or removing summary tiles
+Implementers can add or remove laboratory tab panels and summary tiles via extension configuration in the [routes.json](https://github.com/openmrs/openmrs-esm-laboratory-app/blob/main/src/routes.json) file.
 
-Implementers can add or remove summary tiles via extension configuration in the [routes.js](https://github.com/openmrs/openmrs-esm-laboratory/blob/main/src/routes.json) json file.
+## Configuration
+
+The module supports the following configuration options:
+
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| `laboratoryOrderTypeUuid` | `string` | `52a447d3-a64a-11e3-9aeb-50e549534c5e` | UUID for the laboratory order type |
+| `labTableColumns` | `Array<string>` | `['name', 'age', 'sex', 'totalOrders', 'action']` | Columns to display in the lab table. Allowed values: `name`, `age`, `dob`, `sex`, `totalOrders`, `action`, `patientId` |
+| `patientIdIdentifierTypeUuid` | `UUID` | `05a29f94-c0ed-11e2-94be-8c13b969e334` | Identifier type UUID for the patient ID column. Only needed if `patientId` is included in `labTableColumns` |
+| `enableReviewingLabResultsBeforeApproval` | `boolean` | `false` | When enabled, lab results are submitted for review before being approved and finalized |
 
 ## Getting Started
 
 ```sh
 # Clone the repository
-git clone git@github.com:openmrs/openmrs-esm-laboratory.git
+git clone git@github.com:openmrs/openmrs-esm-laboratory-app.git
 
-# to install dependencies
+# Install dependencies
 yarn
 
-# to run the dev server
+# Run the dev server
 yarn start
 
-# OR to start on a specified port eg 5000
+# Or start on a specified port, e.g. 5000
 yarn start --port 5000
 ```
 
@@ -41,9 +50,5 @@ Once it is running, a browser window should open with O3 running. Log in and the
 ## Running tests
 
 ```sh
-yarn run test
+yarn test
 ```
-
-## ⚠️ Important Notice: Dependencies
-
-As of this [PR](https://github.com/openmrs/openmrs-esm-laboratory-app/pull/87) some features of the `@openmrs/esm-laboratory-app` are dependent on `@openmrs/esm-patient-lab-order` package. Please keep that in mind as you are implementing the module.
