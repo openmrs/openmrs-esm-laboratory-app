@@ -26,7 +26,11 @@ interface UseLabOrdersParams {
  * @param excludeCanceled - Whether to exclude canceled, discontinued and expired orders
  */
 export function useLabOrders(params: Partial<UseLabOrdersParams> = useLabOrdersDefaultParams) {
-  const { status, newOrdersOnly, excludeCanceled, includePatientId } = { ...useLabOrdersDefaultParams, ...params };
+  const definedParams = Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined));
+  const { status, newOrdersOnly, excludeCanceled, includePatientId } = {
+    ...useLabOrdersDefaultParams,
+    ...definedParams,
+  };
   const { dateRange } = useAppContext<DateFilterContext>('laboratory-date-filter') ?? {
     dateRange: [dayjs().startOf('day').toDate(), new Date()],
   };
