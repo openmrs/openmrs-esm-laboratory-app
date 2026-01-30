@@ -20,10 +20,12 @@ interface UseLabOrdersParams {
 }
 
 /**
- * Custom hook for retrieving laboratory orders based on the specified status.
+ * Custom hook for retrieving laboratory orders.
  *
- * @param status - The status of the orders to retrieve
+ * @param status - The fulfiller status to filter by (e.g. 'IN_PROGRESS', 'COMPLETED')
+ * @param newOrdersOnly - Whether to return only new orders that haven't been picked (action=NEW, fulfillerStatus=null). Filtered client-side as the REST API doesn't support this query natively.
  * @param excludeCanceled - Whether to exclude canceled, discontinued and expired orders
+ * @param includePatientId - Whether to include patient identifiers in the response
  */
 export function useLabOrders(params: Partial<UseLabOrdersParams> = useLabOrdersDefaultParams) {
   const definedParams = Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined));
@@ -42,7 +44,6 @@ export function useLabOrders(params: Partial<UseLabOrdersParams> = useLabOrdersD
   let url = `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}&v=${customRepresentation}`;
   url = status ? url + `&fulfillerStatus=${status}` : url;
   url = excludeCanceled ? `${url}&excludeCanceledAndExpired=true&excludeDiscontinueOrders=true` : url;
-  // The usage of SWR's mutator seems to only suffice for cases where we don't apply a status filter
   url = dateRange
     ? `${url}&activatedOnOrAfterDate=${dateRange.at(0).toISOString()}&activatedOnOrBeforeDate=${dateRange
         .at(1)
