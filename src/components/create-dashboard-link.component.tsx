@@ -22,7 +22,7 @@ function DashboardExtension({ dashboardLinkConfig }: { dashboardLinkConfig: Dash
   return (
     <ConfigurableLink
       to={`${spaBasePath}/${name}`}
-      className={`cds--side-nav__link ${isActive && 'active-left-nav-link'}`}
+      className={`cds--side-nav__link ${isActive ? 'active-left-nav-link' : ''}`}
     >
       {t(title)}
     </ConfigurableLink>

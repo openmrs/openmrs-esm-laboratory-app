@@ -17,23 +17,25 @@ const LaboratoryOrdersTabs: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const tabExtensions = useAssignedExtensions(labPanelSlot);
 
-  const filteredExtensions = tabExtensions
-    .filter((extension) => Object.keys(extension.meta).length > 0)
-    .filter((extension) => {
-      if (extension.meta.name === 'pendingReviewPanel') {
-        return enableReviewingLabResultsBeforeApproval === true;
-      }
-      return true;
-    });
+  const filteredExtensions = tabExtensions.filter((extension) => {
+    const meta = extension.meta ?? {};
+    if (Object.keys(meta).length === 0) {
+      return false;
+    }
+    if (meta.name === 'pendingReviewPanel') {
+      return enableReviewingLabResultsBeforeApproval === true;
+    }
+    return true;
+  });
 
   return (
     <main>
       <section>
         <div className={styles.tabs}>
           <Tabs selectedIndex={selectedTab} onChange={({ selectedIndex }) => setSelectedTab(selectedIndex)}>
-            <TabList style={{ paddingLeft: '1rem' }} aria-label="Laboratory tabs" contained>
+            <TabList aria-label="Laboratory tabs" contained>
               {filteredExtensions.map((extension) => {
-                const { name, title } = extension.meta;
+                const { name, title } = extension.meta ?? {};
 
                 if (name && title) {
                   return (
