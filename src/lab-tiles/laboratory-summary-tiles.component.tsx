@@ -14,14 +14,16 @@ const LaboratorySummaryTiles: React.FC = () => {
   const labTileSlot = 'lab-tiles-slot';
   const tilesExtensions = useAssignedExtensions(labTileSlot) as AssignedExtension[];
 
-  const filteredExtensions = tilesExtensions
-    .filter((extension) => Object.keys(extension.meta).length > 0)
-    .filter((extension) => {
-      if (extension.name === 'pending-review-list-tile-component') {
-        return enableReviewingLabResultsBeforeApproval === true;
-      }
-      return true;
-    });
+  const filteredExtensions = tilesExtensions.filter((extension) => {
+    const meta = extension.meta ?? {};
+    if (Object.keys(meta).length === 0) {
+      return false;
+    }
+    if (extension.name === 'pending-review-list-tile-component') {
+      return enableReviewingLabResultsBeforeApproval === true;
+    }
+    return true;
+  });
 
   return (
     <div className={styles.cardContainer}>
