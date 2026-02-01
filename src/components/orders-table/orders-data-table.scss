@@ -127,3 +127,37 @@
     min-width: 100%;
   }
 }
+
+.urgencyTagsContainer {
+  display: flex;
+  gap: layout.$spacing-02;
+  flex-wrap: wrap;
+}
+
+.urgencyTag {
+  @include type.type-style('label-01');
+  display: inline-block;
+  border-radius: layout.$spacing-03;
+  padding: layout.$spacing-02;
+  padding-inline: layout.$spacing-03;
+  text-align: center;
+  white-space: nowrap;
+  background-color: colors.$green-20;
+  color: colors.$green-70;
+
+  &[data-urgency='STAT'] {
+    background-color: colors.$red-20;
+    color: colors.$red-70;
+    font-weight: 600;
+  }
+
+  &[data-urgency='ROUTINE'] {
+    background-color: colors.$green-20;
+    color: colors.$green-70;
+  }
+
+  &[data-urgency='ON_SCHEDULED_DATE'] {
+    background-color: colors.$gray-20;
+    color: colors.$gray-70;
+  }
+}
