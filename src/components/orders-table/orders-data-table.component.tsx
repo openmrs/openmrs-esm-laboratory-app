@@ -239,11 +239,11 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     const formatUrgencyLabel = (urgency: string): string => {
       switch (urgency) {
         case 'STAT':
-          return 'STAT';
+          return t('stat', 'STAT');
         case 'ROUTINE':
-          return 'routine';
+          return t('routine', 'Routine');
         case 'ON_SCHEDULED_DATE':
-          return 'scheduled';
+          return t('scheduled', 'Scheduled');
         default:
           return urgency.toLowerCase().replace(/_/g, ' ');
       }

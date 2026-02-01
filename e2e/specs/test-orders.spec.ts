@@ -54,6 +54,10 @@ test('View test orders', async ({ page }) => {
     await expect(page.getByRole('cell', { name: 'serum glucose' })).toBeVisible();
     await expect(page.getByText(/Routine/i).first()).toBeVisible();
   });
+
+  await test.step('And I should see the urgency count in the table', async () => {
+    await expect(page.getByText(/1 Routine/i)).toBeVisible();
+  });
 });
 
 test.afterEach(async ({ api }) => {
