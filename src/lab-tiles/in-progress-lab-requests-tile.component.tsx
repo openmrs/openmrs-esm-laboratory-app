@@ -11,7 +11,7 @@ const InProgressLabRequestsTile = () => {
     <LabSummaryTile
       label={t('inProgress', 'In progress')}
       value={labOrders?.length}
-      headerLabel={t('worklist', 'Ex-Worklist')}
+      headerLabel={t('worklist', 'Worklist')}
     />
   );
 };
