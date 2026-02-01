@@ -49,7 +49,12 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                 label={t('urgencyStatus', 'Urgency:')}
                 value={
                   <div className={styles.priorityPill} data-urgency={order.urgency?.replace('_', ' ')}>
-                    {capitalize(order.urgency?.replace(/_/g, ' '))}
+                    {order.urgency
+                      ? t(
+                          order.urgency.toLowerCase().replace(/_/g, ''),
+                          capitalize(order.urgency.replace(/_/g, ' ')),
+                        )
+                      : ''}
                   </div>
                 }
               />
