@@ -86,7 +86,7 @@ const AddTestOrderButton = () => {
     launchWorkspace2(
       'add-test-order-patient-search-workspace',
       {
-        workspaceTitle: t('addTestOrder', 'Add Test Order'),
+        workspaceTitle: t('addTestOrder', 'Add test Order'),
         onPatientSelected: handlePatientSelected,
       },
       {
