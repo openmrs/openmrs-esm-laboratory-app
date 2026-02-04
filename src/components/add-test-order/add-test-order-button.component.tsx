@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Button } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
 import { AddIcon, launchWorkspace2, showSnackbar, useConfig, useLayoutType, useVisit } from '@openmrs/esm-framework';
-import { Button } from '@carbon/react';
 import { useInvalidateLabOrders } from '../../laboratory.resource';
-import styles from './add-test-order-button.scss';
 import { type Config } from '../../config-schema';
+import styles from './add-test-order-button.scss';
 
 const AddTestOrderButton = () => {
   const isTablet = useLayoutType() === 'tablet';
@@ -24,32 +24,49 @@ const AddTestOrderButton = () => {
     }
 
     if (activeVisit) {
-      closeWorkspaceRef.current?.().then(() => {
-        launchWorkspace2(
-          'add-test-order-basket-workspace',
-          {},
-          {
-            patientUuid: selectedPatient.uuid,
-            patient: selectedPatient.patient,
-            visitContext: activeVisit,
-            visibleOrderPanels: [laboratoryOrderTypeUuid],
-            labOrderWorkspaceName: 'add-test-order-basket-add-lab-order-workspace',
-            onOrderBasketSubmitted: () => {
-              invalidateLabOrders();
+      const closePromise = closeWorkspaceRef.current?.() ?? Promise.resolve();
+      closePromise
+        ?.then(() => {
+          launchWorkspace2(
+            'add-test-order-basket-workspace',
+            {},
+            {
+              patientUuid: selectedPatient.uuid,
+              patient: selectedPatient.patient,
+              visitContext: activeVisit,
+              visibleOrderPanels: [laboratoryOrderTypeUuid],
+              labOrderWorkspaceName: 'add-test-order-basket-add-lab-order-workspace',
+              onOrderBasketSubmitted: () => {
+                invalidateLabOrders();
+              },
             },
-          },
-        );
-      });
+          );
+          setSelectedPatient(null);
+          closeWorkspaceRef.current = null;
+        })
+        .catch(() => {
+          // Close was cancelled; keep state so the user can retry.
+        });
     } else {
+      const patientName =
+        [
+          selectedPatient?.patient?.name?.[0]?.given?.filter(Boolean).join(' '),
+          selectedPatient?.patient?.name?.[0]?.family,
+        ]
+          .filter(Boolean)
+          .join(' ') || t('theSelectedPatient', 'The selected patient');
       showSnackbar({
         title: t('visitRequired', 'Visit required'),
-        subtitle: t('visitRequiredToAddLabTest', 'An active visit is required to add a lab test'),
-        kind: 'error',
+        subtitle: t(
+          'startVisitToAddLabTest',
+          '{{patientName}} does not have an active visit. Click the "Start visit" button next to their name to begin one.',
+          { patientName },
+        ),
+        kind: 'warning',
       });
+      setSelectedPatient(null);
+      closeWorkspaceRef.current = null;
     }
-
-    setSelectedPatient(null);
-    closeWorkspaceRef.current = null;
   }, [activeVisit, laboratoryOrderTypeUuid, isLoading, selectedPatient, invalidateLabOrders, t]);
 
   const handlePatientSelected = useCallback(
@@ -85,7 +102,7 @@ const AddTestOrderButton = () => {
       size={responsiveSize}
       renderIcon={(props) => <AddIcon size={16} {...props} />}
     >
-      {t('addTestOrder', 'Add Test Order')}
+      {t('addTestOrder', 'Add test Order')}
     </Button>
   );
 };
