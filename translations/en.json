@@ -67,13 +67,16 @@
   "resultsApproved": "Results Approved",
   "searchThisList": "Search this list",
   "sex": "Sex",
+  "startVisitToAddLabTest": "startVisitToAddLabTest",
   "testOrdered": "Test ordered: ",
   "Tests ordered": "Tests ordered",
   "testsOrdered": "Tests ordered",
   "testType": "Test type",
+  "theSelectedPatient": "theSelectedPatient",
   "totalOrders": "Total orders",
   "urgencyStatus": "Urgency: ",
   "viewTestResults": "View test results",
+  "visitRequired": "visitRequired",
   "worklist": "Worklist",
   "Worklist": "Worklist"
 }
