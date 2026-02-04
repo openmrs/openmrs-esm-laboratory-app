@@ -43,7 +43,7 @@
       "order": 0,
       "component": "allLabRequestsTable",
       "meta": {
-        "name": "inprogressPanel",
+        "name": "testsOrderedPanel",
         "title": "Tests ordered"
       }
     },
@@ -76,14 +76,14 @@
         "title": "Ordered tests"
       }
     },
-        {
-      "name": "pending-review-tile-component",
+    {
+      "name": "pending-review-lab-requests-table",
       "slot": "lab-panels-slot",
       "component": "pendingReviewLabRequestsTable",
       "order": 2,
       "meta": {
-          "name": "pendingReviewPanel",
-          "title": "Pending review tests"
+        "name": "pendingReviewPanel",
+        "title": "Pending review tests"
       }
     },
     {
@@ -91,7 +91,7 @@
       "slot": "lab-tiles-slot",
       "component": "worklistTile",
       "meta": {
-        "name": "worklisTileSlot",
+        "name": "worklistTileSlot",
         "title": "Worklist"
       }
     },
@@ -109,8 +109,8 @@
       "slot": "lab-tiles-slot",
       "component": "completedTile",
       "meta": {
-        "name": "referredPanleSlot",
-        "title": "Referred tests"
+        "name": "completedTileSlot",
+        "title": "Completed"
       }
     },
     {
@@ -119,11 +119,10 @@
       "component": "declinedLabRequestsTable",
       "order": 4,
       "meta": {
-          "name": "declinedPanel",
-          "title": "Declined tests"
+        "name": "declinedPanel",
+        "title": "Declined tests"
       }
     },
-
     {
       "name": "pick-lab-request-action",
       "component": "pickupLabRequestAction",
@@ -145,11 +144,6 @@
       "slot": "rejected-ordered-actions-slot"
     },
     {
-      "name": "edit-lab-request-tests-ordered-action",
-      "component": "editLabRequestAction",
-      "slot": "completed-ordered-actions-slot"
-    },
-    {
       "name": "reject-lab-request-worklist-action",
       "component": "rejectLabRequestAction",
       "slot": "inprogress-tests-actions-slot"
@@ -158,11 +152,6 @@
       "name": "add-lab-request-results-action",
       "component": "addLabRequestResultsAction",
       "slot": "inprogress-tests-actions-slot"
-    },
-    {
-      "name": "edit-lab-request-tests-ordered-action",
-      "component": "editLabRequestAction",
-      "slot": "completed-ordered-actions-slot"
     }
   ],
   "workspaces2": [
@@ -208,5 +197,4 @@
       "name": "add-test-order-group"
     }
   ]
-
 }
