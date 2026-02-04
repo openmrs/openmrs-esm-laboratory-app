@@ -1,14 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AddIcon, launchWorkspace2, showSnackbar, useLayoutType, useVisit } from '@openmrs/esm-framework';
+import { AddIcon, launchWorkspace2, showSnackbar, useConfig, useLayoutType, useVisit } from '@openmrs/esm-framework';
 import { Button } from '@carbon/react';
 import { useInvalidateLabOrders } from '../../laboratory.resource';
 import styles from './add-test-order-button.scss';
+import { type Config } from '../../config-schema';
 
 const AddTestOrderButton = () => {
   const isTablet = useLayoutType() === 'tablet';
   const responsiveSize = isTablet ? 'lg' : 'md';
   const { t } = useTranslation();
+  const { laboratoryOrderTypeUuid } = useConfig<Config>();
   const invalidateLabOrders = useInvalidateLabOrders();
 
   const [selectedPatient, setSelectedPatient] = useState<{ uuid: string; patient: fhir.Patient } | null>(null);
@@ -30,6 +32,7 @@ const AddTestOrderButton = () => {
             patientUuid: selectedPatient.uuid,
             patient: selectedPatient.patient,
             visitContext: activeVisit,
+            visibleOrderPanels: [laboratoryOrderTypeUuid],
             labOrderWorkspaceName: 'add-test-order-basket-add-lab-order-workspace',
             onOrderBasketSubmitted: () => {
               invalidateLabOrders();
@@ -47,7 +50,7 @@ const AddTestOrderButton = () => {
 
     setSelectedPatient(null);
     closeWorkspaceRef.current = null;
-  }, [activeVisit, isLoading, selectedPatient, invalidateLabOrders, t]);
+  }, [activeVisit, laboratoryOrderTypeUuid, isLoading, selectedPatient, invalidateLabOrders, t]);
 
   const handlePatientSelected = useCallback(
     (
