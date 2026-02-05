@@ -169,11 +169,13 @@
       "name": "add-test-order-start-visit-workspace",
       "component": "@openmrs/esm-patient-chart-app#exportedVisitForm",
       "window": "add-test-order-window"
-    },{
+    },
+    {
       "name": "add-test-order-basket-workspace",
       "component": "@openmrs/esm-patient-orders-app#exportedOrderBasketWorkspace",
       "window": "add-test-order-window"
-    },{
+    },
+    {
       "name": "add-test-order-basket-add-lab-order-workspace",
       "component": "@openmrs/esm-patient-tests-app#exportedAddLabOrderWorkspace",
       "window": "add-test-order-window"
