@@ -119,6 +119,11 @@
 
 .tableToolBar {
   height: auto;
+  align-items: flex-end;
+
+  :global(.cds--toolbar-search-container-expandable) {
+    align-self: flex-end;
+  }
 }
 
 .menuitem {

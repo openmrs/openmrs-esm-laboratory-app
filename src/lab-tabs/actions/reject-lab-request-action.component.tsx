@@ -10,7 +10,8 @@ interface RejectLabRequestActionProps {
 
 const RejectLabRequestAction: React.FC<RejectLabRequestActionProps> = ({ order }) => {
   const { t } = useTranslation();
-  const unSupportedStatuses = ['COMPLETED', 'DECLINED'];
+  const unsupportedStatuses = ['COMPLETED', 'DECLINED'];
+
   const launchRejectLabRequestModal = useCallback(() => {
     const dispose = showModal('reject-lab-request-modal', {
       closeModal: () => dispose(),
@@ -22,8 +23,8 @@ const RejectLabRequestAction: React.FC<RejectLabRequestActionProps> = ({ order }
     <Button
       kind="danger--tertiary"
       className={styles.actionRejectButton}
-      disabled={unSupportedStatuses.includes(order.fulfillerStatus)}
-      key={`${order.uuid}`}
+      disabled={unsupportedStatuses.includes(order.fulfillerStatus)}
+      key={order.uuid}
       size="sm"
       onClick={launchRejectLabRequestModal}
     >

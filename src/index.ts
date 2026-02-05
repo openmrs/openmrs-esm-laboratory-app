@@ -93,7 +93,6 @@ export const completedTile = getAsyncLifecycle(
 export const testOrderedTile = getAsyncLifecycle(() => import('./lab-tiles/all-lab-requests-tile.component'), options);
 
 // Actions
-
 export const addLabRequestResultsAction = getAsyncLifecycle(
   () => import('./lab-tabs/actions/add-lab-request-results-action.component'),
   options,
