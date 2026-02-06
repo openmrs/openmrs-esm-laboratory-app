@@ -37,12 +37,12 @@
   }
 
   :global(.cds--data-table tbody tr.cds--parent-row) {
-    height: auto;
+    height: 3rem;
   }
 
   :global(.cds--data-table tbody tr.cds--expandable-row) {
     td {
-      padding: layout.$spacing-05;
+      padding: 0;
     }
   }
 
