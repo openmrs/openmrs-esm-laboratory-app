@@ -42,9 +42,19 @@
 }
 
 .orderDetailsWrapper {
+  :global(.cds--structured-list) {
+    table-layout: fixed;
+    width: 100%;
+  }
+
   :global(.cds--structured-list-td) {
     align-content: center;
     padding: layout.$spacing-03 !important;
+    vertical-align: middle !important;
+  }
+
+  :global(.cds--structured-list-td:first-child) {
+    width: 40%;
   }
 }
 
