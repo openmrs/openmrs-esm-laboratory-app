@@ -91,9 +91,7 @@ test.describe('Laboratory order workflow', () => {
 
     await test.step('Then I should see the order with Completed status', async () => {
       await expect(page.getByLabel('Structured list section').getByText('Completed')).toBeVisible();
-      await expect(
-        page.getByLabel('Structured list section').getByRole('cell', { name: 'serum glucose' }),
-      ).toBeVisible();
+      await expect(page.getByRole('cell', { name: 'serum glucose' })).toBeVisible();
     });
   });
 });
