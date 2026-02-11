@@ -159,17 +159,46 @@
       "name": "lab-app-test-results-form-workspace",
       "component": "@openmrs/esm-patient-orders-app#exportedTestResultsFormWorkspace",
       "window": "labs-app-test-results-window"
+    },
+    {
+      "name": "add-test-order-patient-search-workspace",
+      "component": "@openmrs/esm-patient-search-app#patientSearchWorkspace2",
+      "window": "add-test-order-window"
+    },
+    {
+      "name": "add-test-order-start-visit-workspace",
+      "component": "@openmrs/esm-patient-chart-app#exportedVisitForm",
+      "window": "add-test-order-window"
+    },
+    {
+      "name": "add-test-order-basket-workspace",
+      "component": "@openmrs/esm-patient-orders-app#exportedOrderBasketWorkspace",
+      "window": "add-test-order-window"
+    },
+    {
+      "name": "add-test-order-basket-add-lab-order-workspace",
+      "component": "@openmrs/esm-patient-tests-app#exportedAddLabOrderWorkspace",
+      "window": "add-test-order-window"
     }
   ],
   "workspaceWindows2": [
     {
       "name": "labs-app-test-results-window",
       "group": "labs-app-group"
+    },
+    {
+      "name": "add-test-order-window",
+      "group": "add-test-order-group"
     }
   ],
   "workspaceGroups2": [
     {
-      "name": "labs-app-group"
+      "name": "labs-app-group",
+      "scopePattern": "/home/laboratory"
+    },
+    {
+      "name": "add-test-order-group",
+      "scopePattern": "/home/laboratory"
     }
   ]
 }
