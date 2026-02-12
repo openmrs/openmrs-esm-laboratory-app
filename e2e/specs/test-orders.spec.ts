@@ -52,7 +52,7 @@ test('View test orders', async ({ page }) => {
   await test.step('Then I should see the order status, test name, and urgency', async () => {
     await expect(page.getByText(/Status:Order not picked/i)).toBeVisible();
     await expect(page.getByRole('cell', { name: 'serum glucose' })).toBeVisible();
-    await expect(page.getByText(/Routine/i).first()).toBeVisible();
+   await expect(page.getByText(/1 Routine/i)).toBeVisible();
   });
 
   await test.step('And I should see the urgency count in the table', async () => {
