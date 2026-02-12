@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   DataTable,
   DataTableSkeleton,
@@ -30,6 +30,9 @@ import { useLabOrders } from '../../laboratory.resource';
 import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
 import styles from './orders-data-table.scss';
+
+// Priority order for urgency types: STAT first, then ROUTINE, then scheduled
+const urgencyPriority: Record<string, number> = { STAT: 0, ROUTINE: 1, ON_SCHEDULED_DATE: 2 };
 
 const labTableColumnSpec = {
   name: {
@@ -132,10 +135,11 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         const patient = labOrdersForPatient[0]?.patient;
         const flattenedLabOrdersForPatient = flattenedLabOrders.filter((order) => order.patientUuid === patientUuid);
 
-        // Group orders by urgency type and count them
+        // Group orders by urgency type and count them, skip null urgency
         const urgencyCounts = labOrdersForPatient.reduce((acc, order) => {
-          const urgency = order.urgency || 'ROUTINE';
-          acc[urgency] = (acc[urgency] || 0) + 1;
+          if (order.urgency) {
+            acc[order.urgency] = (acc[order.urgency] || 0) + 1;
+          }
           return acc;
         }, {} as Record<string, number>);
 
@@ -231,15 +235,12 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     });
   };
 
-  const tableRows = useMemo(() => {
-    // Priority order for urgency types: STAT first, then ROUTINE, then scheduled
-    const urgencyPriority: Record<string, number> = { STAT: 0, ROUTINE: 1, ON_SCHEDULED_DATE: 2 };
-
-    // Format urgency label for display
-    const formatUrgencyLabel = (urgency: string): string => {
+  // Format urgency label for display
+  const formatUrgencyLabel = useCallback(
+    (urgency: string): string => {
       switch (urgency) {
         case 'STAT':
-          return t('stat', ’Stat');
+          return t('stat', 'Stat');
         case 'ROUTINE':
           return t('routine', 'Routine');
         case 'ON_SCHEDULED_DATE':
@@ -247,8 +248,11 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         default:
           return urgency.toLowerCase().replace(/_/g, ' ');
       }
-    };
+    },
+    [t],
+  );
 
+  const tableRows = useMemo(() => {
     return paginatedLabOrders.map((groupedOrder) => ({
       ...groupedOrder,
       id: groupedOrder.patientUuid,
@@ -287,7 +291,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         </div>
       ) : null,
     }));
-  }, [paginatedLabOrders, t]);
+  }, [paginatedLabOrders, t, formatUrgencyLabel]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" showHeader={false} showToolbar={false} />;
