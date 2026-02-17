@@ -193,10 +193,12 @@
   ],
   "workspaceGroups2": [
     {
-      "name": "labs-app-group"
+      "name": "labs-app-group",
+      "scopePattern": "/home/laboratory"
     },
     {
-      "name": "add-test-order-group"
+      "name": "add-test-order-group",
+      "scopePattern": "/home/laboratory"
     }
   ]
 }
