@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import dayjs from 'dayjs';
 import useSWR, { mutate } from 'swr';
-import { openmrsFetch, type Order, restBaseUrl, useAppContext, useConfig } from '@openmrs/esm-framework';
+import { openmrsFetch, type Order, restBaseUrl, useAppContext, useConfig, useSession } from '@openmrs/esm-framework';
 import type { DateFilterContext, FulfillerStatus } from './types';
 import { type Config } from './config-schema';
 
@@ -36,11 +36,12 @@ export function useLabOrders(params: Partial<UseLabOrdersParams> = useLabOrdersD
   const { dateRange } = useAppContext<DateFilterContext>('laboratory-date-filter') ?? {
     dateRange: [dayjs().startOf('day').toDate(), new Date()],
   };
+  const { sessionLocation } = useSession();
 
-  const { laboratoryOrderTypeUuid } = useConfig();
+  const { laboratoryOrderTypeUuid, filterByCurrentLocation } = useConfig<Config>();
   const customRepresentation = `custom:(uuid,orderNumber,patient:(uuid,display,person:(uuid,display,age,birthdate,gender)${
     includePatientId ? ',identifiers' : ''
-  }),concept:(uuid,display),action,careSetting:(uuid,display,description,careSettingType,display),previousOrder,dateActivated,scheduledDate,dateStopped,autoExpireDate,encounter:(uuid,display),orderer:(uuid,display),orderReason,orderReasonNonCoded,orderType:(uuid,display,name,description,conceptClasses,parent),urgency,instructions,commentToFulfiller,display,fulfillerStatus,fulfillerComment,accessionNumber,specimenSource,laterality,clinicalHistory,frequency,numberOfRepeats)`;
+  }),concept:(uuid,display),action,careSetting:(uuid,display,description,careSettingType,display),previousOrder,dateActivated,scheduledDate,dateStopped,autoExpireDate,encounter:(uuid,display,location:(uuid)),orderer:(uuid,display),orderReason,orderReasonNonCoded,orderType:(uuid,display,name,description,conceptClasses,parent),urgency,instructions,commentToFulfiller,display,fulfillerStatus,fulfillerComment,accessionNumber,specimenSource,laterality,clinicalHistory,frequency,numberOfRepeats)`;
   let url = `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}&v=${customRepresentation}`;
   url = status ? url + `&fulfillerStatus=${status}` : url;
   url = excludeCanceled ? `${url}&excludeCanceledAndExpired=true&excludeDiscontinueOrders=true` : url;
@@ -54,9 +55,14 @@ export function useLabOrders(params: Partial<UseLabOrdersParams> = useLabOrdersD
     data: { results: Array<Order> };
   }>(`${url}`, openmrsFetch);
 
-  const filteredOrders = data?.data?.results?.filter(
+  let filteredOrders = data?.data?.results?.filter(
     (order) => !newOrdersOnly || (order?.action === 'NEW' && order?.fulfillerStatus === null),
   );
+
+  if (filterByCurrentLocation) {
+    filteredOrders = filteredOrders?.filter((order) => order.encounter?.location?.uuid === sessionLocation?.uuid);
+  }
+
   return {
     labOrders: filteredOrders ?? [],
     isLoading,
