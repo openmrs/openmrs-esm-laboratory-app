@@ -29,6 +29,7 @@ export interface GroupedOrders {
   patientDob?: string;
   patientSex?: string;
   totalOrders: number;
+  urgencyCounts: Record<string, number>;
   orders: Array<FlattenedOrder>;
   originalOrders: Array<Order>;
 }

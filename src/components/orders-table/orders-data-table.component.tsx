@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   DataTable,
   DataTableSkeleton,
@@ -31,6 +31,9 @@ import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
 import styles from './orders-data-table.scss';
 
+// Priority order for urgency types: STAT first, then ROUTINE, then scheduled
+const urgencyPriority: Record<string, number> = { STAT: 0, ROUTINE: 1, ON_SCHEDULED_DATE: 2 };
+
 const labTableColumnSpec = {
   name: {
     // t('patient', 'Patient')
@@ -55,6 +58,12 @@ const labTableColumnSpec = {
     headerLabelKey: 'sex',
     headerLabelDefault: 'Sex',
     key: 'patientSex',
+  },
+  urgency: {
+    // t('urgency', 'Urgency')
+    headerLabelKey: 'urgency',
+    headerLabelDefault: 'Urgency',
+    key: 'urgency',
   },
   totalOrders: {
     // t('totalOrders', 'Total Orders')
@@ -125,6 +134,15 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         const labOrdersForPatient = labOrders.filter((order) => order.patient.uuid === patientUuid);
         const patient = labOrdersForPatient[0]?.patient;
         const flattenedLabOrdersForPatient = flattenedLabOrders.filter((order) => order.patientUuid === patientUuid);
+
+        // Group orders by urgency type and count them, skip null urgency
+        const urgencyCounts = labOrdersForPatient.reduce((acc, order) => {
+          if (order.urgency) {
+            acc[order.urgency] = (acc[order.urgency] || 0) + 1;
+          }
+          return acc;
+        }, {} as Record<string, number>);
+
         return {
           patientId: patient?.identifiers?.find(
             (identifier) =>
@@ -140,6 +158,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           totalOrders: flattenedLabOrdersForPatient.length,
           orders: flattenedLabOrdersForPatient,
           originalOrders: labOrdersForPatient,
+          urgencyCounts,
         };
       });
     } else {
@@ -216,10 +235,38 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     });
   };
 
+  // Format urgency label for display
+  const formatUrgencyLabel = useCallback(
+    (urgency: string): string => {
+      switch (urgency) {
+        case 'STAT':
+          return t('stat', 'Stat');
+        case 'ROUTINE':
+          return t('routine', 'Routine');
+        case 'ON_SCHEDULED_DATE':
+          return t('scheduled', 'Scheduled');
+        default:
+          return urgency.toLowerCase().replace(/_/g, ' ');
+      }
+    },
+    [t],
+  );
+
   const tableRows = useMemo(() => {
     return paginatedLabOrders.map((groupedOrder) => ({
       ...groupedOrder,
       id: groupedOrder.patientUuid,
+      urgency: (
+        <div className={styles.urgencyTagsContainer}>
+          {Object.entries(groupedOrder.urgencyCounts)
+            .sort(([a], [b]) => (urgencyPriority[a] ?? 99) - (urgencyPriority[b] ?? 99))
+            .map(([urgency, count]) => (
+              <span key={urgency} className={styles.urgencyTag} data-urgency={urgency}>
+                {count} {formatUrgencyLabel(urgency)}
+              </span>
+            ))}
+        </div>
+      ),
       action: groupedOrder.orders.some((o) => o.fulfillerStatus === 'COMPLETED') ? (
         <div className={styles.actionCell}>
           <OverflowMenu aria-label="Actions" flipped iconDescription="Actions">
@@ -244,7 +291,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         </div>
       ) : null,
     }));
-  }, [paginatedLabOrders, t]);
+  }, [paginatedLabOrders, t, formatUrgencyLabel]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" showHeader={false} showToolbar={false} />;
