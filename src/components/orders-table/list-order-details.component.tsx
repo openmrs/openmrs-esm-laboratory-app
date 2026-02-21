@@ -45,11 +45,17 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
         <div key={order.orderNumber} className={styles.orderDetailsContainer}>
           <StructuredListWrapper className={styles.orderDetailsWrapper}>
             <StructuredListBody>
+              {/* t('routine', 'Routine'), t('stat', 'Stat'), t('onscheduleddate', 'On scheduled date') */}
               <OrderDetailRow
                 label={t('urgencyStatus', 'Urgency:')}
                 value={
                   <div className={styles.priorityPill} data-urgency={order.urgency?.replace('_', ' ')}>
-                    {capitalize(order.urgency?.replace(/_/g, ' '))}
+                    {order.urgency
+                      ? t(
+                          order.urgency.toLowerCase().replace(/_/g, ''),
+                          capitalize(order.urgency.replace(/_/g, ' ')),
+                        )
+                      : ''}
                   </div>
                 }
               />
@@ -71,6 +77,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                 value={formatDate(parseDate(order.dateActivated))}
               />
               <OrderDetailRow label={t('orderedBy', 'Ordered By:')} value={order.orderer?.display} />
+              {/* t('NoInstructionLeft', 'No instructions are provided.') */}
               <OrderDetailRow
                 label={t('orderInstructions', 'Instructions:')}
                 value={order.instructions ?? t('NoInstructionLeft', 'No instructions are provided.')}
