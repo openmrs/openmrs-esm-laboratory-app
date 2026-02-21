@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
-import { LaboratoryPictogram, PageHeader, useDefineAppContext } from '@openmrs/esm-framework';
-import { type DateFilterContext } from './types';
+import { LaboratoryPictogram, PageHeader, PageHeaderContent, useDefineAppContext } from '@openmrs/esm-framework';
+import AddTestOrderButton from './components/add-test-order/add-test-order-button.component';
 import LaboratoryOrdersTabs from './lab-tabs/laboratory-tabs.component';
 import LaboratorySummaryTiles from './lab-tiles/laboratory-summary-tiles.component';
+import dayjs from 'dayjs';
+import { type DateFilterContext } from './types';
 import styles from './laboratory-dashboard.scss';
 
 const LaboratoryDashboard: React.FC = () => {
@@ -14,11 +15,10 @@ const LaboratoryDashboard: React.FC = () => {
 
   return (
     <div>
-      <PageHeader
-        illustration={<LaboratoryPictogram />}
-        title={t('laboratory', 'Laboratory')}
-        className={styles.pageHeader}
-      />
+      <PageHeader className={styles.pageHeader}>
+        <PageHeaderContent illustration={<LaboratoryPictogram />} title={t('laboratory', 'Laboratory')} />
+        <AddTestOrderButton />
+      </PageHeader>
       <div>
         <LaboratorySummaryTiles />
         <LaboratoryOrdersTabs />
