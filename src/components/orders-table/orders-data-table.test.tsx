@@ -19,25 +19,25 @@ function mockUseLabOrdersImplementation(props: Parameters<typeof useLabOrders>[0
     display: 'PAT-001 - Pete Seeger',
     identifiers: props.includePatientId
       ? [
-          {
-            uuid: 'identifier-uuid-1',
-            identifier: 'PAT-001',
-            preferred: true,
-            voided: false,
-            identifierType: {
-              uuid: 'identifier-type-uuid-1',
-            },
+        {
+          uuid: 'identifier-uuid-1',
+          identifier: 'PAT-001',
+          preferred: true,
+          voided: false,
+          identifierType: {
+            uuid: 'identifier-type-uuid-1',
           },
-          {
-            uuid: 'identifier-uuid-2',
-            identifier: 'BAD-ID-NOT-PREFERRED',
-            preferred: false,
-            voided: false,
-            identifierType: {
-              uuid: 'identifier-type-uuid-1',
-            },
+        },
+        {
+          uuid: 'identifier-uuid-2',
+          identifier: 'BAD-ID-NOT-PREFERRED',
+          preferred: false,
+          voided: false,
+          identifierType: {
+            uuid: 'identifier-type-uuid-1',
           },
-        ]
+        },
+      ]
       : undefined,
     person: {
       uuid: 'person-uuid-1',
@@ -51,25 +51,25 @@ function mockUseLabOrdersImplementation(props: Parameters<typeof useLabOrders>[0
     display: 'PAT-002 - Bob Dylan',
     identifiers: props.includePatientId
       ? [
-          {
-            uuid: 'identifier-uuid-3',
-            identifier: 'BAD-ID-WRONG-TYPE',
-            preferred: true,
-            voided: false,
-            identifierType: {
-              uuid: '05a29f94-c0ed-11e2-94be-8c13b969e334',
-            },
+        {
+          uuid: 'identifier-uuid-3',
+          identifier: 'BAD-ID-WRONG-TYPE',
+          preferred: true,
+          voided: false,
+          identifierType: {
+            uuid: '05a29f94-c0ed-11e2-94be-8c13b969e334',
           },
-          {
-            uuid: 'identifier-uuid-4',
-            identifier: 'PAT-002',
-            preferred: true,
-            voided: false,
-            identifierType: {
-              uuid: 'identifier-type-uuid-1',
-            },
+        },
+        {
+          uuid: 'identifier-uuid-4',
+          identifier: 'PAT-002',
+          preferred: true,
+          voided: false,
+          identifierType: {
+            uuid: 'identifier-type-uuid-1',
           },
-        ]
+        },
+      ]
       : undefined,
     person: {
       uuid: 'person-uuid-2',
@@ -137,6 +137,22 @@ function mockUseLabOrdersImplementation(props: Parameters<typeof useLabOrders>[0
 }
 
 describe('OrdersDataTable', () => {
+  const originalError = console.error;
+  beforeAll(() => {
+    // Suppress Carbon's known PropTypes warning for DataTable children function
+    console.error = (...args) => {
+      const errorStr = String(args[0]);
+      if (errorStr.includes('Invalid prop `children` supplied to `DataTable`')) {
+        return;
+      }
+      originalError.call(console, ...args);
+    };
+  });
+
+  afterAll(() => {
+    console.error = originalError;
+  });
+
   beforeEach(() => {
     mockUseLabOrders.mockImplementation(mockUseLabOrdersImplementation);
   });
