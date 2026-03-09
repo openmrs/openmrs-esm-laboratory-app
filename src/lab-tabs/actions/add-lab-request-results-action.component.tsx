@@ -28,10 +28,13 @@ const AddLabRequestResultsAction: React.FC<AddLabRequestResultsActionProps> = ({
         patient: order.patient,
         order,
         invalidateLabOrders,
+        labOrderWorkspaceName: 'lab-app-test-results-add-lab-order-workspace',
       },
       {
         patient: order.patient,
-        labOrderWorkspaceName: 'add-lab-order',
+        patientUuid: order.patient.uuid,
+        encounterUuid: order.encounter?.uuid ?? '',
+        visitContext: order.encounter?.visit ?? null,
       },
     );
   };

@@ -161,6 +161,11 @@
       "window": "labs-app-test-results-window"
     },
     {
+      "name": "lab-app-test-results-add-lab-order-workspace",
+      "component": "@openmrs/esm-patient-tests-app#exportedAddLabOrderWorkspace",
+      "window": "labs-app-test-results-window"
+    },
+    {
       "name": "add-test-order-patient-search-workspace",
       "component": "@openmrs/esm-patient-search-app#patientSearchWorkspace2",
       "window": "add-test-order-window"
