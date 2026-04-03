@@ -162,7 +162,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     return groupedOrdersByPatient;
   }, [searchString, groupedOrdersByPatient, labTableColumns]);
 
-  // t('onHoldStatus', 'ON_HOLD')
   const orderStatuses = [
     { value: null, display: t('all', 'All') },
     { value: 'RECEIVED', display: t('receivedStatus', 'RECEIVED') },
@@ -318,7 +317,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
             <div className={styles.tileContainer}>
               <Tile className={styles.tile}>
                 <div className={styles.tileContent}>
-                  {/* t('noLabRequestsFound', 'No lab requests found') */}
                   <p className={styles.content}>{t('noLabRequestsFound', 'No lab requests found')}</p>
                   <p className={styles.emptyStateHelperText}>
                     {t('checkFilters', 'Please check the filters above and try again')}
