@@ -45,7 +45,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
         <div key={order.orderNumber} className={styles.orderDetailsContainer}>
           <StructuredListWrapper className={styles.orderDetailsWrapper}>
             <StructuredListBody>
-              {/* t('routine', 'Routine'), t('stat', 'Stat'), t('onscheduleddate', 'On scheduled date') */}
+              {/* t('routine', 'Routine'), t('stat', 'Stat'), t(‘onScheduledDate', 'On scheduled date') */}
               <OrderDetailRow
                 label={t('urgencyStatus', 'Urgency:')}
                 value={
