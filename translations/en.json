@@ -1,7 +1,7 @@
 {
   "action": "Action",
   "addLabResult": "Add lab results",
-  "addTestOrder": "Add test Order",
+  "addTestOrder": "Add test order",
   "age": "Age",
   "all": "All",
   "amendLabResults": "Amend lab results",
@@ -68,7 +68,7 @@
   "resultsApproved": "Results Approved",
   "searchThisList": "Search this list",
   "sex": "Sex",
-  "startVisitToAddLabTest": "startVisitToAddLabTest",
+  "startVisitToAddLabTest": "{{patientName}} does not have an active visit. Click the \"Start visit\" button next to their name to begin one.",
   "testOrdered": "Test ordered: ",
   "Tests ordered": "Tests ordered",
   "testsOrdered": "Tests ordered",
