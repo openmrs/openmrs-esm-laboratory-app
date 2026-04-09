@@ -22,11 +22,21 @@ const AddLabRequestResultsAction: React.FC<AddLabRequestResultsActionProps> = ({
   };
 
   const launchTestResultsWorkspace = () => {
-    launchWorkspace2('lab-app-test-results-form-workspace', {
-      patient: order.patient,
-      order,
-      invalidateLabOrders,
-    });
+    launchWorkspace2(
+      'lab-app-test-results-form-workspace',
+      {
+        patient: order.patient,
+        order,
+        invalidateLabOrders,
+        labOrderWorkspaceName: 'lab-app-test-results-add-lab-order-workspace',
+      },
+      {
+        patient: order.patient,
+        patientUuid: order.patient.uuid,
+        encounterUuid: order.encounter?.uuid ?? '',
+        visitContext: order.encounter?.visit ?? null,
+      },
+    );
   };
 
   return (
