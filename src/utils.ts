@@ -1,4 +1,5 @@
 import { capitalize } from 'lodash-es';
+import { type TFunction } from 'i18next';
 import { type OrderUrgency } from '@openmrs/esm-framework';
 
 export const urgencyTagType: Record<OrderUrgency, 'red' | 'green' | 'gray'> = {
@@ -11,7 +12,7 @@ export const urgencyPriority: Record<string, number> = { STAT: 0, ROUTINE: 1, ON
 
 export function formatUrgencyLabel(
   urgency: (OrderUrgency & {}) | (string & {}) | null | undefined,
-  t: (key: string, fallback: string) => string,
+  t: TFunction,
 ): string {
   if (!urgency) return '';
   switch (urgency) {
