@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   DataTable,
   DataTableSkeleton,
@@ -20,19 +20,18 @@ import {
   TableToolbar,
   TableToolbarContent,
   TableToolbarSearch,
+  Tag,
   Tile,
 } from '@carbon/react';
-import { ExtensionSlot, formatDate, parseDate, showModal, useConfig, usePagination } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
-import { type FulfillerStatus, type FlattenedOrder, type Order } from '../../types';
-import { type Config } from '../../config-schema';
-import { useLabOrders } from '../../laboratory.resource';
+import { ExtensionSlot, formatDate, parseDate, showModal, useConfig, usePagination } from '@openmrs/esm-framework';
 import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
+import { useLabOrders } from '../../laboratory.resource';
+import { urgencyTagType, formatUrgencyLabel, urgencyPriority } from '../../utils';
+import type { FulfillerStatus, FlattenedOrder, Order } from '../../types';
+import { type Config } from '../../config-schema';
 import styles from './orders-data-table.scss';
-
-// Priority order for urgency types: STAT first, then ROUTINE, then scheduled
-const urgencyPriority: Record<string, number> = { STAT: 0, ROUTINE: 1, ON_SCHEDULED_DATE: 2 };
 
 const labTableColumnSpec = {
   name: {
@@ -135,11 +134,11 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         const patient = labOrdersForPatient[0]?.patient;
         const flattenedLabOrdersForPatient = flattenedLabOrders.filter((order) => order.patientUuid === patientUuid);
 
-        // Group orders by urgency type and count them, skip null urgency
         const urgencyCounts = labOrdersForPatient.reduce((acc, order) => {
-          if (order.urgency) {
-            acc[order.urgency] = (acc[order.urgency] || 0) + 1;
+          if (!order.urgency) {
+            return acc;
           }
+          acc[order.urgency] = (acc[order.urgency] || 0) + 1;
           return acc;
         }, {} as Record<string, number>);
 
@@ -168,7 +167,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
 
   const searchResults = useMemo(() => {
     if (searchString && searchString.trim() !== '') {
-      // Normalize the search string to lowercase
       const lowerSearchString = searchString.toLowerCase();
       return groupedOrdersByPatient.filter(
         (orderGroup) =>
@@ -235,23 +233,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     });
   };
 
-  // Format urgency label for display
-  const formatUrgencyLabel = useCallback(
-    (urgency: string): string => {
-      switch (urgency) {
-        case 'STAT':
-          return t('stat', 'Stat');
-        case 'ROUTINE':
-          return t('routine', 'Routine');
-        case 'ON_SCHEDULED_DATE':
-          return t('scheduled', 'Scheduled');
-        default:
-          return urgency.toLowerCase().replace(/_/g, ' ');
-      }
-    },
-    [t],
-  );
-
   const tableRows = useMemo(() => {
     return paginatedLabOrders.map((groupedOrder) => ({
       ...groupedOrder,
@@ -259,11 +240,11 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
       urgency: (
         <div className={styles.urgencyTagsContainer}>
           {Object.entries(groupedOrder.urgencyCounts)
-            .sort(([a], [b]) => (urgencyPriority[a] ?? 99) - (urgencyPriority[b] ?? 99))
+            .sort(([a], [b]) => (urgencyPriority[a] ?? Infinity) - (urgencyPriority[b] ?? Infinity))
             .map(([urgency, count]) => (
-              <span key={urgency} className={styles.urgencyTag} data-urgency={urgency}>
-                {count} {formatUrgencyLabel(urgency)}
-              </span>
+              <Tag key={urgency} type={urgencyTagType[urgency] ?? 'gray'} size="sm">
+                {count} {formatUrgencyLabel(urgency, t)}
+              </Tag>
             ))}
         </div>
       ),
@@ -291,7 +272,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         </div>
       ) : null,
     }));
-  }, [paginatedLabOrders, t, formatUrgencyLabel]);
+  }, [paginatedLabOrders, t]);
 
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" showHeader={false} showToolbar={false} />;

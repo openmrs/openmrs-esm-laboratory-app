@@ -94,18 +94,6 @@
   text-overflow: ellipsis;
 }
 
-.priorityPill {
-  @extend .pill;
-
-  &[data-urgency='ROUTINE'] {
-    background-color: colors.$green-20;
-  }
-
-  &[data-urgency='ON SCHEDULED_DATE'] {
-    background-color: colors.$red-20;
-  }
-}
-
 .statusPill {
   @extend .pill;
 
