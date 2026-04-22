@@ -37,16 +37,19 @@ const baseVisitReturn = {
   currentVisitIsRetrospective: false,
 };
 
-function getOnPatientSelected() {
+type OnPatientSelected = (
+  patientUuid: string,
+  patient: fhir.Patient,
+  launchChildWorkspace: unknown,
+  closeWorkspace: () => Promise<boolean>,
+) => void;
+
+function getOnPatientSelected(): OnPatientSelected {
   const patientSearchCall = mockLaunchWorkspace2.mock.calls.find(
     ([name]) => name === 'add-test-order-patient-search-workspace',
   );
-  return patientSearchCall?.[1].onPatientSelected as (
-    patientUuid: string,
-    patient: fhir.Patient,
-    launchChildWorkspace: unknown,
-    closeWorkspace: () => Promise<boolean>,
-  ) => void;
+  const workspaceProps = patientSearchCall?.[1] as { onPatientSelected: OnPatientSelected } | undefined;
+  return workspaceProps!.onPatientSelected;
 }
 
 describe('AddTestOrderButton', () => {
