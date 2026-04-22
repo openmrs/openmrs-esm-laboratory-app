@@ -21,6 +21,7 @@
   "discard": "Discard",
   "editResults": "Edit results",
   "errorApprovingResults": "Error approving results",
+  "errorCheckingVisit": "Error checking visit status",
   "errorPickingOrder": "Error picking order",
   "errorRejectingRequest": "Error rejecting lab request",
   "exceptionStatus": "EXCEPTION",
@@ -76,12 +77,12 @@
   "Tests ordered": "Tests ordered",
   "testsOrdered": "Tests ordered",
   "testType": "Test type",
-  "theSelectedPatient": "theSelectedPatient",
+  "theSelectedPatient": "The selected patient",
   "totalOrders": "Total orders",
   "urgency": "Urgency",
   "urgencyStatus": "Urgency: ",
   "viewTestResults": "View test results",
-  "visitRequired": "visitRequired",
+  "visitRequired": "Visit required",
   "worklist": "Worklist",
   "Worklist": "Worklist"
 }

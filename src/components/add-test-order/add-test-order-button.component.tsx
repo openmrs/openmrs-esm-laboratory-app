@@ -1,7 +1,15 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
-import { AddIcon, launchWorkspace2, showSnackbar, useConfig, useLayoutType, useVisit } from '@openmrs/esm-framework';
+import {
+  AddIcon,
+  launchWorkspace2,
+  showSnackbar,
+  useConfig,
+  useLayoutType,
+  useVisit,
+  type Workspace2DefinitionProps,
+} from '@openmrs/esm-framework';
 import { useInvalidateLabOrders } from '../../laboratory.resource';
 import { type Config } from '../../config-schema';
 import styles from './add-test-order-button.scss';
@@ -16,10 +24,21 @@ const AddTestOrderButton = () => {
   const [selectedPatient, setSelectedPatient] = useState<{ uuid: string; patient: fhir.Patient } | null>(null);
   const closeWorkspaceRef = useRef<(() => Promise<void>) | null>(null);
 
-  const { activeVisit, isLoading } = useVisit(selectedPatient?.uuid);
+  const { activeVisit, error, isLoading } = useVisit(selectedPatient?.uuid);
 
   useEffect(() => {
     if (!selectedPatient || isLoading) {
+      return;
+    }
+
+    if (error) {
+      showSnackbar({
+        title: t('errorCheckingVisit', 'Error checking visit status'),
+        subtitle: error.message,
+        kind: 'error',
+      });
+      setSelectedPatient(null);
+      closeWorkspaceRef.current = null;
       return;
     }
 
@@ -67,13 +86,13 @@ const AddTestOrderButton = () => {
       setSelectedPatient(null);
       closeWorkspaceRef.current = null;
     }
-  }, [activeVisit, laboratoryOrderTypeUuid, isLoading, selectedPatient, invalidateLabOrders, t]);
+  }, [activeVisit, error, laboratoryOrderTypeUuid, isLoading, selectedPatient, invalidateLabOrders, t]);
 
   const handlePatientSelected = useCallback(
     (
       patientUuid: string,
       patient: fhir.Patient,
-      _launchChildWorkspace: unknown,
+      _launchChildWorkspace: Workspace2DefinitionProps['launchChildWorkspace'],
       closeWorkspace: () => Promise<void>,
     ) => {
       closeWorkspaceRef.current = closeWorkspace;
