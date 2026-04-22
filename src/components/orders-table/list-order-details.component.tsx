@@ -8,9 +8,11 @@ import {
   StructuredListCell,
   StructuredListRow,
   StructuredListWrapper,
+  Tag,
 } from '@carbon/react';
 import { capitalize } from 'lodash-es';
 import { ExtensionSlot, formatDate, parseDate } from '@openmrs/esm-framework';
+import { urgencyTagType, formatUrgencyLabel } from '../../utils';
 import { type GroupedOrders } from '../../types';
 import styles from './list-order-details.scss';
 
@@ -45,14 +47,16 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
         <div key={order.orderNumber} className={styles.orderDetailsContainer}>
           <StructuredListWrapper className={styles.orderDetailsWrapper}>
             <StructuredListBody>
-              <OrderDetailRow
-                label={t('urgencyStatus', 'Urgency:')}
-                value={
-                  <div className={styles.priorityPill} data-urgency={order.urgency?.replace('_', ' ')}>
-                    {capitalize(order.urgency?.replace(/_/g, ' '))}
-                  </div>
-                }
-              />
+              {order.urgency && (
+                <OrderDetailRow
+                  label={t('urgencyStatus', 'Urgency:')}
+                  value={
+                    <Tag type={urgencyTagType[order.urgency]} size="sm">
+                      {formatUrgencyLabel(order.urgency, t)}
+                    </Tag>
+                  }
+                />
+              )}
               <OrderDetailRow label={t('testOrdered', 'Test ordered:')} value={order.display} />
               <OrderDetailRow
                 label={t('orderStatus', 'Status:')}
