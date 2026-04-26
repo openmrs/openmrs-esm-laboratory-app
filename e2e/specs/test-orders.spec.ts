@@ -49,10 +49,10 @@ test('View test orders', async ({ page }) => {
     await laboratoryPage.expandPatientRow(fullName);
   });
 
-  await test.step('Then I should see the order status, test name, and urgency', async () => {
+  await test.step('Then I should see the order status, test name, and urgency count', async () => {
     await expect(page.getByText(/Status:Order not picked/i)).toBeVisible();
     await expect(page.getByRole('cell', { name: 'serum glucose' })).toBeVisible();
-    await expect(page.getByText(/Routine/i)).toBeVisible();
+    await expect(page.getByLabel('Tests ordered', { exact: true }).getByText(/1 Routine/i)).toBeVisible();
   });
 });
 

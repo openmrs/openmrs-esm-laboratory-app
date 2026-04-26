@@ -20,15 +20,17 @@ import {
   TableToolbar,
   TableToolbarContent,
   TableToolbarSearch,
+  Tag,
   Tile,
 } from '@carbon/react';
-import { ExtensionSlot, formatDate, parseDate, showModal, useConfig, usePagination } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
-import { type FulfillerStatus, type FlattenedOrder, type Order } from '../../types';
-import { type Config } from '../../config-schema';
-import { useLabOrders } from '../../laboratory.resource';
+import { ExtensionSlot, formatDate, parseDate, showModal, useConfig, usePagination } from '@openmrs/esm-framework';
 import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
+import { useLabOrders } from '../../laboratory.resource';
+import { urgencyTagType, formatUrgencyLabel, urgencyPriority } from '../../utils';
+import type { FulfillerStatus, FlattenedOrder, Order } from '../../types';
+import { type Config } from '../../config-schema';
 import styles from './orders-data-table.scss';
 
 const labTableColumnSpec = {
@@ -55,6 +57,12 @@ const labTableColumnSpec = {
     headerLabelKey: 'sex',
     headerLabelDefault: 'Sex',
     key: 'patientSex',
+  },
+  urgency: {
+    // t('urgency', 'Urgency')
+    headerLabelKey: 'urgency',
+    headerLabelDefault: 'Urgency',
+    key: 'urgency',
   },
   totalOrders: {
     // t('totalOrders', 'Total Orders')
@@ -125,6 +133,15 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         const labOrdersForPatient = labOrders.filter((order) => order.patient.uuid === patientUuid);
         const patient = labOrdersForPatient[0]?.patient;
         const flattenedLabOrdersForPatient = flattenedLabOrders.filter((order) => order.patientUuid === patientUuid);
+
+        const urgencyCounts = labOrdersForPatient.reduce((acc, order) => {
+          if (!order.urgency) {
+            return acc;
+          }
+          acc[order.urgency] = (acc[order.urgency] || 0) + 1;
+          return acc;
+        }, {} as Record<string, number>);
+
         return {
           patientId: patient?.identifiers?.find(
             (identifier) =>
@@ -140,6 +157,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           totalOrders: flattenedLabOrdersForPatient.length,
           orders: flattenedLabOrdersForPatient,
           originalOrders: labOrdersForPatient,
+          urgencyCounts,
         };
       });
     } else {
@@ -149,7 +167,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
 
   const searchResults = useMemo(() => {
     if (searchString && searchString.trim() !== '') {
-      // Normalize the search string to lowercase
       const lowerSearchString = searchString.toLowerCase();
       return groupedOrdersByPatient.filter(
         (orderGroup) =>
@@ -220,6 +237,17 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     return paginatedLabOrders.map((groupedOrder) => ({
       ...groupedOrder,
       id: groupedOrder.patientUuid,
+      urgency: (
+        <div className={styles.urgencyTagsContainer}>
+          {Object.entries(groupedOrder.urgencyCounts)
+            .sort(([a], [b]) => (urgencyPriority[a] ?? Infinity) - (urgencyPriority[b] ?? Infinity))
+            .map(([urgency, count]) => (
+              <Tag key={urgency} type={urgencyTagType[urgency] ?? 'gray'} size="sm">
+                {count} {formatUrgencyLabel(urgency, t)}
+              </Tag>
+            ))}
+        </div>
+      ),
       action: groupedOrder.orders.some((o) => o.fulfillerStatus === 'COMPLETED') ? (
         <div className={styles.actionCell}>
           <OverflowMenu aria-label="Actions" flipped iconDescription="Actions">

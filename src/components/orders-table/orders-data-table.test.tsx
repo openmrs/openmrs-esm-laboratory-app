@@ -94,7 +94,7 @@ function mockUseLabOrdersImplementation(props: Parameters<typeof useLabOrders>[0
       patient: mockPatient1 as Patient,
       dateActivated: '2021-01-01',
       fulfillerStatus: 'RECEIVED',
-      urgency: 'ROUTINE',
+      urgency: 'STAT',
       orderer: mockOrderer,
       instructions: 'Inspect banjo & check tuning',
       fulfillerComment: null,
@@ -118,7 +118,7 @@ function mockUseLabOrdersImplementation(props: Parameters<typeof useLabOrders>[0
       patient: mockPatient2 as Patient,
       dateActivated: '2021-01-01',
       fulfillerStatus: 'RECEIVED',
-      urgency: 'EMERGENCY',
+      urgency: 'ROUTINE',
       orderer: mockOrderer,
       instructions: 'Make some noise',
       fulfillerComment: null,
@@ -158,16 +158,22 @@ describe('OrdersDataTable', () => {
     expect(headerRow).toHaveTextContent('Age');
     expect(headerRow).toHaveTextContent('Sex');
     expect(headerRow).toHaveTextContent('Total Orders');
+    expect(headerRow).toHaveTextContent('Urgency');
     const row1 = dataRows[0];
     expect(row1).toHaveTextContent('Pete Seeger');
     expect(row1).toHaveTextContent('70');
     expect(row1).toHaveTextContent('M');
     expect(row1).toHaveTextContent('2');
+    expect(row1).toHaveTextContent('1 Stat');
+    expect(row1).toHaveTextContent('1 Routine');
+    // STAT should be sorted before ROUTINE
+    expect(row1.innerHTML.indexOf('Stat')).toBeLessThan(row1.innerHTML.indexOf('Routine'));
     const row2 = dataRows[1];
     expect(row2).toHaveTextContent('Bob Dylan');
     expect(row2).toHaveTextContent('60');
     expect(row2).toHaveTextContent('M');
     expect(row2).toHaveTextContent('1');
+    expect(row2).toHaveTextContent('1 Routine');
 
     const user = userEvent.setup();
     await user.click(within(row1).getByLabelText('Expand current row'));
@@ -181,13 +187,81 @@ describe('OrdersDataTable', () => {
     expect(orderDetailsTable1).toHaveTextContent('Dr. John Doe');
     expect(orderDetailsTable1).toHaveTextContent('01-Jan-2021');
     expect(orderDetailsTable1).toHaveTextContent('Received');
-    expect(orderDetailsTable1).toHaveTextContent('Routine');
+    expect(orderDetailsTable1).toHaveTextContent('Stat');
     expect(orderDetailsTable2).toHaveTextContent('Guitar Inspection');
     expect(orderDetailsTable2).toHaveTextContent('Give it a strum');
     expect(orderDetailsTable2).toHaveTextContent('Dr. John Doe');
     expect(orderDetailsTable2).toHaveTextContent('01-Jan-2021');
     expect(orderDetailsTable2).toHaveTextContent('Received');
     expect(orderDetailsTable2).toHaveTextContent('Routine');
+  });
+
+  it('should render an empty urgency cell when all orders have null urgency', () => {
+    mockUseLabOrders.mockReturnValueOnce({
+      labOrders: [
+        {
+          uuid: 'order-uuid-null',
+          orderNumber: 'ORD-NULL',
+          patient: {
+            uuid: 'patient-uuid-3',
+            display: 'PAT-003 - Jane Smith',
+            person: { uuid: 'person-uuid-3', display: 'Jane Smith', age: 30, gender: 'F' },
+          } as Patient,
+          dateActivated: '2021-01-01',
+          fulfillerStatus: 'RECEIVED',
+          urgency: null,
+          orderer: { uuid: 'orderer-uuid-1', display: 'Dr. John Doe', person: { display: 'Dr. John Doe' } },
+          instructions: '',
+          fulfillerComment: null,
+          display: 'Null Urgency Test',
+        },
+      ] as Array<Order>,
+      isLoading: false,
+      isError: false,
+      mutate: jest.fn(),
+      isValidating: false,
+    });
+    mockUseConfig.mockReturnValue({ ...getDefaultsFromConfigSchema(configSchema) });
+
+    render(<OrdersDataTable />);
+    const rows = screen.getAllByRole('row');
+    const dataRows = rows.slice(1).filter((row) => !row.classList.contains('hiddenRow'));
+    expect(dataRows).toHaveLength(1);
+    expect(within(dataRows[0]).queryByText(/Routine|Stat|Scheduled/i)).not.toBeInTheDocument();
+  });
+
+  it('should render ON_SCHEDULED_DATE urgency as "Scheduled"', () => {
+    mockUseLabOrders.mockReturnValueOnce({
+      labOrders: [
+        {
+          uuid: 'order-uuid-scheduled',
+          orderNumber: 'ORD-SCHED',
+          patient: {
+            uuid: 'patient-uuid-3',
+            display: 'PAT-003 - Jane Smith',
+            person: { uuid: 'person-uuid-3', display: 'Jane Smith', age: 45, gender: 'F' },
+          } as Patient,
+          dateActivated: '2021-01-01',
+          fulfillerStatus: 'RECEIVED',
+          urgency: 'ON_SCHEDULED_DATE',
+          orderer: { uuid: 'orderer-uuid-1', display: 'Dr. John Doe', person: { display: 'Dr. John Doe' } },
+          instructions: '',
+          fulfillerComment: null,
+          display: 'Scheduled Test',
+        },
+      ] as Array<Order>,
+      isLoading: false,
+      isError: false,
+      mutate: jest.fn(),
+      isValidating: false,
+    });
+    mockUseConfig.mockReturnValue({ ...getDefaultsFromConfigSchema(configSchema) });
+
+    render(<OrdersDataTable />);
+    const rows = screen.getAllByRole('row');
+    const dataRows = rows.slice(1).filter((row) => !row.classList.contains('hiddenRow'));
+    expect(dataRows).toHaveLength(1);
+    expect(dataRows[0]).toHaveTextContent('1 Scheduled');
   });
 
   it('should show patient identifier if it is configured', () => {

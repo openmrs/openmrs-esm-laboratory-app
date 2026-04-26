@@ -28,7 +28,7 @@ jobs:
 
       - name: 📦 Cache dependencies
         id: cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: "**/node_modules"
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
@@ -72,7 +72,7 @@ jobs:
 
       - name: 📦 Cache dependencies
         id: cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: "**/node_modules"
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
@@ -119,7 +119,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: 📥 Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
 
       - name: 🚀 Setup Node.js
         uses: actions/setup-node@v6
@@ -129,7 +129,7 @@ jobs:
 
       - name: 📦 Cache dependencies
         id: cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: "**/node_modules"
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
@@ -158,7 +158,7 @@ jobs:
 
     steps:
       - name: 🚀 Trigger RefApp Build
-        uses: fjogeleit/http-request-action@v1
+        uses: fjogeleit/http-request-action@v2
         with:
           url: https://ci.openmrs.org/rest/api/latest/queue/O3-BF
           method: "POST"
