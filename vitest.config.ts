@@ -2,10 +2,7 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   resolve: {
-    alias: [
-      { find: /^.*\.s?css$/, replacement: 'identity-obj-proxy' },
-      { find: 'workbox-window', replacement: new URL('./tools/empty-module.ts', import.meta.url).pathname },
-    ],
+    alias: [{ find: /^.*\.s?css$/, replacement: 'identity-obj-proxy' }],
   },
   test: {
     environment: 'jsdom',
@@ -15,7 +12,7 @@ export default defineConfig({
     exclude: ['**/node_modules/**', '**/e2e/**', '**/dist/**'],
     server: {
       deps: {
-        inline: [/@openmrs/, 'workbox-window'],
+        inline: [/@openmrs/],
       },
     },
     fakeTimers: {
