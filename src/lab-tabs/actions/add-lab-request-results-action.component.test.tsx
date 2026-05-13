@@ -1,4 +1,5 @@
 import React from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
@@ -11,8 +12,8 @@ import {
 import { configSchema, type Config } from '../../config-schema';
 import AddLabRequestResultsAction from './add-lab-request-results-action.component';
 
-const mockLaunchWorkspace2 = jest.mocked(launchWorkspace2);
-const mockUseConfig = jest.mocked(useConfig<Config>);
+const mockLaunchWorkspace2 = vi.mocked(launchWorkspace2);
+const mockUseConfig = vi.mocked(useConfig<Config>);
 
 const mockOrder = {
   patient: {
