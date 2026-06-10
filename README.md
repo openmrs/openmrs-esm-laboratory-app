@@ -28,6 +28,7 @@ The module supports the following configuration options:
 | `labTableColumns` | `Array<string>` | `['name', 'age', 'sex', 'totalOrders', 'action']` | Columns to display in the lab table. Allowed values: `name`, `age`, `dob`, `sex`, `totalOrders`, `action`, `patientId` |
 | `patientIdIdentifierTypeUuid` | `UUID` | `05a29f94-c0ed-11e2-94be-8c13b969e334` | Identifier type UUID for the patient ID column. Only needed if `patientId` is included in `labTableColumns` |
 | `enableReviewingLabResultsBeforeApproval` | `boolean` | `false` | When enabled, lab results are submitted for review before being approved and finalized |
+| `filterByCurrentLocation` | `boolean` | `false` | Enable filtering lab requests by current location |
 
 ## Getting Started
 
