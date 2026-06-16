@@ -23,6 +23,12 @@ export const configSchema = {
     _default: '05a29f94-c0ed-11e2-94be-8c13b969e334',
     _description: 'Needed if the "id" column of "labTableColumns" is used. Is the OpenMRS ID by default.',
   },
+  usePreferredPatientIdentifier: {
+    _type: Type.Boolean,
+    _default: false,
+    _description:
+      'Use preferred patient identifier. When enabled, the preferred patient identifier will be used in the "id" column of the lab table instead of the OpenMRS ID.',
+  },
   enableReviewingLabResultsBeforeApproval: {
     _type: Type.Boolean,
     _default: false,
@@ -36,4 +42,5 @@ export type Config = {
   laboratoryOrderTypeUuid: string;
   labTableColumns: Array<LabTableColumnName>;
   patientIdIdentifierTypeUuid: string;
+  usePreferredPatientIdentifier: boolean;
 };

@@ -1,6 +1,6 @@
 import { capitalize } from 'lodash-es';
 import { type TFunction } from 'i18next';
-import { type OrderUrgency } from '@openmrs/esm-framework';
+import { type Patient, type OrderUrgency } from '@openmrs/esm-framework';
 
 export const urgencyTagType: Record<OrderUrgency, 'red' | 'green' | 'gray'> = {
   STAT: 'red',
@@ -26,3 +26,20 @@ export function formatUrgencyLabel(
       return capitalize(urgency.replace(/_/g, ' ').toLowerCase());
   }
 }
+
+export const getPatientIdentifier = (
+  patient: Patient | undefined,
+  patientIdIdentifierTypeUuid: string,
+  usePreferredPatientIdentifier: boolean,
+) => {
+  const configuredPatientId = patient?.identifiers?.find(
+    (identifier) =>
+      (usePreferredPatientIdentifier ? identifier.preferred : true) &&
+      !identifier.voided &&
+      identifier?.identifierType?.uuid === patientIdIdentifierTypeUuid,
+  )?.identifier;
+
+  const preferredIdentifier = patient?.identifiers?.find((identifier) => identifier.preferred && !identifier.voided);
+
+  return configuredPatientId || (preferredIdentifier?.identifier ?? '--');
+};
