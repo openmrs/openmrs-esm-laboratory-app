@@ -36,7 +36,7 @@ import {
 import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
 import { useLabOrders } from '../../laboratory.resource';
-import { urgencyTagType, formatUrgencyLabel, urgencyPriority } from '../../utils';
+import { urgencyTagType, formatUrgencyLabel, urgencyPriority, getPatientIdentifier } from '../../utils';
 import type { FulfillerStatus, FlattenedOrder, Order } from '../../types';
 import { type Config } from '../../config-schema';
 import styles from './orders-data-table.scss';
@@ -105,7 +105,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<FulfillerStatus>(null);
   const [searchString, setSearchString] = useState('');
-  const { labTableColumns, patientIdIdentifierTypeUuid } = useConfig<Config>();
+  const { labTableColumns, patientIdIdentifierTypeUuid, usePreferredPatientIdentifier } = useConfig<Config>();
   const isTablet = useLayoutType() === 'tablet';
   const responsiveSize: 'sm' | 'lg' = isTablet ? 'lg' : 'sm';
 
@@ -153,12 +153,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
         }, {} as Record<string, number>);
 
         return {
-          patientId: patient?.identifiers?.find(
-            (identifier) =>
-              identifier.preferred &&
-              !identifier.voided &&
-              identifier.identifierType.uuid === patientIdIdentifierTypeUuid,
-          )?.identifier,
+          patientId: getPatientIdentifier(patient, patientIdIdentifierTypeUuid, usePreferredPatientIdentifier),
           patientUuid: patientUuid,
           patientName: patient?.person?.display,
           patientAge: patient?.person?.age,
@@ -173,7 +168,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     } else {
       return [];
     }
-  }, [flattenedLabOrders, labOrders, patientIdIdentifierTypeUuid]);
+  }, [flattenedLabOrders, labOrders, patientIdIdentifierTypeUuid, usePreferredPatientIdentifier]);
 
   const searchResults = useMemo(() => {
     if (searchString && searchString.trim() !== '') {
