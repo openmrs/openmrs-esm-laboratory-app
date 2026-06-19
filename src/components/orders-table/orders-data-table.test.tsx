@@ -1,5 +1,5 @@
 import React from 'react';
-import { beforeEach, describe, expect, it, vi, vitest } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useConfig, getDefaultsFromConfigSchema, type Order, type Patient } from '@openmrs/esm-framework';
@@ -320,7 +320,7 @@ describe('patient identifier column', () => {
     ] as unknown as Array<Order>,
     isLoading: false,
     isError: false,
-    mutate: vitest.fn(),
+    mutate: vi.fn(),
     isValidating: false,
   });
 
@@ -471,7 +471,7 @@ describe('patient identifier column', () => {
         },
       ]),
     );
-    mockUseConfig.mockReturnValue(baseConfig);
+    mockUseConfig.mockReturnValue({ ...baseConfig, usePreferredPatientIdentifier: false });
 
     render(<OrdersDataTable />);
     const row = screen

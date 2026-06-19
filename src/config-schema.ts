@@ -25,9 +25,9 @@ export const configSchema = {
   },
   usePreferredPatientIdentifier: {
     _type: Type.Boolean,
-    _default: false,
+    _default: true,
     _description:
-      'Use preferred patient identifier. When enabled, the preferred patient identifier will be used in the "id" column of the lab table instead of the OpenMRS ID.',
+      "When true (default), the patientId column shows an identifier only when it is both preferred and matches patientIdIdentifierTypeUuid. When false, any identifier of the configured type is shown regardless of preferred status, with a fallback to the patient's preferred identifier of any type.",
   },
   enableReviewingLabResultsBeforeApproval: {
     _type: Type.Boolean,

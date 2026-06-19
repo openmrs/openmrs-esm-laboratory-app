@@ -1,4 +1,4 @@
-import { type Concept, type Order as FrameworkOrder, type OrderUrgency } from '@openmrs/esm-framework';
+import { type Order as FrameworkOrder, type OrderUrgency } from '@openmrs/esm-framework';
 
 type FrameworkFulfillerStatus = FrameworkOrder['fulfillerStatus'];
 export type FulfillerStatus = FrameworkFulfillerStatus | 'DRAFT' | null;
@@ -19,8 +19,6 @@ export interface FlattenedOrder {
   orderer?: string;
   instructions?: string;
   fulfillerComment?: string;
-  orderReason?: Concept;
-  orderReasonNonCoded?: string;
 }
 
 export interface GroupedOrders {

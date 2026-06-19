@@ -32,14 +32,25 @@ export const getPatientIdentifier = (
   patientIdIdentifierTypeUuid: string,
   usePreferredPatientIdentifier: boolean,
 ) => {
-  const configuredPatientId = patient?.identifiers?.find(
-    (identifier) =>
-      (usePreferredPatientIdentifier ? identifier.preferred : true) &&
-      !identifier.voided &&
-      identifier?.identifierType?.uuid === patientIdIdentifierTypeUuid,
+  if (usePreferredPatientIdentifier) {
+    // Default/old behavior: identifier must be both preferred and match the configured type.
+    return (
+      patient?.identifiers?.find(
+        (identifier) =>
+          identifier.preferred &&
+          !identifier.voided &&
+          identifier?.identifierType?.uuid === patientIdIdentifierTypeUuid,
+      )?.identifier ?? '--'
+    );
+  }
+
+  // Opt-in behavior: first match identifiers by the configured type, regardless of the preferred flag.
+  // If no matching type is found, fall back to any preferred identifier of any type, then '--'.
+  const byType = patient?.identifiers?.find(
+    (identifier) => !identifier.voided && identifier?.identifierType?.uuid === patientIdIdentifierTypeUuid,
   )?.identifier;
 
-  const preferredIdentifier = patient?.identifiers?.find((identifier) => identifier.preferred && !identifier.voided);
+  const anyPreferred = patient?.identifiers?.find((identifier) => identifier.preferred && !identifier.voided);
 
-  return configuredPatientId || (preferredIdentifier?.identifier ?? '--');
+  return byType ?? anyPreferred?.identifier ?? '--';
 };
