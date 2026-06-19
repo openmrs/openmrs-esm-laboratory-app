@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import classNames from 'classnames';
 import {
   DataTable,
   DataTableSkeleton,
@@ -311,9 +312,9 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
                 )}
                 <OrdersDateRangePicker />
               </Layer>
-              <Layer className={styles.toolbarItem}>
+              <Layer className={classNames(styles.toolbarItem, styles.searchItem)}>
                 <TableToolbarSearch
-                  expanded
+                  persistent
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchString(e.target.value)}
                   placeholder={t('searchThisList', 'Search this list')}
                   size={responsiveSize}
