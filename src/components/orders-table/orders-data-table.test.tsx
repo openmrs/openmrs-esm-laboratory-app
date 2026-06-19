@@ -216,7 +216,7 @@ describe('OrdersDataTable', () => {
           fulfillerComment: null,
           display: 'Null Urgency Test',
         },
-      ] as Array<Order>,
+      ] as unknown as Array<Order>,
       isLoading: false,
       isError: false,
       mutate: vi.fn(),
@@ -250,7 +250,7 @@ describe('OrdersDataTable', () => {
           fulfillerComment: null,
           display: 'Scheduled Test',
         },
-      ] as Array<Order>,
+      ] as unknown as Array<Order>,
       isLoading: false,
       isError: false,
       mutate: vi.fn(),
@@ -285,5 +285,229 @@ describe('OrdersDataTable', () => {
     expect(row2).toHaveTextContent('60');
     expect(row2).toHaveTextContent('1');
     expect(screen.queryByText(/BAD-ID/)).not.toBeInTheDocument();
+  });
+});
+
+describe('patient identifier column', () => {
+  const TYPE_UUID = 'identifier-type-uuid-1';
+  const OTHER_UUID = 'other-type-uuid';
+
+  const baseConfig: Config = {
+    ...(getDefaultsFromConfigSchema(configSchema) as Config),
+    labTableColumns: ['patientId', 'age', 'totalOrders'],
+    patientIdIdentifierTypeUuid: TYPE_UUID,
+  };
+
+  const makeOrder = (identifiers: Patient['identifiers']) => ({
+    labOrders: [
+      {
+        uuid: 'order-uuid-x',
+        orderNumber: 'ORD-X',
+        patient: {
+          uuid: 'patient-uuid-x',
+          display: 'Test Patient',
+          identifiers,
+          person: { uuid: 'person-uuid-x', display: 'Test Patient', age: 40, gender: 'F' },
+        } as Patient,
+        dateActivated: '2021-01-01',
+        fulfillerStatus: 'RECEIVED',
+        urgency: 'ROUTINE',
+        orderer: { uuid: 'orderer-uuid-x', display: 'Dr. Test', person: { display: 'Dr. Test' } },
+        instructions: '',
+        fulfillerComment: null,
+        display: 'Test Order',
+      },
+    ] as unknown as Array<Order>,
+    isLoading: false,
+    isError: false,
+    mutate: vi.fn(),
+    isValidating: false,
+  });
+
+  it('shows "--" when the patient has no identifiers', () => {
+    mockUseLabOrders.mockReturnValueOnce(makeOrder(undefined));
+    mockUseConfig.mockReturnValue(baseConfig);
+
+    render(<OrdersDataTable />);
+    const row = screen
+      .getAllByRole('row')
+      .slice(1)
+      .find((r) => !r.classList.contains('hiddenRow'));
+    expect(row).toHaveTextContent('--');
+  });
+
+  it('shows "--" when no identifier matches the configured type UUID and there is no preferred fallback', () => {
+    mockUseLabOrders.mockReturnValueOnce(
+      makeOrder([
+        {
+          uuid: 'id-1',
+          identifier: 'WRONG-TYPE',
+          preferred: false,
+          voided: false,
+          identifierType: { uuid: OTHER_UUID },
+        },
+      ]),
+    );
+    mockUseConfig.mockReturnValue(baseConfig);
+
+    render(<OrdersDataTable />);
+    const row = screen
+      .getAllByRole('row')
+      .slice(1)
+      .find((r) => !r.classList.contains('hiddenRow'));
+    expect(row).toHaveTextContent('--');
+    expect(row).not.toHaveTextContent('WRONG-TYPE');
+  });
+
+  it('shows the configured-type identifier when usePreferredPatientIdentifier is false', () => {
+    mockUseLabOrders.mockReturnValueOnce(
+      makeOrder([
+        {
+          uuid: 'id-1',
+          identifier: 'NON-PREF-MATCH',
+          preferred: false,
+          voided: false,
+          identifierType: { uuid: TYPE_UUID },
+        },
+        {
+          uuid: 'id-2',
+          identifier: 'PREF-NO-MATCH',
+          preferred: true,
+          voided: false,
+          identifierType: { uuid: OTHER_UUID },
+        },
+      ]),
+    );
+    mockUseConfig.mockReturnValue({ ...baseConfig, usePreferredPatientIdentifier: false });
+
+    render(<OrdersDataTable />);
+    const row = screen
+      .getAllByRole('row')
+      .slice(1)
+      .find((r) => !r.classList.contains('hiddenRow'));
+    expect(row).toHaveTextContent('NON-PREF-MATCH');
+    expect(row).not.toHaveTextContent('PREF-NO-MATCH');
+  });
+
+  it('shows only the preferred matching identifier when usePreferredPatientIdentifier is true', () => {
+    mockUseLabOrders.mockReturnValueOnce(
+      makeOrder([
+        {
+          uuid: 'id-1',
+          identifier: 'NON-PREF-MATCH',
+          preferred: false,
+          voided: false,
+          identifierType: { uuid: TYPE_UUID },
+        },
+        { uuid: 'id-2', identifier: 'PREF-MATCH', preferred: true, voided: false, identifierType: { uuid: TYPE_UUID } },
+      ]),
+    );
+    mockUseConfig.mockReturnValue({ ...baseConfig, usePreferredPatientIdentifier: true });
+
+    render(<OrdersDataTable />);
+    const row = screen
+      .getAllByRole('row')
+      .slice(1)
+      .find((r) => !r.classList.contains('hiddenRow'));
+    expect(row).toHaveTextContent('PREF-MATCH');
+    expect(row).not.toHaveTextContent('NON-PREF-MATCH');
+  });
+
+  it('shows "--" when usePreferredPatientIdentifier is true but no preferred identifier matches the type', () => {
+    mockUseLabOrders.mockReturnValueOnce(
+      makeOrder([
+        {
+          uuid: 'id-1',
+          identifier: 'NON-PREF-MATCH',
+          preferred: false,
+          voided: false,
+          identifierType: { uuid: TYPE_UUID },
+        },
+      ]),
+    );
+    mockUseConfig.mockReturnValue({ ...baseConfig, usePreferredPatientIdentifier: true });
+
+    render(<OrdersDataTable />);
+    const row = screen
+      .getAllByRole('row')
+      .slice(1)
+      .find((r) => !r.classList.contains('hiddenRow'));
+    expect(row).toHaveTextContent('--');
+    expect(row).not.toHaveTextContent('NON-PREF-MATCH');
+  });
+
+  it('does not show voided identifiers even if they match the type UUID', () => {
+    mockUseLabOrders.mockReturnValueOnce(
+      makeOrder([
+        {
+          uuid: 'id-1',
+          identifier: 'VOIDED-MATCH',
+          preferred: true,
+          voided: true,
+          identifierType: { uuid: TYPE_UUID },
+        },
+      ]),
+    );
+    mockUseConfig.mockReturnValue(baseConfig);
+
+    render(<OrdersDataTable />);
+    const row = screen
+      .getAllByRole('row')
+      .slice(1)
+      .find((r) => !r.classList.contains('hiddenRow'));
+    expect(row).toHaveTextContent('--');
+    expect(row).not.toHaveTextContent('VOIDED-MATCH');
+  });
+
+  it('falls back to the preferred identifier when no identifier matches the configured type UUID', () => {
+    mockUseLabOrders.mockReturnValueOnce(
+      makeOrder([
+        {
+          uuid: 'id-1',
+          identifier: 'PREF-FALLBACK',
+          preferred: true,
+          voided: false,
+          identifierType: { uuid: OTHER_UUID },
+        },
+      ]),
+    );
+    mockUseConfig.mockReturnValue({ ...baseConfig, usePreferredPatientIdentifier: false });
+
+    render(<OrdersDataTable />);
+    const row = screen
+      .getAllByRole('row')
+      .slice(1)
+      .find((r) => !r.classList.contains('hiddenRow'));
+    expect(row).toHaveTextContent('PREF-FALLBACK');
+  });
+
+  it('shows the type-UUID match and not the preferred-fallback when both exist', () => {
+    mockUseLabOrders.mockReturnValueOnce(
+      makeOrder([
+        {
+          uuid: 'id-1',
+          identifier: 'PREF-OTHER',
+          preferred: true,
+          voided: false,
+          identifierType: { uuid: OTHER_UUID },
+        },
+        {
+          uuid: 'id-2',
+          identifier: 'CONFIGURED',
+          preferred: false,
+          voided: false,
+          identifierType: { uuid: TYPE_UUID },
+        },
+      ]),
+    );
+    mockUseConfig.mockReturnValue({ ...baseConfig, usePreferredPatientIdentifier: false });
+
+    render(<OrdersDataTable />);
+    const row = screen
+      .getAllByRole('row')
+      .slice(1)
+      .find((r) => !r.classList.contains('hiddenRow'));
+    expect(row).toHaveTextContent('CONFIGURED');
+    expect(row).not.toHaveTextContent('PREF-OTHER');
   });
 });
