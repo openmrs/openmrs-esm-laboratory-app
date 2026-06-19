@@ -45,6 +45,7 @@
   "orderNotPicked": "შეკვეთა აღებული არაა",
   "orderNumbers": "შეკვეთის ნომერი:",
   "orderPickedSuccessfully": "You have successfully picked an order",
+  "orderReason": "Order reason:",
   "orders": "შეკვეთები",
   "orderStatus": "სტატუსი:",
   "patient": "პაციენტი",
