@@ -5,3 +5,15 @@
   gap: layout.$spacing-03;
   align-items: center;
 }
+
+.dateRangePicker {
+  :global(.cds--date-picker-input__wrapper ~ div:has(> span[aria-hidden='true'][data-readonly])) {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+  }
+
+  :global(.cds--date-picker-input__wrapper ~ div > span[aria-hidden='true'][data-readonly]) {
+    line-height: 1;
+  }
+}

@@ -307,9 +307,9 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
                 )}
                 <OrdersDateRangePicker />
               </Layer>
-              <Layer className={classNames(styles.toolbarItem, styles.searchItem)}>
+              <Layer className={styles.toolbarItem}>
                 <TableToolbarSearch
-                  persistent
+                  expanded
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchString(e.target.value)}
                   placeholder={t('searchThisList', 'Search this list')}
                   size={responsiveSize}

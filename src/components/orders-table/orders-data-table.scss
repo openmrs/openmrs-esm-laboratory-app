@@ -110,12 +110,6 @@
 .tableToolBar {
   height: auto;
   align-items: flex-end;
-
-  .searchItem {
-    :global(.cds--toolbar-search-container-persistent) {
-      max-width: 16rem;
-    }
-  }
 }
 
 .menuitem {
