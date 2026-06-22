@@ -298,6 +298,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
               </Layer>
               <Layer className={styles.toolbarItem}>
                 <TableToolbarSearch
+                  className={styles.toolbarSearch}
                   expanded
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchString(e.target.value)}
                   placeholder={t('searchThisList', 'Search this list')}
