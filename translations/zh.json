@@ -45,6 +45,7 @@
   "orderNotPicked": "医嘱未被拣选",
   "orderNumbers": "医嘱编号：",
   "orderPickedSuccessfully": "您已成功选择医嘱",
+  "orderReason": "Order reason:",
   "orders": "医嘱",
   "orderStatus": "状态：",
   "patient": "患者",
