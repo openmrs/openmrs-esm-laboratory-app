@@ -127,6 +127,10 @@
 
   :global(.cds--search-magnifier-icon) {
     padding: layout.$spacing-05;
+    // Pin the magnifier to the start edge so it doesn't depend on the
+    // app-shell's Carbon version: older Carbon insets it by $spacing-05,
+    // which collides with the input's text padding and removes the gap.
+    inset-inline-start: 0;
   }
 }
 
