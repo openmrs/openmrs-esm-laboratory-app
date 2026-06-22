@@ -24,15 +24,7 @@ import {
   Tile,
 } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
-import {
-  ExtensionSlot,
-  formatDate,
-  parseDate,
-  showModal,
-  useConfig,
-  useLayoutType,
-  usePagination,
-} from '@openmrs/esm-framework';
+import { ExtensionSlot, formatDate, parseDate, showModal, useConfig, usePagination } from '@openmrs/esm-framework';
 import { OrdersDateRangePicker } from './orders-date-range-picker.component';
 import ListOrderDetails from './list-order-details.component';
 import { useLabOrders } from '../../laboratory.resource';
@@ -106,8 +98,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const [filter, setFilter] = useState<FulfillerStatus>(null);
   const [searchString, setSearchString] = useState('');
   const { labTableColumns, patientIdIdentifierTypeUuid, usePreferredPatientIdentifier } = useConfig<Config>();
-  const isTablet = useLayoutType() === 'tablet';
-  const responsiveSize: 'sm' | 'lg' = isTablet ? 'lg' : 'sm';
 
   const { labOrders, isLoading } = useLabOrders({
     status: props.useFilter ? filter : props.fulfillerStatus,
@@ -308,10 +298,11 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
               </Layer>
               <Layer className={styles.toolbarItem}>
                 <TableToolbarSearch
+                  className={styles.toolbarSearch}
                   expanded
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchString(e.target.value)}
                   placeholder={t('searchThisList', 'Search this list')}
-                  size={responsiveSize}
+                  size="lg"
                 />
               </Layer>
             </TableToolbarContent>

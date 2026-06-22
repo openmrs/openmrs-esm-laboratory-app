@@ -197,6 +197,28 @@ describe('OrdersDataTable', () => {
     expect(orderDetailsTable2).toHaveTextContent('Routine');
   });
 
+  it('renders the toolbar search at the same large size as the date range picker', () => {
+    mockUseConfig.mockReturnValue({
+      ...getDefaultsFromConfigSchema(configSchema),
+    });
+
+    render(<OrdersDataTable />);
+
+    const search = screen.getByPlaceholderText('Search this list').closest('.cds--search');
+    expect(search).toHaveClass('cds--search--lg');
+    expect(search).not.toHaveClass('cds--search--sm');
+  });
+
+  it('applies the lab toolbar sizing class to the toolbar search', () => {
+    mockUseConfig.mockReturnValue({
+      ...getDefaultsFromConfigSchema(configSchema),
+    });
+
+    render(<OrdersDataTable />);
+
+    expect(screen.getByPlaceholderText('Search this list').closest('.cds--search')).toHaveClass('toolbarSearch');
+  });
+
   it('should render an empty urgency cell when all orders have null urgency', () => {
     mockUseLabOrders.mockReturnValueOnce({
       labOrders: [

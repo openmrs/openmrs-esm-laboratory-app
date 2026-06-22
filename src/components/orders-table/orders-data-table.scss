@@ -112,6 +112,24 @@
   align-items: flex-end;
 }
 
+.toolbarSearch {
+  block-size: var(--cds-layout-size-height-local);
+
+  :global(.cds--search-input) {
+    block-size: 100%;
+  }
+
+  :global(.cds--search-magnifier-icon),
+  :global(.cds--search-close) {
+    block-size: var(--cds-layout-size-height-local);
+    inline-size: var(--cds-layout-size-height-local);
+  }
+
+  :global(.cds--search-magnifier-icon) {
+    padding: layout.$spacing-05;
+  }
+}
+
 .menuitem {
   max-width: none;
 }
