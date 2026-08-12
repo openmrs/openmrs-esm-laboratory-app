@@ -29,6 +29,18 @@ test.beforeEach(async ({ api, patient }) => {
   fullName = patient.person?.display;
 });
 
+test.afterEach(async ({ api }) => {
+  if (visit) {
+    await endVisit(api, visit);
+  }
+  if (encounter?.uuid) {
+    await deleteEncounter(api, encounter.uuid);
+  }
+  if (testOrder?.uuid) {
+    await deleteTestOrder(api, testOrder.uuid);
+  }
+});
+
 test('View test orders', async ({ page }) => {
   const laboratoryPage = new LaboratoryPage(page);
 
@@ -54,16 +66,4 @@ test('View test orders', async ({ page }) => {
     await expect(page.getByRole('cell', { name: 'serum glucose' })).toBeVisible();
     await expect(laboratoryPage.getPatientRow(fullName).getByText(/1 Routine/i)).toBeVisible();
   });
-});
-
-test.afterEach(async ({ api }) => {
-  if (visit) {
-    await endVisit(api, visit);
-  }
-  if (encounter?.uuid) {
-    await deleteEncounter(api, encounter.uuid);
-  }
-  if (testOrder?.uuid) {
-    await deleteTestOrder(api, testOrder.uuid);
-  }
 });

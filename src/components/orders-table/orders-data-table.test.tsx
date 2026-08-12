@@ -204,6 +204,7 @@ describe('OrdersDataTable', () => {
 
     render(<OrdersDataTable />);
 
+    // eslint-disable-next-line testing-library/no-node-access -- asserting on Carbon's search wrapper, which has no Testing Library query
     const search = screen.getByPlaceholderText('Search this list').closest('.cds--search');
     expect(search).toHaveClass('cds--search--lg');
     expect(search).not.toHaveClass('cds--search--sm');
@@ -216,6 +217,7 @@ describe('OrdersDataTable', () => {
 
     render(<OrdersDataTable />);
 
+    // eslint-disable-next-line testing-library/no-node-access -- asserting on Carbon's search wrapper, which has no Testing Library query
     expect(screen.getByPlaceholderText('Search this list').closest('.cds--search')).toHaveClass('toolbarSearch');
   });
 

@@ -4,7 +4,7 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
 import { Extension, useAssignedExtensions, useConfig } from '@openmrs/esm-framework';
 // ComponentContext is not part of the public API but is needed here to render extensions
 // inside Carbon Tabs structure (TabList + TabPanels must be separate siblings).
-// eslint-disable-next-line no-restricted-imports
+
 import { ComponentContext } from '@openmrs/esm-framework/src/internal';
 import { type Config } from '../config-schema';
 import styles from './laboratory-tabs.scss';
