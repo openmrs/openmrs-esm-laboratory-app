@@ -221,11 +221,22 @@ describe('OrdersDataTable', () => {
     expect(screen.getByPlaceholderText('Search this list').closest('.cds--search')).toHaveClass('toolbarSearch');
   });
 
-  it('keeps the toolbar mounted and shows a skeleton in place of the table while orders load', () => {
+  it('preserves the toolbar controls and date picker focus across loading transitions', async () => {
+    const user = userEvent.setup();
     mockUseConfig.mockReturnValue({
       ...getDefaultsFromConfigSchema(configSchema),
     });
-    mockUseLabOrders.mockReturnValueOnce({
+
+    const { rerender } = render(<OrdersDataTable useFilter />);
+    const datePicker = screen.getByRole('textbox', { name: '' });
+    const search = screen.getByPlaceholderText('Search this list');
+    const statusFilter = screen.getByRole('combobox', { name: /filter orders by status/i });
+
+    await user.type(search, 'Pete');
+    await user.click(datePicker);
+    expect(datePicker).toHaveFocus();
+
+    mockUseLabOrders.mockReturnValue({
       labOrders: [],
       isLoading: true,
       isError: false,
@@ -233,12 +244,27 @@ describe('OrdersDataTable', () => {
       isValidating: false,
     });
 
-    render(<OrdersDataTable />);
+    rerender(<OrdersDataTable useFilter />);
 
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
-    expect(screen.getByText(/date range/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Search this list')).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: '' })).toBe(datePicker);
+    expect(datePicker).toHaveFocus();
+    expect(screen.getByPlaceholderText('Search this list')).toBe(search);
+    expect(search).toHaveValue('Pete');
+    expect(screen.getByRole('combobox', { name: /filter orders by status/i })).toBe(statusFilter);
     expect(screen.queryByText('No lab requests found')).not.toBeInTheDocument();
+
+    mockUseLabOrders.mockImplementation(mockUseLabOrdersImplementation);
+    rerender(<OrdersDataTable useFilter />);
+
+    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: '' })).toBe(datePicker);
+    expect(datePicker).toHaveFocus();
+    expect(screen.getByPlaceholderText('Search this list')).toBe(search);
+    expect(search).toHaveValue('Pete');
+    expect(screen.getByRole('combobox', { name: /filter orders by status/i })).toBe(statusFilter);
+    expect(screen.getByRole('table')).toHaveTextContent('Pete Seeger');
+    expect(screen.queryByText('Bob Dylan')).not.toBeInTheDocument();
   });
 
   it('should render an empty urgency cell when all orders have null urgency', () => {
