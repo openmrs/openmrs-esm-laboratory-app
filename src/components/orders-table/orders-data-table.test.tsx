@@ -221,6 +221,26 @@ describe('OrdersDataTable', () => {
     expect(screen.getByPlaceholderText('Search this list').closest('.cds--search')).toHaveClass('toolbarSearch');
   });
 
+  it('keeps the toolbar mounted and shows a skeleton in place of the table while orders load', () => {
+    mockUseConfig.mockReturnValue({
+      ...getDefaultsFromConfigSchema(configSchema),
+    });
+    mockUseLabOrders.mockReturnValueOnce({
+      labOrders: [],
+      isLoading: true,
+      isError: false,
+      mutate: vi.fn(),
+      isValidating: false,
+    });
+
+    render(<OrdersDataTable />);
+
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    expect(screen.getByText(/date range/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Search this list')).toBeInTheDocument();
+    expect(screen.queryByText('No lab requests found')).not.toBeInTheDocument();
+  });
+
   it('should render an empty urgency cell when all orders have null urgency', () => {
     mockUseLabOrders.mockReturnValueOnce({
       labOrders: [
