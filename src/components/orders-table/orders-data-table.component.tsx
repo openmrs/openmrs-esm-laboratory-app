@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   DataTable,
   DataTableSkeleton,
@@ -206,6 +206,13 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const pageSizes = [10, 20, 30, 40, 50];
   const [currentPageSize, setPageSize] = useState(10);
   const { goTo, results: paginatedLabOrders, currentPage } = usePagination(searchResults, currentPageSize);
+  const totalPages = Math.max(1, Math.ceil(searchResults.length / currentPageSize));
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      goTo(totalPages);
+    }
+  }, [currentPage, goTo, totalPages]);
 
   const handleOrderStatusChange = ({ selectedItem }: { selectedItem: { value: FulfillerStatus; display: string } }) =>
     setFilter(selectedItem.value);

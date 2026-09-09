@@ -137,6 +137,42 @@ function mockUseLabOrdersImplementation(props: Parameters<typeof useLabOrders>[0
   };
 }
 
+function makePagedOrders(count: number) {
+  const orderer = {
+    uuid: 'orderer-uuid-1',
+    display: 'Dr. John Doe',
+    person: {
+      display: 'Dr. John Doe',
+    },
+  };
+
+  return Array.from({ length: count }, (_, index) => {
+    const paddedIndex = String(index + 1).padStart(2, '0');
+
+    return {
+      uuid: `order-uuid-${paddedIndex}`,
+      orderNumber: `ORD-${paddedIndex}`,
+      patient: {
+        uuid: `patient-uuid-${paddedIndex}`,
+        display: `PAT-${paddedIndex} - Patient ${paddedIndex}`,
+        person: {
+          uuid: `person-uuid-${paddedIndex}`,
+          display: `Patient ${paddedIndex}`,
+          age: 30 + index,
+          gender: index % 2 === 0 ? 'F' : 'M',
+        },
+      } as Patient,
+      dateActivated: '2021-01-01',
+      fulfillerStatus: 'RECEIVED',
+      urgency: 'ROUTINE',
+      orderer,
+      instructions: 'Routine check',
+      fulfillerComment: null,
+      display: `Test Order ${paddedIndex}`,
+    } as Order;
+  });
+}
+
 describe('OrdersDataTable', () => {
   beforeEach(() => {
     mockUseLabOrders.mockImplementation(mockUseLabOrdersImplementation);
@@ -309,6 +345,30 @@ describe('OrdersDataTable', () => {
     expect(row2).toHaveTextContent('60');
     expect(row2).toHaveTextContent('1');
     expect(screen.queryByText(/BAD-ID/)).not.toBeInTheDocument();
+  });
+
+  it('returns to a valid page when search results shrink below the current pagination page', async () => {
+    mockUseLabOrders.mockReturnValue({
+      labOrders: makePagedOrders(11),
+      isLoading: false,
+      isError: false,
+      mutate: vi.fn(),
+      isValidating: false,
+    });
+    mockUseConfig.mockReturnValue({
+      ...getDefaultsFromConfigSchema(configSchema),
+    });
+
+    const user = userEvent.setup();
+    render(<OrdersDataTable />);
+
+    await user.click(screen.getByRole('button', { name: /next page/i }));
+    expect(await screen.findByText('Patient 11')).toBeInTheDocument();
+
+    await user.type(screen.getByPlaceholderText('Search this list'), 'Patient 01');
+
+    expect(await screen.findByText('Patient 01')).toBeInTheDocument();
+    expect(screen.queryByText('No lab requests found')).not.toBeInTheDocument();
   });
 });
 
