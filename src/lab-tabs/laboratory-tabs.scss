@@ -1,29 +1,3 @@
-@use '@carbon/layout';
-@use '@carbon/type';
-@use '@openmrs/esm-styleguide/src/vars' as *;
-
-.orderTabs {
-  grid-column: 'span 2';
-  padding: 0 layout.$spacing-05;
-}
-
-.tabsContainer {
-  background-color: $ui-02;
-
-  :global(.cds--tabs__nav-item--selected) {
-    box-shadow: inset 0 2px 0 0 var(--brand-03) !important;
-  }
-
-  :global(.cds--tab--list) button {
-    max-width: 12rem !important;
-  }
-}
-
-.hiddenTabsContent,
-.tabs .hiddenTabsContent {
-  display: none;
-}
-
 .tab {
   min-width: 8.875rem;
 

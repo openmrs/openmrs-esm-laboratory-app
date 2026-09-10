@@ -95,10 +95,6 @@
   margin-bottom: layout.$spacing-03;
 }
 
-.singleLineDisplay {
-  white-space: nowrap;
-}
-
 .emptyStateHelperText {
   @include type.type-style('helper-text-02');
 }
