@@ -36,29 +36,3 @@
   align-items: center;
   height: layout.$spacing-07;
 }
-
-.arrowIcon {
-  fill: var(--cds-link-primary, #0f62fe) !important;
-}
-
-.link {
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  color: $interactive-01;
-
-  svg {
-    margin-left: layout.$spacing-03;
-  }
-}
-
-// Overriding styles for RTL support
-html[dir='rtl'] {
-  .link {
-    svg {
-      margin-right: layout.$spacing-03;
-      margin-left: unset;
-      transform: scale(-1, 1);
-    }
-  }
-}

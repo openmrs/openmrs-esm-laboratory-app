@@ -1,11 +1,7 @@
 @use '@carbon/layout';
 
-section {
+.section {
   margin: layout.$spacing-03;
-}
-
-.sectionTitle {
-  margin-bottom: layout.$spacing-04;
 }
 
 .modalBody {
