@@ -31,7 +31,7 @@ const LaboratoryOrdersTabs: React.FC = () => {
   return (
     <main>
       <section>
-        <div className={styles.tabs}>
+        <div>
           <Tabs selectedIndex={selectedTab} onChange={({ selectedIndex }) => setSelectedTab(selectedIndex)}>
             <TabList aria-label="Laboratory tabs" contained>
               {filteredExtensions.map((extension) => {
