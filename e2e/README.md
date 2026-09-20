@@ -35,7 +35,7 @@ To run a specific test by title:
 yarn test-e2e --headed -g "title of the test"
 ```
 
-Read the [e2e testing guide](https://o3-docs.openmrs.org/docs/frontend-modules/end-to-end-testing) to learn more about End-to-End tests in this project.
+Read the [e2e testing guide](https://o3-docs.openmrs.org/en-US/docs/frontend-modules/end-to-end-testing/) to learn more about End-to-End tests in this project.
 
 ### Updating Playwright
 
