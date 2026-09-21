@@ -35,11 +35,11 @@ To run a specific test by title:
 yarn test-e2e --headed -g "title of the test"
 ```
 
-Read the [e2e testing guide](https://o3-docs.openmrs.org/docs/frontend-modules/end-to-end-testing) to learn more about End-to-End tests in this project.
+Read the [e2e testing guide](https://o3-docs.openmrs.org/en-US/docs/frontend-modules/end-to-end-testing/) to learn more about End-to-End tests in this project.
 
 ### Updating Playwright
 
-The Playwright version in the [Bamboo e2e Dockerfile](e2e/support/bamboo/playwright.Dockerfile#L2) and the `package.json` file must match. If you update the Playwright version in one place, you must update it in the other.
+After updating `@playwright/test` in [package.json](../package.json), run `yarn playwright install chromium --with-deps` to install the matching browser binaries.
 
 ## Troubleshooting
 

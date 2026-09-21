@@ -58,12 +58,12 @@
   }
 }
 
-.textBold {
+%text-bold {
   font-weight: bold;
 }
 
 .orderDetailsTextBold {
-  @extend .textBold;
+  @extend %text-bold;
 }
 
 .labResultSlot {
@@ -72,16 +72,10 @@
 }
 
 .accordionTitle {
-  @extend .textBold;
+  @extend %text-bold;
 }
 
-.instructionLabelContainer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.pill {
+%pill {
   @include type.type-style('label-01');
   display: inline-block;
   background-color: colors.$gray-20;
@@ -95,7 +89,7 @@
 }
 
 .statusPill {
-  @extend .pill;
+  @extend %pill;
 
   &[data-status='RECEIVED'] {
     background-color: colors.$blue-20;

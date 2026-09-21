@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import dayjs from 'dayjs';
-import useSWR, { mutate } from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import { openmrsFetch, type Order, restBaseUrl, useAppContext, useConfig } from '@openmrs/esm-framework';
 import type { DateFilterContext, FulfillerStatus } from './types';
 import { type Config } from './config-schema';
@@ -97,6 +97,7 @@ export function rejectLabOrder(orderId: string, comment: string, abortController
  */
 export function useInvalidateLabOrders() {
   const { laboratoryOrderTypeUuid } = useConfig<Config>();
+  const { mutate } = useSWRConfig();
 
   return useCallback(() => {
     mutate(
@@ -104,5 +105,5 @@ export function useInvalidateLabOrders() {
       undefined,
       { revalidate: true },
     );
-  }, [laboratoryOrderTypeUuid]);
+  }, [laboratoryOrderTypeUuid, mutate]);
 }
