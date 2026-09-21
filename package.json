@@ -55,7 +55,8 @@
     "dayjs": "1.x",
     "react": "18.x",
     "react-i18next": "16.x",
-    "react-router-dom": "6.x"
+    "react-router-dom": "6.x",
+    "swr": "2.x"
   },
   "devDependencies": {
     "@openmrs/eslint-config": "^2.0.0",
