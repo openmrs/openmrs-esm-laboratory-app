@@ -19,6 +19,7 @@ export const laboratoryDashboardLink = getSyncLifecycle(
   createHomeDashboardLink({
     name: 'laboratory',
     title: 'Laboratory',
+    icon: 'omrs-icon-microscope',
   }),
   options,
 );
