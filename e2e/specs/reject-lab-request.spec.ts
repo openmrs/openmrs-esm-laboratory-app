@@ -54,7 +54,10 @@ test('Reject a lab request', async ({ page }) => {
 
   await test.step('When I enter a rejection comment and confirm', async () => {
     await page.getByRole('textbox', { name: 'Fulfiller comment' }).fill('Sample was contaminated');
-    await page.getByRole('button', { name: 'Reject', exact: true }).click();
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: /reject/i })
+      .click();
   });
 
   await test.step('Then I should see a success notification', async () => {
