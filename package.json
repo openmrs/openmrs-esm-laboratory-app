@@ -51,6 +51,7 @@
     "react-hook-form": "^7.52.1"
   },
   "peerDependencies": {
+    "@carbon/react": "1.x",
     "@openmrs/esm-framework": "10.x",
     "dayjs": "1.x",
     "react": "18.x",
