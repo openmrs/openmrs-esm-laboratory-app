@@ -89,7 +89,7 @@ export interface OrdersDataTableProps {
   useFilter?: boolean;
   excludeColumns?: Array<string>;
   fulfillerStatus?: FulfillerStatus;
-  newOrdersOnly?: boolean;
+  unpickedOrdersOnly?: boolean;
   excludeCanceledAndDiscontinuedOrders?: boolean;
 }
 
@@ -101,7 +101,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
 
   const { labOrders, isLoading } = useLabOrders({
     status: props.useFilter ? filter : props.fulfillerStatus,
-    newOrdersOnly: props.newOrdersOnly,
+    unpickedOrdersOnly: props.unpickedOrdersOnly,
     excludeCanceled: props.excludeCanceledAndDiscontinuedOrders,
     includePatientId: labTableColumns.includes('patientId'),
   });

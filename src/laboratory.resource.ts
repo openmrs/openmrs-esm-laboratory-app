@@ -7,14 +7,14 @@ import { type Config } from './config-schema';
 
 const useLabOrdersDefaultParams: UseLabOrdersParams = {
   status: null,
-  newOrdersOnly: false,
+  unpickedOrdersOnly: false,
   excludeCanceled: true,
   includePatientId: false,
 };
 
 interface UseLabOrdersParams {
   status: FulfillerStatus;
-  newOrdersOnly: boolean;
+  unpickedOrdersOnly: boolean;
   excludeCanceled: boolean;
   includePatientId: boolean;
 }
@@ -30,13 +30,13 @@ function isOrderAwaitingPickup({ action, fulfillerStatus }: Order) {
  * Custom hook for retrieving laboratory orders.
  *
  * @param status - The fulfiller status to filter by (e.g. 'IN_PROGRESS', 'COMPLETED')
- * @param newOrdersOnly - Whether to return only unpicked new or revised orders. Filtered client-side.
+ * @param unpickedOrdersOnly - Whether to return only unpicked new or revised orders. Filtered client-side.
  * @param excludeCanceled - Whether to exclude canceled, discontinued and expired orders
  * @param includePatientId - Whether to include patient identifiers in the response
  */
 export function useLabOrders(params: Partial<UseLabOrdersParams> = useLabOrdersDefaultParams) {
   const definedParams = Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined));
-  const { status, newOrdersOnly, excludeCanceled, includePatientId } = {
+  const { status, unpickedOrdersOnly, excludeCanceled, includePatientId } = {
     ...useLabOrdersDefaultParams,
     ...definedParams,
   };
@@ -61,7 +61,7 @@ export function useLabOrders(params: Partial<UseLabOrdersParams> = useLabOrdersD
     data: { results: Array<Order> };
   }>(`${url}`, openmrsFetch);
 
-  const filteredOrders = data?.data?.results?.filter((order) => !newOrdersOnly || isOrderAwaitingPickup(order));
+  const filteredOrders = data?.data?.results?.filter((order) => !unpickedOrdersOnly || isOrderAwaitingPickup(order));
   return {
     labOrders: filteredOrders ?? [],
     isLoading,

@@ -39,7 +39,7 @@ describe('useLabOrders', () => {
       { uuid: 'declined', action: 'REVISE', fulfillerStatus: 'DECLINED' },
     ]);
 
-    const { result } = renderHook(() => useLabOrders({ newOrdersOnly: true }), { wrapper });
+    const { result } = renderHook(() => useLabOrders({ unpickedOrdersOnly: true }), { wrapper });
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.labOrders.map(({ uuid }) => uuid)).toEqual(['new', 'revised']);
@@ -53,7 +53,7 @@ describe('useLabOrders', () => {
     respondWithOrders(orders);
 
     const { result } = renderHook(
-      () => useLabOrders({ status: undefined, newOrdersOnly: undefined, excludeCanceled: undefined }),
+      () => useLabOrders({ status: undefined, unpickedOrdersOnly: undefined, excludeCanceled: undefined }),
       { wrapper },
     );
 
