@@ -19,11 +19,18 @@ interface UseLabOrdersParams {
   includePatientId: boolean;
 }
 
+function isOrderAwaitingPickup({ action, fulfillerStatus }: Order) {
+  const isNewOrRevised = action === 'NEW' || action === 'REVISE';
+  const hasNotBeenPickedUp = fulfillerStatus === null;
+
+  return isNewOrRevised && hasNotBeenPickedUp;
+}
+
 /**
  * Custom hook for retrieving laboratory orders.
  *
  * @param status - The fulfiller status to filter by (e.g. 'IN_PROGRESS', 'COMPLETED')
- * @param newOrdersOnly - Whether to return only new orders that haven't been picked (action=NEW, fulfillerStatus=null). Filtered client-side as the REST API doesn't support this query natively.
+ * @param newOrdersOnly - Whether to return only unpicked new or revised orders. Filtered client-side.
  * @param excludeCanceled - Whether to exclude canceled, discontinued and expired orders
  * @param includePatientId - Whether to include patient identifiers in the response
  */
@@ -54,9 +61,7 @@ export function useLabOrders(params: Partial<UseLabOrdersParams> = useLabOrdersD
     data: { results: Array<Order> };
   }>(`${url}`, openmrsFetch);
 
-  const filteredOrders = data?.data?.results?.filter(
-    (order) => !newOrdersOnly || (order?.action === 'NEW' && order?.fulfillerStatus === null),
-  );
+  const filteredOrders = data?.data?.results?.filter((order) => !newOrdersOnly || isOrderAwaitingPickup(order));
   return {
     labOrders: filteredOrders ?? [],
     isLoading,
