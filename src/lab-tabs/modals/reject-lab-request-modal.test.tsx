@@ -121,7 +121,7 @@ describe('RejectLabRequestModal', () => {
 
     const user = userEvent.setup();
     const submitButton = screen.getByRole('button', { name: /Reject/ });
-    expect(submitButton).not.toBeDisabled();
+    expect(submitButton).toBeEnabled();
 
     await user.click(submitButton);
 

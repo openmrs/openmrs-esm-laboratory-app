@@ -113,7 +113,7 @@ describe('PickupLabRequestModal', () => {
 
     const user = userEvent.setup();
     const submitButton = screen.getByRole('button', { name: 'Pick up lab request' });
-    expect(submitButton).not.toBeDisabled();
+    expect(submitButton).toBeEnabled();
 
     await user.click(submitButton);
 

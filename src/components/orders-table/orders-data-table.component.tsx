@@ -89,7 +89,7 @@ export interface OrdersDataTableProps {
   useFilter?: boolean;
   excludeColumns?: Array<string>;
   fulfillerStatus?: FulfillerStatus;
-  newOrdersOnly?: boolean;
+  unpickedOrdersOnly?: boolean;
   excludeCanceledAndDiscontinuedOrders?: boolean;
 }
 
@@ -101,7 +101,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
 
   const { labOrders, isLoading } = useLabOrders({
     status: props.useFilter ? filter : props.fulfillerStatus,
-    newOrdersOnly: props.newOrdersOnly,
+    unpickedOrdersOnly: props.unpickedOrdersOnly,
     excludeCanceled: props.excludeCanceledAndDiscontinuedOrders,
     includePatientId: labTableColumns.includes('patientId'),
   });
@@ -276,10 +276,6 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
     }));
   }, [paginatedLabOrders, t]);
 
-  if (isLoading) {
-    return <DataTableSkeleton role="progressbar" showHeader={false} showToolbar={false} />;
-  }
-
   return (
     <DataTable rows={tableRows} headers={columns} useZebraStyles>
       {({ getExpandHeaderProps, getHeaderProps, getRowProps, getTableProps, headers, rows }) => (
@@ -314,62 +310,68 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
               </Layer>
             </TableToolbarContent>
           </TableToolbar>
-          <Table className={styles.tableWrapper} {...getTableProps()}>
-            <TableHead>
-              <TableRow>
-                <TableExpandHeader enableToggle {...getExpandHeaderProps()} />
-                {headers.map((header) => (
-                  <TableHeader {...getHeaderProps({ header })}>{header.header}</TableHeader>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <React.Fragment key={row.id}>
-                  <TableExpandRow {...getRowProps({ row })} key={row.id}>
-                    {row.cells.map((cell) => (
-                      <TableCell key={cell.id}>{cell.value?.content ?? cell.value}</TableCell>
+          {isLoading ? (
+            <DataTableSkeleton role="progressbar" showHeader={false} showToolbar={false} />
+          ) : (
+            <>
+              <Table className={styles.tableWrapper} {...getTableProps()}>
+                <TableHead>
+                  <TableRow>
+                    <TableExpandHeader enableToggle {...getExpandHeaderProps()} />
+                    {headers.map((header) => (
+                      <TableHeader {...getHeaderProps({ header })}>{header.header}</TableHeader>
                     ))}
-                  </TableExpandRow>
-                  {row.isExpanded ? (
-                    <TableExpandedRow colSpan={headers.length + 2}>
-                      <ListOrderDetails
-                        groupedOrders={groupedOrdersByPatient.find((item) => item.patientUuid === row.id)}
-                      />
-                    </TableExpandedRow>
-                  ) : (
-                    <TableExpandedRow className={styles.hiddenRow} colSpan={headers.length + 2} />
-                  )}
-                </React.Fragment>
-              ))}
-            </TableBody>
-          </Table>
-          {rows.length === 0 ? (
-            <div className={styles.tileContainer}>
-              <Tile className={styles.tile}>
-                <div className={styles.tileContent}>
-                  <p className={styles.content}>{t('noLabRequestsFound', 'No lab requests found')}</p>
-                  <p className={styles.emptyStateHelperText}>
-                    {t('checkFilters', 'Please check the filters above and try again')}
-                  </p>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {rows.map((row) => (
+                    <React.Fragment key={row.id}>
+                      <TableExpandRow {...getRowProps({ row })} key={row.id}>
+                        {row.cells.map((cell) => (
+                          <TableCell key={cell.id}>{cell.value?.content ?? cell.value}</TableCell>
+                        ))}
+                      </TableExpandRow>
+                      {row.isExpanded ? (
+                        <TableExpandedRow colSpan={headers.length + 2}>
+                          <ListOrderDetails
+                            groupedOrders={groupedOrdersByPatient.find((item) => item.patientUuid === row.id)}
+                          />
+                        </TableExpandedRow>
+                      ) : (
+                        <TableExpandedRow className={styles.hiddenRow} colSpan={headers.length + 2} />
+                      )}
+                    </React.Fragment>
+                  ))}
+                </TableBody>
+              </Table>
+              {rows.length === 0 ? (
+                <div className={styles.tileContainer}>
+                  <Tile className={styles.tile}>
+                    <div className={styles.tileContent}>
+                      <p className={styles.content}>{t('noLabRequestsFound', 'No lab requests found')}</p>
+                      <p className={styles.emptyStateHelperText}>
+                        {t('checkFilters', 'Please check the filters above and try again')}
+                      </p>
+                    </div>
+                  </Tile>
                 </div>
-              </Tile>
-            </div>
-          ) : null}
-          {rows.length > 0 && (
-            <Pagination
-              forwardText={t('nextPage', 'Next page')}
-              backwardText={t('previousPage', 'Previous page')}
-              page={currentPage}
-              pageSize={currentPageSize}
-              pageSizes={pageSizes}
-              totalItems={searchResults?.length}
-              className={styles.pagination}
-              onChange={({ pageSize, page }) => {
-                if (pageSize !== currentPageSize) setPageSize(pageSize);
-                if (page !== currentPage) goTo(page);
-              }}
-            />
+              ) : null}
+              {rows.length > 0 && (
+                <Pagination
+                  forwardText={t('nextPage', 'Next page')}
+                  backwardText={t('previousPage', 'Previous page')}
+                  page={currentPage}
+                  pageSize={currentPageSize}
+                  pageSizes={pageSizes}
+                  totalItems={searchResults?.length}
+                  className={styles.pagination}
+                  onChange={({ pageSize, page }) => {
+                    if (pageSize !== currentPageSize) setPageSize(pageSize);
+                    if (page !== currentPage) goTo(page);
+                  }}
+                />
+              )}
+            </>
           )}
         </TableContainer>
       )}

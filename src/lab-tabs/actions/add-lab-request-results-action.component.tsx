@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
-import { mutate } from 'swr';
+import { useSWRConfig } from 'swr';
 import { AddIcon, launchWorkspace2, restBaseUrl, useConfig } from '@openmrs/esm-framework';
 import { type Order } from '@openmrs/esm-framework';
 import { type Config } from '../../config-schema';
@@ -14,6 +14,7 @@ interface AddLabRequestResultsActionProps {
 const AddLabRequestResultsAction: React.FC<AddLabRequestResultsActionProps> = ({ order }) => {
   const { t } = useTranslation();
   const { laboratoryOrderTypeUuid } = useConfig<Config>();
+  const { mutate } = useSWRConfig();
 
   const invalidateLabOrders = () => {
     mutate(

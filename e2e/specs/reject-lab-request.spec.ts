@@ -27,6 +27,18 @@ test.beforeEach(async ({ api, patient }) => {
   fullName = patient.person?.display;
 });
 
+test.afterEach(async ({ api }) => {
+  if (visit) {
+    await endVisit(api, visit);
+  }
+  if (encounter?.uuid) {
+    await deleteEncounter(api, encounter.uuid);
+  }
+  if (testOrder?.uuid) {
+    await deleteTestOrder(api, testOrder.uuid);
+  }
+});
+
 test('Reject a lab request', async ({ page }) => {
   const laboratoryPage = new LaboratoryPage(page);
 
@@ -54,7 +66,10 @@ test('Reject a lab request', async ({ page }) => {
 
   await test.step('When I enter a rejection comment and confirm', async () => {
     await page.getByRole('textbox', { name: 'Fulfiller comment' }).fill('Sample was contaminated');
-    await page.getByRole('button', { name: 'danger Reject', exact: true }).click();
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: /reject/i })
+      .click();
   });
 
   await test.step('Then I should see a success notification', async () => {
@@ -73,16 +88,4 @@ test('Reject a lab request', async ({ page }) => {
     await expect(page.getByRole('cell', { name: 'serum glucose' })).toBeVisible();
     await expect(page.getByRole('cell', { name: 'Declined' })).toBeVisible();
   });
-});
-
-test.afterEach(async ({ api }) => {
-  if (visit) {
-    await endVisit(api, visit);
-  }
-  if (encounter?.uuid) {
-    await deleteEncounter(api, encounter.uuid);
-  }
-  if (testOrder?.uuid) {
-    await deleteTestOrder(api, testOrder.uuid);
-  }
 });
