@@ -57,11 +57,9 @@ export function useLabOrders(params: Partial<UseLabOrdersParams> = useLabOrdersD
         .toISOString()}`
     : url;
 
-  const { data, error, mutate, isLoading, isValidating } = useSWR<{
-    data: { results: Array<Order> };
-  }>(`${url}`, openmrsFetch);
+  const { data, error, mutate, isLoading, isValidating } = useSWR<Array<Order>>(`${url}`, fetchAllOrders);
 
-  const filteredOrders = data?.data?.results?.filter((order) => !unpickedOrdersOnly || isOrderAwaitingPickup(order));
+  const filteredOrders = data?.filter((order) => !unpickedOrdersOnly || isOrderAwaitingPickup(order));
   return {
     labOrders: filteredOrders ?? [],
     isLoading,
@@ -69,6 +67,45 @@ export function useLabOrders(params: Partial<UseLabOrdersParams> = useLabOrdersD
     mutate,
     isValidating,
   };
+}
+
+interface PaginatedOrdersResponse {
+  results: Array<Order>;
+  links?: Array<{ rel: string; uri: string }>;
+}
+
+/**
+ * Fetches every page of a paginated order query by following the `next` links returned by the server,
+ * so that client-side filtering and pagination operate on the complete set of orders.
+ *
+ * Keeps a regular useSWR key so the existing filter-based invalidators refresh
+ * the complete query. Using useOpenmrsFetchAll would also require updating both
+ * invalidation sites to refresh every loaded page across the affected queries.
+ */
+export async function fetchAllOrders(url: string): Promise<Array<Order>> {
+  const orders: Array<Order> = [];
+  let nextUrl: string | null = url;
+
+  while (nextUrl) {
+    const response = await openmrsFetch<PaginatedOrdersResponse>(nextUrl);
+    orders.push(...(response.data?.results ?? []));
+    nextUrl = getNextPageUrl(response.data?.links);
+  }
+
+  return orders;
+}
+
+function getNextPageUrl(links: PaginatedOrdersResponse['links']): string | null {
+  const uri = links?.find((link) => link.rel === 'next')?.uri;
+  if (!uri) {
+    return null;
+  }
+
+  // The server returns an absolute URL; use the current origin so frontend proxies keep working
+  const nextUrl = new URL(uri);
+  nextUrl.host = window.location.host;
+  nextUrl.protocol = window.location.protocol;
+  return nextUrl.toString();
 }
 
 export function setFulfillerStatus(orderId: string, status: FulfillerStatus, abortController: AbortController) {
