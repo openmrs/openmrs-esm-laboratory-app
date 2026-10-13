@@ -77,6 +77,10 @@ interface PaginatedOrdersResponse {
 /**
  * Fetches every page of a paginated order query by following the `next` links returned by the server,
  * so that client-side filtering and pagination operate on the complete set of orders.
+ *
+ * Keeps a regular useSWR key so the existing filter-based invalidators refresh
+ * the complete query. Using useOpenmrsFetchAll would also require updating both
+ * invalidation sites to refresh every loaded page across the affected queries.
  */
 export async function fetchAllOrders(url: string): Promise<Array<Order>> {
   const orders: Array<Order> = [];
