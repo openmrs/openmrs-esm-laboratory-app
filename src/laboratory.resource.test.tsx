@@ -4,7 +4,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { SWRConfig } from 'swr';
 import { openmrsFetch, useAppContext, useConfig, type FetchResponse, type Order } from '@openmrs/esm-framework';
 import { type DateFilterContext } from './types';
-import { useLabOrders } from './laboratory.resource';
+import { fetchAllOrders, useLabOrders } from './laboratory.resource';
 
 const mockOpenmrsFetch = vi.mocked(openmrsFetch);
 const mockUseAppContext = vi.mocked(useAppContext<DateFilterContext>);
@@ -16,6 +16,15 @@ function wrapper({ children }: PropsWithChildren) {
 
 function respondWithOrders(orders: Array<Partial<Order>>) {
   mockOpenmrsFetch.mockResolvedValue({ data: { results: orders } } as FetchResponse<{ results: Array<Order> }>);
+}
+
+function makePage(orderNumbers: Array<string>, nextUri?: string) {
+  return {
+    data: {
+      results: orderNumbers.map((orderNumber) => ({ uuid: orderNumber, orderNumber } as Order)),
+      links: nextUri ? [{ rel: 'next', uri: nextUri }] : [],
+    },
+  } as unknown as FetchResponse;
 }
 
 beforeEach(() => {
@@ -76,5 +85,81 @@ describe('useLabOrders', () => {
     expect(url).toContain('&fulfillerStatus=COMPLETED');
     expect(url).not.toContain('&excludeCanceledAndExpired=');
     expect(url).not.toContain('&excludeDiscontinueOrders=');
+  });
+
+  it('returns orders from every page when the results span more than one server page', async () => {
+    mockOpenmrsFetch
+      .mockReset()
+      .mockResolvedValueOnce(
+        makePage(
+          ['ORD-1', 'ORD-2'],
+          'http://localhost/openmrs/ws/rest/v1/order?orderTypes=lab-order-type&startIndex=2',
+        ),
+      )
+      .mockResolvedValueOnce(makePage(['ORD-3']));
+
+    const { result } = renderHook(() => useLabOrders(), { wrapper });
+
+    await waitFor(() => expect(result.current.labOrders).toHaveLength(3));
+    expect(result.current.labOrders.map(({ orderNumber }) => orderNumber)).toEqual(['ORD-1', 'ORD-2', 'ORD-3']);
+    expect(mockOpenmrsFetch).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('fetchAllOrders', () => {
+  beforeEach(() => {
+    mockOpenmrsFetch.mockReset();
+  });
+
+  it('returns the results of a single page when there is no next link', async () => {
+    mockOpenmrsFetch.mockResolvedValueOnce(makePage(['ORD-1', 'ORD-2']));
+
+    const orders = await fetchAllOrders('/ws/rest/v1/order?orderTypes=lab');
+
+    expect(orders.map((order) => order.orderNumber)).toEqual(['ORD-1', 'ORD-2']);
+    expect(mockOpenmrsFetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('follows next links until all pages have been fetched', async () => {
+    const filters = 'orderTypes=lab&excludeCanceledAndExpired=true&activatedOnOrAfterDate=2025-01-01T00:00:00.000Z';
+    const firstPageUrl = `/ws/rest/v1/order?${filters}`;
+    mockOpenmrsFetch
+      .mockResolvedValueOnce(
+        makePage(['ORD-1', 'ORD-2'], `http://backend:8080/openmrs/ws/rest/v1/order?${filters}&startIndex=2`),
+      )
+      .mockResolvedValueOnce(
+        makePage(['ORD-3', 'ORD-4'], `http://backend:8080/openmrs/ws/rest/v1/order?${filters}&startIndex=4`),
+      )
+      .mockResolvedValueOnce(makePage(['ORD-5']));
+
+    const orders = await fetchAllOrders(firstPageUrl);
+
+    expect(orders.map((order) => order.orderNumber)).toEqual(['ORD-1', 'ORD-2', 'ORD-3', 'ORD-4', 'ORD-5']);
+    expect(mockOpenmrsFetch).toHaveBeenCalledTimes(3);
+    expect(mockOpenmrsFetch.mock.calls[0][0]).toBe(firstPageUrl);
+
+    const requestedPages = mockOpenmrsFetch.mock.calls.slice(1).map(([url]) => new URL(url as string).searchParams);
+    expect(requestedPages.map((params) => params.get('startIndex'))).toEqual(['2', '4']);
+    requestedPages.forEach((params) => {
+      expect(params.get('orderTypes')).toBe('lab');
+      expect(params.get('excludeCanceledAndExpired')).toBe('true');
+      expect(params.get('activatedOnOrAfterDate')).toBe('2025-01-01T00:00:00.000Z');
+    });
+  });
+
+  it('requests next pages from the current origin so frontend proxies keep working', async () => {
+    mockOpenmrsFetch
+      .mockResolvedValueOnce(
+        makePage(['ORD-1'], 'http://backend:8080/openmrs/ws/rest/v1/order?orderTypes=lab&startIndex=1'),
+      )
+      .mockResolvedValueOnce(makePage(['ORD-2']));
+
+    await fetchAllOrders('/ws/rest/v1/order?orderTypes=lab');
+
+    const nextUrl = new URL(mockOpenmrsFetch.mock.calls[1][0] as string);
+    expect(nextUrl.host).toBe(window.location.host);
+    expect(nextUrl.protocol).toBe(window.location.protocol);
+    expect(nextUrl.pathname).toBe('/openmrs/ws/rest/v1/order');
+    expect(nextUrl.searchParams.get('startIndex')).toBe('1');
   });
 });
