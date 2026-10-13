@@ -1,10 +1,10 @@
 import React, { type PropsWithChildren } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { SWRConfig } from 'swr';
 import { openmrsFetch, useAppContext, useConfig, type FetchResponse, type Order } from '@openmrs/esm-framework';
 import { type DateFilterContext } from './types';
-import { fetchAllOrders, useLabOrders } from './laboratory.resource';
+import { fetchAllOrders, useInvalidateLabOrders, useLabOrders } from './laboratory.resource';
 
 const mockOpenmrsFetch = vi.mocked(openmrsFetch);
 const mockUseAppContext = vi.mocked(useAppContext<DateFilterContext>);
@@ -103,6 +103,32 @@ describe('useLabOrders', () => {
     await waitFor(() => expect(result.current.labOrders).toHaveLength(3));
     expect(result.current.labOrders.map(({ orderNumber }) => orderNumber)).toEqual(['ORD-1', 'ORD-2', 'ORD-3']);
     expect(mockOpenmrsFetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('refreshes orders on later pages when the lab orders are invalidated', async () => {
+    const secondPageUri = 'http://localhost/openmrs/ws/rest/v1/order?orderTypes=lab-order-type&startIndex=2';
+    const updatedLastPage = makePage(['ORD-3']);
+    updatedLastPage.data.results[0].fulfillerStatus = 'IN_PROGRESS';
+    mockOpenmrsFetch
+      .mockReset()
+      .mockResolvedValueOnce(makePage(['ORD-1', 'ORD-2'], secondPageUri))
+      .mockResolvedValueOnce(makePage(['ORD-3']))
+      .mockResolvedValueOnce(makePage(['ORD-1', 'ORD-2'], secondPageUri))
+      .mockResolvedValueOnce(updatedLastPage);
+
+    const { result } = renderHook(
+      () => ({ labOrders: useLabOrders().labOrders, invalidateLabOrders: useInvalidateLabOrders() }),
+      { wrapper },
+    );
+
+    await waitFor(() => expect(result.current.labOrders).toHaveLength(3));
+    expect(result.current.labOrders[2].fulfillerStatus).toBeUndefined();
+
+    act(() => result.current.invalidateLabOrders());
+
+    await waitFor(() => expect(result.current.labOrders[2].fulfillerStatus).toBe('IN_PROGRESS'));
+    expect(result.current.labOrders.map(({ orderNumber }) => orderNumber)).toEqual(['ORD-1', 'ORD-2', 'ORD-3']);
+    expect(mockOpenmrsFetch).toHaveBeenCalledTimes(4);
   });
 });
 
