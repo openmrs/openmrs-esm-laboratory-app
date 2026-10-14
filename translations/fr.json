@@ -45,6 +45,7 @@
   "orderNotPicked": "Prescription non sélectionnée",
   "orderNumbers": "Référence :",
   "orderPickedSuccessfully": "Vous avez sélectionné une prescription avec succès",
+  "orderReason": "Order reason:",
   "orders": "Demandes",
   "orderStatus": "Statut :",
   "patient": "Patient",

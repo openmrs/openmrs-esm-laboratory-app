@@ -41,6 +41,16 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
   const { t } = useTranslation();
   const originalOrders = groupedOrders?.originalOrders ?? [];
 
+  const getOrderReason = (order: (typeof originalOrders)[number]) => {
+    if (order?.orderReason) {
+      return order.orderReason.display;
+    } else if (order?.orderReasonNonCoded) {
+      return order.orderReasonNonCoded;
+    } else {
+      return '--';
+    }
+  };
+
   return (
     <div>
       {originalOrders.map((order) => (
@@ -75,6 +85,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
                 value={formatDate(parseDate(order.dateActivated))}
               />
               <OrderDetailRow label={t('orderedBy', 'Ordered By:')} value={order.orderer?.display} />
+              <OrderDetailRow label={t('orderReason', 'Order reason:')} value={getOrderReason(order)} />
               <OrderDetailRow
                 label={t('orderInstructions', 'Instructions:')}
                 value={order.instructions ?? t('NoInstructionLeft', 'No instructions are provided.')}

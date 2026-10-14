@@ -1,4 +1,5 @@
 import React from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
@@ -13,15 +14,15 @@ import { configSchema, type Config } from '../../config-schema';
 import { useInvalidateLabOrders } from '../../laboratory.resource';
 import AddTestOrderButton from './add-test-order-button.component';
 
-jest.mock('../../laboratory.resource', () => ({
-  useInvalidateLabOrders: jest.fn(),
+vi.mock('../../laboratory.resource', () => ({
+  useInvalidateLabOrders: vi.fn(),
 }));
 
-const mockLaunchWorkspace2 = jest.mocked(launchWorkspace2);
-const mockShowSnackbar = jest.mocked(showSnackbar);
-const mockUseConfig = jest.mocked(useConfig<Config>);
-const mockUseVisit = jest.mocked(useVisit);
-const mockUseInvalidateLabOrders = jest.mocked(useInvalidateLabOrders);
+const mockLaunchWorkspace2 = vi.mocked(launchWorkspace2);
+const mockShowSnackbar = vi.mocked(showSnackbar);
+const mockUseConfig = vi.mocked(useConfig<Config>);
+const mockUseVisit = vi.mocked(useVisit);
+const mockUseInvalidateLabOrders = vi.mocked(useInvalidateLabOrders);
 
 const mockPatient: fhir.Patient = {
   resourceType: 'Patient',
@@ -30,7 +31,7 @@ const mockPatient: fhir.Patient = {
 };
 
 const baseVisitReturn = {
-  mutate: jest.fn(),
+  mutate: vi.fn(),
   isValidating: false,
   isLoading: false,
   currentVisit: null,
@@ -53,7 +54,7 @@ function getOnPatientSelected(): OnPatientSelected {
 }
 
 describe('AddTestOrderButton', () => {
-  const mockInvalidateLabOrders = jest.fn();
+  const mockInvalidateLabOrders = vi.fn();
 
   beforeEach(() => {
     mockUseInvalidateLabOrders.mockReturnValue(mockInvalidateLabOrders);
@@ -81,10 +82,10 @@ describe('AddTestOrderButton', () => {
     await user.click(screen.getByRole('button', { name: /add test order/i }));
 
     const onPatientSelected = getOnPatientSelected();
-    const closeWorkspace = jest.fn().mockResolvedValue(true);
+    const closeWorkspace = vi.fn().mockResolvedValue(true);
 
     await act(async () => {
-      onPatientSelected('patient-uuid', mockPatient, jest.fn(), closeWorkspace);
+      onPatientSelected('patient-uuid', mockPatient, vi.fn(), closeWorkspace);
     });
 
     await waitFor(() => {
@@ -116,7 +117,7 @@ describe('AddTestOrderButton', () => {
     const onPatientSelected = getOnPatientSelected();
 
     await act(async () => {
-      onPatientSelected('patient-uuid', mockPatient, jest.fn(), jest.fn().mockResolvedValue(true));
+      onPatientSelected('patient-uuid', mockPatient, vi.fn(), vi.fn().mockResolvedValue(true));
     });
 
     await waitFor(() => {
@@ -148,7 +149,7 @@ describe('AddTestOrderButton', () => {
     const onPatientSelected = getOnPatientSelected();
 
     await act(async () => {
-      onPatientSelected('patient-uuid', mockPatient, jest.fn(), jest.fn().mockResolvedValue(true));
+      onPatientSelected('patient-uuid', mockPatient, vi.fn(), vi.fn().mockResolvedValue(true));
     });
 
     await waitFor(() => {
