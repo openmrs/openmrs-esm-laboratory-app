@@ -10,7 +10,7 @@ const InProgressLabRequestsTile = () => {
   return (
     <LabSummaryTile
       label={t('inProgress', 'In progress')}
-      value={isError ? '--' : labOrders?.length}
+      value={isError && !labOrders?.length ? '--' : labOrders?.length}
       headerLabel={t('worklist', 'Worklist')}
     />
   );

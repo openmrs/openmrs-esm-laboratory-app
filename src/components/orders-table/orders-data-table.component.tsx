@@ -306,7 +306,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           </TableToolbar>
           {isLoading ? (
             <DataTableSkeleton role="progressbar" showHeader={false} showToolbar={false} />
-          ) : isError ? (
+          ) : isError && labOrders.length === 0 ? (
             <div className={styles.tileContainer}>
               <Tile className={styles.tile}>
                 <div className={styles.tileContent}>

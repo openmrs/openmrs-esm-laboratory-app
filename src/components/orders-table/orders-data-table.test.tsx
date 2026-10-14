@@ -292,6 +292,21 @@ describe('OrdersDataTable', () => {
     expect(mockMutate).toHaveBeenCalledTimes(1);
   });
 
+  it('keeps showing previously loaded lab orders when a background refresh fails', () => {
+    mockUseLabOrders.mockImplementation((props) => ({
+      ...mockUseLabOrdersImplementation(props),
+      isError: new Error('Service Unavailable'),
+    }));
+    mockUseConfig.mockReturnValue({ ...getDefaultsFromConfigSchema(configSchema) });
+
+    render(<OrdersDataTable />);
+
+    expect(screen.getByRole('table')).toHaveTextContent('Pete Seeger');
+    expect(screen.getByRole('table')).toHaveTextContent('Bob Dylan');
+    expect(screen.queryByText('Error loading lab requests')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Retry' })).not.toBeInTheDocument();
+  });
+
   it('shows the empty state when lab orders load successfully with no results', () => {
     mockUseLabOrders.mockReturnValue({
       labOrders: [],

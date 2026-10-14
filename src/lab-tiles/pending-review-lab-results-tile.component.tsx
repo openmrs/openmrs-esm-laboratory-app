@@ -13,7 +13,7 @@ const PendingReviewLabRequestsTile = () => {
   return (
     <LabSummaryTile
       label={t('pendingReview', 'Pending Review')}
-      value={isError ? '--' : labOrders?.length}
+      value={isError && !labOrders?.length ? '--' : labOrders?.length}
       headerLabel={t('awaitingApproval', 'Awaiting Approval')}
     />
   );

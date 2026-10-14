@@ -55,6 +55,18 @@ describe.each(tiles)('$name', ({ Tile, label }) => {
     expect(screen.queryByText('--')).not.toBeInTheDocument();
   });
 
+  it('keeps showing the last loaded count when a background refresh fails', () => {
+    mockLabOrdersResponse({
+      labOrders: [{ uuid: 'order-1' }, { uuid: 'order-2' }, { uuid: 'order-3' }] as Array<Order>,
+      isError: new Error('Service Unavailable'),
+    });
+
+    render(<Tile />);
+
+    expect(screen.getByText('3')).toBeInTheDocument();
+    expect(screen.queryByText('--')).not.toBeInTheDocument();
+  });
+
   it('shows the order count after recovering from a failed request', () => {
     mockLabOrdersResponse({ isError: new Error('Service Unavailable') });
 

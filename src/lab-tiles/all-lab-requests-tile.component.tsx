@@ -10,7 +10,7 @@ const AllLabRequestsTile = () => {
   return (
     <LabSummaryTile
       label={t('orders', 'Orders')}
-      value={isError ? '--' : labOrders?.length}
+      value={isError && !labOrders?.length ? '--' : labOrders?.length}
       headerLabel={t('testsOrdered', 'Tests ordered')}
     />
   );
