@@ -5,12 +5,12 @@ import LabSummaryTile from '../components/summary-tile/lab-summary-tile.componen
 
 const AllLabRequestsTile = () => {
   const { t } = useTranslation();
-  const { labOrders } = useLabOrders({ unpickedOrdersOnly: true });
+  const { labOrders, isError } = useLabOrders({ unpickedOrdersOnly: true });
 
   return (
     <LabSummaryTile
       label={t('orders', 'Orders')}
-      value={labOrders?.length}
+      value={isError ? '--' : labOrders?.length}
       headerLabel={t('testsOrdered', 'Tests ordered')}
     />
   );

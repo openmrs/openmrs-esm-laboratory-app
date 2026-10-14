@@ -5,7 +5,7 @@ import LabSummaryTile from '../components/summary-tile/lab-summary-tile.componen
 
 const PendingReviewLabRequestsTile = () => {
   const { t } = useTranslation();
-  const { labOrders } = useLabOrders({
+  const { labOrders, isError } = useLabOrders({
     status: 'DRAFT',
     excludeCanceled: false,
   });
@@ -13,7 +13,7 @@ const PendingReviewLabRequestsTile = () => {
   return (
     <LabSummaryTile
       label={t('pendingReview', 'Pending Review')}
-      value={labOrders?.length}
+      value={isError ? '--' : labOrders?.length}
       headerLabel={t('awaitingApproval', 'Awaiting Approval')}
     />
   );

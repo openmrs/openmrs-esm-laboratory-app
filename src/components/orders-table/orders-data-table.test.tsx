@@ -267,6 +267,48 @@ describe('OrdersDataTable', () => {
     expect(screen.queryByText('Bob Dylan')).not.toBeInTheDocument();
   });
 
+  it('shows an error state with a retry button instead of the empty state when lab orders fail to load', async () => {
+    const user = userEvent.setup();
+    const mockMutate = vi.fn();
+    mockUseLabOrders.mockReturnValue({
+      labOrders: [],
+      isLoading: false,
+      isError: new Error('Service Unavailable'),
+      mutate: mockMutate,
+      isValidating: false,
+    });
+    mockUseConfig.mockReturnValue({ ...getDefaultsFromConfigSchema(configSchema) });
+
+    render(<OrdersDataTable />);
+
+    expect(screen.getByText('Error loading lab requests')).toBeInTheDocument();
+    expect(screen.getByText('The lab requests could not be loaded. Please try again.')).toBeInTheDocument();
+    expect(screen.queryByText('No lab requests found')).not.toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Search this list')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Retry' }));
+
+    expect(mockMutate).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows the empty state when lab orders load successfully with no results', () => {
+    mockUseLabOrders.mockReturnValue({
+      labOrders: [],
+      isLoading: false,
+      isError: undefined,
+      mutate: vi.fn(),
+      isValidating: false,
+    });
+    mockUseConfig.mockReturnValue({ ...getDefaultsFromConfigSchema(configSchema) });
+
+    render(<OrdersDataTable />);
+
+    expect(screen.getByText('No lab requests found')).toBeInTheDocument();
+    expect(screen.queryByText('Error loading lab requests')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Retry' })).not.toBeInTheDocument();
+  });
+
   it('should render an empty urgency cell when all orders have null urgency', () => {
     mockUseLabOrders.mockReturnValueOnce({
       labOrders: [
