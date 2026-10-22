@@ -59,7 +59,12 @@ export const configSchema = {
       _type: Type.String,
       _default: '',
       _description:
-        'Optional identifier type for a dedicated walk-in identifier (e.g. WI-20260101-1234). When set, it is added to walk-in patients and marked preferred.',
+        'Optional identifier type for a dedicated walk-in identifier. Used together with `walkInIdentifierSourceUuid`; when both are set, a walk-in identifier is added to walk-in patients and marked preferred.',
+    },
+    walkInIdentifierSourceUuid: {
+      _type: Type.String,
+      _default: '',
+      _description: 'idgen identifier source that generates identifiers of type `walkInIdentifierTypeUuid`.',
     },
     visitTypeUuid: {
       _type: Type.UUID,
@@ -91,6 +96,7 @@ export type Config = {
     requiredPrivilege: string;
     identifierSourceUuid: string;
     walkInIdentifierTypeUuid: string;
+    walkInIdentifierSourceUuid: string;
     visitTypeUuid: string;
     visitAttributeTypeUuid: string;
     phoneNumberAttributeTypeUuid: string;

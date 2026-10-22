@@ -18,6 +18,7 @@ import {
   useConfig,
   useSession,
   Workspace2,
+  type Visit,
   type Workspace2DefinitionProps,
 } from '@openmrs/esm-framework';
 import { type Config } from '../../config-schema';
@@ -56,9 +57,14 @@ export default function AddWalkInWorkspace({
   const [age, setAge] = useState<number | ''>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // Kept across submissions so that a retry after a partial failure only runs the unfinished steps
+  const [savedPatientUuid, setSavedPatientUuid] = useState<string | null>(null);
+  const [savedVisit, setSavedVisit] = useState<Visit | null>(null);
+  const isPatientSaved = savedPatientUuid !== null;
 
   const locationUuid = session?.sessionLocation?.uuid;
-  const isFormValid = fullName.trim().length > 0 && phoneNumber.trim().length > 0 && gender !== '' && Number(age) > 0;
+  const isFormValid =
+    fullName.trim().length > 0 && phoneNumber.trim().length > 0 && gender !== '' && age !== '' && age >= 0;
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -73,30 +79,49 @@ export default function AddWalkInWorkspace({
     setErrorMessage(null);
 
     try {
-      const identifier = await generateIdentifier(walkIn.identifierSourceUuid, abortController);
-      const { data: newPatient } = await createWalkInPatient(
-        {
-          ...splitName(fullName),
-          gender: gender as 'M' | 'F',
-          birthdate: birthdateFromAge(Number(age)),
-          phoneNumber,
-          phoneNumberAttributeTypeUuid: walkIn.phoneNumberAttributeTypeUuid,
+      let patientUuid = savedPatientUuid;
+      if (!patientUuid) {
+        const identifier = await generateIdentifier(walkIn.identifierSourceUuid, abortController);
+        const walkInIdentifier =
+          walkIn.walkInIdentifierTypeUuid && walkIn.walkInIdentifierSourceUuid
+            ? {
+                identifier: await generateIdentifier(walkIn.walkInIdentifierSourceUuid, abortController),
+                identifierTypeUuid: walkIn.walkInIdentifierTypeUuid,
+              }
+            : undefined;
+        const { data: newPatient } = await createWalkInPatient(
+          {
+            ...splitName(fullName),
+            gender: gender as 'M' | 'F',
+            birthdate: birthdateFromAge(Number(age)),
+            phoneNumber,
+            phoneNumberAttributeTypeUuid: walkIn.phoneNumberAttributeTypeUuid,
+            locationUuid,
+            identifier,
+            identifierTypeUuid: patientIdIdentifierTypeUuid,
+            walkInIdentifier,
+          },
+          abortController,
+        );
+        patientUuid = newPatient.uuid;
+        setSavedPatientUuid(patientUuid);
+      }
+
+      let visit = savedVisit;
+      if (!visit) {
+        const { data: newVisit } = await createWalkInVisit(
+          patientUuid,
+          walkIn.visitTypeUuid,
           locationUuid,
-          identifier,
-          identifierTypeUuid: patientIdIdentifierTypeUuid,
-          walkInIdentifierTypeUuid: walkIn.walkInIdentifierTypeUuid,
-        },
-        abortController,
-      );
-      const { data: newVisit } = await createWalkInVisit(
-        newPatient.uuid,
-        walkIn.visitTypeUuid,
-        locationUuid,
-        walkIn.visitAttributeTypeUuid,
-        abortController,
-      );
+          walkIn.visitAttributeTypeUuid,
+          abortController,
+        );
+        visit = newVisit;
+        setSavedVisit(visit);
+      }
+
       // The order basket expects a FHIR patient (it keys basket items by `patient.id`)
-      const patient = await fetchCurrentPatient(newPatient.uuid);
+      const patient = await fetchCurrentPatient(patientUuid);
 
       showSnackbar({
         title: t('walkInAdded', 'Walk-in added'),
@@ -112,9 +137,9 @@ export default function AddWalkInWorkspace({
         'add-test-order-basket-workspace',
         {},
         {
-          patientUuid: newPatient.uuid,
+          patientUuid,
           patient,
-          visitContext: newVisit,
+          visitContext: visit,
           visibleOrderPanels: [laboratoryOrderTypeUuid],
           labOrderWorkspaceName: 'add-test-order-basket-add-lab-order-workspace',
           onOrderBasketSubmitted: () => {
@@ -152,6 +177,7 @@ export default function AddWalkInWorkspace({
             labelText={t('fullName', 'Full name')}
             value={fullName}
             onChange={(event) => setFullName(event.target.value)}
+            disabled={isPatientSaved}
           />
 
           <TextInput
@@ -160,6 +186,7 @@ export default function AddWalkInWorkspace({
             labelText={t('phoneNumber', 'Phone number')}
             value={phoneNumber}
             onChange={(event) => setPhoneNumber(event.target.value)}
+            disabled={isPatientSaved}
           />
 
           <RadioButtonGroup
@@ -167,6 +194,7 @@ export default function AddWalkInWorkspace({
             name="walkin-gender"
             valueSelected={gender}
             onChange={(value) => setGender(value as 'M' | 'F')}
+            disabled={isPatientSaved}
           >
             <RadioButton labelText={t('male', 'Male')} value="M" id="walkin-gender-male" />
             <RadioButton labelText={t('female', 'Female')} value="F" id="walkin-gender-female" />
@@ -180,6 +208,7 @@ export default function AddWalkInWorkspace({
             value={age}
             onChange={(_event, { value }) => setAge(value === '' ? '' : Number(value))}
             allowEmpty
+            disabled={isPatientSaved}
           />
 
           <ButtonSet className={styles.buttonSet}>
