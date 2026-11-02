@@ -4,7 +4,7 @@ import styles from './lab-summary-tile.scss';
 
 interface LabSummaryTileProps {
   label: string;
-  value: number;
+  value: number | string;
   headerLabel: string;
   children?: React.ReactNode;
 }

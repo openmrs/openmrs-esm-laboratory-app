@@ -5,12 +5,12 @@ import LabSummaryTile from '../components/summary-tile/lab-summary-tile.componen
 
 const InProgressLabRequestsTile = () => {
   const { t } = useTranslation();
-  const { labOrders } = useLabOrders({ status: 'IN_PROGRESS' });
+  const { labOrders, isError } = useLabOrders({ status: 'IN_PROGRESS' });
 
   return (
     <LabSummaryTile
       label={t('inProgress', 'In progress')}
-      value={labOrders?.length}
+      value={isError && !labOrders?.length ? '--' : labOrders?.length}
       headerLabel={t('worklist', 'Worklist')}
     />
   );

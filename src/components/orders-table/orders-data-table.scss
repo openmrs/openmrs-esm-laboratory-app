@@ -102,6 +102,13 @@
   @include type.type-style('helper-text-02');
 }
 
+.tileContent .retryButton {
+  justify-content: center;
+  margin-top: layout.$spacing-05;
+  // Carbon reserves space on the right for an icon; this button has none, so keep the label centered
+  padding-inline: layout.$spacing-05;
+}
+
 .hiddenRow {
   display: none;
 }

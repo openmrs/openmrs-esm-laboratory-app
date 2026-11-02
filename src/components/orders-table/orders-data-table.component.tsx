@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
+  Button,
   DataTable,
   DataTableSkeleton,
   Dropdown,
@@ -99,7 +100,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
   const [searchString, setSearchString] = useState('');
   const { labTableColumns, patientIdIdentifierTypeUuid, usePreferredPatientIdentifier } = useConfig<Config>();
 
-  const { labOrders, isLoading } = useLabOrders({
+  const { labOrders, isLoading, isError, mutate } = useLabOrders({
     status: props.useFilter ? filter : props.fulfillerStatus,
     unpickedOrdersOnly: props.unpickedOrdersOnly,
     excludeCanceled: props.excludeCanceledAndDiscontinuedOrders,
@@ -305,6 +306,20 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = (props) => {
           </TableToolbar>
           {isLoading ? (
             <DataTableSkeleton role="progressbar" showHeader={false} showToolbar={false} />
+          ) : isError && labOrders.length === 0 ? (
+            <div className={styles.tileContainer}>
+              <Tile className={styles.tile}>
+                <div className={styles.tileContent}>
+                  <p className={styles.content}>{t('errorLoadingLabRequests', 'Error loading lab requests')}</p>
+                  <p className={styles.emptyStateHelperText}>
+                    {t('errorLoadingLabRequestsHelperText', 'The lab requests could not be loaded. Please try again.')}
+                  </p>
+                  <Button className={styles.retryButton} kind="tertiary" size="sm" onClick={() => mutate()}>
+                    {t('retry', 'Retry')}
+                  </Button>
+                </div>
+              </Tile>
+            </div>
           ) : (
             <>
               <Table className={styles.tableWrapper} {...getTableProps()}>
