@@ -23,6 +23,11 @@ export const laboratoryDashboardLink = getSyncLifecycle(
   options,
 );
 
+export const addWalkInWorkspace = getAsyncLifecycle(
+  () => import('./components/add-walk-in/add-walk-in-workspace.component'),
+  options,
+);
+
 // Modals
 
 export const pickupLabRequestModal = getAsyncLifecycle(

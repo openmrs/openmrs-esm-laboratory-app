@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { LaboratoryPictogram, PageHeader, PageHeaderContent, useDefineAppContext } from '@openmrs/esm-framework';
 import AddTestOrderButton from './components/add-test-order/add-test-order-button.component';
+import AddWalkInButton from './components/add-walk-in/add-walk-in-button.component';
 import LaboratoryOrdersTabs from './lab-tabs/laboratory-tabs.component';
 import LaboratorySummaryTiles from './lab-tiles/laboratory-summary-tiles.component';
 import { type DateFilterContext } from './types';
@@ -17,6 +18,7 @@ const LaboratoryDashboard: React.FC = () => {
     <div>
       <PageHeader className={styles.pageHeader}>
         <PageHeaderContent illustration={<LaboratoryPictogram />} title={t('laboratory', 'Laboratory')} />
+        <AddWalkInButton />
         <AddTestOrderButton />
       </PageHeader>
       <div>
