@@ -1,0 +1,39 @@
+import React from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { act, render } from '@testing-library/react';
+import { OpenmrsDateRangePicker, useAppContext } from '@openmrs/esm-framework';
+import { type DateFilterContext } from '../../types';
+import { OrdersDateRangePicker } from './orders-date-range-picker.component';
+
+const mockUseAppContext = vi.mocked(useAppContext<DateFilterContext>);
+const mockOpenmrsDateRangePicker = vi.mocked(OpenmrsDateRangePicker);
+
+const changeRange = (range: [Date | null | undefined, Date | null | undefined]) =>
+  act(() => mockOpenmrsDateRangePicker.mock.lastCall[0].onChange(range));
+
+describe('OrdersDateRangePicker', () => {
+  const setDateRange = vi.fn();
+
+  beforeEach(() => {
+    mockUseAppContext.mockReturnValue({
+      dateRange: [new Date(2026, 10, 1), new Date(2026, 10, 22)],
+      setDateRange,
+    });
+  });
+
+  it('updates the shared date range when both dates are set', () => {
+    render(<OrdersDateRangePicker />);
+
+    changeRange([new Date(2026, 10, 5), new Date(2026, 10, 10)]);
+
+    expect(setDateRange).toHaveBeenCalledWith([new Date(2026, 10, 5), new Date(2026, 10, 10)]);
+  });
+
+  it('keeps the last complete date range when a date is cleared', () => {
+    render(<OrdersDateRangePicker />);
+
+    changeRange([undefined, undefined]);
+
+    expect(setDateRange).not.toHaveBeenCalled();
+  });
+});

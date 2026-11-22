@@ -24,7 +24,12 @@ export const OrdersDateRangePicker = () => {
         id="ordersDateRangePicker"
         labelText=""
         maxDate={currentDate}
-        onChange={(dates: [Date, Date]) => setDateRange(dates)}
+        onChange={([start, end]) => {
+          // Keep the last complete range while a date is cleared, so the orders query always has a date filter
+          if (start && end) {
+            setDateRange([start, end]);
+          }
+        }}
         startName="start"
         value={dateRange}
         size="lg"
