@@ -51,10 +51,11 @@ export function useLabOrders(params: Partial<UseLabOrdersParams> = useLabOrdersD
   let url = `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}&v=${customRepresentation}`;
   url = status ? url + `&fulfillerStatus=${status}` : url;
   url = excludeCanceled ? `${url}&excludeCanceledAndExpired=true&excludeDiscontinueOrders=true` : url;
+  // The backend matches these filters by whole days, so send the selected calendar days rather than timestamps
   url = dateRange
-    ? `${url}&activatedOnOrAfterDate=${dateRange.at(0).toISOString()}&activatedOnOrBeforeDate=${dateRange
-        .at(1)
-        .toISOString()}`
+    ? `${url}&activatedOnOrAfterDate=${dayjs(dateRange[0]).format('YYYY-MM-DD')}&activatedOnOrBeforeDate=${dayjs(
+        dateRange[1],
+      ).format('YYYY-MM-DD')}`
     : url;
 
   const { data, error, mutate, isLoading, isValidating } = useSWR<Array<Order>>(`${url}`, fetchAllOrders);

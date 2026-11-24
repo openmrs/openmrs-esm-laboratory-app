@@ -87,6 +87,26 @@ describe('useLabOrders', () => {
     expect(url).not.toContain('&excludeDiscontinueOrders=');
   });
 
+  it('filters by the selected calendar days in time zones ahead of UTC', async () => {
+    const originalTimeZone = process.env.TZ;
+    process.env.TZ = 'Africa/Nairobi';
+    try {
+      const startOfToday = new Date(2026, 10, 23);
+      expect(startOfToday.toISOString()).toBe('2026-11-22T21:00:00.000Z');
+      mockUseAppContext.mockReturnValue({ dateRange: [startOfToday, startOfToday], setDateRange: vi.fn() });
+      respondWithOrders([]);
+
+      const { result } = renderHook(() => useLabOrders(), { wrapper });
+
+      await waitFor(() => expect(result.current.isLoading).toBe(false));
+      const params = new URL(mockOpenmrsFetch.mock.calls[0][0] as string, 'http://localhost').searchParams;
+      expect(params.get('activatedOnOrAfterDate')).toBe('2026-11-23');
+      expect(params.get('activatedOnOrBeforeDate')).toBe('2026-11-23');
+    } finally {
+      process.env.TZ = originalTimeZone;
+    }
+  });
+
   it('returns orders from every page when the results span more than one server page', async () => {
     mockOpenmrsFetch
       .mockReset()
