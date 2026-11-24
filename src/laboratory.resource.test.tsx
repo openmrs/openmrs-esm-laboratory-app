@@ -9,6 +9,7 @@ import { fetchAllOrders, useInvalidateLabOrders, useLabOrders } from './laborato
 const mockOpenmrsFetch = vi.mocked(openmrsFetch);
 const mockUseAppContext = vi.mocked(useAppContext<DateFilterContext>);
 const mockUseConfig = vi.mocked(useConfig);
+const dateActivated = '2026-10-12T12:00:00.000Z';
 
 function wrapper({ children }: PropsWithChildren) {
   return <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0 }}>{children}</SWRConfig>;
@@ -21,7 +22,7 @@ function respondWithOrders(orders: Array<Partial<Order>>) {
 function makePage(orderNumbers: Array<string>, nextUri?: string) {
   return {
     data: {
-      results: orderNumbers.map((orderNumber) => ({ uuid: orderNumber, orderNumber } as Order)),
+      results: orderNumbers.map((orderNumber) => ({ uuid: orderNumber, orderNumber, dateActivated } as Order)),
       links: nextUri ? [{ rel: 'next', uri: nextUri }] : [],
     },
   } as unknown as FetchResponse;
@@ -38,14 +39,14 @@ beforeEach(() => {
 describe('useLabOrders', () => {
   it('includes unpicked revisions alongside new orders in Tests ordered', async () => {
     respondWithOrders([
-      { uuid: 'new', action: 'NEW', fulfillerStatus: null },
-      { uuid: 'revised', action: 'REVISE', fulfillerStatus: null },
-      { uuid: 'discontinued', action: 'DISCONTINUE', fulfillerStatus: null },
-      { uuid: 'renewed', action: 'RENEW', fulfillerStatus: null },
-      { uuid: 'received', action: 'REVISE', fulfillerStatus: 'RECEIVED' },
-      { uuid: 'in-progress', action: 'REVISE', fulfillerStatus: 'IN_PROGRESS' },
-      { uuid: 'completed', action: 'REVISE', fulfillerStatus: 'COMPLETED' },
-      { uuid: 'declined', action: 'REVISE', fulfillerStatus: 'DECLINED' },
+      { uuid: 'new', action: 'NEW', fulfillerStatus: null, dateActivated },
+      { uuid: 'revised', action: 'REVISE', fulfillerStatus: null, dateActivated },
+      { uuid: 'discontinued', action: 'DISCONTINUE', fulfillerStatus: null, dateActivated },
+      { uuid: 'renewed', action: 'RENEW', fulfillerStatus: null, dateActivated },
+      { uuid: 'received', action: 'REVISE', fulfillerStatus: 'RECEIVED', dateActivated },
+      { uuid: 'in-progress', action: 'REVISE', fulfillerStatus: 'IN_PROGRESS', dateActivated },
+      { uuid: 'completed', action: 'REVISE', fulfillerStatus: 'COMPLETED', dateActivated },
+      { uuid: 'declined', action: 'REVISE', fulfillerStatus: 'DECLINED', dateActivated },
     ]);
 
     const { result } = renderHook(() => useLabOrders({ unpickedOrdersOnly: true }), { wrapper });
@@ -58,7 +59,9 @@ describe('useLabOrders', () => {
   });
 
   it('keeps the defaults when callers explicitly pass undefined options', async () => {
-    const orders: Array<Partial<Order>> = [{ uuid: 'completed', action: 'REVISE', fulfillerStatus: 'COMPLETED' }];
+    const orders: Array<Partial<Order>> = [
+      { uuid: 'completed', action: 'REVISE', fulfillerStatus: 'COMPLETED', dateActivated },
+    ];
     respondWithOrders(orders);
 
     const { result } = renderHook(
@@ -74,7 +77,9 @@ describe('useLabOrders', () => {
   });
 
   it('honors the status and cancellation options for the Completed tab', async () => {
-    const orders: Array<Partial<Order>> = [{ uuid: 'completed', action: 'REVISE', fulfillerStatus: 'COMPLETED' }];
+    const orders: Array<Partial<Order>> = [
+      { uuid: 'completed', action: 'REVISE', fulfillerStatus: 'COMPLETED', dateActivated },
+    ];
     respondWithOrders(orders);
 
     const { result } = renderHook(() => useLabOrders({ status: 'COMPLETED', excludeCanceled: false }), { wrapper });
@@ -87,24 +92,142 @@ describe('useLabOrders', () => {
     expect(url).not.toContain('&excludeDiscontinueOrders=');
   });
 
-  it('filters by the selected calendar days in time zones ahead of UTC', async () => {
-    const originalTimeZone = process.env.TZ;
-    process.env.TZ = 'Africa/Nairobi';
-    try {
-      const startOfToday = new Date(2026, 10, 23);
-      expect(startOfToday.toISOString()).toBe('2026-11-22T21:00:00.000Z');
-      mockUseAppContext.mockReturnValue({ dateRange: [startOfToday, startOfToday], setDateRange: vi.fn() });
-      respondWithOrders([]);
+  it.each([
+    {
+      scenario: 'ahead of UTC',
+      timeZone: 'Africa/Nairobi',
+      startDay: '2026-11-24',
+      endDay: '2026-11-24',
+      from: '2026-11-23T21:00:00.000Z',
+      until: '2026-11-24T21:00:00.000Z',
+    },
+    {
+      scenario: 'behind UTC',
+      timeZone: 'America/Los_Angeles',
+      startDay: '2026-11-24',
+      endDay: '2026-11-24',
+      from: '2026-11-24T08:00:00.000Z',
+      until: '2026-11-25T08:00:00.000Z',
+    },
+    {
+      scenario: 'in UTC',
+      timeZone: 'UTC',
+      startDay: '2026-11-24',
+      endDay: '2026-11-24',
+      from: '2026-11-24T00:00:00.000Z',
+      until: '2026-11-25T00:00:00.000Z',
+    },
+    {
+      scenario: 'across multiple days',
+      timeZone: 'Africa/Nairobi',
+      startDay: '2026-11-23',
+      endDay: '2026-11-25',
+      from: '2026-11-22T21:00:00.000Z',
+      until: '2026-11-25T21:00:00.000Z',
+    },
+    {
+      scenario: 'on a 23-hour day',
+      timeZone: 'America/New_York',
+      startDay: '2026-03-08',
+      endDay: '2026-03-08',
+      from: '2026-03-08T05:00:00.000Z',
+      until: '2026-03-09T04:00:00.000Z',
+    },
+    {
+      scenario: 'on a 25-hour day',
+      timeZone: 'America/New_York',
+      startDay: '2026-11-01',
+      endDay: '2026-11-01',
+      from: '2026-11-01T04:00:00.000Z',
+      until: '2026-11-02T05:00:00.000Z',
+    },
+    {
+      scenario: 'when clocks go back at midnight',
+      timeZone: 'America/Santiago',
+      startDay: '2026-04-04',
+      endDay: '2026-04-04',
+      from: '2026-04-04T03:00:00.000Z',
+      until: '2026-04-05T04:00:00.000Z',
+    },
+  ])(
+    'returns only orders within the selected local days $scenario',
+    async ({ timeZone, startDay, endDay, from, until }) => {
+      const originalTimeZone = process.env.TZ;
+      process.env.TZ = timeZone;
+      try {
+        mockUseAppContext.mockReturnValue({
+          dateRange: [new Date(`${startDay}T12:00:00`), new Date(`${endDay}T12:00:00`)],
+          setDateRange: vi.fn(),
+        });
+        const start = Date.parse(from);
+        const end = Date.parse(until);
+        const orders = [
+          { uuid: 'before-start', dateActivated: new Date(start - 1).toISOString() },
+          { uuid: 'at-start', dateActivated: from },
+          { uuid: 'early', dateActivated: new Date(start + 90 * 60 * 1000).toISOString() },
+          { uuid: 'late', dateActivated: new Date(end - 30 * 60 * 1000).toISOString() },
+          { uuid: 'last-millisecond', dateActivated: new Date(end - 1).toISOString() },
+          { uuid: 'next-day', dateActivated: until },
+        ];
 
-      const { result } = renderHook(() => useLabOrders(), { wrapper });
+        mockOpenmrsFetch.mockImplementation(async (url) => {
+          const request = new URL(url as string, 'http://localhost');
+          // Match the backend's widening of both query bounds to whole days on a UTC server.
+          const after = new Date(request.searchParams.get('activatedOnOrAfterDate'));
+          const before = new Date(request.searchParams.get('activatedOnOrBeforeDate'));
+          after.setUTCHours(0, 0, 0, 0);
+          before.setUTCHours(23, 59, 59, 999);
+          const matches = orders.filter(({ dateActivated }) => {
+            const activated = Date.parse(dateActivated);
+            return activated >= after.getTime() && activated <= before.getTime();
+          });
+          const startIndex = Number(request.searchParams.get('startIndex') ?? 0);
+          request.searchParams.set('startIndex', String(startIndex + 2));
+          return {
+            data: {
+              results: matches.slice(startIndex, startIndex + 2),
+              links: startIndex + 2 < matches.length ? [{ rel: 'next', uri: request.toString() }] : [],
+            },
+          } as FetchResponse;
+        });
 
-      await waitFor(() => expect(result.current.isLoading).toBe(false));
-      const params = new URL(mockOpenmrsFetch.mock.calls[0][0] as string, 'http://localhost').searchParams;
-      expect(params.get('activatedOnOrAfterDate')).toBe('2026-11-23');
-      expect(params.get('activatedOnOrBeforeDate')).toBe('2026-11-23');
-    } finally {
-      process.env.TZ = originalTimeZone;
-    }
+        const { result, unmount } = renderHook(() => useLabOrders(), { wrapper });
+
+        await waitFor(() => expect(result.current.isLoading).toBe(false));
+        expect(result.current.labOrders.map(({ uuid }) => uuid)).toEqual([
+          'at-start',
+          'early',
+          'late',
+          'last-millisecond',
+        ]);
+        expect(mockOpenmrsFetch.mock.calls.length).toBeGreaterThan(1);
+        const params = new URL(mockOpenmrsFetch.mock.calls[0][0] as string, 'http://localhost').searchParams;
+        expect(params.get('activatedOnOrAfterDate')).toBe(from);
+        expect(params.get('activatedOnOrBeforeDate')).toBe(new Date(end - 1).toISOString());
+        unmount();
+      } finally {
+        if (originalTimeZone === undefined) {
+          delete process.env.TZ;
+        } else {
+          process.env.TZ = originalTimeZone;
+        }
+      }
+    },
+  );
+
+  it('does not filter by activation date when no range is selected', async () => {
+    mockUseAppContext.mockReturnValue({ dateRange: null, setDateRange: vi.fn() });
+    const orders = [
+      { uuid: 'older', dateActivated: '2025-01-01T00:00:00.000Z' },
+      { uuid: 'newer', dateActivated: '2026-11-24T23:00:00.000Z' },
+    ];
+    respondWithOrders(orders);
+
+    const { result } = renderHook(() => useLabOrders(), { wrapper });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.labOrders).toEqual(orders);
+    expect(mockOpenmrsFetch.mock.calls[0][0]).not.toContain('activatedOnOr');
   });
 
   it('returns orders from every page when the results span more than one server page', async () => {

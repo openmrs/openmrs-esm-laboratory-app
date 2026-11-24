@@ -51,16 +51,25 @@ export function useLabOrders(params: Partial<UseLabOrdersParams> = useLabOrdersD
   let url = `${restBaseUrl}/order?orderTypes=${laboratoryOrderTypeUuid}&v=${customRepresentation}`;
   url = status ? url + `&fulfillerStatus=${status}` : url;
   url = excludeCanceled ? `${url}&excludeCanceledAndExpired=true&excludeDiscontinueOrders=true` : url;
-  // The backend matches these filters by whole days, so send the selected calendar days rather than timestamps
+  const from = dateRange && dayjs(dateRange[0]).startOf('day');
+  // The next local midnight includes the full last day even when clocks go back at midnight.
+  const until = dateRange && dayjs(dateRange[1]).add(1, 'day').startOf('day');
+  // The backend expands bounds to whole server days, so filter the covering results to local days below.
   url = dateRange
-    ? `${url}&activatedOnOrAfterDate=${dayjs(dateRange[0]).format('YYYY-MM-DD')}&activatedOnOrBeforeDate=${dayjs(
-        dateRange[1],
-      ).format('YYYY-MM-DD')}`
+    ? `${url}&activatedOnOrAfterDate=${from.toISOString()}&activatedOnOrBeforeDate=${until
+        .subtract(1, 'ms')
+        .toISOString()}`
     : url;
 
   const { data, error, mutate, isLoading, isValidating } = useSWR<Array<Order>>(`${url}`, fetchAllOrders);
 
-  const filteredOrders = data?.filter((order) => !unpickedOrdersOnly || isOrderAwaitingPickup(order));
+  const filteredOrders = data?.filter((order) => {
+    const activated = dayjs(order.dateActivated);
+    return (
+      (!unpickedOrdersOnly || isOrderAwaitingPickup(order)) &&
+      (!dateRange || (!activated.isBefore(from) && activated.isBefore(until)))
+    );
+  });
   return {
     labOrders: filteredOrders ?? [],
     isLoading,
