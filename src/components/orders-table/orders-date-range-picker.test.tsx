@@ -63,4 +63,18 @@ describe('OrdersDateRangePicker', () => {
     expect(setDateRange).toHaveBeenCalledWith([new Date(2026, 10, 10), new Date(2026, 10, 12)]);
     expect(mockOpenmrsDateRangePicker.mock.lastCall[0].value).toEqual([new Date(2026, 10, 1), new Date(2026, 10, 22)]);
   });
+
+  it('shows a date range set from another tab instead of an abandoned invalid range', () => {
+    const { rerender } = render(<OrdersDateRangePicker />);
+
+    changeRange([new Date(2026, 10, 10), new Date(2026, 10, 6)]);
+
+    mockUseAppContext.mockReturnValue({
+      dateRange: [new Date(2026, 10, 15), new Date(2026, 10, 22)],
+      setDateRange,
+    });
+    rerender(<OrdersDateRangePicker />);
+
+    expect(mockOpenmrsDateRangePicker.mock.lastCall[0].value).toEqual([new Date(2026, 10, 15), new Date(2026, 10, 22)]);
+  });
 });

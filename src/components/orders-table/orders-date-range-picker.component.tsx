@@ -15,7 +15,12 @@ export const OrdersDateRangePicker = () => {
     dateRange: [dayjs().startOf('day').toDate(), new Date()],
     setDateRange: () => {},
   };
-  const [draftRange, setDraftRange] = useState<[Date | null | undefined, Date | null | undefined] | null>(null);
+  // A draft only applies to the shared range it was edited from, so a range set in another tab replaces it
+  const [draft, setDraft] = useState<{
+    range: [Date | null | undefined, Date | null | undefined];
+    appliedRange: typeof dateRange;
+  } | null>(null);
+  const draftRange = draft?.appliedRange === dateRange ? draft.range : null;
 
   return (
     <div className={styles.datePickerWrapper}>
@@ -38,10 +43,10 @@ export const OrdersDateRangePicker = () => {
             !dayjs(end).isAfter(currentDate, 'day');
 
           if (isValidRange) {
-            setDraftRange(null);
+            setDraft(null);
             setDateRange([start, end]);
           } else {
-            setDraftRange([start, end]);
+            setDraft({ range: [start, end], appliedRange: dateRange });
           }
         }}
         startName="start"
