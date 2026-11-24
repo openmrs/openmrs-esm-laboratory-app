@@ -1,4 +1,5 @@
 import React from 'react';
+import dayjs from 'dayjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, render } from '@testing-library/react';
 import { OpenmrsDateRangePicker, useAppContext } from '@openmrs/esm-framework';
@@ -35,5 +36,31 @@ describe('OrdersDateRangePicker', () => {
     changeRange([undefined, undefined]);
 
     expect(setDateRange).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['ends before it starts', [new Date(2026, 10, 20), new Date(2026, 10, 6)]],
+    ['ends after today', [new Date(2026, 10, 1), dayjs().add(1, 'year').toDate()]],
+    ['starts before the minimum date', [new Date(202, 10, 1), new Date(2026, 10, 22)]],
+  ])('keeps the last valid date range when the new range %s', (_, range: [Date, Date]) => {
+    render(<OrdersDateRangePicker />);
+
+    changeRange(range);
+
+    expect(setDateRange).not.toHaveBeenCalled();
+  });
+
+  it('lets the user move the range forward through an invalid range', () => {
+    render(<OrdersDateRangePicker />);
+
+    changeRange([new Date(2026, 10, 10), new Date(2026, 10, 6)]);
+
+    expect(mockOpenmrsDateRangePicker.mock.lastCall[0].value).toEqual([new Date(2026, 10, 10), new Date(2026, 10, 6)]);
+    expect(setDateRange).not.toHaveBeenCalled();
+
+    changeRange([new Date(2026, 10, 10), new Date(2026, 10, 12)]);
+
+    expect(setDateRange).toHaveBeenCalledWith([new Date(2026, 10, 10), new Date(2026, 10, 12)]);
+    expect(mockOpenmrsDateRangePicker.mock.lastCall[0].value).toEqual([new Date(2026, 10, 1), new Date(2026, 10, 22)]);
   });
 });
