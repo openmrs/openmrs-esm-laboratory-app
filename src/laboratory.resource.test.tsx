@@ -4,7 +4,15 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { SWRConfig } from 'swr';
 import { openmrsFetch, useAppContext, useConfig, type FetchResponse, type Order } from '@openmrs/esm-framework';
 import { type DateFilterContext } from './types';
-import { fetchAllOrders, useInvalidateLabOrders, useLabOrders } from './laboratory.resource';
+import { useInvalidateLabOrders, useLabOrders } from './laboratory.resource';
+
+// The framework mock's useOpenmrsFetchAll runs the real hook, which imports openmrsFetch from
+// @openmrs/esm-api rather than from @openmrs/esm-framework. Without this, the responses stubbed on
+// mockOpenmrsFetch never reach the hook, because it calls the real openmrsFetch instead.
+vi.mock('@openmrs/esm-api', async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  openmrsFetch: (...args: Parameters<typeof openmrsFetch>) => mockOpenmrsFetch(...args),
+}));
 
 const mockOpenmrsFetch = vi.mocked(openmrsFetch);
 const mockUseAppContext = vi.mocked(useAppContext<DateFilterContext>);
@@ -272,63 +280,5 @@ describe('useLabOrders', () => {
     await waitFor(() => expect(result.current.labOrders[2].fulfillerStatus).toBe('IN_PROGRESS'));
     expect(result.current.labOrders.map(({ orderNumber }) => orderNumber)).toEqual(['ORD-1', 'ORD-2', 'ORD-3']);
     expect(mockOpenmrsFetch).toHaveBeenCalledTimes(4);
-  });
-});
-
-describe('fetchAllOrders', () => {
-  beforeEach(() => {
-    mockOpenmrsFetch.mockReset();
-  });
-
-  it('returns the results of a single page when there is no next link', async () => {
-    mockOpenmrsFetch.mockResolvedValueOnce(makePage(['ORD-1', 'ORD-2']));
-
-    const orders = await fetchAllOrders('/ws/rest/v1/order?orderTypes=lab');
-
-    expect(orders.map((order) => order.orderNumber)).toEqual(['ORD-1', 'ORD-2']);
-    expect(mockOpenmrsFetch).toHaveBeenCalledTimes(1);
-  });
-
-  it('follows next links until all pages have been fetched', async () => {
-    const filters = 'orderTypes=lab&excludeCanceledAndExpired=true&activatedOnOrAfterDate=2025-01-01T00:00:00.000Z';
-    const firstPageUrl = `/ws/rest/v1/order?${filters}`;
-    mockOpenmrsFetch
-      .mockResolvedValueOnce(
-        makePage(['ORD-1', 'ORD-2'], `http://backend:8080/openmrs/ws/rest/v1/order?${filters}&startIndex=2`),
-      )
-      .mockResolvedValueOnce(
-        makePage(['ORD-3', 'ORD-4'], `http://backend:8080/openmrs/ws/rest/v1/order?${filters}&startIndex=4`),
-      )
-      .mockResolvedValueOnce(makePage(['ORD-5']));
-
-    const orders = await fetchAllOrders(firstPageUrl);
-
-    expect(orders.map((order) => order.orderNumber)).toEqual(['ORD-1', 'ORD-2', 'ORD-3', 'ORD-4', 'ORD-5']);
-    expect(mockOpenmrsFetch).toHaveBeenCalledTimes(3);
-    expect(mockOpenmrsFetch.mock.calls[0][0]).toBe(firstPageUrl);
-
-    const requestedPages = mockOpenmrsFetch.mock.calls.slice(1).map(([url]) => new URL(url as string).searchParams);
-    expect(requestedPages.map((params) => params.get('startIndex'))).toEqual(['2', '4']);
-    requestedPages.forEach((params) => {
-      expect(params.get('orderTypes')).toBe('lab');
-      expect(params.get('excludeCanceledAndExpired')).toBe('true');
-      expect(params.get('activatedOnOrAfterDate')).toBe('2025-01-01T00:00:00.000Z');
-    });
-  });
-
-  it('requests next pages from the current origin so frontend proxies keep working', async () => {
-    mockOpenmrsFetch
-      .mockResolvedValueOnce(
-        makePage(['ORD-1'], 'http://backend:8080/openmrs/ws/rest/v1/order?orderTypes=lab&startIndex=1'),
-      )
-      .mockResolvedValueOnce(makePage(['ORD-2']));
-
-    await fetchAllOrders('/ws/rest/v1/order?orderTypes=lab');
-
-    const nextUrl = new URL(mockOpenmrsFetch.mock.calls[1][0] as string);
-    expect(nextUrl.host).toBe(window.location.host);
-    expect(nextUrl.protocol).toBe(window.location.protocol);
-    expect(nextUrl.pathname).toBe('/openmrs/ws/rest/v1/order');
-    expect(nextUrl.searchParams.get('startIndex')).toBe('1');
   });
 });
