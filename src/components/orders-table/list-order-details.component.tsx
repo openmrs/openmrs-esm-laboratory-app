@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ReactNode } from 'react';
+import type { KeyedMutator } from 'swr';
 import {
   Accordion,
   AccordionItem,
@@ -11,7 +12,7 @@ import {
   Tag,
 } from '@carbon/react';
 import { capitalize } from 'lodash-es';
-import { ExtensionSlot, formatDate, parseDate } from '@openmrs/esm-framework';
+import { ExtensionSlot, formatDate, parseDate, type Order } from '@openmrs/esm-framework';
 import { urgencyTagType, formatUrgencyLabel } from '../../utils';
 import { type GroupedOrders } from '../../types';
 import styles from './list-order-details.scss';
@@ -23,6 +24,7 @@ type OrderDetailsRowProps = {
 
 export interface ListOrdersDetailsProps {
   groupedOrders: GroupedOrders;
+  mutate?: KeyedMutator<Array<Order>>;
 }
 
 const OrderDetailRow = ({ label, value }: OrderDetailsRowProps) => {
@@ -37,7 +39,7 @@ const OrderDetailRow = ({ label, value }: OrderDetailsRowProps) => {
     </StructuredListRow>
   );
 };
-const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) => {
+const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders, mutate }) => {
   const { t } = useTranslation();
   const originalOrders = groupedOrders?.originalOrders ?? [];
 
@@ -118,7 +120,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders }) =
               <>
                 <div className={styles.testsOrderedActions}>
                   <ExtensionSlot state={{ order: order }} name="rejected-ordered-actions-slot" />
-                  <ExtensionSlot state={{ order: order }} name="tests-ordered-actions-slot" />
+                  <ExtensionSlot state={{ order: order, mutate }} name="tests-ordered-actions-slot" />
                   <ExtensionSlot state={{ order: order }} name="add-lab-order-details-slot" />
                 </div>
               </>
